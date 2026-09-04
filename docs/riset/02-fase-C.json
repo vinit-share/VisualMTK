@@ -1,0 +1,2439 @@
+{
+ "fase": "C",
+ "kelas": [
+  5,
+  6
+ ],
+ "ringkasanCP": "Pada akhir Fase C (kelas V–VI SD/MI/Paket A), murid menunjukkan pemahaman dan intuisi bilangan (number sense) pada bilangan cacah sampai 1.000.000: membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, serta melakukan komposisi dan dekomposisi bilangan; menyelesaikan masalah yang berkaitan dengan uang; melakukan operasi penjumlahan, pengurangan, perkalian, dan pembagian bilangan cacah sampai 100.000; serta menyelesaikan masalah yang berkaitan dengan KPK dan FPB. Murid dapat membandingkan dan mengurutkan berbagai pecahan termasuk pecahan campuran, melakukan operasi penjumlahan dan pengurangan pecahan, melakukan operasi perkalian dan pembagian pecahan dengan bilangan asli, mengubah pecahan menjadi berbagai bentuk pecahan lain (desimal dan persen), serta membandingkan dan mengurutkan bilangan desimal (satu angka di belakang koma). Di elemen Aljabar, murid menemukan nilai yang belum diketahui dalam kalimat matematika yang melibatkan empat operasi pada bilangan cacah sampai 1000 dengan memanfaatkan sifat-sifat bilangan dan operasinya, mengembangkan pola bilangan membesar/mengecil yang melibatkan perkalian dan pembagian, serta bernalar secara proporsional dengan rasio satuan. Di elemen Pengukuran, murid menentukan keliling dan luas berbagai bangun datar (segitiga, segiempat, segi banyak) serta gabungannya, menghitung durasi waktu, dan mengukur besar sudut pada bangun datar atau yang dibentuk dua garis berpotongan. Di elemen Geometri, murid mengonstruksi dan mengurai bangun ruang (kubus, balok, dan gabungannya), mengenali visualisasi spasial (tampak depan, atas, samping), membandingkan karakteristik antarbangun datar dan antarbangun ruang, serta menentukan lokasi pada peta bersistem berpetak. Di elemen Analisis Data dan Peluang, murid mengurutkan, membandingkan, menyajikan, dan menganalisis data banyak benda maupun data hasil pengukuran dalam bentuk gambar, piktogram, diagram batang, dan tabel frekuensi, serta menentukan kejadian dengan kemungkinan lebih besar atau lebih kecil dalam suatu percobaan acak.",
+ "domains": [
+  {
+   "nama": "Bilangan",
+   "capaian": "Menunjukkan pemahaman dan intuisi bilangan (number sense) pada bilangan cacah sampai 1.000.000; membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, melakukan komposisi dan dekomposisi bilangan; menyelesaikan masalah yang berkaitan dengan uang; melakukan operasi penjumlahan, pengurangan, perkalian, dan pembagian bilangan cacah sampai 100.000; serta menyelesaikan masalah yang berkaitan dengan KPK dan FPB. Murid dapat membandingkan dan mengurutkan berbagai pecahan termasuk pecahan campuran, melakukan operasi penjumlahan dan pengurangan pecahan, serta melakukan operasi perkalian dan pembagian pecahan dengan bilangan asli; mengubah pecahan menjadi berbagai bentuk pecahan lain, serta membandingkan dan mengurutkan bilangan desimal (satu angka di belakang koma).",
+   "topics": [
+    {
+     "judul": "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+     "kelas": 5,
+     "subKonsep": [
+      "Angka vs bilangan: angka adalah lambang, bilangan adalah nilainya",
+      "Nama tempat: satuan, puluhan, ratusan, ribuan, puluh ribuan, ratus ribuan, jutaan",
+      "Nilai tempat vs nilai angka (pada 374.512, angka 7 bertempat puluh ribuan dan bernilai 70.000)",
+      "Sistem desimal berbasis sepuluh: setiap bergeser satu tempat ke kiri nilainya dikali 10",
+      "Peran angka nol sebagai penahan tempat (placeholder) pada 305.007",
+      "Membaca bilangan besar dengan pengelompokan tiga angka (periode ribuan dan jutaan)",
+      "Menulis lambang bilangan dari nama bilangan dan sebaliknya",
+      "Penulisan tanda pemisah ribuan dengan titik dan pemisah desimal dengan koma (kaidah Indonesia)",
+      "Bentuk panjang (dekomposisi): 374.512 = 300.000 + 70.000 + 4.000 + 500 + 10 + 2",
+      "Komposisi bilangan dari bentuk panjang kembali menjadi bentuk baku",
+      "Dekomposisi tidak baku untuk mempermudah hitung (374.512 = 370.000 + 4.512)"
+     ],
+     "rumus": [
+      "Nilai angka = angka x nilai tempatnya",
+      "Bentuk panjang: abcdef = a x 100.000 + b x 10.000 + c x 1.000 + d x 100 + e x 10 + f x 1",
+      "Nilai tempat ke-n dari kanan = 10^(n-1)"
+     ],
+     "keterampilan": [
+      "Membaca dan menulis bilangan cacah sampai 1.000.000 dalam lambang dan nama bilangan",
+      "Menentukan nilai tempat dan nilai angka suatu angka dalam bilangan",
+      "Menguraikan bilangan ke bentuk panjang dan menyusunnya kembali",
+      "Membuat dekomposisi tidak baku yang berguna untuk perhitungan mental",
+      "Menyajikan bilangan besar dengan blok nilai tempat, kartu bilangan, atau tabel nilai tempat",
+      "Menggunakan tanda titik sebagai pemisah ribuan secara tepat"
+     ],
+     "prasyarat": [
+      "Nilai tempat bilangan cacah sampai 10.000 (Fase B)",
+      "Komposisi dan dekomposisi bilangan cacah sampai 10.000 (Fase B)",
+      "Membaca dan menulis bilangan cacah sampai 10.000 (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Menganggap nilai angka sama dengan angkanya (pada 4.500 dikira angka 4 bernilai 4, bukan 4.000)",
+      "Membaca 105.006 sebagai \"seratus lima ribu enam puluh\" karena nol diabaikan",
+      "Menulis \"seratus dua puluh ribu lima\" sebagai 1200005 (menempel apa adanya)",
+      "Mengira jumlah angka yang lebih banyak selalu berarti bilangan lebih besar tanpa memeriksa nilai tempat",
+      "Terbalik memakai koma sebagai pemisah ribuan mengikuti kebiasaan Inggris (25,000)",
+      "Menganggap tempat kosong boleh dihilangkan sehingga 3.045 ditulis 345"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa nilai tempat naik sepuluh kali lipat setiap bergeser satu langkah ke kiri, bukan dua atau lima kali?",
+      "Kenapa angka nol yang \"tidak bernilai\" justru tidak boleh dihapus dari 305.007?",
+      "Kenapa bilangan besar dikelompokkan tiga-tiga (ribuan, jutaan) dan bukan empat-empat?",
+      "Kenapa satu bilangan bisa diuraikan dengan banyak cara berbeda dan semuanya tetap benar?"
+     ]
+    },
+    {
+     "judul": "Membandingkan dan Mengurutkan Bilangan Cacah Besar",
+     "kelas": 5,
+     "subKonsep": [
+      "Membandingkan dengan menyamakan banyak angka terlebih dahulu",
+      "Strategi membandingkan dari angka nilai tempat tertinggi ke terendah",
+      "Lambang perbandingan: >, <, = dan cara membacanya",
+      "Mengurutkan naik (dari terkecil) dan turun (dari terbesar)",
+      "Letak bilangan besar pada garis bilangan berskala (skala 1.000, 10.000, 100.000)",
+      "Bilangan sebelum, sesudah, dan di antara dua bilangan",
+      "Membandingkan bilangan dalam konteks nyata (harga, jarak, jumlah penduduk)"
+     ],
+     "rumus": [
+      "Bandingkan angka dari kiri (nilai tempat tertinggi); angka pertama yang berbeda menentukan hasilnya",
+      "Jika banyak angka berbeda, bilangan dengan angka lebih banyak lebih besar (untuk bilangan cacah tanpa nol di depan)"
+     ],
+     "keterampilan": [
+      "Membandingkan dua bilangan cacah sampai 1.000.000 dengan tanda >, <, =",
+      "Mengurutkan sekumpulan bilangan besar dari terkecil ke terbesar dan sebaliknya",
+      "Menempatkan bilangan pada garis bilangan berskala secara perkiraan",
+      "Menyisipkan bilangan di antara dua bilangan yang diberikan",
+      "Menjelaskan alasan perbandingan berdasarkan nilai tempat, bukan tebakan"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+      "Membandingkan dan mengurutkan bilangan cacah sampai 10.000 (Fase B)",
+      "Garis bilangan bilangan cacah (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Membandingkan dari angka paling kanan (satuan) seperti membaca dari belakang",
+      "Mengira 9.999 lebih besar dari 10.001 karena \"banyak angka 9\"",
+      "Mengira tanda > menunjuk ke bilangan yang lebih besar tanpa memahami arah bukaan",
+      "Menganggap urutan pada garis bilangan tidak perlu berjarak sama (skala tidak konsisten)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa membandingkan bilangan harus dimulai dari angka paling kiri, bukan paling kanan?",
+      "Kenapa 10.001 lebih besar dari 9.999 padahal angka-angkanya lebih kecil?",
+      "Kenapa jarak antartitik pada garis bilangan harus sama besar?"
+     ]
+    },
+    {
+     "judul": "Pembulatan dan Penaksiran (Estimasi)",
+     "kelas": 5,
+     "subKonsep": [
+      "Pembulatan ke satuan, puluhan, ratusan, ribuan terdekat",
+      "Aturan pembulatan: lihat angka di sebelah kanan tempat yang dituju",
+      "Pembulatan setengah ke atas (angka 5 dibulatkan naik)",
+      "Taksiran rendah (bawah), taksiran tinggi (atas), dan taksiran terbaik",
+      "Penaksiran hasil penjumlahan, pengurangan, perkalian, dan pembagian",
+      "Kalkulasi mental menggunakan bilangan bersahabat (compatible numbers)",
+      "Menggunakan taksiran untuk memeriksa kewajaran hasil hitung",
+      "Konteks nyata: menaksir total belanja, jarak tempuh, banyak penonton",
+      "Pembulatan bilangan desimal ke satuan atau satu angka di belakang koma"
+     ],
+     "rumus": [
+      "Bulatkan ke puluhan: jika satuan >= 5 naik, jika < 5 turun",
+      "Bulatkan ke ratusan: jika puluhan >= 5 naik, jika < 5 turun",
+      "Taksiran hasil = hasil operasi pada bilangan yang sudah dibulatkan"
+     ],
+     "keterampilan": [
+      "Membulatkan bilangan ke satuan/puluhan/ratusan/ribuan terdekat",
+      "Menaksir hasil operasi hitung sebelum menghitung tepat",
+      "Menilai apakah hasil hitung masuk akal dengan membandingkan pada taksiran",
+      "Memilih tingkat pembulatan yang sesuai dengan konteks masalah",
+      "Melakukan kalkulasi mental dengan memecah dan membulatkan bilangan"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+      "Membandingkan dan Mengurutkan Bilangan Cacah Besar",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Membulatkan bertahap berulang (4.649 -> 4.650 -> 4.700 -> 5.000) sehingga hasil melenceng",
+      "Mengira pembulatan selalu ke bawah karena \"membuang angka di belakang\"",
+      "Menganggap taksiran adalah jawaban yang salah, bukan alat pemeriksa",
+      "Bingung bahwa 5 dibulatkan ke atas padahal jaraknya sama ke dua sisi",
+      "Membulatkan hasil akhir padahal soal meminta menaksir sebelum menghitung"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa angka 5 dibulatkan ke atas padahal jaraknya sama persis ke bilangan bawah dan atas?",
+      "Kenapa membulatkan bertahap bisa membuat hasilnya salah?",
+      "Kenapa penaksiran berguna kalau kita toh bisa menghitung tepat dengan kalkulator?",
+      "Kenapa hasil taksiran perkalian bisa jauh lebih meleset daripada taksiran penjumlahan?"
+     ]
+    },
+    {
+     "judul": "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000",
+     "kelas": 5,
+     "subKonsep": [
+      "Penjumlahan bersusun dengan menyimpan (regrouping/menyimpan puluhan)",
+      "Pengurangan bersusun dengan meminjam (dekomposisi nilai tempat)",
+      "Pengurangan dengan angka nol berturut-turut (50.000 - 8.475)",
+      "Strategi mental: memecah menurut nilai tempat, kompensasi, bilangan bulat ratusan",
+      "Hubungan penjumlahan dan pengurangan sebagai operasi berkebalikan",
+      "Pemeriksaan hasil dengan operasi kebalikan dan dengan taksiran",
+      "Soal cerita: penggabungan, pemisahan, selisih, dan perubahan"
+     ],
+     "rumus": [
+      "a + b = c  <=>  c - a = b  dan  c - b = a",
+      "Meminjam: 1 puluhan = 10 satuan, 1 ratusan = 10 puluhan, 1 ribuan = 10 ratusan"
+     ],
+     "keterampilan": [
+      "Menjumlahkan dan mengurangkan bilangan cacah sampai 100.000 secara bersusun",
+      "Melakukan pengurangan yang melibatkan banyak peminjaman berturut-turut",
+      "Menggunakan strategi mental untuk bilangan yang mudah dipecah",
+      "Memeriksa hasil dengan operasi kebalikan",
+      "Menyelesaikan soal cerita satu dan dua langkah"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+      "Penjumlahan dan pengurangan bilangan cacah sampai 1.000 (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Mengurangkan angka yang lebih kecil dari yang lebih besar per kolom tanpa meminjam (5.003 - 2.008 = 3.005)",
+      "Lupa mengurangi angka yang sudah dipinjam pada kolom sebelah kiri",
+      "Salah menyusun angka karena tidak sejajar nilai tempat pada bilangan berbeda panjang",
+      "Menganggap pengurangan bersifat komutatif (8 - 3 sama dengan 3 - 8)",
+      "Kesulitan meminjam melewati beberapa angka nol"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa saat meminjam, satu ratusan berubah menjadi sepuluh puluhan dan bukan seratus puluhan?",
+      "Kenapa angka harus disusun lurus berdasarkan nilai tempat, bukan rata kanan sembarangan?",
+      "Kenapa pengurangan bisa diperiksa dengan penjumlahan?",
+      "Kenapa 1.000 - 1 memerlukan peminjaman berantai sampai tiga kali?"
+     ]
+    },
+    {
+     "judul": "Perkalian Bilangan Cacah",
+     "kelas": 5,
+     "subKonsep": [
+      "Makna perkalian: penjumlahan berulang, susunan baris-kolom (array), dan luas persegi panjang",
+      "Perkalian dengan 10, 100, 1.000 dan pola menambah nol",
+      "Perkalian bersusun panjang (satu angka, dua angka, tiga angka pengali)",
+      "Metode kotak/luas (area model) sebagai dasar perkalian bersusun",
+      "Perkalian dengan nol dan dengan satu",
+      "Fakta perkalian dasar sampai 10 x 10 sebagai bekal kelancaran",
+      "Menaksir hasil perkalian sebelum menghitung",
+      "Soal cerita perkalian: laju, perbandingan berlipat, susunan persegi panjang"
+     ],
+     "rumus": [
+      "a x b = b x a (sifat komutatif)",
+      "a x (b + c) = a x b + a x c (sifat distributif)",
+      "a x 10^n = a diikuti n buah nol",
+      "Luas persegi panjang sebagai model: p x l"
+     ],
+     "keterampilan": [
+      "Mengalikan bilangan cacah tiga angka dengan dua angka secara bersusun",
+      "Menghubungkan metode kotak (area model) dengan langkah perkalian bersusun",
+      "Mengalikan cepat dengan kelipatan 10, 100, dan 1.000",
+      "Menaksir hasil perkalian untuk memeriksa kewajaran",
+      "Menyelesaikan soal cerita perkalian dalam konteks nyata"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+      "Perkalian bilangan cacah sampai 100 (Fase B)",
+      "Sifat Operasi Hitung dan Operasi Hitung Campuran"
+     ],
+     "miskonsepsi": [
+      "Lupa menggeser satu tempat (menambahkan nol) pada baris hasil perkalian dengan puluhan",
+      "Mengira perkalian selalu membesarkan hasil (gagal saat dikali 1 atau 0)",
+      "Menganggap 25 x 10 = 250 karena \"tambah nol\" lalu keliru menerapkan 2,5 x 10 = 2,50",
+      "Menjumlahkan hasil parsial tanpa memperhatikan nilai tempatnya",
+      "Mengira perkalian tidak bisa dibalik urutannya sehingga menghitung dua kali"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pada perkalian bersusun baris kedua digeser satu tempat ke kiri?",
+      "Kenapa mengalikan dengan 10 cukup menambah satu angka nol, dan apa yang sebenarnya terjadi pada nilai tempatnya?",
+      "Kenapa 6 x 7 sama dengan 7 x 6 padahal ceritanya berbeda (6 kantong isi 7 vs 7 kantong isi 6)?",
+      "Kenapa perkalian bisa digambarkan sebagai luas persegi panjang?"
+     ]
+    },
+    {
+     "judul": "Pembagian Bilangan Cacah",
+     "kelas": 5,
+     "subKonsep": [
+      "Dua makna pembagian: pembagian merata (berapa isi tiap kelompok) dan pengelompokan (berapa banyak kelompok)",
+      "Pembagian sebagai pengurangan berulang",
+      "Pembagian bersusun (porogapit) dengan pembagi satu dan dua angka",
+      "Sisa pembagian dan penafsirannya dalam konteks masalah",
+      "Pembagian dengan nol sebagai hasil bagi di tengah (misal 6.045 : 5)",
+      "Tidak terdefinisinya pembagian oleh nol",
+      "Hubungan perkalian dan pembagian sebagai operasi berkebalikan",
+      "Menaksir hasil bagi sebelum menghitung"
+     ],
+     "rumus": [
+      "a : b = c  <=>  c x b = a (untuk b tidak nol)",
+      "Terbagi = hasil bagi x pembagi + sisa",
+      "a : 0 tidak terdefinisi; 0 : a = 0 untuk a tidak nol"
+     ],
+     "keterampilan": [
+      "Membagi bilangan cacah sampai 100.000 dengan pembagi satu dan dua angka",
+      "Menentukan hasil bagi dan sisa serta menafsirkannya sesuai konteks soal",
+      "Memeriksa hasil pembagian dengan perkalian",
+      "Menaksir hasil bagi menggunakan bilangan bersahabat",
+      "Membedakan situasi pembagian merata dan pembagian pengelompokan"
+     ],
+     "prasyarat": [
+      "Perkalian Bilangan Cacah",
+      "Pembagian bilangan cacah sampai 100 (Fase B)",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Mengira pembagian selalu mengecilkan hasil",
+      "Menganggap pembagian bersifat komutatif (12 : 3 sama dengan 3 : 12)",
+      "Melewatkan angka nol pada hasil bagi sehingga 6.045 : 5 dijawab 129 bukan 1.209",
+      "Mengira sisa selalu boleh dibuang tanpa memeriksa konteks (banyak bus yang dibutuhkan)",
+      "Menjawab a : 0 = 0 atau = a",
+      "Menuliskan sisa sebagai angka di belakang koma tanpa membaginya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pembagian dengan nol tidak boleh, sedangkan nol dibagi bilangan lain boleh?",
+      "Kenapa sisa pembagian kadang harus dibulatkan ke atas (jumlah bus) dan kadang dibuang (jumlah kotak penuh)?",
+      "Kenapa pembagian bisa diperiksa dengan perkalian?",
+      "Kenapa \"membagi\" bisa berarti dua hal yang berbeda: membagi rata dan mengelompokkan?"
+     ]
+    },
+    {
+     "judul": "Sifat Operasi Hitung dan Operasi Hitung Campuran",
+     "kelas": 5,
+     "subKonsep": [
+      "Sifat komutatif pada penjumlahan dan perkalian (dan tidak berlaku pada pengurangan dan pembagian)",
+      "Sifat asosiatif pada penjumlahan dan perkalian",
+      "Sifat distributif perkalian terhadap penjumlahan dan pengurangan",
+      "Unsur identitas: 0 pada penjumlahan, 1 pada perkalian",
+      "Urutan operasi: kurung, lalu perkalian dan pembagian dari kiri ke kanan, lalu penjumlahan dan pengurangan dari kiri ke kanan",
+      "Peran tanda kurung dalam mengubah hasil",
+      "Menggunakan sifat operasi untuk mempercepat hitungan (4 x 27 x 25)",
+      "Soal cerita dua langkah dan penulisan kalimat matematikanya"
+     ],
+     "rumus": [
+      "a + b = b + a ; a x b = b x a",
+      "(a + b) + c = a + (b + c) ; (a x b) x c = a x (b x c)",
+      "a x (b + c) = a x b + a x c ; a x (b - c) = a x b - a x c",
+      "a + 0 = a ; a x 1 = a ; a x 0 = 0"
+     ],
+     "keterampilan": [
+      "Menghitung operasi campuran dengan urutan operasi yang benar",
+      "Menggunakan sifat komutatif, asosiatif, dan distributif untuk mempermudah hitungan",
+      "Menambahkan tanda kurung agar kalimat matematika sesuai maksud soal cerita",
+      "Menunjukkan mengapa pengurangan dan pembagian tidak komutatif dengan contoh penyangkal",
+      "Menuliskan satu kalimat matematika untuk soal cerita dua langkah"
+     ],
+     "prasyarat": [
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Mengerjakan operasi selalu urut dari kiri ke kanan tanpa mendahulukan perkalian/pembagian",
+      "Mengira penjumlahan selalu didahulukan daripada pengurangan (menghitung 10 - 3 + 2 = 5)",
+      "Mengira perkalian selalu didahulukan daripada pembagian pada 24 : 4 x 2",
+      "Menganggap sifat distributif berlaku juga untuk pembagian dari kiri: (a + b) : c salah diperluas jadi a : c + b : c dianggap sama dengan c : a + c : b",
+      "Mengira tanda kurung hanya hiasan dan boleh diabaikan",
+      "Menerapkan komutatif pada pengurangan (7 - 10 dianggap sama dengan 10 - 7)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa perkalian dikerjakan lebih dulu daripada penjumlahan, siapa yang menetapkan aturan ini?",
+      "Kenapa pengurangan tidak bersifat komutatif padahal penjumlahan bisa?",
+      "Kenapa 4 x 98 lebih mudah dihitung sebagai 4 x 100 - 4 x 2?",
+      "Kenapa tanda kurung bisa mengubah 2 + 3 x 4 dari 14 menjadi 20?"
+     ]
+    },
+    {
+     "judul": "Menyelesaikan Masalah yang Berkaitan dengan Uang (Rupiah)",
+     "kelas": 5,
+     "subKonsep": [
+      "Nilai nominal uang kertas dan logam rupiah",
+      "Menulis nilai uang dengan pemisah ribuan (Rp25.000,00)",
+      "Menaksir total belanja dan uang kembalian",
+      "Menghitung kembalian sebagai pengurangan",
+      "Harga satuan dan harga total (perkalian dan pembagian)",
+      "Membandingkan penawaran untuk memilih yang lebih hemat",
+      "Diskon sederhana dalam bentuk potongan langsung dan persen",
+      "Menyusun anggaran belanja sederhana dan literasi keuangan awal"
+     ],
+     "rumus": [
+      "Kembalian = uang dibayarkan - total harga",
+      "Total harga = harga satuan x banyak barang",
+      "Harga satuan = total harga : banyak barang",
+      "Harga setelah diskon = harga awal - (persen diskon x harga awal)"
+     ],
+     "keterampilan": [
+      "Menghitung total belanja dan kembalian dengan bilangan sampai ratusan ribu",
+      "Menaksir apakah uang cukup sebelum berbelanja",
+      "Membandingkan harga satuan untuk menentukan pembelian yang lebih hemat",
+      "Menghitung potongan harga sederhana",
+      "Menyusun rencana belanja sesuai anggaran yang tersedia"
+     ],
+     "prasyarat": [
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Pembulatan dan Penaksiran (Estimasi)"
+     ],
+     "miskonsepsi": [
+      "Menulis nilai uang dengan koma sebagai pemisah ribuan (Rp25,000)",
+      "Mengira barang dengan harga total lebih murah selalu lebih hemat tanpa melihat isinya",
+      "Menghitung kembalian dengan menjumlahkan, bukan mengurangkan",
+      "Mengira diskon 50% lalu diskon 20% sama dengan diskon 70%",
+      "Mengabaikan satuan rupiah sehingga menjawab bilangan tanpa konteks"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa diskon 50% lalu 20% tidak sama dengan diskon 70%?",
+      "Kenapa membandingkan harga per satuan lebih adil daripada membandingkan harga total?",
+      "Kenapa uang rupiah tersedia dalam nominal 1, 2, 5, 10 (dan kelipatannya) dan bukan nominal sembarang?"
+     ]
+    },
+    {
+     "judul": "Kelipatan, Faktor, Bilangan Prima, dan Faktorisasi Prima",
+     "kelas": 5,
+     "subKonsep": [
+      "Kelipatan suatu bilangan sebagai hasil kali dengan bilangan asli",
+      "Faktor sebagai bilangan yang membagi habis",
+      "Pasangan faktor dan penyajiannya sebagai susunan persegi panjang",
+      "Ciri habis dibagi 2, 3, 4, 5, 9, 10",
+      "Bilangan prima (tepat dua faktor) dan bilangan komposit",
+      "Alasan 1 bukan bilangan prima dan 2 satu-satunya prima genap",
+      "Faktorisasi prima dengan pohon faktor dan dengan pembagian bersusun",
+      "Penulisan faktorisasi prima dalam bentuk berpangkat (72 = 2^3 x 3^2)",
+      "Ketunggalan faktorisasi prima (setiap bilangan punya satu susunan prima)"
+     ],
+     "rumus": [
+      "Kelipatan n: n, 2n, 3n, 4n, ...",
+      "Bilangan prima memiliki tepat dua faktor: 1 dan dirinya sendiri",
+      "Faktorisasi prima: N = p1^a x p2^b x p3^c ...",
+      "Habis dibagi 3 jika jumlah angkanya habis dibagi 3"
+     ],
+     "keterampilan": [
+      "Menentukan semua faktor suatu bilangan secara sistematis dengan pasangan faktor",
+      "Mendaftar kelipatan suatu bilangan",
+      "Menguji keprimaan bilangan sampai 100",
+      "Menyusun pohon faktor dan menuliskan faktorisasi prima dalam bentuk berpangkat",
+      "Menggunakan ciri habis dibagi untuk mempercepat pemfaktoran"
+     ],
+     "prasyarat": [
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Mengenal kelipatan dan faktor (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Tertukar antara faktor (membagi habis) dan kelipatan (hasil kali)",
+      "Menganggap 1 sebagai bilangan prima",
+      "Mengira semua bilangan ganjil adalah prima (9, 15, 21 dianggap prima)",
+      "Mengira 2 bukan prima karena genap",
+      "Menghentikan pohon faktor sebelum semua cabang menjadi bilangan prima",
+      "Mengira urutan cabang pohon faktor yang berbeda menghasilkan faktorisasi prima yang berbeda"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 1 tidak dianggap bilangan prima padahal hanya bisa dibagi 1 dan dirinya sendiri?",
+      "Kenapa bentuk faktorisasi prima suatu bilangan selalu sama meskipun pohon faktornya berbeda-beda?",
+      "Kenapa bilangan yang jumlah angkanya habis dibagi 3 pasti habis dibagi 3?",
+      "Kenapa cukup memeriksa pembagi sampai akar kuadrat untuk menguji keprimaan?"
+     ]
+    },
+    {
+     "judul": "KPK dan FPB",
+     "kelas": 5,
+     "subKonsep": [
+      "Kelipatan persekutuan dan kelipatan persekutuan terkecil (KPK)",
+      "Faktor persekutuan dan faktor persekutuan terbesar (FPB)",
+      "Cara mendaftar kelipatan dan faktor",
+      "Cara faktorisasi prima: KPK ambil semua faktor prima berpangkat tertinggi, FPB ambil faktor prima persekutuan berpangkat terendah",
+      "Cara tabel/petak pembagian bersusun (sengkedan)",
+      "Hubungan KPK dan FPB dengan hasil kali dua bilangan",
+      "Konteks KPK: kejadian berulang bersamaan (lampu berkedip, jadwal ronda, bel berbunyi)",
+      "Konteks FPB: pembagian rata paling banyak (parsel, kelompok, ubin terbesar)",
+      "KPK sebagai penyebut persekutuan untuk operasi pecahan"
+     ],
+     "rumus": [
+      "KPK(a,b) x FPB(a,b) = a x b",
+      "KPK: hasil kali semua faktor prima dengan pangkat tertinggi",
+      "FPB: hasil kali faktor prima persekutuan dengan pangkat terendah",
+      "Jika a dan b saling prima maka FPB = 1 dan KPK = a x b"
+     ],
+     "keterampilan": [
+      "Menentukan KPK dan FPB dua atau tiga bilangan dengan pendaftaran, pohon faktor, dan tabel",
+      "Memilih apakah suatu soal cerita memerlukan KPK atau FPB",
+      "Menggunakan KPK untuk menyamakan penyebut pecahan",
+      "Menggunakan FPB untuk menyederhanakan pecahan",
+      "Menyelesaikan soal cerita KPK/FPB dua tahap"
+     ],
+     "prasyarat": [
+      "Kelipatan, Faktor, Bilangan Prima, dan Faktorisasi Prima",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah"
+     ],
+     "miskonsepsi": [
+      "Tertukar memilih KPK padahal soal meminta FPB (dan sebaliknya) karena hanya melihat kata \"terbesar\"",
+      "Mengira KPK selalu hasil kali kedua bilangan",
+      "Mengira FPB selalu bilangan terkecil di antara keduanya",
+      "Pada cara faktorisasi prima, mengambil pangkat terendah untuk KPK",
+      "Mengabaikan faktor prima yang hanya muncul di salah satu bilangan saat menghitung KPK",
+      "Mengira FPB selalu ada dan lebih dari 1 (lupa kasus saling prima)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa untuk KPK diambil pangkat tertinggi sedangkan untuk FPB pangkat terendah?",
+      "Kenapa KPK dikali FPB selalu sama dengan hasil kali kedua bilangannya?",
+      "Kenapa soal \"bel berbunyi bersamaan\" memakai KPK, sedangkan soal \"parsel terbanyak\" memakai FPB?",
+      "Kenapa KPK bisa dipakai sebagai penyebut saat menjumlahkan pecahan?"
+     ]
+    },
+    {
+     "judul": "Pecahan Senilai dan Penyederhanaan Pecahan",
+     "kelas": 5,
+     "subKonsep": [
+      "Pecahan sebagai bagian dari keseluruhan, sebagai pembagian, dan sebagai titik pada garis bilangan",
+      "Pembilang dan penyebut serta maknanya",
+      "Pecahan senilai melalui gambar (pita pecahan, lingkaran, luasan)",
+      "Mengalikan atau membagi pembilang dan penyebut dengan bilangan yang sama",
+      "Pecahan bentuk paling sederhana",
+      "Menyederhanakan dengan FPB",
+      "Pentingnya keseluruhan (whole) yang sama saat membandingkan pecahan",
+      "Pecahan pada garis bilangan antara 0 dan 1 serta lebih dari 1"
+     ],
+     "rumus": [
+      "a/b = (a x k)/(b x k) untuk k tidak nol",
+      "a/b = (a : k)/(b : k) jika k faktor persekutuan",
+      "Bentuk paling sederhana diperoleh dengan membagi pembilang dan penyebut dengan FPB-nya"
+     ],
+     "keterampilan": [
+      "Menentukan pecahan senilai dengan gambar dan dengan perhitungan",
+      "Menyederhanakan pecahan sampai bentuk paling sederhana",
+      "Menempatkan pecahan pada garis bilangan",
+      "Menghubungkan pecahan dengan pembagian (3/4 sama dengan 3 : 4)",
+      "Memeriksa dua pecahan senilai dengan perkalian silang"
+     ],
+     "prasyarat": [
+      "Pecahan senilai dan intuisi pecahan (Fase B)",
+      "Kelipatan, Faktor, Bilangan Prima, dan Faktorisasi Prima",
+      "KPK dan FPB"
+     ],
+     "miskonsepsi": [
+      "Menambahkan bilangan yang sama pada pembilang dan penyebut (2/3 dianggap senilai dengan 3/4)",
+      "Mengira penyebut lebih besar berarti pecahan lebih besar",
+      "Menyederhanakan hanya pembilang atau hanya penyebut",
+      "Mengira 1/2 dari kue kecil sama besar dengan 1/2 dari kue besar saat membandingkan jumlah nyata",
+      "Mengira pecahan selalu bernilai kurang dari 1"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengalikan pembilang dan penyebut dengan bilangan yang sama tidak mengubah nilai pecahan, tetapi menambahkannya mengubah nilai?",
+      "Kenapa 1/2 lebih besar dari 1/3 padahal 3 lebih besar dari 2?",
+      "Kenapa pecahan bisa dianggap sebagai hasil bagi?",
+      "Kenapa membandingkan pecahan mensyaratkan keseluruhannya sama?"
+     ]
+    },
+    {
+     "judul": "Pecahan Campuran dan Pecahan Tidak Murni",
+     "kelas": 5,
+     "subKonsep": [
+      "Pecahan murni (pembilang < penyebut) dan pecahan tidak murni (pembilang >= penyebut)",
+      "Pecahan campuran sebagai gabungan bilangan bulat dan pecahan",
+      "Mengubah pecahan campuran menjadi pecahan tidak murni",
+      "Mengubah pecahan tidak murni menjadi pecahan campuran melalui pembagian bersisa",
+      "Representasi gambar (dua setengah pizza) dan pada garis bilangan",
+      "Kapan bentuk campuran lebih berguna daripada bentuk tidak murni"
+     ],
+     "rumus": [
+      "a b/c = (a x c + b)/c",
+      "p/q = (p : q) sisa r, ditulis (hasil bagi) (r/q)"
+     ],
+     "keterampilan": [
+      "Mengubah bentuk campuran ke tidak murni dan sebaliknya",
+      "Menempatkan pecahan campuran pada garis bilangan",
+      "Menggambarkan pecahan campuran dengan model luasan",
+      "Memilih bentuk pecahan yang paling sesuai untuk perhitungan atau pelaporan hasil"
+     ],
+     "prasyarat": [
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Pembagian Bilangan Cacah"
+     ],
+     "miskonsepsi": [
+      "Menganggap 2 1/3 berarti 2 dikali 1/3",
+      "Saat mengubah campuran, menjumlahkan a + b lalu dibagi c",
+      "Menulis hasil pembagian bersisa dengan sisa sebagai penyebut, bukan pembilang",
+      "Mengira pecahan tidak murni adalah bentuk yang salah dan harus selalu diubah"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 2 1/3 berarti 2 ditambah 1/3, bukan 2 dikali 1/3?",
+      "Kenapa rumus mengubah pecahan campuran mengalikan bilangan bulatnya dengan penyebut?",
+      "Kenapa pecahan tidak murni justru lebih praktis saat mengalikan dan membagi pecahan?"
+     ]
+    },
+    {
+     "judul": "Membandingkan dan Mengurutkan Pecahan",
+     "kelas": 5,
+     "subKonsep": [
+      "Membandingkan pecahan berpenyebut sama",
+      "Membandingkan pecahan berpembilang sama",
+      "Menyamakan penyebut dengan KPK",
+      "Perkalian silang sebagai jalan pintas dan alasannya",
+      "Membandingkan dengan patokan (benchmark) 0, 1/2, dan 1",
+      "Mengurutkan pecahan biasa, campuran, dan tidak murni yang bercampur",
+      "Menempatkan beberapa pecahan pada satu garis bilangan",
+      "Kepadatan pecahan: selalu ada pecahan di antara dua pecahan"
+     ],
+     "rumus": [
+      "a/b vs c/d: bandingkan a x d dengan c x b",
+      "Penyebut persekutuan terkecil = KPK(b, d)",
+      "Jika pembilang sama, pecahan dengan penyebut lebih kecil bernilai lebih besar"
+     ],
+     "keterampilan": [
+      "Membandingkan dua pecahan dengan menyamakan penyebut atau perkalian silang",
+      "Mengurutkan sekumpulan pecahan berbeda bentuk dari terkecil ke terbesar",
+      "Menggunakan patokan 1/2 untuk membandingkan dengan cepat",
+      "Menyisipkan satu pecahan di antara dua pecahan yang diberikan",
+      "Menempatkan pecahan campuran dan tidak murni pada garis bilangan"
+     ],
+     "prasyarat": [
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Pecahan Campuran dan Pecahan Tidak Murni",
+      "KPK dan FPB"
+     ],
+     "miskonsepsi": [
+      "Membandingkan pembilang dan penyebut secara terpisah seperti bilangan cacah (3/5 dianggap lebih kecil dari 2/7 karena 5 < 7)",
+      "Mengira penyebut besar selalu berarti pecahan besar",
+      "Menyamakan penyebut tetapi lupa mengubah pembilangnya",
+      "Mengira tidak ada pecahan di antara 1/2 dan 3/5",
+      "Menggunakan perkalian silang tanpa memperhatikan arah tanda pembanding"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa perkalian silang bisa dipakai membandingkan pecahan, dan dari mana asalnya?",
+      "Kenapa 1/8 lebih kecil dari 1/3 padahal 8 lebih besar dari 3?",
+      "Kenapa selalu ada pecahan lain di antara dua pecahan mana pun?",
+      "Kenapa membandingkan pecahan lebih mudah kalau penyebutnya disamakan dulu?"
+     ]
+    },
+    {
+     "judul": "Penjumlahan dan Pengurangan Pecahan",
+     "kelas": 5,
+     "subKonsep": [
+      "Penjumlahan dan pengurangan pecahan berpenyebut sama",
+      "Menyamakan penyebut menggunakan KPK untuk penyebut berbeda",
+      "Model luasan dan pita pecahan untuk memvisualkan penjumlahan",
+      "Penjumlahan dan pengurangan pecahan campuran (menjumlahkan bagian bulat dan bagian pecahan)",
+      "Meminjam pada pengurangan pecahan campuran (3 1/4 - 1 3/4)",
+      "Menyederhanakan hasil ke bentuk paling sederhana",
+      "Menaksir hasil operasi pecahan dengan patokan 0, 1/2, 1",
+      "Soal cerita pecahan dalam konteks resep, panjang tali, waktu"
+     ],
+     "rumus": [
+      "a/c + b/c = (a + b)/c",
+      "a/b + c/d = (a x d + c x b)/(b x d)",
+      "Dengan KPK: a/b + c/d = (a x (K:b) + c x (K:d))/K dengan K = KPK(b,d)"
+     ],
+     "keterampilan": [
+      "Menjumlahkan dan mengurangkan pecahan berpenyebut sama dan berbeda",
+      "Menyamakan penyebut menggunakan KPK, bukan sekadar mengalikan penyebut",
+      "Menjumlahkan dan mengurangkan pecahan campuran termasuk kasus meminjam",
+      "Menyederhanakan hasil akhir",
+      "Menaksir hasil untuk memeriksa kewajaran jawaban"
+     ],
+     "prasyarat": [
+      "Membandingkan dan Mengurutkan Pecahan",
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "KPK dan FPB",
+      "Pecahan Campuran dan Pecahan Tidak Murni"
+     ],
+     "miskonsepsi": [
+      "Menjumlahkan pembilang dengan pembilang dan penyebut dengan penyebut (1/2 + 1/3 = 2/5)",
+      "Menyamakan penyebut tetapi tidak mengubah pembilang",
+      "Menjumlahkan bagian bulat dan pecahan campuran secara terpisah tanpa memperhatikan hasil pecahan yang lebih dari 1",
+      "Meminjam 1 pada pecahan campuran menjadi 10 (kebiasaan desimal) bukan menjadi penyebut/penyebut",
+      "Mengira hasil penjumlahan pecahan selalu lebih besar dari 1",
+      "Lupa menyederhanakan hasil akhir"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa penyebut harus disamakan dulu sebelum pecahan dijumlahkan, padahal pada perkalian tidak perlu?",
+      "Kenapa 1/2 + 1/3 tidak sama dengan 2/5, padahal terasa masuk akal?",
+      "Kenapa saat meminjam pada 3 1/4 - 1 3/4, angka 1 berubah menjadi 4/4?",
+      "Kenapa memakai KPK lebih baik daripada mengalikan kedua penyebut?"
+     ]
+    },
+    {
+     "judul": "Perkalian Pecahan dengan Bilangan Asli dan dengan Pecahan",
+     "kelas": 6,
+     "subKonsep": [
+      "Perkalian bilangan asli dengan pecahan sebagai penjumlahan berulang (3 x 1/4)",
+      "Perkalian pecahan dengan bilangan asli sebagai \"sebagian dari\" (1/4 x 3)",
+      "Makna kata \"dari\" pada pecahan (2/3 dari 12)",
+      "Perkalian pecahan dengan pecahan sebagai luas persegi panjang bersisi pecahan",
+      "Menyederhanakan sebelum mengalikan (coret silang)",
+      "Perkalian pecahan campuran melalui pecahan tidak murni",
+      "Pengaruh pengali terhadap besar hasil (dikali pecahan kurang dari 1 mengecilkan)",
+      "Soal cerita: resep, potongan kain, bagian dari kelompok"
+     ],
+     "rumus": [
+      "a/b x c/d = (a x c)/(b x d)",
+      "n x a/b = (n x a)/b",
+      "a b/c x d = ((a x c + b)/c) x d",
+      "Luas model: (a/b) x (c/d) sebagai luas persegi panjang p = a/b, l = c/d"
+     ],
+     "keterampilan": [
+      "Mengalikan pecahan dengan bilangan asli dan pecahan dengan pecahan",
+      "Menggambar model luasan untuk memvisualkan perkalian pecahan",
+      "Menyederhanakan faktor sebelum mengalikan agar hitungan ringkas",
+      "Mengalikan pecahan campuran dengan mengubah ke pecahan tidak murni",
+      "Menyelesaikan soal cerita bertipe \"sebagian dari sebagian\""
+     ],
+     "prasyarat": [
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Pecahan Campuran dan Pecahan Tidak Murni",
+      "Perkalian Bilangan Cacah",
+      "Penjumlahan dan Pengurangan Pecahan"
+     ],
+     "miskonsepsi": [
+      "Mengira perkalian selalu memperbesar hasil sehingga bingung 1/2 x 8 = 4",
+      "Menyamakan penyebut dulu sebelum mengalikan (mencampur aturan penjumlahan)",
+      "Mengalikan pecahan campuran dengan mengalikan bagian bulat dan bagian pecahan secara terpisah (2 1/2 x 3 = 6 1/2)",
+      "Menganggap 3 x 1/4 dan 1/4 x 3 memiliki cerita yang sama persis",
+      "Lupa menyederhanakan hasil akhir"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengalikan dengan pecahan kurang dari 1 justru membuat hasilnya lebih kecil?",
+      "Kenapa perkalian pecahan cukup mengalikan pembilang dengan pembilang, tanpa menyamakan penyebut?",
+      "Kenapa 1/2 x 1/3 bisa digambarkan sebagai luas persegi panjang, dan kenapa hasilnya 1/6?",
+      "Kenapa kata \"dari\" pada 2/3 dari 12 berarti perkalian?"
+     ]
+    },
+    {
+     "judul": "Pembagian Pecahan",
+     "kelas": 6,
+     "subKonsep": [
+      "Pembagian pecahan dengan bilangan asli (1/2 : 3) sebagai membagi rata",
+      "Pembagian bilangan asli dengan pecahan (3 : 1/2) sebagai berapa banyak setengahan dalam 3",
+      "Pembagian pecahan dengan pecahan",
+      "Kebalikan (invers perkalian) suatu pecahan",
+      "Aturan membalik dan mengalikan serta alasannya",
+      "Model garis bilangan dan model luasan untuk pembagian pecahan",
+      "Pembagian pecahan campuran melalui pecahan tidak murni",
+      "Soal cerita: membagi pita, membagi air ke gelas, banyak porsi"
+     ],
+     "rumus": [
+      "a/b : c/d = a/b x d/c",
+      "a/b : n = a/(b x n)",
+      "n : a/b = (n x b)/a",
+      "Kebalikan a/b adalah b/a (untuk a, b tidak nol)"
+     ],
+     "keterampilan": [
+      "Membagi pecahan dengan bilangan asli dan sebaliknya",
+      "Membagi pecahan dengan pecahan dengan aturan kali kebalikan",
+      "Menggambarkan pembagian pecahan pada garis bilangan",
+      "Menafsirkan hasil bagi pecahan dalam konteks soal cerita",
+      "Membagi pecahan campuran"
+     ],
+     "prasyarat": [
+      "Perkalian Pecahan dengan Bilangan Asli dan dengan Pecahan",
+      "Pembagian Bilangan Cacah",
+      "Pecahan Campuran dan Pecahan Tidak Murni"
+     ],
+     "miskonsepsi": [
+      "Membalik pecahan yang salah (membalik pecahan pertama, bukan pembagi)",
+      "Membalik kedua pecahan sekaligus",
+      "Mengira hasil pembagian selalu lebih kecil dari bilangan yang dibagi",
+      "Bingung membedakan 1/2 : 3 dan 3 : 1/2 karena keduanya \"ada 3 dan 1/2\"",
+      "Menerapkan aturan kali kebalikan pada perkalian pecahan",
+      "Menganggap pembagian pecahan tidak punya makna nyata"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa membagi dengan pecahan sama dengan mengalikan dengan kebalikannya?",
+      "Kenapa 3 : 1/2 hasilnya 6, lebih besar dari 3, padahal ini pembagian?",
+      "Kenapa hanya pembagi yang dibalik, bukan keduanya?",
+      "Kenapa 1/2 : 3 dan 3 : 1/2 menghasilkan jawaban yang sangat berbeda?"
+     ]
+    },
+    {
+     "judul": "Bilangan Desimal: Nilai Tempat, Membandingkan, dan Mengurutkan",
+     "kelas": 6,
+     "subKonsep": [
+      "Desimal sebagai pecahan berpenyebut 10, 100, 1.000",
+      "Nilai tempat persepuluhan, perseratusan, perseribuan",
+      "Peran koma sebagai pemisah bagian bulat dan bagian pecahan",
+      "Nol di belakang koma yang tidak mengubah nilai (0,5 = 0,50)",
+      "Membandingkan dan mengurutkan desimal dengan menyamakan banyak angka di belakang koma",
+      "Letak desimal pada garis bilangan (pembesaran skala antara 0 dan 1)",
+      "Mengubah pecahan menjadi desimal dengan pembagian atau dengan penyebut 10/100",
+      "Desimal berulang sederhana (1/3 = 0,333...) sebagai pengenalan",
+      "Pembulatan bilangan desimal"
+     ],
+     "rumus": [
+      "0,a = a/10 ; 0,ab = ab/100 ; 0,abc = abc/1000",
+      "a/b diubah ke desimal dengan a : b",
+      "Menyamakan banyak angka desimal dengan menambahkan nol di belakang koma"
+     ],
+     "keterampilan": [
+      "Menentukan nilai tempat angka pada bilangan desimal",
+      "Membandingkan dan mengurutkan bilangan desimal (termasuk satu angka di belakang koma sesuai CP)",
+      "Mengubah pecahan berpenyebut 10, 100, 1.000 menjadi desimal dan sebaliknya",
+      "Mengubah pecahan sembarang menjadi desimal dengan pembagian",
+      "Menempatkan bilangan desimal pada garis bilangan",
+      "Membulatkan desimal ke satuan atau satu angka di belakang koma"
+     ],
+     "prasyarat": [
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000",
+      "Pembagian Bilangan Cacah",
+      "Pembulatan dan Penaksiran (Estimasi)"
+     ],
+     "miskonsepsi": [
+      "Membandingkan desimal seperti bilangan cacah sehingga 0,25 dianggap lebih besar dari 0,5",
+      "Mengira desimal dengan angka lebih banyak selalu lebih besar (longer-is-larger)",
+      "Mengira nol di belakang koma mengubah nilai (0,5 dianggap tidak sama dengan 0,50)",
+      "Menghapus nol di depan koma pada bagian bulat sehingga 0,7 ditulis ,7 atau 7",
+      "Menganggap tempat setelah koma bernama \"satuan, puluhan\" seperti sebelum koma",
+      "Mengira ada bilangan desimal terbesar yang kurang dari 1 (misalnya 0,999 dianggap yang terbesar)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 0,5 lebih besar dari 0,25 padahal 25 lebih besar dari 5?",
+      "Kenapa menambah nol di belakang koma tidak mengubah nilai, tetapi menambah nol di belakang bilangan cacah mengubahnya?",
+      "Kenapa 1/3 kalau diubah ke desimal angkanya tidak pernah habis?",
+      "Kenapa tempat setelah koma disebut persepuluhan dan perseratusan?"
+     ]
+    },
+    {
+     "judul": "Hubungan Pecahan, Desimal, dan Persen",
+     "kelas": 6,
+     "subKonsep": [
+      "Persen sebagai pecahan berpenyebut 100 (per seratus)",
+      "Mengubah pecahan ke persen dan sebaliknya",
+      "Mengubah desimal ke persen dan sebaliknya",
+      "Segitiga konversi: pecahan <-> desimal <-> persen",
+      "Pecahan dan persen yang sering dipakai (1/2 = 50%, 1/4 = 25%, 1/5 = 20%, 3/4 = 75%, 1/8 = 12,5%)",
+      "Persen lebih dari 100% dan kurang dari 1%",
+      "Mengurutkan campuran pecahan, desimal, dan persen",
+      "Memilih bentuk representasi yang paling komunikatif untuk situasi tertentu"
+     ],
+     "rumus": [
+      "p% = p/100 = p : 100",
+      "pecahan a/b ke persen: (a/b) x 100%",
+      "desimal ke persen: kalikan 100 (geser koma dua tempat ke kanan)",
+      "persen ke desimal: bagi 100 (geser koma dua tempat ke kiri)"
+     ],
+     "keterampilan": [
+      "Mengubah bentuk pecahan, desimal, dan persen secara bolak-balik",
+      "Mengurutkan sekumpulan bilangan yang bercampur bentuknya",
+      "Menghafal dan menggunakan konversi umum secara cepat",
+      "Memilih bentuk yang paling tepat untuk menyampaikan informasi (misalnya diskon dalam persen)",
+      "Menaksir nilai persen dari sebuah gambar atau diagram"
+     ],
+     "prasyarat": [
+      "Bilangan Desimal: Nilai Tempat, Membandingkan, dan Mengurutkan",
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Membandingkan dan Mengurutkan Pecahan"
+     ],
+     "miskonsepsi": [
+      "Mengira 1/4 = 1,4 atau 0,14",
+      "Mengira 0,5 = 5% (menghitung geseran koma ke arah salah)",
+      "Mengira persen tidak bisa lebih dari 100",
+      "Mengira 25% dari 80 sama dengan 25% dari 40 karena persennya sama",
+      "Menganggap persen adalah satuan, bukan pecahan",
+      "Mengira 1/3 = 33% persis, bukan 33,33...%"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengubah desimal ke persen cukup menggeser koma dua tempat ke kanan?",
+      "Kenapa persen selalu berpatokan pada 100 dan bukan pada 10 atau 1.000?",
+      "Kenapa persen bisa lebih dari 100%, dan apa artinya dalam kehidupan nyata?",
+      "Kenapa 50% dari dua bilangan berbeda menghasilkan nilai yang berbeda?"
+     ]
+    },
+    {
+     "judul": "Penerapan Persen dalam Kehidupan Sehari-hari",
+     "kelas": 6,
+     "subKonsep": [
+      "Menghitung persen dari suatu bilangan",
+      "Menentukan bilangan asal jika persen dan hasilnya diketahui",
+      "Menghitung berapa persen suatu bagian terhadap keseluruhan",
+      "Diskon dan harga setelah diskon",
+      "Untung dan rugi sederhana dalam persen",
+      "Pajak sederhana (PPN) dan potongan harga bertingkat",
+      "Persen dalam data (hasil survei, komposisi bahan, gizi kemasan)",
+      "Kenaikan dan penurunan dalam persen"
+     ],
+     "rumus": [
+      "Nilai persen = (p/100) x N",
+      "Bagian terhadap keseluruhan: persen = (bagian/keseluruhan) x 100%",
+      "Harga setelah diskon = harga awal x (100 - p)/100",
+      "Persentase untung = (untung/harga beli) x 100%"
+     ],
+     "keterampilan": [
+      "Menghitung nilai persen dari suatu bilangan dalam konteks belanja dan data",
+      "Menghitung persentase suatu bagian terhadap keseluruhan",
+      "Menghitung harga setelah diskon dan diskon bertingkat",
+      "Menaksir hasil persen dengan patokan 10%, 25%, 50%",
+      "Menafsirkan informasi persen pada label, iklan, dan diagram"
+     ],
+     "prasyarat": [
+      "Hubungan Pecahan, Desimal, dan Persen",
+      "Perkalian Pecahan dengan Bilangan Asli dan dengan Pecahan",
+      "Menyelesaikan Masalah yang Berkaitan dengan Uang (Rupiah)"
+     ],
+     "miskonsepsi": [
+      "Mengira diskon 30% lalu 20% sama dengan diskon 50%",
+      "Menghitung persen dari bilangan yang salah (persen untung dihitung dari harga jual, bukan harga beli)",
+      "Mengira naik 10% lalu turun 10% kembali ke nilai semula",
+      "Menganggap 200% dari sesuatu adalah dua kali lipatnya (padahal itu 200% berarti dua kali, tetapi \"naik 200%\" berarti tiga kali)",
+      "Mengira persentase bisa langsung dijumlahkan meski keseluruhannya berbeda"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa naik 10% lalu turun 10% tidak kembali ke harga semula?",
+      "Kenapa dua diskon berturut-turut tidak boleh langsung dijumlahkan?",
+      "Kenapa persen untung dihitung dari harga beli, bukan harga jual?",
+      "Kenapa persentase dari kelompok berbeda tidak boleh langsung dibandingkan tanpa tahu jumlah anggotanya?"
+     ]
+    },
+    {
+     "judul": "Garis Bilangan dan Bilangan Bulat Negatif",
+     "kelas": 6,
+     "subKonsep": [
+      "Garis bilangan yang diperluas ke kiri nol",
+      "Makna bilangan negatif dalam konteks nyata (suhu, ketinggian di bawah laut, utang, lantai basemen)",
+      "Lambang negatif dan cara membacanya",
+      "Membandingkan dan mengurutkan bilangan bulat termasuk negatif",
+      "Lawan (invers penjumlahan) suatu bilangan",
+      "Nilai mutlak sebagai jarak dari nol (pengenalan)",
+      "Nol sebagai titik acuan, bukan positif maupun negatif",
+      "Membaca termometer dan skala bertanda negatif"
+     ],
+     "rumus": [
+      "Lawan dari a adalah -a, dengan a + (-a) = 0",
+      "Pada garis bilangan, bilangan di sebelah kanan selalu lebih besar",
+      "|a| = jarak a dari nol"
+     ],
+     "keterampilan": [
+      "Membaca dan menuliskan bilangan bulat negatif dalam konteks nyata",
+      "Menempatkan bilangan bulat pada garis bilangan",
+      "Membandingkan dan mengurutkan bilangan bulat positif dan negatif",
+      "Menentukan lawan suatu bilangan",
+      "Menafsirkan skala bertanda negatif pada termometer dan kedalaman"
+     ],
+     "prasyarat": [
+      "Membandingkan dan Mengurutkan Bilangan Cacah Besar",
+      "Nilai Tempat Bilangan Cacah sampai 1.000.000"
+     ],
+     "miskonsepsi": [
+      "Mengira -8 lebih besar dari -3 karena 8 lebih besar dari 3",
+      "Mengira nol adalah bilangan positif terkecil dan tidak ada bilangan di kirinya",
+      "Membaca -5 sebagai \"kurang 5\" dan menganggapnya operasi, bukan bilangan",
+      "Mengira bilangan negatif tidak punya makna nyata",
+      "Menganggap tanda negatif melekat pada angka, bukan menunjukkan arah dari nol"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa -8 lebih kecil dari -3 padahal 8 lebih besar dari 3?",
+      "Kenapa manusia perlu menciptakan bilangan negatif, apa yang tidak bisa dijelaskan tanpa itu?",
+      "Kenapa nol bukan bilangan positif dan bukan negatif?",
+      "Kenapa suhu -5 derajat terasa lebih dingin daripada -1 derajat?"
+     ]
+    },
+    {
+     "judul": "Operasi Penjumlahan dan Pengurangan Bilangan Bulat",
+     "kelas": 6,
+     "subKonsep": [
+      "Penjumlahan bilangan bulat menggunakan garis bilangan (bergerak kanan/kiri)",
+      "Model kartu positif-negatif (pasangan nol) sebagai alternatif",
+      "Menjumlahkan dua bilangan bertanda sama dan bertanda berbeda",
+      "Pengurangan sebagai penjumlahan dengan lawan",
+      "Selisih suhu dan selisih ketinggian sebagai konteks",
+      "Operasi hitung campuran bilangan bulat sederhana",
+      "Membaca soal cerita bertanda (naik-turun, untung-rugi)"
+     ],
+     "rumus": [
+      "a - b = a + (-b)",
+      "(+) + (+) = (+) ; (-) + (-) = (-)",
+      "Tanda beda: kurangkan nilai mutlaknya, ambil tanda yang nilai mutlaknya lebih besar",
+      "Selisih suhu = suhu akhir - suhu awal"
+     ],
+     "keterampilan": [
+      "Menjumlahkan dan mengurangkan bilangan bulat dengan bantuan garis bilangan",
+      "Mengubah pengurangan menjadi penjumlahan dengan lawan",
+      "Menghitung selisih dua suhu atau dua ketinggian yang melewati nol",
+      "Menyelesaikan soal cerita bilangan bulat satu dan dua langkah"
+     ],
+     "prasyarat": [
+      "Garis Bilangan dan Bilangan Bulat Negatif",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000",
+      "Sifat Operasi Hitung dan Operasi Hitung Campuran"
+     ],
+     "miskonsepsi": [
+      "Mengira dua tanda minus berdampingan selalu berarti tambah tanpa memahami alasannya",
+      "Menghitung -3 + 5 sebagai -8 (menjumlahkan angka lalu memasang tanda pertama)",
+      "Menghapus tanda negatif saat menghitung lalu memasangnya kembali sembarangan",
+      "Mengira 5 - 8 tidak bisa dikerjakan karena \"yang besar dikurangi yang kecil\"",
+      "Mengira menjumlahkan selalu membesarkan hasil"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengurangi bilangan negatif sama dengan menambah bilangan positif?",
+      "Kenapa 5 - 8 bisa dikerjakan, sedangkan di kelas rendah dikatakan tidak bisa?",
+      "Kenapa selisih suhu dari -5 ke 3 adalah 8, bukan 2?",
+      "Kenapa satu langkah ke kanan dan satu langkah ke kiri pada garis bilangan saling menghapus?"
+     ]
+    },
+    {
+     "judul": "Pangkat Dua, Pangkat Tiga, dan Akarnya",
+     "kelas": 6,
+     "subKonsep": [
+      "Pangkat dua sebagai perkalian berulang dua kali dan sebagai luas persegi",
+      "Pangkat tiga sebagai perkalian berulang tiga kali dan sebagai volume kubus",
+      "Bilangan kuadrat sempurna dan bilangan kubik sempurna",
+      "Akar pangkat dua sebagai operasi kebalikan pangkat dua",
+      "Akar pangkat tiga sebagai operasi kebalikan pangkat tiga",
+      "Mencari akar dengan faktorisasi prima",
+      "Menaksir akar bilangan yang bukan kuadrat sempurna",
+      "Pangkat dua dan tiga bilangan desimal satu angka di belakang koma"
+     ],
+     "rumus": [
+      "a^2 = a x a ; a^3 = a x a x a",
+      "akar(a^2) = a untuk a >= 0 ; akar pangkat tiga (a^3) = a",
+      "akar(a x b) = akar(a) x akar(b)",
+      "Luas persegi = s^2 ; Volume kubus = s^3"
+     ],
+     "keterampilan": [
+      "Menghitung pangkat dua dan pangkat tiga bilangan cacah dan desimal sederhana",
+      "Menentukan akar pangkat dua dan akar pangkat tiga dengan faktorisasi prima",
+      "Menghafal kuadrat sampai 20 dan kubik sampai 10",
+      "Menaksir letak akar bilangan bukan kuadrat sempurna di antara dua bilangan bulat",
+      "Menghubungkan pangkat dua dengan luas persegi dan pangkat tiga dengan volume kubus"
+     ],
+     "prasyarat": [
+      "Perkalian Bilangan Cacah",
+      "Kelipatan, Faktor, Bilangan Prima, dan Faktorisasi Prima",
+      "Bilangan Desimal: Nilai Tempat, Membandingkan, dan Mengurutkan"
+     ],
+     "miskonsepsi": [
+      "Mengira 5^2 = 10 (mengalikan bilangan dengan pangkatnya)",
+      "Mengira 2^3 = 6",
+      "Mengira akar pangkat dua berarti dibagi dua",
+      "Mengira 0,5^2 = 0,25 tidak mungkin karena \"hasil kuadrat harus lebih besar\"",
+      "Mengira akar(9 + 16) = akar(9) + akar(16)",
+      "Menganggap satuan luas dan volume tidak berhubungan dengan pangkat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 5 pangkat 2 adalah 25 dan bukan 10?",
+      "Kenapa pangkat dua disebut kuadrat dan pangkat tiga disebut kubik?",
+      "Kenapa mengkuadratkan bilangan antara 0 dan 1 justru mengecilkan hasilnya?",
+      "Kenapa akar(9 + 16) tidak sama dengan akar(9) + akar(16)?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Aljabar",
+   "capaian": "Menemukan nilai yang belum diketahui dalam kalimat matematika yang melibatkan penjumlahan, pengurangan, perkalian, dan pembagian pada bilangan cacah sampai 1000 dengan menggunakan sifat-sifat bilangan dan operasinya. Murid dapat mengidentifikasi, meniru, dan mengembangkan pola bilangan membesar dan mengecil yang melibatkan perkalian dan pembagian; bernalar secara proporsional untuk menyelesaikan masalah sehari-hari dengan rasio satuan; menggunakan operasi perkalian dan pembagian dalam menyelesaikan masalah sehari-hari yang terkait dengan proporsi.",
+   "topics": [
+    {
+     "judul": "Kalimat Matematika dan Nilai yang Belum Diketahui",
+     "kelas": 5,
+     "subKonsep": [
+      "Kalimat matematika terbuka dan tertutup",
+      "Simbol untuk nilai yang belum diketahui (kotak, titik-titik, huruf)",
+      "Makna tanda sama dengan sebagai keseimbangan, bukan perintah menghitung",
+      "Model timbangan/neraca untuk menjaga keseimbangan kedua ruas",
+      "Menemukan nilai yang belum diketahui dengan operasi kebalikan",
+      "Menemukan nilai yang belum diketahui dengan strategi coba-periksa dan penalaran",
+      "Menerjemahkan soal cerita menjadi kalimat matematika",
+      "Memeriksa jawaban dengan menyubstitusikan kembali"
+     ],
+     "rumus": [
+      "a + n = b  =>  n = b - a",
+      "a - n = b  =>  n = a - b",
+      "a x n = b  =>  n = b : a",
+      "n : a = b  =>  n = b x a"
+     ],
+     "keterampilan": [
+      "Menemukan nilai yang belum diketahui pada kalimat matematika empat operasi (bilangan sampai 1000)",
+      "Menerjemahkan situasi sehari-hari menjadi kalimat matematika bersimbol",
+      "Menggunakan operasi kebalikan untuk menyelesaikan kalimat matematika",
+      "Menjaga keseimbangan kedua ruas saat mengubah kalimat matematika",
+      "Memeriksa kebenaran jawaban dengan substitusi"
+     ],
+     "prasyarat": [
+      "Sifat Operasi Hitung dan Operasi Hitung Campuran",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Menemukan nilai yang tidak diketahui pada penjumlahan dan pengurangan (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Membaca tanda sama dengan sebagai \"jawabannya adalah\" sehingga 8 + 4 = ... + 5 dijawab 12",
+      "Mengira huruf/simbol selalu mewakili satu benda, bukan satu bilangan",
+      "Menggunakan operasi yang sama, bukan kebalikannya, untuk mencari nilai yang belum diketahui",
+      "Menyelesaikan hanya satu ruas dan lupa memperlakukan ruas lainnya secara setara",
+      "Mengira setiap simbol berbeda pasti bernilai berbeda"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa tanda sama dengan berarti \"seimbang\", bukan \"hasilnya\"?",
+      "Kenapa untuk mencari nilai yang belum diketahui kita memakai operasi kebalikan?",
+      "Kenapa apa pun yang dilakukan pada satu ruas harus dilakukan juga pada ruas lain?",
+      "Kenapa 8 + 4 = kotak + 5 jawabannya 7 dan bukan 12?"
+     ]
+    },
+    {
+     "judul": "Pola Bilangan Membesar dan Mengecil",
+     "kelas": 5,
+     "subKonsep": [
+      "Pola bilangan bertambah/berkurang tetap (pola penjumlahan)",
+      "Pola bilangan berlipat/terbagi tetap (pola perkalian dan pembagian)",
+      "Menemukan aturan pola dan menyatakannya dengan kata-kata",
+      "Melanjutkan pola dan menentukan suku berikutnya",
+      "Pola gambar/objek yang bertumbuh dan hubungannya dengan bilangan",
+      "Pola bilangan khusus: bilangan genap, ganjil, kuadrat, segitiga",
+      "Menyajikan pola dalam tabel suku ke-n dan nilainya",
+      "Memprediksi suku jauh berdasarkan aturan pola"
+     ],
+     "rumus": [
+      "Pola penjumlahan: U(n) = U(1) + (n - 1) x b",
+      "Pola perkalian: U(n) = U(1) x r^(n-1)",
+      "Bilangan segitiga: 1, 3, 6, 10, 15, ... dengan selisih bertambah 1"
+     ],
+     "keterampilan": [
+      "Mengidentifikasi aturan pola bilangan yang melibatkan perkalian dan pembagian",
+      "Melanjutkan pola bilangan dan pola gambar",
+      "Menyatakan aturan pola dengan kalimat sendiri",
+      "Menyusun tabel pola dan memprediksi suku yang jauh",
+      "Membuat pola sendiri berdasarkan aturan yang ditentukan"
+     ],
+     "prasyarat": [
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Pola bilangan membesar dan mengecil dengan penjumlahan dan pengurangan (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Menganggap semua pola pasti bertambah dengan selisih tetap sehingga gagal mengenali pola perkalian",
+      "Menyimpulkan aturan pola hanya dari dua suku pertama",
+      "Mengira pola gambar tidak bisa dihubungkan dengan bilangan",
+      "Menghitung suku ke-n dengan mengalikan n dengan suku pertama tanpa memeriksa aturan",
+      "Mengira pola harus selalu naik, tidak bisa turun"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dua suku pertama saja tidak cukup untuk memastikan aturan sebuah pola?",
+      "Kenapa pola yang bertambah tetap tumbuh lurus sedangkan pola berlipat tumbuh sangat cepat?",
+      "Kenapa pola gambar yang bertumbuh bisa diubah menjadi pola bilangan?",
+      "Kenapa bilangan segitiga 1, 3, 6, 10 selisihnya justru membentuk pola lain?"
+     ]
+    },
+    {
+     "judul": "Konsep Rasio dan Perbandingan",
+     "kelas": 6,
+     "subKonsep": [
+      "Rasio sebagai cara membandingkan dua besaran sejenis",
+      "Notasi rasio a : b dan pembacaannya",
+      "Rasio bagian terhadap bagian dan rasio bagian terhadap keseluruhan",
+      "Hubungan rasio dengan pecahan",
+      "Menyederhanakan rasio dengan FPB",
+      "Rasio tiga besaran (a : b : c)",
+      "Membandingkan dengan selisih (aditif) vs dengan rasio (multiplikatif)",
+      "Menyajikan rasio dengan gambar batang (bar model)",
+      "Konteks nyata: campuran minuman, adonan, komposisi kelas"
+     ],
+     "rumus": [
+      "Rasio a terhadap b ditulis a : b atau a/b",
+      "Jika rasio a : b, maka bagian a = (a/(a+b)) x keseluruhan",
+      "Rasio setara: a : b = (a x k) : (b x k)",
+      "Menyederhanakan rasio: bagi kedua ruas dengan FPB"
+     ],
+     "keterampilan": [
+      "Menuliskan rasio dari situasi nyata dan menyederhanakannya",
+      "Membedakan rasio bagian-bagian dan rasio bagian-keseluruhan",
+      "Menghubungkan rasio dengan pecahan dan persen",
+      "Menggambar model batang untuk menyelesaikan masalah rasio",
+      "Menentukan besar tiap bagian jika rasio dan jumlah keseluruhan diketahui"
+     ],
+     "prasyarat": [
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "KPK dan FPB",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah"
+     ],
+     "miskonsepsi": [
+      "Menganggap rasio 2 : 3 berarti 2/3 dari keseluruhan (padahal 2/5)",
+      "Membandingkan dengan selisih padahal soal menuntut perbandingan berlipat",
+      "Menyederhanakan rasio dengan mengurangi bilangan yang sama pada kedua ruas",
+      "Membalik urutan rasio sehingga 3 : 2 dianggap sama dengan 2 : 3",
+      "Menambahkan bilangan yang sama pada kedua suku rasio dan mengira nilainya tetap",
+      "Mengira rasio harus selalu antara dua benda yang jenisnya sama padahal ada rasio besaran berbeda (kecepatan)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa rasio 2 : 3 berarti 2/5 dari keseluruhan, bukan 2/3?",
+      "Kenapa menambahkan bilangan yang sama pada kedua suku rasio mengubah nilainya, sedangkan mengalikan tidak?",
+      "Kenapa membandingkan dua sirup dengan selisih air-gula bisa menyesatkan, sedangkan rasio tidak?",
+      "Kenapa urutan penulisan rasio penting?"
+     ]
+    },
+    {
+     "judul": "Rasio Senilai, Rasio Satuan, dan Penalaran Proporsional",
+     "kelas": 6,
+     "subKonsep": [
+      "Rasio senilai (setara) dan cara memeriksanya",
+      "Tabel rasio dan pola perkalian di dalamnya",
+      "Rasio satuan (unit rate): nilai untuk satu satuan",
+      "Harga satuan sebagai contoh rasio satuan",
+      "Menyelesaikan proporsi dengan perkalian silang",
+      "Faktor skala antar dua besaran yang sebanding",
+      "Penalaran per satuan (unitary method): cari nilai satu, lalu kalikan",
+      "Konteks: resep, harga, jarak-waktu, campuran cat, konversi mata uang sederhana",
+      "Membedakan hubungan sebanding dan tidak sebanding"
+     ],
+     "rumus": [
+      "a : b = c : d  <=>  a x d = b x c",
+      "Rasio satuan = besaran pertama : besaran kedua (dengan besaran kedua = 1)",
+      "Metode satuan: nilai untuk n = (nilai untuk 1) x n",
+      "Faktor skala k: c = k x a dan d = k x b"
+     ],
+     "keterampilan": [
+      "Menentukan apakah dua rasio senilai",
+      "Menyelesaikan proporsi dengan perkalian silang dan dengan tabel rasio",
+      "Menghitung dan menggunakan rasio satuan untuk membandingkan penawaran",
+      "Menyelesaikan masalah sehari-hari dengan penalaran per satuan",
+      "Mengenali situasi yang sebanding dan yang tidak sebanding"
+     ],
+     "prasyarat": [
+      "Konsep Rasio dan Perbandingan",
+      "Pembagian Bilangan Cacah",
+      "Perkalian Pecahan dengan Bilangan Asli dan dengan Pecahan",
+      "Hubungan Pecahan, Desimal, dan Persen"
+     ],
+     "miskonsepsi": [
+      "Menerapkan proporsi pada situasi yang tidak sebanding (usia dua orang, waktu memanaskan air oleh banyak kompor)",
+      "Menjumlahkan bukan mengalikan saat memperbesar resep (menambah 2 pada semua bahan)",
+      "Salah memasangkan satuan pada perkalian silang sehingga menghasilkan rasio terbalik",
+      "Mengira rasio satuan selalu berupa bilangan bulat",
+      "Mengira jika a bertambah maka b selalu bertambah dengan selisih yang sama"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa perkalian silang boleh dipakai pada proporsi, dan dari mana asal aturannya?",
+      "Kenapa memperbesar resep harus dikali, bukan ditambah?",
+      "Kenapa tidak semua situasi bisa diselesaikan dengan proporsi (misalnya waktu memasak dengan banyak juru masak)?",
+      "Kenapa harga per satuan lebih adil untuk membandingkan dua kemasan berbeda ukuran?"
+     ]
+    },
+    {
+     "judul": "Skala pada Denah dan Peta",
+     "kelas": 6,
+     "subKonsep": [
+      "Skala sebagai rasio jarak pada gambar terhadap jarak sebenarnya",
+      "Penulisan skala 1 : n dan maknanya",
+      "Skala batang (bar scale) pada peta",
+      "Menghitung jarak sebenarnya dari jarak pada peta",
+      "Menghitung jarak pada peta dari jarak sebenarnya",
+      "Menentukan skala jika kedua jarak diketahui",
+      "Konversi satuan panjang dalam perhitungan skala (cm ke km)",
+      "Denah rumah, denah kelas, dan gambar berskala",
+      "Skala pembesaran (mikroskop, gambar teknik) vs pengecilan (peta)"
+     ],
+     "rumus": [
+      "Skala = jarak pada peta : jarak sebenarnya",
+      "Jarak sebenarnya = jarak pada peta x penyebut skala",
+      "Jarak pada peta = jarak sebenarnya : penyebut skala",
+      "1 km = 100.000 cm"
+     ],
+     "keterampilan": [
+      "Menghitung jarak sebenarnya, jarak pada peta, dan skala",
+      "Melakukan konversi satuan panjang dalam perhitungan skala",
+      "Membaca dan menggunakan skala batang pada peta",
+      "Membuat denah sederhana berskala",
+      "Menaksir jarak nyata dari peta"
+     ],
+     "prasyarat": [
+      "Rasio Senilai, Rasio Satuan, dan Penalaran Proporsional",
+      "Satuan Baku dan Konversi Satuan",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah"
+     ],
+     "miskonsepsi": [
+      "Lupa mengonversi satuan sehingga jarak sebenarnya dilaporkan dalam cm padahal seharusnya km",
+      "Membalik rumus (membagi ketika seharusnya mengalikan)",
+      "Mengira skala 1 : 500 menghasilkan gambar lebih besar dari aslinya",
+      "Mengira skala 1 : 100 lebih \"besar\" daripada 1 : 1.000 karena angkanya kecil, tanpa memahami arti pengecilan",
+      "Menganggap skala luas sama dengan skala panjang"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa skala 1 : 1.000.000 menghasilkan peta yang lebih kecil daripada skala 1 : 100.000?",
+      "Kenapa 1 km sama dengan 100.000 cm, dan kenapa angka ini terus muncul di soal skala?",
+      "Kenapa jika panjang diperkecil setengah, luasnya menjadi seperempat?",
+      "Kenapa peta memerlukan skala, tidak cukup gambar saja?"
+     ]
+    },
+    {
+     "judul": "Kecepatan dan Debit (Perbandingan Dua Besaran Berbeda)",
+     "kelas": 6,
+     "subKonsep": [
+      "Kecepatan sebagai perbandingan jarak terhadap waktu",
+      "Satuan kecepatan (km/jam, m/detik) dan konversinya",
+      "Debit sebagai perbandingan volume terhadap waktu",
+      "Satuan debit (liter/detik, m3/jam) dan konversinya",
+      "Menentukan jarak, waktu, atau kecepatan jika dua di antaranya diketahui",
+      "Kecepatan rata-rata pada perjalanan bertahap",
+      "Grafik jarak-waktu sederhana (pengenalan)",
+      "Konteks nyata: perjalanan, mengisi bak, aliran keran"
+     ],
+     "rumus": [
+      "v = s : t ; s = v x t ; t = s : v",
+      "Debit = volume : waktu ; volume = debit x waktu ; waktu = volume : debit",
+      "1 m/detik = 3,6 km/jam",
+      "1 liter = 1 dm3 = 1.000 cm3"
+     ],
+     "keterampilan": [
+      "Menghitung kecepatan, jarak, dan waktu dari dua besaran yang diketahui",
+      "Menghitung debit, volume, dan waktu pengisian",
+      "Mengonversi satuan kecepatan dan debit",
+      "Menghitung kecepatan rata-rata perjalanan bertahap",
+      "Menyelesaikan soal cerita perjalanan dan pengisian wadah"
+     ],
+     "prasyarat": [
+      "Rasio Senilai, Rasio Satuan, dan Penalaran Proporsional",
+      "Satuan Baku dan Konversi Satuan",
+      "Waktu dan Durasi",
+      "Volume Kubus dan Balok"
+     ],
+     "miskonsepsi": [
+      "Menghitung kecepatan rata-rata dengan merata-ratakan dua kecepatan tanpa memperhatikan jaraknya",
+      "Mencampur satuan (jarak dalam km, waktu dalam menit) tanpa mengonversi",
+      "Membalik rumus sehingga menghitung v = t : s",
+      "Menulis waktu 1 jam 30 menit sebagai 1,30 jam bukan 1,5 jam",
+      "Mengira debit selalu tetap padahal bisa berubah",
+      "Mengira liter dan m3 dapat ditukar begitu saja"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kecepatan rata-rata pergi-pulang tidak sama dengan rata-rata dua kecepatannya?",
+      "Kenapa 1 jam 30 menit ditulis 1,5 jam dan bukan 1,30 jam?",
+      "Kenapa 1 liter tepat sama dengan 1 dm3?",
+      "Kenapa kecepatan disebut perbandingan dua besaran yang berbeda jenis?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Pengukuran",
+   "capaian": "Menentukan keliling dan luas berbagai bentuk bangun datar (segitiga, segiempat, dan segi banyak) serta gabungannya; menghitung durasi waktu dan mengukur besar sudut pada bangun datar atau yang dibentuk dari dua garis berpotongan.",
+   "topics": [
+    {
+     "judul": "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+     "kelas": 5,
+     "subKonsep": [
+      "Satuan baku panjang (km, hm, dam, m, dm, cm, mm) dan tangga satuan",
+      "Satuan baku berat/massa (ton, kuintal, kg, hg, dag, g, dg, cg, mg)",
+      "Satuan volume/kapasitas (kl, hl, dal, l, dl, cl, ml) dan hubungan liter dengan dm3",
+      "Satuan waktu (detik, menit, jam, hari, minggu, bulan, tahun, dasawarsa, abad)",
+      "Aturan naik satu tangga dibagi 10, turun satu tangga dikali 10",
+      "Satuan luas (km2, hm2/hektare, dam2/are, m2, dm2, cm2) dengan faktor 100 per tangga",
+      "Satuan volume ruang (m3, dm3, cm3) dengan faktor 1.000 per tangga",
+      "Memilih satuan yang paling sesuai untuk suatu benda",
+      "Menaksir ukuran benda dengan patokan tubuh atau benda sehari-hari",
+      "Membaca alat ukur (penggaris, timbangan, gelas ukur, jam)"
+     ],
+     "rumus": [
+      "Panjang: turun 1 tangga x10, naik 1 tangga :10",
+      "Luas: turun 1 tangga x100, naik 1 tangga :100",
+      "Volume: turun 1 tangga x1.000, naik 1 tangga :1.000",
+      "1 liter = 1 dm3 ; 1 ml = 1 cm3 ; 1 m3 = 1.000 liter",
+      "1 ton = 10 kuintal = 1.000 kg ; 1 hektare = 10.000 m2",
+      "1 jam = 60 menit = 3.600 detik"
+     ],
+     "keterampilan": [
+      "Mengonversi satuan panjang, berat, volume, luas, dan waktu",
+      "Memilih satuan yang tepat untuk mengukur benda tertentu",
+      "Menaksir ukuran benda tanpa alat ukur",
+      "Membaca skala alat ukur dengan tepat",
+      "Menjumlahkan dan mengurangkan ukuran bersatuan campuran (2 m 35 cm)"
+     ],
+     "prasyarat": [
+      "Satuan baku panjang dan berat serta hubungan antarsatuan (Fase B)",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Bilangan Desimal: Nilai Tempat, Membandingkan, dan Mengurutkan"
+     ],
+     "miskonsepsi": [
+      "Menggunakan faktor 10 untuk satuan luas dan volume (mengira 1 m2 = 10 dm2)",
+      "Mengira 1 m3 = 1.000 cm3 (padahal 1.000.000 cm3)",
+      "Membalik arah tangga satuan (naik dikali, turun dibagi)",
+      "Mengira 1 kg kapas lebih ringan daripada 1 kg besi",
+      "Menulis 2,5 jam sebagai 2 jam 50 menit",
+      "Mengira liter adalah satuan berat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa tangga satuan luas melompat 100 dan tangga satuan volume melompat 1.000, sedangkan panjang hanya 10?",
+      "Kenapa 1 liter tepat sama dengan 1 dm3, siapa yang menentukan?",
+      "Kenapa satuan waktu memakai 60 dan bukan 10 seperti satuan lain?",
+      "Kenapa manusia perlu satuan baku, padahal dulu memakai jengkal dan depa?"
+     ]
+    },
+    {
+     "judul": "Keliling Bangun Datar",
+     "kelas": 5,
+     "subKonsep": [
+      "Keliling sebagai panjang lintasan mengelilingi bangun",
+      "Mengukur keliling dengan tali/benang lalu diluruskan",
+      "Keliling persegi, persegi panjang, segitiga, jajargenjang, trapesium, belah ketupat, layang-layang",
+      "Keliling segi banyak beraturan dan tidak beraturan",
+      "Keliling bangun gabungan (menjumlahkan sisi terluar saja)",
+      "Mencari panjang sisi jika keliling diketahui",
+      "Bangun berbeda dengan keliling sama tetapi luas berbeda",
+      "Satuan keliling (cm, m, km) sebagai satuan panjang"
+     ],
+     "rumus": [
+      "K persegi = 4 x s",
+      "K persegi panjang = 2 x (p + l)",
+      "K segitiga = a + b + c",
+      "K jajargenjang = 2 x (alas + sisi miring)",
+      "K belah ketupat = 4 x s",
+      "K segi banyak = jumlah semua panjang sisinya"
+     ],
+     "keterampilan": [
+      "Menghitung keliling berbagai bangun datar dan bangun gabungan",
+      "Mengukur keliling benda nyata dengan tali dan penggaris",
+      "Menentukan panjang sisi yang belum diketahui jika keliling diketahui",
+      "Membedakan sisi yang dihitung dan tidak dihitung pada bangun gabungan",
+      "Menyelesaikan soal cerita keliling (pagar, renda, lintasan lari)"
+     ],
+     "prasyarat": [
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Tertukar antara keliling dan luas",
+      "Menghitung keliling persegi panjang sebagai p + l saja",
+      "Pada bangun gabungan, ikut menjumlahkan garis potong di dalam bangun",
+      "Mengira bangun dengan keliling sama pasti luasnya sama",
+      "Menggunakan satuan luas (cm2) untuk keliling"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa keliling persegi panjang 2 x (p + l) dan bukan p + l?",
+      "Kenapa dua bangun dengan keliling sama bisa punya luas berbeda jauh?",
+      "Kenapa satuan keliling adalah cm, bukan cm2?",
+      "Kenapa pada bangun gabungan garis di dalamnya tidak ikut dihitung?"
+     ]
+    },
+    {
+     "judul": "Luas Persegi, Persegi Panjang, dan Segitiga",
+     "kelas": 5,
+     "subKonsep": [
+      "Luas sebagai banyaknya satuan persegi yang menutupi daerah",
+      "Persegi satuan dan pengubinan tanpa celah",
+      "Luas persegi panjang dari susunan baris dan kolom",
+      "Luas persegi sebagai kasus khusus persegi panjang",
+      "Alas dan tinggi segitiga (tinggi harus tegak lurus alas)",
+      "Segitiga sebagai setengah persegi panjang atau setengah jajargenjang",
+      "Tinggi segitiga tumpul yang jatuh di luar alas",
+      "Luas segitiga dengan berbagai pilihan pasangan alas-tinggi",
+      "Mencari sisi/tinggi jika luas diketahui"
+     ],
+     "rumus": [
+      "L persegi = s x s = s^2",
+      "L persegi panjang = p x l",
+      "L segitiga = 1/2 x a x t",
+      "t segitiga = (2 x L) : a"
+     ],
+     "keterampilan": [
+      "Menghitung luas persegi, persegi panjang, dan segitiga",
+      "Menentukan pasangan alas dan tinggi yang benar pada segitiga",
+      "Menurunkan rumus luas segitiga dari luas persegi panjang",
+      "Menghitung sisi atau tinggi jika luas diketahui",
+      "Menghitung luas dengan pengubinan persegi satuan"
+     ],
+     "prasyarat": [
+      "Keliling Bangun Datar",
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+      "Perkalian Bilangan Cacah",
+      "Ciri-ciri dan Klasifikasi Bangun Datar"
+     ],
+     "miskonsepsi": [
+      "Menggunakan sisi miring segitiga sebagai tinggi",
+      "Mengira tinggi selalu berada di dalam segitiga",
+      "Lupa mengalikan 1/2 pada luas segitiga",
+      "Menjumlahkan panjang dan lebar untuk mencari luas persegi panjang",
+      "Menggunakan satuan cm untuk luas alih-alih cm2",
+      "Mengira luas segitiga berubah jika puncaknya digeser sejajar alas"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa luas segitiga setengah dari alas kali tinggi, dari mana angka setengahnya?",
+      "Kenapa tinggi segitiga harus tegak lurus alas dan bukan sisi miringnya?",
+      "Kenapa satuan luas ditulis dengan pangkat dua (cm2)?",
+      "Kenapa menggeser puncak segitiga sejajar alas tidak mengubah luasnya?"
+     ]
+    },
+    {
+     "judul": "Luas Jajargenjang, Trapesium, Belah Ketupat, dan Layang-layang",
+     "kelas": 5,
+     "subKonsep": [
+      "Jajargenjang sebagai persegi panjang yang digeser (potong dan pindah)",
+      "Alas dan tinggi jajargenjang",
+      "Trapesium sebagai setengah jajargenjang dari dua trapesium kongruen",
+      "Sisi sejajar (a dan b) dan tinggi trapesium",
+      "Belah ketupat dan layang-layang dengan diagonal saling tegak lurus",
+      "Luas dari setengah hasil kali diagonal",
+      "Menurunkan rumus dengan memotong dan menyusun ulang bangun",
+      "Mencari unsur yang belum diketahui jika luas diketahui"
+     ],
+     "rumus": [
+      "L jajargenjang = a x t",
+      "L trapesium = 1/2 x (a + b) x t",
+      "L belah ketupat = 1/2 x d1 x d2",
+      "L layang-layang = 1/2 x d1 x d2"
+     ],
+     "keterampilan": [
+      "Menghitung luas jajargenjang, trapesium, belah ketupat, dan layang-layang",
+      "Menurunkan rumus dengan memotong dan menyusun ulang kertas",
+      "Menentukan tinggi dan sisi sejajar yang tepat pada trapesium",
+      "Mencari panjang diagonal atau tinggi jika luas diketahui",
+      "Memilih rumus yang tepat berdasarkan ciri bangun"
+     ],
+     "prasyarat": [
+      "Luas Persegi, Persegi Panjang, dan Segitiga",
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)"
+     ],
+     "miskonsepsi": [
+      "Menggunakan sisi miring jajargenjang sebagai tinggi",
+      "Mengira luas trapesium = (a + b) x t tanpa dikali setengah",
+      "Menjumlahkan semua sisi trapesium sebagai (a + b)",
+      "Mengira diagonal belah ketupat adalah sisi-sisinya",
+      "Menerapkan rumus diagonal pada jajargenjang biasa yang diagonalnya tidak tegak lurus",
+      "Mengira luas jajargenjang berubah bila dimiringkan lebih tajam meski alas dan tinggi tetap"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa luas jajargenjang sama dengan alas kali tinggi, sama seperti persegi panjang?",
+      "Kenapa rumus trapesium memakai rata-rata dua sisi sejajar dikali tinggi?",
+      "Kenapa luas belah ketupat memakai diagonal, bukan sisi?",
+      "Kenapa rumus setengah hasil kali diagonal hanya berlaku jika diagonalnya tegak lurus?"
+     ]
+    },
+    {
+     "judul": "Luas Bangun Datar Gabungan dan Hubungan Keliling dengan Luas",
+     "kelas": 5,
+     "subKonsep": [
+      "Memecah bangun gabungan menjadi bangun-bangun dasar",
+      "Strategi pengurangan (luas bangun besar dikurangi bagian yang hilang)",
+      "Menentukan ukuran sisi yang tidak tertulis pada gambar",
+      "Luas daerah yang diarsir",
+      "Bangun berbeda dengan luas sama (bangun ekuivalen)",
+      "Bangun dengan keliling sama tetapi luas berbeda dan sebaliknya",
+      "Luas maksimum untuk keliling tertentu (persegi)",
+      "Penerapan: luas lantai, luas kebun, luas taman berbentuk gabungan"
+     ],
+     "rumus": [
+      "L gabungan = jumlah luas bagian-bagiannya",
+      "L daerah diarsir = L bangun luar - L bangun dalam",
+      "Untuk keliling tetap, luas terbesar dicapai oleh bentuk persegi"
+     ],
+     "keterampilan": [
+      "Memecah bangun gabungan menjadi persegi panjang, segitiga, dan trapesium",
+      "Menentukan panjang sisi yang tidak diketahui dari ukuran lain pada gambar",
+      "Menghitung luas daerah yang diarsir dengan strategi pengurangan",
+      "Membandingkan luas dan keliling beberapa bangun",
+      "Menyelesaikan soal cerita luas dalam konteks nyata"
+     ],
+     "prasyarat": [
+      "Luas Persegi, Persegi Panjang, dan Segitiga",
+      "Luas Jajargenjang, Trapesium, Belah Ketupat, dan Layang-layang",
+      "Keliling Bangun Datar"
+     ],
+     "miskonsepsi": [
+      "Menghitung dua kali daerah yang bertumpang tindih",
+      "Mengira sisi yang tidak tertulis ukurannya tidak dapat dicari",
+      "Mengira bangun dengan luas sama pasti kelilingnya sama",
+      "Menjumlahkan keliling bagian-bagian untuk mendapat keliling gabungan",
+      "Menggunakan satu rumus untuk seluruh bangun gabungan tanpa memecahnya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa bangun yang luasnya sama bisa memiliki keliling yang sangat berbeda?",
+      "Kenapa untuk keliling pagar yang tetap, bentuk persegi memberi luas kebun terbesar?",
+      "Kenapa memecah bangun gabungan bisa dilakukan dengan banyak cara berbeda dan hasilnya tetap sama?",
+      "Kenapa sisi yang tidak tertulis pada gambar tetap bisa ditentukan?"
+     ]
+    },
+    {
+     "judul": "Sudut dan Pengukurannya dengan Busur Derajat",
+     "kelas": 5,
+     "subKonsep": [
+      "Sudut sebagai besar putaran antara dua sinar garis yang bertemu di titik sudut",
+      "Bagian sudut: titik sudut, kaki sudut, daerah sudut",
+      "Satuan derajat dan asal 360 derajat untuk satu putaran penuh",
+      "Jenis sudut: lancip, siku-siku, tumpul, lurus, refleks",
+      "Membaca busur derajat (dua skala dalam dan luar)",
+      "Menggambar sudut dengan besar tertentu",
+      "Menaksir besar sudut tanpa alat",
+      "Sudut pada bangun datar (jumlah sudut segitiga 180 derajat, segiempat 360 derajat)",
+      "Sudut pada jarum jam"
+     ],
+     "rumus": [
+      "1 putaran penuh = 360 derajat ; 1/2 putaran = 180 derajat ; 1/4 putaran = 90 derajat",
+      "Jumlah sudut dalam segitiga = 180 derajat",
+      "Jumlah sudut dalam segiempat = 360 derajat",
+      "Jumlah sudut dalam segi-n = (n - 2) x 180 derajat",
+      "Sudut jarum jam per jam = 30 derajat; per menit (jarum panjang) = 6 derajat"
+     ],
+     "keterampilan": [
+      "Mengukur besar sudut dengan busur derajat secara tepat",
+      "Menggambar sudut dengan ukuran yang ditentukan",
+      "Mengelompokkan sudut menurut jenisnya",
+      "Menaksir besar sudut secara visual",
+      "Menghitung sudut yang belum diketahui pada segitiga dan segiempat"
+     ],
+     "prasyarat": [
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Membaca skala busur derajat yang salah (60 dibaca 120)",
+      "Mengira sudut yang kaki garisnya lebih panjang berarti sudutnya lebih besar",
+      "Meletakkan titik pusat busur derajat tidak tepat pada titik sudut",
+      "Mengira sudut siku-siku harus selalu menghadap ke atas atau ke kanan",
+      "Mengira jumlah sudut segitiga berubah jika segitiganya lebih besar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satu putaran penuh dibagi menjadi 360 derajat dan bukan 100?",
+      "Kenapa besar sudut tidak berubah meskipun kaki sudutnya diperpanjang?",
+      "Kenapa jumlah sudut dalam segitiga selalu 180 derajat, apa pun bentuknya?",
+      "Kenapa busur derajat punya dua deret angka, dan bagaimana memilih yang benar?"
+     ]
+    },
+    {
+     "judul": "Hubungan Antarsudut pada Dua Garis Berpotongan",
+     "kelas": 5,
+     "subKonsep": [
+      "Sudut berpelurus (berjumlah 180 derajat) pada garis lurus",
+      "Sudut berpenyiku (berjumlah 90 derajat)",
+      "Sudut bertolak belakang yang sama besar",
+      "Sudut satu putaran pada titik potong (360 derajat)",
+      "Garis tegak lurus dan garis sejajar",
+      "Menghitung sudut yang belum diketahui pada gambar dua garis berpotongan",
+      "Sudut pada perpotongan diagonal bangun datar",
+      "Penerapan pada denah, rambu, dan konstruksi"
+     ],
+     "rumus": [
+      "Sudut berpelurus: a + b = 180 derajat",
+      "Sudut berpenyiku: a + b = 90 derajat",
+      "Sudut bertolak belakang: sama besar",
+      "Jumlah semua sudut di sekeliling satu titik = 360 derajat"
+     ],
+     "keterampilan": [
+      "Mengidentifikasi pasangan sudut berpelurus, berpenyiku, dan bertolak belakang",
+      "Menghitung besar sudut yang belum diketahui pada dua garis berpotongan",
+      "Menghitung sudut pada bangun datar dari hubungan antarsudut",
+      "Membuktikan secara sederhana bahwa sudut bertolak belakang sama besar",
+      "Menerapkan hubungan sudut pada masalah nyata"
+     ],
+     "prasyarat": [
+      "Sudut dan Pengukurannya dengan Busur Derajat",
+      "Kalimat Matematika dan Nilai yang Belum Diketahui"
+     ],
+     "miskonsepsi": [
+      "Tertukar antara sudut berpelurus (180) dan berpenyiku (90)",
+      "Mengira semua sudut yang bersebelahan pasti berjumlah 180 derajat",
+      "Mengira sudut bertolak belakang berjumlah 180 derajat, bukan sama besar",
+      "Mengira dua garis yang tampak sejajar pada gambar pasti sejajar tanpa tanda",
+      "Menggunakan pengukuran gambar (yang mungkin tidak berskala) alih-alih penalaran"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa sudut bertolak belakang selalu sama besar, bagaimana membuktikannya?",
+      "Kenapa dua sudut pada satu garis lurus berjumlah 180 derajat?",
+      "Kenapa jumlah sudut mengelilingi satu titik selalu 360 derajat?",
+      "Kenapa kita tidak boleh mengukur gambar soal dengan busur derajat untuk menjawab?"
+     ]
+    },
+    {
+     "judul": "Waktu dan Durasi",
+     "kelas": 5,
+     "subKonsep": [
+      "Membaca jam analog dan jam digital",
+      "Format 12 jam (pagi/siang/sore/malam) dan 24 jam",
+      "Satuan waktu dan konversinya (detik, menit, jam, hari, minggu, bulan, tahun)",
+      "Menghitung durasi antara dua waktu (termasuk melewati tengah hari dan tengah malam)",
+      "Menghitung waktu selesai jika waktu mulai dan durasi diketahui",
+      "Menjumlahkan dan mengurangkan waktu bersistem 60 (bukan 10)",
+      "Membaca jadwal (kereta, pelajaran, acara) dan menghitung selisihnya",
+      "Kalender: jumlah hari tiap bulan dan tahun kabisat",
+      "Zona waktu Indonesia (WIB, WITA, WIT) sebagai penerapan"
+     ],
+     "rumus": [
+      "1 menit = 60 detik ; 1 jam = 60 menit = 3.600 detik",
+      "1 hari = 24 jam ; 1 minggu = 7 hari",
+      "Durasi = waktu selesai - waktu mulai",
+      "Tahun kabisat: habis dibagi 4 (kecuali tahun abad yang tidak habis dibagi 400)"
+     ],
+     "keterampilan": [
+      "Membaca jam analog dan digital serta mengubah format 12 dan 24 jam",
+      "Menghitung durasi antara dua waktu termasuk yang melewati pergantian hari",
+      "Menjumlahkan dan mengurangkan waktu dengan sistem 60",
+      "Membaca jadwal dan menghitung waktu tunggu atau lama perjalanan",
+      "Menentukan tanggal setelah selang waktu tertentu menggunakan kalender"
+     ],
+     "prasyarat": [
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000",
+      "Membandingkan durasi waktu (Fase A dan B)"
+     ],
+     "miskonsepsi": [
+      "Menghitung selisih waktu dengan pengurangan desimal (10.15 - 9.45 dijawab 0,70)",
+      "Mengira 1,5 jam sama dengan 1 jam 50 menit",
+      "Salah membaca jam analog karena tertukar jarum pendek dan panjang",
+      "Mengira pukul 12.00 malam adalah 24.00 pada hari yang sama padahal 00.00 hari berikutnya",
+      "Mengira semua bulan berjumlah 30 hari",
+      "Menghitung durasi yang melewati tengah malam sebagai bilangan negatif"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa waktu memakai sistem 60 dan bukan sistem 10 seperti satuan panjang?",
+      "Kenapa 1,5 jam sama dengan 1 jam 30 menit, bukan 1 jam 50 menit?",
+      "Kenapa ada tahun kabisat, dan kenapa aturannya tidak sekadar habis dibagi 4?",
+      "Kenapa Indonesia punya tiga zona waktu?"
+     ]
+    },
+    {
+     "judul": "Keliling dan Luas Lingkaran",
+     "kelas": 6,
+     "subKonsep": [
+      "Unsur lingkaran: titik pusat, jari-jari, diameter, busur, tali busur, tembereng, juring",
+      "Hubungan diameter dan jari-jari",
+      "Pi sebagai perbandingan keliling terhadap diameter yang selalu tetap",
+      "Nilai pendekatan pi (22/7 dan 3,14) dan kapan memilih masing-masing",
+      "Keliling lingkaran dan penerapannya (roda berputar)",
+      "Luas lingkaran melalui potongan juring yang disusun menyerupai jajargenjang",
+      "Menghitung jari-jari atau diameter jika keliling atau luas diketahui",
+      "Keliling dan luas setengah lingkaran serta seperempat lingkaran",
+      "Bangun gabungan yang memuat lingkaran"
+     ],
+     "rumus": [
+      "d = 2 x r",
+      "K = pi x d = 2 x pi x r",
+      "L = pi x r^2",
+      "pi kira-kira 22/7 atau 3,14",
+      "Panjang lintasan roda = K x banyak putaran"
+     ],
+     "keterampilan": [
+      "Mengidentifikasi dan menamai unsur-unsur lingkaran",
+      "Menghitung keliling dan luas lingkaran dengan pi = 22/7 atau 3,14",
+      "Memilih nilai pi yang tepat berdasarkan jari-jari yang diberikan",
+      "Menghitung jari-jari atau diameter jika keliling atau luas diketahui",
+      "Menghitung keliling dan luas bangun gabungan yang memuat lingkaran"
+     ],
+     "prasyarat": [
+      "Luas Bangun Datar Gabungan dan Hubungan Keliling dengan Luas",
+      "Pangkat Dua, Pangkat Tiga, dan Akarnya",
+      "Perkalian Pecahan dengan Bilangan Asli dan dengan Pecahan",
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)"
+     ],
+     "miskonsepsi": [
+      "Menggunakan diameter pada rumus luas (L = pi x d^2)",
+      "Tertukar rumus keliling dan luas lingkaran",
+      "Menganggap pi sama dengan 22/7 secara tepat, bukan pendekatan",
+      "Menghitung pi x r^2 sebagai (pi x r)^2",
+      "Memakai 22/7 saat jari-jari bukan kelipatan 7 sehingga hitungan menjadi rumit dan salah",
+      "Mengira keliling setengah lingkaran hanya setengah keliling lingkaran tanpa menambah diameter"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa keliling dibagi diameter selalu menghasilkan bilangan yang sama untuk semua lingkaran?",
+      "Kenapa luas lingkaran pi x r kuadrat, bagaimana potongan juring membuktikannya?",
+      "Kenapa kadang memakai 22/7 dan kadang 3,14?",
+      "Kenapa keliling setengah lingkaran harus ditambah diameternya?"
+     ]
+    },
+    {
+     "judul": "Volume Kubus dan Balok",
+     "kelas": 6,
+     "subKonsep": [
+      "Volume sebagai banyaknya kubus satuan yang mengisi ruang",
+      "Menghitung volume dengan menyusun kubus satuan berlapis",
+      "Menurunkan rumus volume dari luas alas dikali tinggi",
+      "Volume kubus dan hubungannya dengan pangkat tiga",
+      "Satuan volume (cm3, dm3, m3) dan hubungannya dengan liter",
+      "Volume bangun ruang gabungan kubus dan balok",
+      "Mencari rusuk, panjang, lebar, atau tinggi jika volume diketahui",
+      "Kapasitas wadah dan volume zat cair",
+      "Pengaruh perubahan ukuran terhadap volume"
+     ],
+     "rumus": [
+      "V kubus = s x s x s = s^3",
+      "V balok = p x l x t",
+      "V = luas alas x tinggi",
+      "s = akar pangkat tiga dari V",
+      "1 dm3 = 1 liter ; 1 cm3 = 1 ml ; 1 m3 = 1.000 liter"
+     ],
+     "keterampilan": [
+      "Menghitung volume kubus dan balok dari ukuran rusuknya",
+      "Menghitung volume dengan menghitung kubus satuan",
+      "Menghitung volume bangun gabungan",
+      "Menentukan ukuran yang belum diketahui jika volume diketahui",
+      "Mengonversi satuan volume dan menghubungkannya dengan kapasitas dalam liter"
+     ],
+     "prasyarat": [
+      "Pangkat Dua, Pangkat Tiga, dan Akarnya",
+      "Satuan Baku dan Konversi Satuan (Panjang, Berat, Volume, Waktu)",
+      "Unsur Kubus dan Balok",
+      "Perkalian Bilangan Cacah"
+     ],
+     "miskonsepsi": [
+      "Menjumlahkan p, l, t alih-alih mengalikannya",
+      "Tertukar volume dengan luas permukaan",
+      "Mengira 1 m3 = 100 cm3 atau 1.000 cm3",
+      "Menggunakan satuan cm2 untuk volume",
+      "Mengira jika semua rusuk digandakan, volumenya juga hanya menjadi dua kali lipat",
+      "Mengira volume balok berubah jika balok dimiringkan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa volume balok adalah p x l x t, bukan p + l + t?",
+      "Kenapa jika semua rusuk kubus digandakan, volumenya menjadi delapan kali lipat?",
+      "Kenapa 1 dm3 tepat sama dengan 1 liter?",
+      "Kenapa satuan volume ditulis dengan pangkat tiga?"
+     ]
+    },
+    {
+     "judul": "Luas Permukaan Kubus dan Balok",
+     "kelas": 6,
+     "subKonsep": [
+      "Luas permukaan sebagai jumlah luas semua sisi",
+      "Menghitung luas permukaan lewat jaring-jaring",
+      "Kubus memiliki 6 sisi persegi yang kongruen",
+      "Balok memiliki 3 pasang sisi persegi panjang yang kongruen",
+      "Luas permukaan bangun gabungan (sisi yang menempel tidak dihitung)",
+      "Luas permukaan tanpa tutup (bak terbuka)",
+      "Menentukan rusuk jika luas permukaan diketahui",
+      "Penerapan: kebutuhan kertas kado, cat, kaca akuarium"
+     ],
+     "rumus": [
+      "L permukaan kubus = 6 x s^2",
+      "L permukaan balok = 2 x (p x l + p x t + l x t)",
+      "L permukaan balok tanpa tutup = 2 x (p x t + l x t) + p x l",
+      "s = akar dari (L permukaan : 6)"
+     ],
+     "keterampilan": [
+      "Menghitung luas permukaan kubus dan balok",
+      "Menghitung luas permukaan bangun tanpa tutup atau bangun gabungan",
+      "Menggunakan jaring-jaring untuk menjelaskan rumus luas permukaan",
+      "Menentukan panjang rusuk jika luas permukaan diketahui",
+      "Menyelesaikan soal cerita kebutuhan bahan pelapis permukaan"
+     ],
+     "prasyarat": [
+      "Jaring-jaring Kubus dan Balok",
+      "Luas Persegi, Persegi Panjang, dan Segitiga",
+      "Volume Kubus dan Balok",
+      "Pangkat Dua, Pangkat Tiga, dan Akarnya"
+     ],
+     "miskonsepsi": [
+      "Tertukar rumus volume dan luas permukaan",
+      "Menghitung 6 x s (bukan 6 x s kuadrat) untuk kubus",
+      "Menghitung hanya 4 sisi balok, melupakan alas dan tutup",
+      "Pada bangun gabungan, tetap menghitung sisi yang saling menempel",
+      "Menggunakan satuan cm3 untuk luas permukaan",
+      "Mengira dua balok dengan volume sama pasti luas permukaannya sama"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa luas permukaan balok memakai tiga pasang perkalian sisi?",
+      "Kenapa dua balok dengan volume sama bisa memerlukan kertas pembungkus yang berbeda banyaknya?",
+      "Kenapa sisi yang menempel pada bangun gabungan tidak ikut dihitung?",
+      "Kenapa satuan luas permukaan cm2 sedangkan volume cm3, padahal bendanya sama?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Geometri",
+   "capaian": "Mengkonstruksi dan mengurai bangun ruang (kubus, balok, dan gabungannya) dan mengenali visualisasi spasial (bagian depan, atas, dan samping); membandingkan karakteristik antar bangun datar dan antar bangun ruang; serta menentukan lokasi pada peta yang menggunakan sistem berpetak.",
+   "topics": [
+    {
+     "judul": "Ciri-ciri dan Klasifikasi Bangun Datar",
+     "kelas": 5,
+     "subKonsep": [
+      "Unsur bangun datar: sisi, sudut, titik sudut, diagonal",
+      "Segitiga menurut panjang sisi (sama sisi, sama kaki, sembarang)",
+      "Segitiga menurut besar sudut (lancip, siku-siku, tumpul)",
+      "Segiempat: persegi, persegi panjang, jajargenjang, belah ketupat, layang-layang, trapesium",
+      "Hubungan hierarkis segiempat (persegi adalah persegi panjang khusus)",
+      "Sifat sisi sejajar, sisi sama panjang, sudut siku-siku, dan diagonal",
+      "Segi banyak beraturan dan tidak beraturan",
+      "Simetri lipat dan simetri putar",
+      "Membandingkan karakteristik antarbangun datar dengan tabel sifat"
+     ],
+     "rumus": [
+      "Jumlah sudut dalam segi-n = (n - 2) x 180 derajat",
+      "Banyak diagonal segi-n = n x (n - 3) : 2",
+      "Segitiga sama sisi memiliki 3 simetri lipat dan simetri putar tingkat 3",
+      "Persegi memiliki 4 simetri lipat dan simetri putar tingkat 4"
+     ],
+     "keterampilan": [
+      "Mengelompokkan bangun datar berdasarkan sifat sisi, sudut, dan diagonalnya",
+      "Membandingkan dua bangun datar dengan tabel karakteristik",
+      "Menentukan banyak simetri lipat dan simetri putar suatu bangun",
+      "Menggambar bangun datar dengan sifat tertentu",
+      "Menjelaskan mengapa persegi termasuk persegi panjang dan belah ketupat"
+     ],
+     "prasyarat": [
+      "Mendeskripsikan ciri berbagai bangun datar (Fase B)",
+      "Sudut dan Pengukurannya dengan Busur Derajat"
+     ],
+     "miskonsepsi": [
+      "Mengira persegi bukan persegi panjang karena \"bentuknya beda\"",
+      "Mengenali bangun hanya pada posisi baku (persegi yang dimiringkan disebut belah ketupat)",
+      "Mengira semua segiempat yang sisinya sama panjang adalah persegi",
+      "Mengira segitiga siku-siku tidak bisa sekaligus sama kaki",
+      "Mengira banyaknya simetri lipat selalu sama dengan banyaknya sisi",
+      "Mengira trapesium selalu sama kaki"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa persegi bisa disebut persegi panjang, belah ketupat, sekaligus layang-layang?",
+      "Kenapa persegi yang dimiringkan tetap persegi dan bukan belah ketupat?",
+      "Kenapa jumlah sudut dalam segi banyak mengikuti pola (n - 2) x 180 derajat?",
+      "Kenapa lingkaran punya tak hingga simetri lipat?"
+     ]
+    },
+    {
+     "judul": "Unsur Kubus dan Balok",
+     "kelas": 6,
+     "subKonsep": [
+      "Sisi (bidang), rusuk, dan titik sudut",
+      "Kubus: 6 sisi persegi kongruen, 12 rusuk sama panjang, 8 titik sudut",
+      "Balok: 6 sisi persegi panjang (3 pasang kongruen), 12 rusuk, 8 titik sudut",
+      "Rusuk sejajar, rusuk berpotongan, dan rusuk bersilangan",
+      "Diagonal sisi (bidang) dan diagonal ruang",
+      "Bidang diagonal",
+      "Total panjang rusuk (kerangka kawat)",
+      "Membandingkan karakteristik kubus dan balok"
+     ],
+     "rumus": [
+      "Total panjang rusuk kubus = 12 x s",
+      "Total panjang rusuk balok = 4 x (p + l + t)",
+      "Banyak diagonal sisi kubus/balok = 12",
+      "Banyak diagonal ruang kubus/balok = 4",
+      "Rumus Euler: sisi + titik sudut - rusuk = 2"
+     ],
+     "keterampilan": [
+      "Menyebutkan dan menunjukkan sisi, rusuk, dan titik sudut kubus dan balok",
+      "Menghitung total panjang rusuk untuk membuat kerangka",
+      "Membedakan diagonal sisi dan diagonal ruang",
+      "Membandingkan sifat kubus dan balok dalam tabel",
+      "Menggambar kubus dan balok dengan garis putus-putus untuk rusuk tersembunyi"
+     ],
+     "prasyarat": [
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Mengenal bangun ruang balok, kubus, kerucut, bola (Fase A)"
+     ],
+     "miskonsepsi": [
+      "Menyebut \"sisi\" untuk rusuk (menghitung kubus punya 12 sisi)",
+      "Mengira kubus bukan balok",
+      "Menghitung hanya rusuk yang terlihat pada gambar (9 rusuk)",
+      "Mengira diagonal ruang sama panjang dengan diagonal sisi",
+      "Mengira balok harus memiliki semua sisi berbeda ukuran"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kubus bisa disebut balok khusus?",
+      "Kenapa gambar kubus di buku digambar miring dengan garis putus-putus?",
+      "Kenapa jumlah sisi ditambah titik sudut dikurangi rusuk selalu 2 untuk semua bangun ruang seperti ini?",
+      "Kenapa perlu membedakan istilah sisi dan rusuk?"
+     ]
+    },
+    {
+     "judul": "Mengonstruksi dan Mengurai Bangun Ruang dengan Kubus Satuan",
+     "kelas": 6,
+     "subKonsep": [
+      "Menyusun kubus satuan menjadi balok dan bangun gabungan",
+      "Mengurai bangun ruang menjadi kubus satuan",
+      "Menghitung banyak kubus satuan penyusun bangun (termasuk yang tersembunyi)",
+      "Berbagai balok berbeda yang tersusun dari kubus satuan yang sama banyak",
+      "Bangun gabungan dari kubus dan balok",
+      "Menggambar bangun ruang pada kertas berpetak isometrik",
+      "Menambah dan mengurangi kubus untuk mencapai bentuk sasaran",
+      "Hubungan susunan lapisan dengan luas alas dan tinggi"
+     ],
+     "rumus": [
+      "Banyak kubus satuan = banyak kubus per lapis x banyak lapis",
+      "Banyak kubus per lapis = panjang x lebar (dalam kubus satuan)",
+      "Volume (kubus satuan) = p x l x t"
+     ],
+     "keterampilan": [
+      "Menghitung banyak kubus satuan penyusun suatu bangun termasuk yang tidak terlihat",
+      "Menyusun kubus satuan menjadi bangun sesuai instruksi",
+      "Menggambar bangun ruang pada kertas isometrik",
+      "Membuat beberapa balok berbeda dari jumlah kubus yang sama",
+      "Menguraikan bangun gabungan menjadi bagian-bagian balok"
+     ],
+     "prasyarat": [
+      "Unsur Kubus dan Balok",
+      "Perkalian Bilangan Cacah",
+      "Mengukur dan mengestimasi volume dengan satuan tidak baku (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Menghitung hanya kubus yang terlihat pada gambar dan melupakan yang tersembunyi",
+      "Menghitung permukaan (jumlah kotak yang terlihat) alih-alih isi",
+      "Mengira dua bangun dengan jumlah kubus sama pasti bentuknya sama",
+      "Mengira menambah satu kubus selalu menambah luas permukaan",
+      "Menghitung kubus di pojok lebih dari sekali"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kubus yang tersembunyi tetap harus dihitung padahal tidak terlihat?",
+      "Kenapa 24 kubus satuan bisa disusun menjadi banyak balok yang berbeda-beda bentuknya?",
+      "Kenapa menambah satu kubus kadang menambah luas permukaan dan kadang justru menguranginya?",
+      "Kenapa menghitung per lapis lebih cepat daripada menghitung satu per satu?"
+     ]
+    },
+    {
+     "judul": "Jaring-jaring Kubus dan Balok",
+     "kelas": 6,
+     "subKonsep": [
+      "Jaring-jaring sebagai bangun datar hasil membuka bangun ruang",
+      "11 jaring-jaring kubus yang berbeda",
+      "Ciri jaring-jaring kubus yang sah (tidak ada sisi bertumpuk saat dilipat)",
+      "Jaring-jaring balok dan variasinya",
+      "Menentukan sisi yang berhadapan pada jaring-jaring",
+      "Memasangkan titik atau gambar pada jaring-jaring dengan posisinya setelah dilipat",
+      "Membuat bangun ruang dari jaring-jaringnya",
+      "Hubungan jaring-jaring dengan luas permukaan"
+     ],
+     "rumus": [
+      "Jaring-jaring kubus terdiri atas 6 persegi kongruen",
+      "Kubus memiliki 11 jaring-jaring berbeda",
+      "Pada jaring-jaring kubus pola 1-4-1, sisi yang terpisah dua kotak saling berhadapan",
+      "Luas jaring-jaring = luas permukaan bangun ruang"
+     ],
+     "keterampilan": [
+      "Menentukan apakah suatu rangkaian persegi merupakan jaring-jaring kubus",
+      "Menggambar berbagai jaring-jaring kubus dan balok",
+      "Menentukan sisi yang berhadapan setelah jaring-jaring dilipat",
+      "Membuat model kubus dan balok dari jaring-jaring",
+      "Menghubungkan luas jaring-jaring dengan luas permukaan"
+     ],
+     "prasyarat": [
+      "Unsur Kubus dan Balok",
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Luas Persegi, Persegi Panjang, dan Segitiga"
+     ],
+     "miskonsepsi": [
+      "Mengira setiap rangkaian 6 persegi pasti jaring-jaring kubus",
+      "Mengira kubus hanya punya satu jaring-jaring (bentuk salib)",
+      "Menentukan sisi berhadapan sebagai sisi yang bersebelahan pada gambar datar",
+      "Mengira jaring-jaring balok selalu berbentuk sama dengan jaring-jaring kubus",
+      "Melupakan bahwa jaring-jaring yang sama bila diputar/dicerminkan bukan jaring-jaring baru"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa hanya ada 11 jaring-jaring kubus, tidak lebih dan tidak kurang?",
+      "Kenapa ada rangkaian 6 persegi yang tidak bisa dilipat menjadi kubus?",
+      "Kenapa pada pola 1-4-1 sisi yang berjarak dua kotak selalu berhadapan?",
+      "Kenapa luas jaring-jaring sama dengan luas permukaan bangun ruangnya?"
+     ]
+    },
+    {
+     "judul": "Visualisasi Spasial: Tampak Depan, Atas, dan Samping",
+     "kelas": 6,
+     "subKonsep": [
+      "Pandangan (tampak) depan, atas, samping kanan, dan samping kiri",
+      "Menggambar tampak dari susunan kubus satuan",
+      "Menyusun kembali bangun dari tiga pandangannya",
+      "Bangun berbeda yang memiliki tampak depan sama",
+      "Denah sebagai tampak atas bangunan",
+      "Perputaran mental (mental rotation) bangun ruang",
+      "Bayangan dan proyeksi sederhana",
+      "Membaca gambar teknik sederhana"
+     ],
+     "rumus": [
+      "Tampak atas menunjukkan panjang dan lebar",
+      "Tampak depan menunjukkan panjang dan tinggi",
+      "Tampak samping menunjukkan lebar dan tinggi"
+     ],
+     "keterampilan": [
+      "Menggambar tampak depan, atas, dan samping dari susunan kubus",
+      "Merekonstruksi bangun ruang dari gambar tiga pandangannya",
+      "Mengidentifikasi bangun yang sesuai dengan pandangan yang diberikan",
+      "Membaca denah sebagai tampak atas",
+      "Membandingkan dua bangun yang tampak depannya sama tetapi bentuknya berbeda"
+     ],
+     "prasyarat": [
+      "Mengonstruksi dan Mengurai Bangun Ruang dengan Kubus Satuan",
+      "Unsur Kubus dan Balok",
+      "Menentukan posisi benda terhadap benda lain (Fase A)"
+     ],
+     "miskonsepsi": [
+      "Menggambar tampak dengan perspektif (miring) alih-alih pandangan datar",
+      "Mengira satu pandangan sudah cukup menentukan bentuk bangun secara tunggal",
+      "Tertukar tampak samping kanan dan kiri",
+      "Menggambar kubus yang tersembunyi pada tampak padahal tidak terlihat dari arah itu",
+      "Mengira tampak atas sama dengan alas bangunan saja"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satu gambar tampak depan bisa berasal dari banyak bangun berbeda?",
+      "Kenapa insinyur dan arsitek memerlukan tiga pandangan, bukan satu gambar tiga dimensi saja?",
+      "Kenapa denah rumah digambar sebagai tampak atas?",
+      "Kenapa tampak samping kanan dan kiri bisa berbeda?"
+     ]
+    },
+    {
+     "judul": "Menentukan Lokasi pada Sistem Berpetak (Menuju Koordinat)",
+     "kelas": 6,
+     "subKonsep": [
+      "Sistem berpetak (grid) pada peta dan denah",
+      "Penamaan kolom dengan huruf dan baris dengan angka (contoh: petak C3)",
+      "Sumbu mendatar (x) dan sumbu tegak (y) yang saling tegak lurus",
+      "Titik asal (0,0) dan pasangan bilangan terurut (x, y)",
+      "Membaca dan menuliskan koordinat suatu titik",
+      "Menggambar titik dan bangun datar sederhana pada bidang berpetak kuadran pertama",
+      "Menentukan jarak mendatar dan tegak antara dua titik dengan menghitung petak",
+      "Membaca peta berpetak (denah sekolah, kebun binatang, mal)",
+      "Rute perjalanan pada petak dan panjang lintasannya"
+     ],
+     "rumus": [
+      "Titik ditulis sebagai pasangan terurut (x, y): x dibaca dahulu (mendatar), lalu y (tegak)",
+      "Titik asal O(0, 0)",
+      "Jarak mendatar antara (x1, y) dan (x2, y) = selisih x",
+      "Jarak tegak antara (x, y1) dan (x, y2) = selisih y"
+     ],
+     "keterampilan": [
+      "Membaca dan menuliskan lokasi objek pada peta bersistem berpetak",
+      "Menentukan koordinat titik pada bidang berpetak dan sebaliknya",
+      "Menggambar bangun datar sederhana dari koordinat titik-titik sudutnya",
+      "Menghitung jarak mendatar dan tegak antara dua titik pada petak",
+      "Menentukan rute dan panjang lintasan pada denah berpetak"
+     ],
+     "prasyarat": [
+      "Menentukan posisi benda terhadap benda lain (Fase A)",
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Membandingkan dan Mengurutkan Bilangan Cacah Besar"
+     ],
+     "miskonsepsi": [
+      "Membaca koordinat terbalik: menyebut y dahulu baru x",
+      "Menghitung dari kotak pertama sebagai 1, bukan dari titik asal 0",
+      "Mengira (3, 5) sama dengan (5, 3)",
+      "Menghitung jarak dengan menghitung garis, bukan selisih koordinat",
+      "Mengira letak titik ditandai di dalam petak, bukan di perpotongan garis",
+      "Mengira koordinat hanya berlaku untuk peta, bukan untuk matematika"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa koordinat selalu dibaca mendatar dulu baru tegak, siapa yang menyepakati?",
+      "Kenapa (3, 5) dan (5, 3) menunjuk tempat yang berbeda?",
+      "Kenapa hitungan dimulai dari nol dan bukan dari satu?",
+      "Kenapa peta wisata dan denah mal memakai sistem berpetak?"
+     ]
+    },
+    {
+     "judul": "Mengenal Prisma, Tabung, Limas, Kerucut, dan Bola",
+     "kelas": 6,
+     "subKonsep": [
+      "Bangun ruang sisi datar: prisma dan limas",
+      "Bangun ruang sisi lengkung: tabung, kerucut, bola",
+      "Bentuk alas menentukan nama prisma dan limas",
+      "Unsur: sisi, rusuk, titik sudut, titik puncak, selimut",
+      "Tabung sebagai prisma dengan alas lingkaran (pengenalan)",
+      "Kerucut sebagai limas dengan alas lingkaran (pengenalan)",
+      "Bola yang tidak memiliki rusuk maupun titik sudut",
+      "Jaring-jaring tabung, kerucut, prisma, dan limas (pengenalan)",
+      "Membandingkan karakteristik antarbangun ruang"
+     ],
+     "rumus": [
+      "Prisma segi-n: 3n rusuk, 2n titik sudut, n + 2 sisi",
+      "Limas segi-n: 2n rusuk, n + 1 titik sudut, n + 1 sisi",
+      "Tabung: 3 sisi (2 lingkaran + 1 selimut), 2 rusuk lengkung, 0 titik sudut",
+      "Kerucut: 2 sisi, 1 rusuk lengkung, 1 titik puncak",
+      "Bola: 1 sisi lengkung, 0 rusuk, 0 titik sudut"
+     ],
+     "keterampilan": [
+      "Menyebutkan ciri dan unsur prisma, limas, tabung, kerucut, dan bola",
+      "Mengelompokkan bangun ruang menjadi sisi datar dan sisi lengkung",
+      "Membandingkan karakteristik dua bangun ruang dalam tabel",
+      "Mengenali jaring-jaring bangun ruang selain kubus dan balok",
+      "Menemukan contoh bangun ruang tersebut di lingkungan sekitar"
+     ],
+     "prasyarat": [
+      "Unsur Kubus dan Balok",
+      "Ciri-ciri dan Klasifikasi Bangun Datar",
+      "Jaring-jaring Kubus dan Balok"
+     ],
+     "miskonsepsi": [
+      "Menyebut tabung sebagai \"lingkaran\" dan kerucut sebagai \"segitiga\"",
+      "Mengira tabung memiliki titik sudut",
+      "Mengira bola memiliki satu titik sudut di pusatnya",
+      "Tertukar antara prisma segitiga dan limas segitiga",
+      "Mengira selimut tabung berbentuk lingkaran, bukan persegi panjang",
+      "Mengira semua bangun ruang punya jaring-jaring datar (bola tidak punya jaring-jaring sempurna)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa selimut tabung kalau dibuka berbentuk persegi panjang, dan kenapa panjangnya sama dengan keliling alas?",
+      "Kenapa bola tidak memiliki rusuk dan titik sudut?",
+      "Kenapa peta dunia yang datar selalu terdistorsi, terkait dengan bola yang tidak bisa dibuka rata?",
+      "Kenapa prisma dan limas dinamai berdasarkan bentuk alasnya?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Analisis Data dan Peluang",
+   "capaian": "Mengurutkan, membandingkan, menyajikan, dan menganalisis data banyak benda dan data hasil pengukuran dalam bentuk gambar, piktogram, diagram batang, dan tabel frekuensi untuk mendapatkan informasi; menentukan kejadian dengan kemungkinan yang lebih besar atau lebih kecil dalam suatu percobaan acak.",
+   "topics": [
+    {
+     "judul": "Mengumpulkan Data dan Menyajikannya dalam Tabel Frekuensi",
+     "kelas": 5,
+     "subKonsep": [
+      "Merumuskan pertanyaan yang bisa dijawab dengan data",
+      "Data kualitatif (kategori) dan data kuantitatif (angka)",
+      "Data cacahan (banyak benda) dan data hasil pengukuran",
+      "Cara mengumpulkan data: pengamatan, wawancara, angket/survei, percobaan",
+      "Turus (tally) dan cara mengelompokkan lima-lima",
+      "Tabel frekuensi: kolom kategori, turus, dan frekuensi",
+      "Membaca tabel frekuensi untuk menjawab pertanyaan",
+      "Data terurut dan jangkauan (nilai terbesar dikurangi terkecil)",
+      "Menjaga kejujuran dan ketelitian dalam mencatat data"
+     ],
+     "rumus": [
+      "Frekuensi = banyaknya kemunculan suatu nilai atau kategori",
+      "Jumlah semua frekuensi = banyak data seluruhnya",
+      "Jangkauan = nilai terbesar - nilai terkecil"
+     ],
+     "keterampilan": [
+      "Merumuskan pertanyaan penelitian sederhana dan merancang cara pengumpulan datanya",
+      "Mencatat data dengan turus secara rapi dan teliti",
+      "Menyusun tabel frekuensi dari data mentah",
+      "Mengurutkan data hasil pengukuran",
+      "Membaca dan menafsirkan tabel frekuensi untuk menjawab pertanyaan"
+     ],
+     "prasyarat": [
+      "Menyajikan data dalam tabel, diagram gambar, piktogram, dan diagram batang (Fase B)",
+      "Penjumlahan dan Pengurangan Bilangan Cacah sampai 100.000"
+     ],
+     "miskonsepsi": [
+      "Menghitung turus satu per satu tanpa mengelompokkan lima-lima sehingga mudah keliru",
+      "Mengira jumlah frekuensi tidak perlu sama dengan banyak responden",
+      "Mencampur kategori yang tumpang tindih dalam satu tabel",
+      "Mengira data hasil pengukuran harus selalu bilangan bulat",
+      "Mengira pertanyaan apa pun bisa dijawab dengan data yang dikumpulkan sembarangan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa turus dikelompokkan lima-lima dan bukan sepuluh-sepuluh?",
+      "Kenapa jumlah semua frekuensi harus sama dengan banyaknya responden?",
+      "Kenapa cara bertanya dalam survei bisa memengaruhi hasil datanya?",
+      "Kenapa data perlu diurutkan sebelum dianalisis?"
+     ]
+    },
+    {
+     "judul": "Piktogram dan Diagram Batang Berskala",
+     "kelas": 5,
+     "subKonsep": [
+      "Piktogram dengan satu gambar mewakili lebih dari satu benda",
+      "Gambar sebagian (setengah gambar) pada piktogram",
+      "Diagram batang tegak dan mendatar",
+      "Sumbu kategori dan sumbu frekuensi",
+      "Skala sumbu (satu kotak mewakili 2, 5, 10, atau lebih)",
+      "Judul, label sumbu, dan keterangan (legenda)",
+      "Membaca nilai dari diagram batang termasuk nilai antara garis skala",
+      "Membandingkan kategori dan menemukan yang terbesar/terkecil",
+      "Diagram batang majemuk sederhana (dua kelompok berdampingan)",
+      "Diagram yang menyesatkan karena sumbu tidak dimulai dari nol"
+     ],
+     "rumus": [
+      "Nilai pada piktogram = banyak gambar x nilai satu gambar",
+      "Nilai batang = tinggi batang (dalam kotak) x skala per kotak",
+      "Selisih dua kategori = nilai kategori pertama - nilai kategori kedua"
+     ],
+     "keterampilan": [
+      "Membuat piktogram dengan skala dan legenda yang tepat",
+      "Membuat diagram batang berskala dari tabel frekuensi",
+      "Memilih skala sumbu yang sesuai dengan rentang data",
+      "Membaca dan menafsirkan diagram batang untuk menjawab pertanyaan",
+      "Mengenali diagram yang menyesatkan karena skala atau sumbu tidak wajar"
+     ],
+     "prasyarat": [
+      "Mengumpulkan Data dan Menyajikannya dalam Tabel Frekuensi",
+      "Perkalian Bilangan Cacah",
+      "Pembagian Bilangan Cacah",
+      "Menyajikan data dalam piktogram dan diagram batang skala satu satuan (Fase B)"
+     ],
+     "miskonsepsi": [
+      "Membaca piktogram dengan menghitung gambar saja tanpa mengalikan dengan nilai legenda",
+      "Mengira setiap gambar pada piktogram selalu bernilai 1",
+      "Membuat diagram batang dengan lebar batang berbeda-beda",
+      "Membuat skala sumbu yang jaraknya tidak sama besar",
+      "Memulai sumbu frekuensi bukan dari nol tanpa memberi tanda pemotongan",
+      "Mengira batang yang dua kali lebih tinggi selalu berarti nilainya dua kali lipat pada sumbu yang terpotong"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satu gambar pada piktogram bisa mewakili 10 benda, bukan 1?",
+      "Kenapa sumbu diagram batang sebaiknya dimulai dari nol?",
+      "Kenapa jarak antargaris skala harus sama besar?",
+      "Kenapa diagram batang bisa dibuat menyesatkan meskipun angkanya benar?"
+     ]
+    },
+    {
+     "judul": "Diagram Garis dan Diagram Lingkaran",
+     "kelas": 6,
+     "subKonsep": [
+      "Diagram garis untuk data yang berubah menurut waktu",
+      "Membaca kecenderungan naik, turun, dan tetap pada diagram garis",
+      "Titik data dan garis penghubung sebagai perkiraan antar-waktu",
+      "Diagram lingkaran untuk menunjukkan bagian terhadap keseluruhan",
+      "Menghitung besar sudut juring dari persentase atau pecahan",
+      "Menghitung nilai suatu bagian dari besar sudut atau persennya",
+      "Membuat diagram lingkaran dengan busur derajat",
+      "Memilih jenis diagram yang sesuai dengan jenis data dan tujuan",
+      "Membaca diagram lingkaran tanpa mengetahui jumlah keseluruhan (keterbatasan)"
+     ],
+     "rumus": [
+      "Sudut juring = (bagian : keseluruhan) x 360 derajat",
+      "Persen bagian = (bagian : keseluruhan) x 100%",
+      "Nilai bagian = (sudut juring : 360) x jumlah keseluruhan",
+      "Nilai bagian = persen bagian x jumlah keseluruhan"
+     ],
+     "keterampilan": [
+      "Membaca dan menafsirkan diagram garis dan diagram lingkaran",
+      "Menghitung besar sudut juring dan menggambar diagram lingkaran",
+      "Menghitung nilai suatu bagian dari persen atau sudut juringnya",
+      "Memilih jenis diagram yang paling sesuai untuk data tertentu",
+      "Membandingkan informasi yang dapat dan tidak dapat dibaca dari tiap jenis diagram"
+     ],
+     "prasyarat": [
+      "Piktogram dan Diagram Batang Berskala",
+      "Hubungan Pecahan, Desimal, dan Persen",
+      "Sudut dan Pengukurannya dengan Busur Derajat",
+      "Penerapan Persen dalam Kehidupan Sehari-hari"
+     ],
+     "miskonsepsi": [
+      "Menggunakan diagram lingkaran untuk data yang bukan bagian dari satu keseluruhan",
+      "Mengira jumlah semua sudut juring boleh tidak 360 derajat",
+      "Membandingkan dua diagram lingkaran dari dua kelompok berbeda ukuran seolah-olah setara",
+      "Mengira diagram garis dapat dipakai untuk data kategori",
+      "Membaca titik di antara dua data pada diagram garis sebagai data nyata, bukan perkiraan",
+      "Mengira juring terbesar selalu berarti jumlah yang besar tanpa melihat total keseluruhan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa diagram lingkaran memakai 360 derajat untuk mewakili seluruh data?",
+      "Kenapa dua diagram lingkaran dengan juring 50% bisa mewakili jumlah orang yang sangat berbeda?",
+      "Kenapa diagram garis cocok untuk data waktu, tetapi tidak untuk data jenis buah kesukaan?",
+      "Kenapa titik di antara dua data pada diagram garis hanya perkiraan?"
+     ]
+    },
+    {
+     "judul": "Mean, Median, dan Modus Data Tunggal",
+     "kelas": 6,
+     "subKonsep": [
+      "Modus sebagai nilai yang paling sering muncul",
+      "Data tanpa modus dan data bermodus lebih dari satu",
+      "Median sebagai nilai tengah setelah data diurutkan",
+      "Median untuk banyak data ganjil dan genap",
+      "Mean (rata-rata) sebagai jumlah data dibagi banyak data",
+      "Mean sebagai titik keseimbangan (model timbangan)",
+      "Mean dari tabel frekuensi",
+      "Pengaruh data pencilan (nilai ekstrem) terhadap mean dan median",
+      "Memilih ukuran pemusatan yang paling mewakili data",
+      "Mencari data yang hilang jika mean diketahui"
+     ],
+     "rumus": [
+      "Mean = jumlah semua data : banyak data",
+      "Jumlah semua data = mean x banyak data",
+      "Median (n ganjil) = data ke-((n + 1)/2) setelah diurutkan",
+      "Median (n genap) = rata-rata data ke-(n/2) dan ke-(n/2 + 1)",
+      "Mean dari tabel frekuensi = jumlah (nilai x frekuensi) : jumlah frekuensi"
+     ],
+     "keterampilan": [
+      "Menentukan modus, median, dan mean dari sekumpulan data tunggal",
+      "Menghitung mean dari tabel frekuensi",
+      "Menentukan data yang hilang jika mean dan banyak data diketahui",
+      "Membandingkan mean, median, dan modus untuk memilih yang paling mewakili",
+      "Menganalisis pengaruh nilai ekstrem terhadap ukuran pemusatan"
+     ],
+     "prasyarat": [
+      "Mengumpulkan Data dan Menyajikannya dalam Tabel Frekuensi",
+      "Piktogram dan Diagram Batang Berskala",
+      "Pembagian Bilangan Cacah",
+      "Bilangan Desimal: Nilai Tempat, Membandingkan, dan Mengurutkan"
+     ],
+     "miskonsepsi": [
+      "Mencari median tanpa mengurutkan data terlebih dahulu",
+      "Mengira median adalah data yang berada di tengah daftar asli",
+      "Mengira modus adalah frekuensi terbesar, bukan nilai yang berfrekuensi terbesar",
+      "Mengira mean harus selalu berupa bilangan bulat atau salah satu nilai data",
+      "Mengira mean, median, dan modus selalu bernilai sama",
+      "Menghitung mean dari tabel frekuensi dengan merata-ratakan nilainya saja tanpa memperhitungkan frekuensi",
+      "Mengira semua data pasti punya modus"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa median harus dicari setelah data diurutkan?",
+      "Kenapa satu nilai yang sangat besar bisa menarik mean jauh, tetapi hampir tidak menggeser median?",
+      "Kenapa rata-rata nilai ulangan bisa berupa 7,3 padahal tidak ada siswa yang mendapat 7,3?",
+      "Kenapa untuk data gaji sering dipakai median, bukan mean?"
+     ]
+    },
+    {
+     "judul": "Kemungkinan dan Skala Peluang",
+     "kelas": 6,
+     "subKonsep": [
+      "Kejadian pasti, mungkin, dan mustahil",
+      "Skala peluang dari 0 (mustahil) sampai 1 (pasti)",
+      "Menempatkan kejadian pada skala peluang (mustahil, kecil kemungkinannya, sama kemungkinannya, besar kemungkinannya, pasti)",
+      "Percobaan acak (melempar dadu, melempar koin, mengambil kelereng)",
+      "Ruang sampel: semua hasil yang mungkin",
+      "Kejadian sebagai bagian dari ruang sampel",
+      "Hasil yang berpeluang sama (equally likely)",
+      "Peluang sebagai pecahan, desimal, dan persen",
+      "Frekuensi relatif dari hasil percobaan berulang"
+     ],
+     "rumus": [
+      "P(kejadian) = banyak hasil yang diharapkan : banyak seluruh hasil yang mungkin",
+      "0 <= P(kejadian) <= 1",
+      "P(mustahil) = 0 ; P(pasti) = 1",
+      "Frekuensi relatif = banyak kejadian muncul : banyak percobaan"
+     ],
+     "keterampilan": [
+      "Menggolongkan kejadian sebagai pasti, mungkin, atau mustahil",
+      "Mendaftar ruang sampel percobaan sederhana",
+      "Menghitung peluang kejadian sederhana dan menyatakannya dalam pecahan/persen",
+      "Menempatkan peluang suatu kejadian pada skala 0 sampai 1",
+      "Membandingkan frekuensi relatif hasil percobaan dengan peluang teoretis"
+     ],
+     "prasyarat": [
+      "Hubungan Pecahan, Desimal, dan Persen",
+      "Pecahan Senilai dan Penyederhanaan Pecahan",
+      "Mengumpulkan Data dan Menyajikannya dalam Tabel Frekuensi"
+     ],
+     "miskonsepsi": [
+      "Mengira peluang bisa lebih dari 1 atau bernilai negatif",
+      "Mengira semua hasil dalam percobaan selalu berpeluang sama (misal jumlah dua dadu)",
+      "Mengira setelah muncul angka lima kali berturut-turut, gambar \"pasti giliran\" muncul (gambler's fallacy)",
+      "Mengira peluang 1/2 berarti dalam 10 lemparan pasti muncul tepat 5 kali",
+      "Menghitung ruang sampel tidak lengkap sehingga penyebutnya salah",
+      "Mengira \"mungkin\" berarti peluangnya selalu 50 persen"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa peluang tidak pernah bisa lebih dari 1?",
+      "Kenapa setelah koin muncul angka lima kali berturut-turut, peluang lemparan berikutnya tetap 1/2?",
+      "Kenapa jumlah dua dadu 7 lebih sering muncul daripada 2 atau 12?",
+      "Kenapa hasil percobaan nyata sering tidak persis sama dengan peluang teoretisnya?"
+     ]
+    },
+    {
+     "judul": "Membandingkan Peluang Kejadian dalam Percobaan Acak",
+     "kelas": 6,
+     "subKonsep": [
+      "Membandingkan dua kejadian: mana yang lebih besar atau lebih kecil kemungkinannya",
+      "Membandingkan peluang tanpa menghitung angka (penalaran kualitatif)",
+      "Kantong kelereng dengan komposisi warna berbeda",
+      "Roda putar (spinner) dengan juring tidak sama besar",
+      "Pengaruh banyaknya hasil yang menguntungkan terhadap peluang",
+      "Pengaruh besar total ruang sampel terhadap peluang",
+      "Membandingkan peluang dengan menyamakan penyebut",
+      "Merancang percobaan agar suatu kejadian lebih mungkin terjadi",
+      "Keadilan (fairness) suatu permainan"
+     ],
+     "rumus": [
+      "Bandingkan P(A) dan P(B) dengan menyamakan penyebutnya",
+      "Pada roda putar, P(warna) = besar sudut juring warna itu : 360 derajat",
+      "Permainan adil jika semua pemain memiliki peluang menang yang sama"
+     ],
+     "keterampilan": [
+      "Membandingkan peluang dua kejadian dan menjelaskan alasannya",
+      "Menentukan komposisi kantong atau roda putar agar suatu kejadian lebih mungkin",
+      "Menilai apakah suatu permainan adil bagi semua pemain",
+      "Menghitung peluang dari roda putar berjuring tidak sama besar",
+      "Merancang percobaan acak sederhana dan memprediksi hasilnya"
+     ],
+     "prasyarat": [
+      "Kemungkinan dan Skala Peluang",
+      "Membandingkan dan Mengurutkan Pecahan",
+      "Konsep Rasio dan Perbandingan",
+      "Diagram Garis dan Diagram Lingkaran"
+     ],
+     "miskonsepsi": [
+      "Mengira kantong dengan lebih banyak kelereng merah selalu memberi peluang merah lebih besar tanpa melihat totalnya",
+      "Membandingkan peluang hanya dari banyak hasil yang menguntungkan (pembilang saja)",
+      "Mengira roda putar dengan banyak juring warna tertentu pasti berpeluang besar meski juringnya kecil",
+      "Mengira permainan adil jika aturannya \"terlihat sama\"",
+      "Mengira menambah satu kelereng warna tertentu selalu mengubah peluang secara besar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kantong berisi 3 merah dari 5 kelereng memberi peluang lebih besar daripada 4 merah dari 10 kelereng?",
+      "Kenapa membandingkan peluang tidak cukup melihat pembilangnya saja?",
+      "Kenapa roda putar dengan juring lebih lebar berpeluang lebih besar meski jumlah juringnya sama?",
+      "Kenapa sebuah permainan bisa terlihat adil tetapi sebenarnya menguntungkan salah satu pemain?"
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf",
+  "https://static.perangkat-ajar.belajar.id/SD.C.MAT.ENA.1.pdf",
+  "https://www.myedisi.com/bse/366761/matematika",
+  "https://www.myedisi.com/bse/365621/buku-panduan-guru-matematika",
+  "https://www.myedisi.com/bse/365601/buku-panduan-guru-matematika",
+  "https://buku.kemendikdasmen.go.id/katalog/buku-panduan-guru-matematika-untuk-sdmi-kelas-vi",
+  "https://kepalasekolah.id/capaian-pembelajaran-cp-matematika-sd-mi-2025-terbaru-berdasarkan-keputusan-kepala-bskap-nomor-046-h-kr-2025/",
+  "https://www.mediailmupengetahuan.com/2019/12/ki-dan-kd-matematika-kelas-6-sd-mi-kurikulum-2013-semester-1-2-revisi-terbaru.html",
+  "https://wislah.com/rangkuman-materi-matematika-kelas-6-bab-3-kurikulum-merdeka/",
+  "https://kurikulum.kemendikdasmen.go.id/",
+  "https://peraturan.bpk.go.id/Details/322506/permendikdasmen-no-13-tahun-2025"
+ ],
+ "catatan": "SUMBER UTAMA DAN CARA VERIFIKASI\nTeks Capaian Pembelajaran (CP) Fase C yang saya pakai dikutip langsung dari salinan resmi PDF Keputusan Kepala BSKAP Kemendikdasmen Nomor 046/H/KR/2025 (Lampiran II, bab IV.1 huruf D angka 3), file lokal hasil ekstraksi: C:\\Users\\ajahv\\AppData\\Local\\Temp\\claude\\C--Users-ajahv-SourceCodes-VisualMTK\\239aa5f8-bacc-4f61-9858-70c914a03592\\scratchpad\\kepka046.txt (baris 4619-4680) dari PDF kepka046.pdf. Dokumen ini mencabut Kepka BSKAP 32/H/KR/2024 dan tetap berlaku untuk TA 2025/2026 maupun TA 2026/2027 (Kepka BKPDM No. 020 Tahun 2026 hanya mengubah CP Pendidikan Agama dan Budi Pekerti). Teks CP Fase C matematika secara substansi tidak berubah dari Kepka 033/H/KR/2022 dan 032/H/KR/2024. Cross-check dilakukan dengan: (1) rangkuman CP Fase C di kepalasekolah.id yang cocok kata per kata dengan salinan resmi; (2) daftar isi resmi Buku Panduan Guru dan Buku Siswa Matematika Kelas V dan VI Kurikulum Merdeka (BSE Kemendikbudristek, penulis Dicky Susanto dkk.) melalui katalog myedisi/SIBI; (3) ATP resmi Fase C dari Platform Merdeka Mengajar (SD.C.MAT.ENA.1.pdf); (4) daftar KD Matematika kelas V-VI Kurikulum 2013 (Permendikbud 37/2018).\n\nPERINGATAN PENTING TENTANG CAKUPAN — TOPIK DI LUAR CP FASE C 046/2025\nBeberapa topik yang diminta dalam brief ternyata BUKAN bagian CP Fase C menurut Kepka 046/H/KR/2025. Saya tetap memasukkannya karena nyata diajarkan di banyak sekolah Indonesia, tetapi harus ditandai sebagai PENGAYAAN/di luar CP saat dipakai:\n- \"Garis Bilangan dan Bilangan Bulat Negatif\" dan \"Operasi Penjumlahan dan Pengurangan Bilangan Bulat\" -> di CP 046/2025 bilangan bulat baru muncul di FASE D (elemen Bilangan kelas VII-IX). Berasal dari K-13 kelas VI (KD 3.1, 3.2) dan dari ATP PMM lama.\n- \"Keliling dan Luas Lingkaran\" -> di CP 046/2025 lingkaran ada di FASE D (elemen Pengukuran: keliling, luas, panjang busur, sudut dan luas juring lingkaran). Berasal dari K-13 kelas VI (KD 3.4, 3.5).\n- \"Mean, Median, dan Modus Data Tunggal\" -> CP Fase C hanya menuntut mengurutkan, membandingkan, menyajikan, dan menganalisis data (gambar, piktogram, diagram batang, tabel frekuensi). Ukuran pemusatan resmi baru di FASE D. Berasal dari K-13 kelas VI (KD 3.8) dan ATP PMM lama (\"mean dan sebaran data\").\n- \"Volume Kubus dan Balok\" serta \"Luas Permukaan Kubus dan Balok\" -> CP Fase C elemen Geometri hanya menuntut mengonstruksi/mengurai kubus, balok, dan gabungannya serta visualisasi spasial; elemen Pengukuran Fase C TIDAK menyebut volume atau luas permukaan. Buku Siswa Kelas VI Kurikulum Merdeka Bab 3 \"Kubus dan Balok\" pun hanya memuat A. Mengonstruksi dan Mengurai, B. Visualisasi Spasial, C. Lokasi — TANPA rumus volume/luas permukaan (terverifikasi dari daftar isi resmi dan rangkuman bab). Rumus volume dan luas permukaan bangun ruang secara resmi ada di FASE D. Berasal dari K-13 kelas V (KD 3.5, 3.6) dan kelas VI (KD 3.7).\n- \"Kecepatan dan Debit\" serta \"Skala pada Denah dan Peta\" -> tidak disebut eksplisit di CP Fase C, tetapi masih sejalan dengan tuntutan CP \"bernalar secara proporsional untuk menyelesaikan masalah sehari-hari dengan rasio satuan\". Berasal dari K-13 kelas V (KD 3.3, 3.4) dan ATP PMM lama.\n- \"Pangkat Dua, Pangkat Tiga, dan Akarnya\" -> tidak ada di CP 046/2025 Fase C (bilangan berpangkat dan akar ada di Fase D). Berasal dari K-13 kelas V (KD 3.5) dan ATP PMM lama.\n- \"Diagram Garis dan Diagram Lingkaran\" -> CP Fase C hanya menyebut gambar, piktogram, diagram batang, dan tabel frekuensi. Diagram lingkaran resmi ada di Fase D. Diagram garis ada di K-13 kelas V (KD 3.8) dan ATP PMM lama.\n- \"Menentukan Lokasi pada Sistem Berpetak (Menuju Koordinat)\" -> ini SESUAI CP Fase C (\"menentukan lokasi pada peta yang menggunakan sistem berpetak\") dan sesuai Buku Siswa Kelas VI Bab 3C \"Lokasi\". Namun bidang koordinat Kartesius penuh dengan kuadran negatif adalah FASE D. Topik ini sengaja saya beri judul \"menuju koordinat\" agar batasnya jelas.\n- \"Mengenal Prisma, Tabung, Limas, Kerucut, dan Bola\" -> CP Fase C menuntut \"membandingkan karakteristik antar bangun ruang\" sehingga pengenalan ciri masih wajar, tetapi perhitungan volume/luas permukaannya adalah Fase D. K-13 kelas VI KD 3.6 memuat perbandingan bangun ruang ini.\n\nPERINGATAN TENTANG ATP RESMI DI PLATFORM MERDEKA MENGAJAR\nATP Fase C yang saya unduh dari static.perangkat-ajar.belajar.id (SD.C.MAT.ENA.1.pdf, 17 halaman) MASIH MENGACU PADA CP EDISI AWAL 2022 (Kepka 008/H/KR/2022), bukan CP 046/2025. Terlihat dari rumusan CP-nya yang memuat bilangan bulat, pangkat dua/tiga dan akarnya, luas permukaan dan volume kubus-balok, kecepatan dan debit, diagram lingkaran, serta mean — semuanya sudah tidak ada dalam CP Fase C 046/2025. ATP ini masih beredar luas dan banyak disalin sekolah/penerbit, sehingga menjadi sumber utama ketidaksesuaian antara praktik di lapangan dan CP resmi yang berlaku. PERLU VERIFIKASI: apakah Puskurbuk/BKPDM sudah menerbitkan ATP dan buku teks Fase C edisi baru yang selaras dengan Kepka 046/2025 dan pendekatan pembelajaran mendalam (Permendikdasmen 13/2025). Saya belum menemukan versinya.\n\nKESESUAIAN DENGAN BUKU TEKS RESMI (verifikasi silang)\n- Buku Matematika Kelas V Kurikulum Merdeka (BSE): 9 bab — (1) Bilangan Cacah Sampai 100.000, (2) KPK dan FPB, (3) Bilangan Pecahan, (4) Keliling Bangun Datar, (5) Luas Daerah Bangun Datar, (6) Sudut, (7) Membandingkan Ciri-Ciri Bangun Datar, (8) Data, (9) Bilangan Cacah Sampai 1.000.000.\n- Buku Matematika Kelas VI Kurikulum Merdeka (BSE): 4 bab — (1) Pecahan dan Desimal (perkalian pecahan, pembagian pecahan, bilangan desimal), (2) Rasio (konsep rasio, kesamaan rasio dan rasio satuan, penerapan rasio), (3) Kubus dan Balok (mengonstruksi dan mengurai, visualisasi spasial, lokasi), (4) Peluang (skala peluang, membandingkan peluang kejadian).\nKedua daftar isi ini konsisten penuh dengan CP 046/2025 Fase C. Buku kelas VI TIDAK memuat bilangan bulat, lingkaran, koordinat Kartesius penuh, mean/median/modus, maupun rumus volume dan luas permukaan — memperkuat kesimpulan bahwa topik-topik itu adalah pengayaan/warisan K-13.\n\nCATATAN PEMBAGIAN KELAS\nCP dirumuskan per FASE (2 tahun), bukan per kelas. Pemerintah tidak menetapkan ATP; guru/satuan pendidikan yang menurunkannya. Pembagian kelas 5 dan kelas 6 pada peta ini adalah penempatan paling lazim berdasarkan urutan bab buku teks resmi dan ATP yang beredar, BUKAN ketentuan regulasi. Sekolah boleh mengatur urutan berbeda selama capaian akhir fase terpenuhi. Alokasi jam Matematika menurut Lampiran I Permendikdasmen 13/2025: kelas V 180 JP intrakurikuler + 36 JP kokurikuler = 216 JP/tahun (36 minggu); kelas VI 160 JP + 32 JP = 192 JP/tahun (32 minggu); 1 JP SD = 35 menit.\n\nCATATAN LAIN\n- Kurikulum 2013 masih sah dipakai sampai TA 2025/2026 (dan sampai TA 2026/2027 di daerah 3T) menurut Pasal 31 Permendikbudristek 12/2024, sehingga sekolah yang masih memakai K-13 memang mengajarkan seluruh topik pengayaan di atas sebagai materi wajib.\n- Batasan eksplisit CP Fase C yang sering dilanggar buku latihan: operasi bilangan cacah dibatasi sampai 100.000 (number sense sampai 1.000.000); kalimat matematika aljabar dibatasi bilangan cacah sampai 1000; perbandingan dan pengurutan desimal dibatasi SATU angka di belakang koma; perkalian dan pembagian pecahan dibatasi \"pecahan dengan bilangan asli\" (perkalian/pembagian pecahan dengan pecahan secara ketat baru dituntut di Fase D, meskipun Buku Siswa Kelas VI Bab 1 sudah memperkenalkannya).\n- Domain \"Pengukuran\" dan \"Geometri\" pada peta ini mengikuti penamaan resmi Kepka 046/2025. Perlu diingat bahwa pada Fase E dan F elemen \"Pengukuran\" tidak lagi ada dan \"Aljabar\" menjadi \"Aljabar dan Fungsi\".\n- Semua daftar miskonsepsi disusun dari pola kesalahan yang lazim didokumentasikan dalam literatur pendidikan matematika dan konteks penulisan angka Indonesia (koma sebagai pemisah desimal, titik sebagai pemisah ribuan); ini bersifat pedagogis, bukan kutipan regulasi, dan sebaiknya divalidasi ulang dengan data asesmen sekolah pengguna.\n- PERLU VERIFIKASI: nilai pi yang dipakai di soal nasional (22/7 vs 3,14) tidak diatur regulasi; konvensi umum adalah memakai 22/7 jika jari-jari kelipatan 7."
+}

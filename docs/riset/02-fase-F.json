@@ -1,0 +1,393 @@
+{
+ "fase": "F",
+ "kelas": [
+  11,
+  12
+ ],
+ "ringkasanCP": "Fase F (kelas XI-XII) memuat DUA mata pelajaran berbeda. (A) Matematika (umum/wajib), elemen: Bilangan - barisan dan deret aritmetika & geometri, bunga tunggal & majemuk, pemodelan pinjaman/investasi dengan anuitas serta penyelidikan pengaruh parameter (suku bunga, periode pembayaran); Aljabar dan Fungsi - fungsi invers, komposisi fungsi, dan transformasi fungsi untuk memodelkan situasi nyata (linear, kuadrat, eksponensial); Geometri - hubungan antar unsur-unsur lingkaran (sudut pusat, sudut keliling, busur, juring, tali busur, garis singgung); Analisis Data dan Peluang - penyelidikan statistika, asosiasi dua variabel kategorikal & numerikal, best-fit line, beda asosiasi vs sebab-akibat, peluang & frekuensi harapan kejadian majemuk, kejadian saling bebas & saling lepas, peluang bersyarat, permutasi dan kombinasi. (B) Matematika Tingkat Lanjut (pilihan), elemen: Aljabar dan Fungsi - polinomial (operasi, faktor, identitas), operasi aljabar matriks dan penerapannya pada transformasi geometri, fungsi trigonometri via lingkaran satuan, pemodelan fenomena periodik, pembuktian identitas trigonometri, aturan sinus dan cosinus, pengenalan fungsi rasional/akar/eksponensial/logaritma/nilai mutlak/tangga/piecewise; Geometri - vektor pada bidang datar, operasi aljabar vektor, pembuktian geometris dengan vektor, persamaan lingkaran, elips, dan persamaan garis singgung; Analisis Data dan Peluang - variabel acak diskrit (distribusi binomial), fungsi peluang (distribusi normal), nilai harapan; Kalkulus - laju perubahan rata-rata dan sesaat, turunan fungsi polinomial/eksponensial/trigonometri dan penerapannya (sketsa kurva, gradien & garis singgung, kecepatan sesaat, optimasi), integral sebagai kebalikan turunan dan sebagai cara menghitung luas, serta Teorema Dasar Kalkulus. Limit masuk sebagai materi prasyarat di dalam elemen Kalkulus.",
+ "domains": [
+  {
+   "nama": "Bilangan",
+   "capaian": "[Matematika umum] CP 6.1 Bilangan: Menjelaskan barisan dan deret (aritmetika dan geometri), menerapkannya pada beragam masalah terutama masalah bunga tunggal dan majemuk, memodelkan pinjaman dan investasi dengan bunga majemuk dan anuitas, serta menyelidiki (secara numerik atau grafis) pengaruh masing-masing parameter (suku bunga, periode pembayaran) dalam model tersebut. Materi ini dipindahkan dari Fase E ke Fase F agar terpadu dengan literasi finansial. Elemen Bilangan tidak ada pada Matematika Tingkat Lanjut.",
+   "topics": [
+    {
+     "judul": "Barisan Aritmetika",
+     "kelas": 12,
+     "subKonsep": [
+      "Barisan sebagai daftar bilangan terurut; suku ke-n ditulis Un",
+      "Beda (b) sebagai selisih tetap antara dua suku berurutan",
+      "Suku pertama a (atau U1) sebagai titik awal barisan",
+      "Menemukan rumus suku ke-n dari pola bertambah tetap",
+      "Hubungan barisan aritmetika dengan fungsi linear: sama-sama berubah konstan, bedanya diskrit vs kontinu",
+      "Menentukan banyak suku n bila Un diketahui",
+      "Suku tengah barisan aritmetika dengan banyak suku ganjil",
+      "Penerapan pada konteks nyata: susunan kursi bertingkat, tumpukan barang, cicilan tetap"
+     ],
+     "rumus": [
+      "b = Un - U(n-1)",
+      "Un = a + (n - 1)b",
+      "Un = Um + (n - m)b",
+      "Ut = (a + Un)/2 (suku tengah, n ganjil)"
+     ],
+     "keterampilan": [
+      "Menguji apakah sebuah barisan aritmetika dengan memeriksa keajekan beda",
+      "Menyusun rumus suku ke-n dari data atau gambar pola",
+      "Menghitung suku ke-n dan menentukan posisi suku tertentu",
+      "Memodelkan masalah kontekstual (susunan kursi, produksi bertambah tetap) menjadi barisan aritmetika",
+      "Menjelaskan hubungan barisan aritmetika dengan grafik fungsi linear"
+     ],
+     "prasyarat": [
+      "Pola Bilangan dan Generalisasi Pola",
+      "Fungsi Linear dan Grafiknya",
+      "Operasi Bilangan Bulat dan Rasional"
+     ],
+     "miskonsepsi": [
+      "Menganggap setiap barisan yang nilainya makin besar pasti aritmetika",
+      "Menulis Un = a + n.b (lupa faktor n-1) sehingga hasil bergeser satu suku",
+      "Menghitung beda sebagai U1 - U2 (terbalik) sehingga tanda b salah",
+      "Menyamakan barisan dengan deret: menjawab jumlah padahal yang diminta suku ke-n"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa rumusnya a + (n-1)b, bukan a + nb? Dari mana angka satu yang dikurangi itu?",
+      "Kenapa titik-titik barisan aritmetika kalau digambar selalu terletak pada satu garis lurus?",
+      "Kalau beda tetap, kenapa barisan aritmetika bukan fungsi linear yang sama persis?"
+     ]
+    },
+    {
+     "judul": "Deret Aritmetika",
+     "kelas": 12,
+     "subKonsep": [
+      "Deret sebagai jumlah suku-suku barisan: Sn = U1 + U2 + ... + Un",
+      "Trik memasangkan suku depan dengan suku belakang (cara Gauss)",
+      "Dua bentuk rumus Sn dan kapan masing-masing lebih praktis",
+      "Hubungan balik Un = Sn - S(n-1)",
+      "Sn sebagai fungsi kuadrat dalam n (grafik parabola)",
+      "Deret aritmetika sebagai model total akumulasi (total kursi, total produksi, total bunga tunggal)"
+     ],
+     "rumus": [
+      "Sn = (n/2)(a + Un)",
+      "Sn = (n/2)(2a + (n - 1)b)",
+      "Un = Sn - S(n-1)",
+      "S(1+2+...+n) = n(n+1)/2"
+     ],
+     "keterampilan": [
+      "Menurunkan rumus Sn dengan cara memasangkan suku (bukan menghafal)",
+      "Memilih bentuk rumus Sn yang sesuai dengan data yang tersedia",
+      "Menentukan n bila Sn diketahui (menyelesaikan persamaan kuadrat)",
+      "Menghitung jumlah sebagian deret (misalnya U11 sampai U20 = S20 - S10)"
+     ],
+     "prasyarat": [
+      "Barisan Aritmetika",
+      "Persamaan dan Fungsi Kuadrat"
+     ],
+     "miskonsepsi": [
+      "Mengira Sn = n x Un (mengalikan banyak suku dengan suku terakhir)",
+      "Memakai Un ketika soal meminta jumlah, dan sebaliknya",
+      "Lupa bahwa n harus bilangan asli sehingga menerima akar negatif/pecahan sebagai jawaban",
+      "Menghitung jumlah suku ke-11 sampai ke-20 sebagai S20 - S11"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jumlah 1 sampai 100 bisa dihitung cepat tanpa menjumlahkan satu per satu?",
+      "Kenapa rumus Sn ada pembagian dua? Apa arti geometrisnya (dua tumpukan tangga dibalik jadi persegi panjang)?",
+      "Kenapa grafik Sn berbentuk parabola padahal barisannya garis lurus?"
+     ]
+    },
+    {
+     "judul": "Barisan Geometri",
+     "kelas": 12,
+     "subKonsep": [
+      "Rasio (r) sebagai pengali tetap antar suku berurutan",
+      "Membedakan pertumbuhan aritmetika (ditambah tetap) dan geometri (dikali tetap)",
+      "Rumus suku ke-n dan alasan pangkat (n-1)",
+      "Perilaku barisan untuk r > 1, 0 < r < 1, dan r negatif (berselang-seling)",
+      "Hubungan barisan geometri dengan fungsi eksponensial (diskrit vs kontinu)",
+      "Suku tengah geometri sebagai rata-rata geometris",
+      "Penerapan: pertumbuhan penduduk, peluruhan zat, penyebaran informasi, penggandaan sel"
+     ],
+     "rumus": [
+      "r = Un / U(n-1)",
+      "Un = a . r^(n-1)",
+      "Un = Um . r^(n-m)",
+      "Ut = akar(a . Un) (suku tengah, n ganjil)"
+     ],
+     "keterampilan": [
+      "Membedakan pola tambah-tetap dan kali-tetap dari tabel atau grafik",
+      "Menentukan a dan r dari dua suku yang diketahui",
+      "Menyusun model barisan geometri dari konteks pertumbuhan/peluruhan",
+      "Membandingkan kecepatan pertumbuhan aritmetika dan geometri secara grafis"
+     ],
+     "prasyarat": [
+      "Barisan Aritmetika",
+      "Sifat-sifat Bilangan Berpangkat",
+      "Fungsi Eksponensial"
+     ],
+     "miskonsepsi": [
+      "Menghitung rasio sebagai selisih (Un - U(n-1)) bukan hasil bagi",
+      "Menulis Un = a.r^n sehingga hasil bergeser satu suku",
+      "Mengira barisan geometri pasti membesar, padahal 0 < r < 1 membuatnya mengecil",
+      "Menganggap barisan dengan r negatif tidak sah karena nilainya naik-turun"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pangkatnya (n-1) dan bukan n? Berapa kali sebenarnya kita mengalikan?",
+      "Kenapa pertumbuhan geometri akhirnya selalu menyalip pertumbuhan aritmetika, sebesar apa pun bedanya?",
+      "Kenapa suku tengah geometri memakai akar perkalian, bukan rata-rata biasa?"
+     ]
+    },
+    {
+     "judul": "Deret Geometri",
+     "kelas": 12,
+     "subKonsep": [
+      "Jumlah n suku pertama deret geometri",
+      "Penurunan rumus dengan trik Sn - r.Sn (teleskoping)",
+      "Dua bentuk rumus untuk r < 1 dan r > 1 dan alasan keduanya setara",
+      "Kasus khusus r = 1",
+      "Deret geometri sebagai model total akumulasi bunga majemuk dan tabungan berkala",
+      "Perbandingan pertumbuhan Sn deret aritmetika dan geometri"
+     ],
+     "rumus": [
+      "Sn = a(1 - r^n)/(1 - r), untuk r tidak sama dengan 1",
+      "Sn = a(r^n - 1)/(r - 1)",
+      "Sn = n.a, untuk r = 1"
+     ],
+     "keterampilan": [
+      "Menurunkan rumus Sn dengan mengurangkan Sn dan r.Sn",
+      "Memilih bentuk rumus agar penyebut tidak negatif",
+      "Menentukan n atau r dari informasi jumlah deret",
+      "Memakai deret geometri untuk menghitung total setoran berbunga"
+     ],
+     "prasyarat": [
+      "Barisan Geometri",
+      "Deret Aritmetika",
+      "Sifat-sifat Bilangan Berpangkat"
+     ],
+     "miskonsepsi": [
+      "Memakai rumus Sn deret geometri untuk r = 1 sehingga penyebut nol",
+      "Tertukar antara pembilang (1 - r^n) dan penyebut (1 - r)",
+      "Mengira Sn deret geometri juga bisa dihitung dengan (n/2)(a + Un)",
+      "Menganggap tanda rumus berbeda menghasilkan nilai berbeda"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengurangkan Sn dengan r.Sn bisa membuat hampir semua suku lenyap?",
+      "Kenapa rumus dengan (1-r) dan rumus dengan (r-1) memberi hasil yang sama?",
+      "Kenapa uang di bank tumbuh mengikuti deret geometri, bukan deret aritmetika?"
+     ]
+    },
+    {
+     "judul": "Deret Geometri Tak Hingga",
+     "kelas": 12,
+     "subKonsep": [
+      "Syarat konvergen -1 < r < 1 dan makna divergen",
+      "Jumlah tak hingga sebagai nilai yang didekati Sn saat n makin besar",
+      "Penurunan S tak hingga dari Sn ketika r^n mendekati nol",
+      "Visualisasi luas persegi yang terus dibagi dua",
+      "Mengubah desimal berulang menjadi pecahan",
+      "Penerapan: panjang lintasan bola memantul, panjang total lipatan tali"
+     ],
+     "rumus": [
+      "S(tak hingga) = a/(1 - r), untuk -1 < r < 1",
+      "Panjang lintasan bola pantul = h + 2h.r/(1 - r)",
+      "0,abab... = ab/99"
+     ],
+     "keterampilan": [
+      "Memeriksa kekonvergenan sebelum memakai rumus",
+      "Mengubah desimal berulang menjadi pecahan lewat deret",
+      "Menghitung total lintasan bola memantul (naik dan turun terpisah)",
+      "Menjelaskan secara visual mengapa penjumlahan tak hingga bisa berhingga"
+     ],
+     "prasyarat": [
+      "Deret Geometri",
+      "Bilangan Rasional dan Bentuk Desimal"
+     ],
+     "miskonsepsi": [
+      "Yakin bahwa menjumlahkan tak hingga banyak bilangan positif pasti tak hingga",
+      "Memakai rumus a/(1-r) walaupun |r| lebih dari atau sama dengan 1",
+      "Lupa menggandakan lintasan naik-turun pada soal bola memantul",
+      "Menganggap 0,999... lebih kecil daripada 1"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa menjumlahkan tak hingga banyak potongan bisa berhenti di angka tertentu?",
+      "Kenapa 0,999... sama dengan 1, bukan sedikit di bawah 1?",
+      "Kenapa rumusnya jadi a/(1-r) begitu suku r^n hilang?"
+     ]
+    },
+    {
+     "judul": "Bunga Tunggal",
+     "kelas": 12,
+     "subKonsep": [
+      "Modal awal (pokok), suku bunga per periode, dan lama periode",
+      "Bunga selalu dihitung dari modal awal saja",
+      "Bunga tunggal sebagai deret/barisan aritmetika",
+      "Grafik saldo bunga tunggal berbentuk garis lurus",
+      "Konversi satuan periode (bunga per tahun ke per bulan)",
+      "Konteks: denda keterlambatan, pinjaman jangka pendek, bunga flat kredit kendaraan"
+     ],
+     "rumus": [
+      "B = M0 x i x n (besar bunga)",
+      "Mn = M0 (1 + i.n) (saldo akhir)",
+      "i per bulan = i per tahun / 12"
+     ],
+     "keterampilan": [
+      "Mengenali ciri bunga tunggal dari deskripsi produk keuangan",
+      "Menghitung saldo dan bunga untuk berbagai n",
+      "Menyamakan satuan waktu antara suku bunga dan lama investasi",
+      "Menghubungkan tabel saldo bunga tunggal dengan barisan aritmetika"
+     ],
+     "prasyarat": [
+      "Barisan Aritmetika",
+      "Persen dan Perbandingan Senilai"
+     ],
+     "miskonsepsi": [
+      "Memakai suku bunga tahunan langsung untuk periode bulanan",
+      "Menghitung bunga tunggal dari saldo terakhir, bukan dari modal awal",
+      "Menganggap bunga flat pada kredit sama murahnya dengan bunga efektif yang nilainya sama"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa saldo bunga tunggal naiknya lurus, bukan melengkung?",
+      "Kenapa bunga flat 10% pada cicilan terasa jauh lebih mahal dari 10% efektif?",
+      "Kenapa bunga tunggal cocok dipakai untuk memperkenalkan barisan aritmetika?"
+     ]
+    },
+    {
+     "judul": "Bunga Majemuk",
+     "kelas": 12,
+     "subKonsep": [
+      "Bunga dihitung dari saldo terakhir, bukan modal awal (bunga berbunga)",
+      "Bunga majemuk sebagai barisan geometri dengan rasio (1 + i)",
+      "Pengaruh frekuensi penggabungan bunga (tahunan, bulanan, harian)",
+      "Suku bunga nominal vs suku bunga efektif tahunan",
+      "Nilai sekarang (present value) sebagai kebalikan nilai akan datang",
+      "Aturan 72 sebagai perkiraan waktu penggandaan",
+      "Simulasi numerik/grafis pengaruh perubahan i dan n"
+     ],
+     "rumus": [
+      "Mn = M0 (1 + i)^n",
+      "Mn = M0 (1 + i/m)^(m.n) untuk m kali penggabungan per tahun",
+      "M0 = Mn / (1 + i)^n (nilai sekarang)",
+      "i efektif = (1 + i/m)^m - 1",
+      "n = log(Mn/M0) / log(1 + i)"
+     ],
+     "keterampilan": [
+      "Membedakan skema bunga tunggal dan majemuk dari brosur produk",
+      "Menghitung saldo, modal awal, suku bunga, atau lama waktu bila tiga lainnya diketahui",
+      "Menyelidiki secara numerik/grafis pengaruh suku bunga dan tenor terhadap hasil akhir",
+      "Membandingkan dua tawaran deposito/pinjaman dan mengambil keputusan beralasan",
+      "Menggunakan spreadsheet atau simulator daring untuk mengeksplorasi parameter"
+     ],
+     "prasyarat": [
+      "Barisan Geometri",
+      "Bunga Tunggal",
+      "Fungsi Eksponensial",
+      "Logaritma"
+     ],
+     "miskonsepsi": [
+      "Mengira bunga majemuk 10% selama 3 tahun sama dengan bunga total 30%",
+      "Menganggap bunga per bulan 1% sama persis dengan bunga per tahun 12%",
+      "Menambahkan 1 di tempat yang salah, misalnya menulis M0 . i^n",
+      "Mengira tenor pendek dengan bunga sama selalu memberi hasil sama per bulannya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa bunga majemuk melengkung ke atas sementara bunga tunggal lurus?",
+      "Kenapa 12% per tahun yang digabung bulanan menghasilkan lebih dari 12%?",
+      "Dari mana faktor (1 + i) berasal, dan kenapa ia dipangkatkan n?",
+      "Kenapa menunda menabung 5 tahun jauh lebih mahal daripada yang kita kira?"
+     ]
+    },
+    {
+     "judul": "Anuitas pada Investasi dan Pinjaman",
+     "kelas": 12,
+     "subKonsep": [
+      "Anuitas sebagai pembayaran tetap berkala pada tiap akhir periode",
+      "Anuitas = angsuran pokok + bunga, dengan komposisi yang berubah tiap periode",
+      "Nilai akan datang anuitas (menabung berkala) sebagai deret geometri",
+      "Nilai sekarang anuitas (pinjaman) sebagai deret geometri diskonto",
+      "Tabel/skedul amortisasi: sisa pokok pinjaman tiap periode",
+      "Beda anuitas dengan cicilan flat",
+      "Menghitung besar angsuran bila pokok, suku bunga, dan tenor diketahui"
+     ],
+     "rumus": [
+      "FV = A[((1 + i)^n - 1)/i] (nilai akan datang anuitas)",
+      "PV = A[(1 - (1 + i)^(-n))/i] (nilai sekarang anuitas)",
+      "A = PV . i / (1 - (1 + i)^(-n)) (besar angsuran)",
+      "Bunga periode ke-k = i x sisa pokok setelah periode ke-(k-1)",
+      "Angsuran pokok ke-k = A - bunga periode ke-k"
+     ],
+     "keterampilan": [
+      "Menyusun skedul amortisasi pinjaman dengan spreadsheet",
+      "Menghitung besar angsuran tetap dari pokok, bunga, dan tenor",
+      "Memisahkan bagian bunga dan bagian pokok pada setiap angsuran",
+      "Membandingkan total biaya beberapa skema pinjaman",
+      "Menjelaskan mengapa memperpanjang tenor menurunkan angsuran tapi menaikkan total bunga"
+     ],
+     "prasyarat": [
+      "Bunga Majemuk",
+      "Deret Geometri",
+      "Deret Geometri Tak Hingga"
+     ],
+     "miskonsepsi": [
+      "Mengira bagian bunga dan bagian pokok dalam anuitas selalu tetap",
+      "Menghitung total bunga sebagai pokok x i x n (rumus bunga tunggal)",
+      "Menganggap tenor lebih panjang selalu lebih menguntungkan karena angsurannya kecil",
+      "Menyamakan nilai uang hari ini dengan nilai uang lima tahun lagi"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa di awal masa cicilan hampir semua uang kita habis untuk bunga, bukan pokok?",
+      "Kenapa angsuran tetap tapi sisa pokok turunnya makin lama makin cepat?",
+      "Dari mana rumus anuitas berasal? Kenapa ia sebenarnya deret geometri?",
+      "Kenapa satu juta hari ini tidak sama nilainya dengan satu juta tahun depan?"
+     ]
+    },
+    {
+     "judul": "Penyelidikan Parameter Model Investasi dan Pinjaman",
+     "kelas": 12,
+     "subKonsep": [
+      "Parameter model: nilai pokok, suku bunga per periode, frekuensi pembayaran, tenor",
+      "Analisis sensitivitas: mengubah satu parameter dan menahan yang lain",
+      "Representasi grafis pertumbuhan saldo vs waktu untuk beberapa suku bunga",
+      "Menentukan parameter agar target keuangan tercapai (soal terbalik)",
+      "Pengaruh pajak atas bunga dan biaya administrasi",
+      "Pengambilan keputusan finansial berbasis data, bukan hafalan rumus"
+     ],
+     "rumus": [
+      "Mn = M0 (1 + i/m)^(m.n) (model umum)",
+      "A = PV . i / (1 - (1 + i)^(-n))",
+      "Bunga bersih = bunga kotor x (1 - tarif pajak)"
+     ],
+     "keterampilan": [
+      "Melakukan simulasi terkendali dengan spreadsheet/kalkulator/simulator daring",
+      "Membaca dan menafsirkan grafik saldo terhadap waktu",
+      "Merumuskan kesimpulan tentang pengaruh tiap parameter",
+      "Menentukan tenor atau setoran yang dibutuhkan untuk mencapai target",
+      "Menyusun rekomendasi keuangan yang beralasan"
+     ],
+     "prasyarat": [
+      "Bunga Majemuk",
+      "Anuitas pada Investasi dan Pinjaman",
+      "Fungsi Eksponensial"
+     ],
+     "miskonsepsi": [
+      "Mengubah dua parameter sekaligus lalu menyimpulkan pengaruh salah satunya",
+      "Mengira pengaruh suku bunga bersifat linear terhadap saldo akhir",
+      "Melupakan pajak dan biaya sehingga hasil simulasi terlalu optimistis"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa menaikkan suku bunga 1% berdampak jauh lebih besar pada tenor 20 tahun daripada 2 tahun?",
+      "Kenapa membayar lebih sering (bulanan) mempercepat lunas walau totalnya per tahun sama?",
+      "Kenapa dua tawaran dengan bunga sama bisa menghasilkan total bayar yang jauh berbeda?"
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf",
+  "https://repositori.kemendikdasmen.go.id/33608/",
+  "http://repositori.kemendikdasmen.go.id/33608/1/5.%20Final%20Panduan%20Mata%20Pelajaran%20Matematika_12_09_2025_Revisi%203.pdf",
+  "https://static.perangkat-ajar.belajar.id/USR.bkmYd1D4Jn.1698387811-vlJLp2aJx9.pdf",
+  "https://kepalasekolah.id/cp-matematika-2025-fase-e-f-sma-ma-smk-mak/",
+  "https://guru.kemendikdasmen.go.id/kurikulum/referensi-penerapan/capaian-pembelajaran/sd-sma/matematika/",
+  "https://static.buku.kemdikbud.go.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-XI.pdf",
+  "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika_BG_KLS_XI_TL_Rev.pdf",
+  "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika_BS_XII_TL_Rev.pdf"
+ ],
+ "catatan": "BAGIAN 1 DARI 5 (domain Bilangan). Keluaran ini terpotong karena batas token; domain Aljabar, Geometri, Analisis Data dan Peluang, serta Kalkulus dikirim pada panggilan berikutnya. --- SUMBER YANG BENAR-BENAR DIBACA: (1) Teks lengkap Kepka BSKAP 046/H/KR/2025, Lampiran II bab IV.1 (Matematika) dan IV.2 (Matematika Tingkat Lanjut) - CP Fase F dikutip persis dari butir 6.1-6.4 dan CP Matematika Tingkat Lanjut butir 1-4. (2) \"Panduan Mata Pelajaran Matematika: Fase A - Fase F dan Fase F Tingkat Lanjut\", Pusat Kurikulum dan Pembelajaran, 2025 (PDF 59 MB dari repositori.kemendikdasmen.go.id/33608) - bagian \"Pemetaan Materi Esensial\" bab 6 (Fase F) dan bab 7 (Fase F Matematika Tingkat Lanjut). (3) Buku teks resmi Kemendikdasmen yang diunduh dan dibaca lokal: Matematika SMA/MA/SMK/MAK Kelas XI (Bab 1 Komposisi Fungsi dan Fungsi Invers, Bab 2 Lingkaran, Bab 3 Statistika), Matematika Kelas XII Edisi Revisi 2025 (Bab 1 Barisan dan Deret, Bab 2 Investasi dan Pinjaman, Bab 3 Kaidah Pencacahan, Bab 4 Peluang), Matematika Tingkat Lanjut Kelas XI Edisi Revisi (Bab 1 Matriks, 2 Polinomial, 3 Fungsi Trigonometri, 4 Vektor, 5 Transformasi Geometri, 6 Fungsi dan Pemodelannya), Matematika Tingkat Lanjut Kelas XII Edisi Revisi 2025 (Bab 1 Lingkaran-Elips-Garis Singgung, Bab 2 Turunan Fungsi, Bab 3 Integral, Bab 4 Analisis Data dan Peluang). (4) ATP Matematika Fase F dan F+ dari static.perangkat-ajar.belajar.id sebagai pembanding praktik sekolah (catatan: ATP ini masih mengacu CP lama 032/H/KR/2024). --- TEMUAN PENTING TENTANG CAKUPAN: Beberapa topik yang disebut dalam permintaan TIDAK ADA dalam CP 2025 dan sengaja tidak dimasukkan: (a) BILANGAN KOMPLEKS tidak muncul sama sekali, baik di Matematika umum maupun Matematika Tingkat Lanjut Fase F; (b) INDUKSI MATEMATIKA tidak ada dalam CP 046/H/KR/2025; (c) VEKTOR DI RUANG (3 dimensi) tidak ada - Panduan menegaskan \"Materi vektor mencakup vektor dalam dua dimensi\" dan CP menulis \"vektor pada bidang datar\"; (d) VOLUME BENDA PUTAR tidak disebut - penerapan integral dibatasi pada luas daerah pada kurva serta aplikasi ekonomi, fisika, dan kesehatan; (e) STATISTIKA INFERENSIA / SAMPLING / UJI HIPOTESIS tidak ada di Fase F (sampel dan populasi ada di Fase D; uji chi-kuadrat dan koefisien korelasi Pearson dinyatakan tidak wajib di SMA); (f) LIMIT FUNGSI TRIGONOMETRI tidak dirinci; limit hanya dimasukkan sebagai materi prasyarat menuju turunan; (g) PERSAMAAN TRIGONOMETRI tidak disebut - yang ada adalah identitas trigonometri, aturan sinus, dan aturan cosinus. Sebaliknya, ELIPS justru masuk (Tingkat Lanjut, kelas 12), dan TEOREMA BINOMIAL / SEGITIGA PASCAL masuk sebagai pendalaman materi polinomial. --- PEMBAGIAN MATA PELAJARAN: setiap topik Matematika Tingkat Lanjut diberi awalan \"[Tingkat Lanjut]\" pada bidang judul; topik tanpa awalan adalah Matematika umum/wajib Fase F. Elemen Bilangan hanya ada pada Matematika umum; elemen Kalkulus hanya ada pada Matematika Tingkat Lanjut. Elemen PENGUKURAN tidak memiliki materi esensial di Fase F sehingga tidak muncul sebagai domain. --- PEMBAGIAN KELAS 11/12 mengikuti struktur buku teks resmi Kemendikdasmen (bukan ketentuan CP, karena CP dirumuskan per fase): Matematika umum kelas 11 = fungsi/komposisi/invers/transformasi fungsi, lingkaran, statistika bivariat; kelas 12 = barisan-deret, investasi-pinjaman, kaidah pencacahan, peluang. Matematika Tingkat Lanjut kelas 11 = matriks, polinomial, fungsi trigonometri, vektor, transformasi geometri, ragam fungsi; kelas 12 = lingkaran-elips-garis singgung, turunan, integral, distribusi peluang. Sekolah boleh menyusun urutan lain."
+}

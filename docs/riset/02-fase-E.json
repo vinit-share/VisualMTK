@@ -1,0 +1,1955 @@
+{
+ "fase": "E",
+ "kelas": [
+  10
+ ],
+ "ringkasanCP": "Fase E umumnya untuk kelas X SMA/MA/SMK/MAK/Program Paket C. Menurut Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025 (CP yang berlaku sejak 16 Juli 2025), CP Matematika Fase E dirumuskan dalam empat elemen: Bilangan, Aljabar dan Fungsi, Geometri, serta Analisis Data dan Peluang (elemen \"Pengukuran\" tidak lagi dirumuskan di Fase E, dan nama elemen aljabar menjadi \"Aljabar dan Fungsi\"). Pada elemen Bilangan murid menggeneralisasi sifat-sifat bilangan berpangkat termasuk pangkat pecahan dan menggunakannya untuk menyelesaikan masalah. Pada elemen Aljabar dan Fungsi murid menyelesaikan masalah yang berkaitan dengan sistem pertidaksamaan linear dua variabel, persamaan dan fungsi kuadrat (termasuk akar imajiner), serta persamaan eksponensial berbasis sama dan fungsi eksponensial. Pada elemen Geometri murid mengaplikasikan perbandingan trigonometri (sinus, cosinus, tangen) dari sudut lancip. Pada elemen Analisis Data dan Peluang murid menentukan jangkauan kuartil dan interkuartil, membuat serta menafsirkan box plot, histogram, dan dot plot sesuai natur data, menggunakan diagram pencar untuk menyelidiki hubungan dua variabel numerik, dan mengevaluasi laporan statistika di media termasuk yang disajikan dalam bentuk matriks. Peta ini tetap memuat topik logaritma, barisan-deret, SPLTV, vektor, dan peluang karena masih diajarkan luas di kelas X (buku teks resmi dan ATP resmi Kemendikbud), dengan penandaan status kurikulumnya pada catatan.",
+ "domains": [
+  {
+   "nama": "Bilangan",
+   "capaian": "Menggeneralisasi sifat-sifat bilangan berpangkat (termasuk bilangan pangkat pecahan), dan menggunakannya untuk menyelesaikan masalah. (Kepka BSKAP 046/H/KR/2025, butir 5.1). Catatan: pada CP 2022 dan 2024 elemen ini juga memuat logaritma serta barisan dan deret aritmetika-geometri termasuk bunga tunggal dan majemuk; pada CP 2025 barisan-deret dan bunga dipindahkan ke Fase F dan logaritma tidak lagi muncul dalam CP Matematika umum.",
+   "topics": [
+    {
+     "judul": "Himpunan Bilangan Real dan Garis Bilangan",
+     "kelas": 10,
+     "subKonsep": [
+      "Bilangan asli, cacah, bulat, rasional, irasional, dan real serta hubungan antarhimpunannya",
+      "Representasi bilangan pada garis bilangan, termasuk menempatkan bentuk akar dan pi secara aproksimasi",
+      "Desimal berulang sebagai bilangan rasional dan desimal tak berulang sebagai bilangan irasional",
+      "Notasi interval terbuka, tertutup, setengah terbuka, dan tak hingga",
+      "Nilai mutlak sebagai jarak dari nol pada garis bilangan",
+      "Kerapatan bilangan rasional dan kelengkapan garis bilangan real"
+     ],
+     "rumus": [
+      "Q = {a/b | a, b bilangan bulat, b tidak sama dengan 0}",
+      "|x| = x jika x >= 0, dan |x| = -x jika x < 0",
+      "[a, b] = {x | a <= x <= b}; (a, b) = {x | a < x < b}",
+      "|x - y| = jarak antara x dan y pada garis bilangan"
+     ],
+     "keterampilan": [
+      "Mengklasifikasikan sebuah bilangan ke dalam himpunan bilangan yang tepat",
+      "Menempatkan bilangan rasional dan irasional secara relatif pada garis bilangan",
+      "Menuliskan himpunan penyelesaian dalam notasi himpunan dan notasi interval",
+      "Membandingkan dan mengurutkan bilangan yang memuat bentuk akar",
+      "Menafsirkan pernyataan nilai mutlak sebagai pernyataan tentang jarak"
+     ],
+     "prasyarat": [
+      "Bilangan Bulat dan Operasinya (Fase D)",
+      "Bilangan Rasional, Pecahan, dan Desimal (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menganggap semua bentuk akar adalah bilangan irasional, padahal akar dari 9 sama dengan 3 yang rasional",
+      "Menganggap pi tepat sama dengan 22/7 dan bukan hampiran",
+      "Membaca 0,999... sebagai bilangan yang lebih kecil dari 1",
+      "Menyamakan kurung biasa dan kurung siku pada notasi interval sehingga salah memasukkan titik ujung",
+      "Mengira nilai mutlak berarti menghapus tanda minus pada variabel, sehingga menulis |x| = x untuk semua x"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa akar 2 tidak bisa ditulis sebagai pecahan dua bilangan bulat?",
+      "Kenapa di antara dua bilangan rasional selalu ada bilangan rasional lain, tetapi garis bilangan masih punya lubang yang diisi bilangan irasional?",
+      "Kenapa 0,999... sama persis dengan 1, bukan sedikit lebih kecil?",
+      "Kenapa nilai mutlak lebih tepat dibaca sebagai jarak daripada sebagai penghapus tanda minus?"
+     ]
+    },
+    {
+     "judul": "Bilangan Berpangkat (Eksponen) Bulat Positif",
+     "kelas": 10,
+     "subKonsep": [
+      "Pangkat sebagai perkalian berulang dengan faktor yang sama",
+      "Istilah bilangan pokok (basis) dan pangkat (eksponen) serta cara membacanya",
+      "Pangkat pada bilangan negatif: perbedaan (-a) pangkat n dengan negatif dari a pangkat n",
+      "Pangkat pada bilangan pecahan dan mengapa hasilnya bisa mengecil",
+      "Urutan operasi hitung yang melibatkan pemangkatan",
+      "Perbandingan pertumbuhan nilai pangkat terhadap perkalian biasa"
+     ],
+     "rumus": [
+      "a^n = a x a x ... x a sebanyak n faktor, dengan n bilangan asli",
+      "(-a)^n bernilai positif jika n genap dan negatif jika n ganjil",
+      "(a/b)^n = a^n / b^n",
+      "urutan operasi: kurung, pangkat, kali/bagi, tambah/kurang"
+     ],
+     "keterampilan": [
+      "Menuliskan perkalian bilangan berulang sebagai bentuk pangkat dan sebaliknya",
+      "Menghitung nilai bentuk pangkat tanpa kalkulator untuk basis dan pangkat kecil",
+      "Membedakan hasil (-3)^2 dengan -3^2 dan menjelaskan alasannya",
+      "Menerapkan urutan operasi pada ekspresi bercampur",
+      "Mengestimasi besar hasil pemangkatan untuk mengecek kewajaran jawaban"
+     ],
+     "prasyarat": [
+      "Bilangan Bulat dan Operasinya (Fase D)",
+      "Himpunan Bilangan Real dan Garis Bilangan"
+     ],
+     "miskonsepsi": [
+      "Menghitung 2^3 sebagai 2 x 3 = 6, yaitu memperlakukan pangkat sebagai perkalian biasa",
+      "Menganggap (-3)^2 sama dengan -3^2 karena tidak memperhatikan kurung",
+      "Menganggap a^n selalu lebih besar daripada a, padahal (1/2)^3 justru lebih kecil dari 1/2",
+      "Menuliskan 3^2 x 3^2 sebagai 9^4 karena mengalikan basis sekaligus pangkat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pangkat dimaknai perkalian berulang, bukan penjumlahan berulang?",
+      "Kenapa (-2)^4 bernilai positif tetapi -2^4 bernilai negatif?",
+      "Kenapa memangkatkan bilangan antara 0 dan 1 justru membuat hasilnya makin kecil?"
+     ]
+    },
+    {
+     "judul": "Sifat-sifat Operasi Eksponen",
+     "kelas": 10,
+     "subKonsep": [
+      "Perkalian bilangan berpangkat dengan bilangan pokok sama",
+      "Pembagian bilangan berpangkat dengan bilangan pokok sama",
+      "Pemangkatan dari bilangan berpangkat",
+      "Pemangkatan dari hasil kali dan hasil bagi",
+      "Menggeneralisasi sifat dari pola contoh konkret menuju bentuk umum",
+      "Batas keberlakuan sifat: hanya untuk bilangan pokok yang sama",
+      "Menyederhanakan ekspresi eksponen bercampur menjadi bentuk paling sederhana"
+     ],
+     "rumus": [
+      "a^m x a^n = a^(m+n)",
+      "a^m : a^n = a^(m-n)",
+      "(a^m)^n = a^(m x n)",
+      "(a x b)^n = a^n x b^n",
+      "(a/b)^n = a^n / b^n, dengan b tidak sama dengan 0"
+     ],
+     "keterampilan": [
+      "Menggeneralisasi sifat eksponen dengan menguraikan perkalian berulang",
+      "Menyederhanakan ekspresi eksponen menjadi satu bentuk pangkat",
+      "Mengidentifikasi dua ekspresi yang ekuivalen menggunakan sifat eksponen",
+      "Menjelaskan mengapa suatu langkah penyederhanaan sah atau tidak sah"
+     ],
+     "prasyarat": [
+      "Bilangan Berpangkat (Eksponen) Bulat Positif"
+     ],
+     "miskonsepsi": [
+      "Menuliskan a^m x a^n sebagai a^(m x n) karena tertukar dengan sifat pangkat dari pangkat",
+      "Menganggap (a + b)^n sama dengan a^n + b^n",
+      "Menggabungkan 2^3 x 3^2 menjadi 6^5 padahal bilangan pokoknya berbeda",
+      "Menukar (a^m)^n dengan a^(m^n)",
+      "Menganggap a^m : a^n = a^(m/n)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pangkatnya dijumlahkan ketika dua bilangan berpangkat dikalikan?",
+      "Kenapa (a + b)^2 tidak sama dengan a^2 + b^2?",
+      "Kenapa sifat-sifat ini gagal ketika bilangan pokoknya berbeda?",
+      "Kenapa (a^m)^n pangkatnya dikalikan, sedangkan a^m x a^n pangkatnya dijumlahkan?"
+     ]
+    },
+    {
+     "judul": "Pangkat Nol dan Pangkat Bulat Negatif",
+     "kelas": 10,
+     "subKonsep": [
+      "Menurunkan a^0 = 1 dari pola pembagian a^n : a^n dan dari pola barisan menurun",
+      "Alasan syarat a tidak sama dengan 0 dan status 0^0 yang tak terdefinisi",
+      "Pangkat bulat negatif sebagai kebalikan (invers perkalian)",
+      "Pangkat negatif pada pecahan yang membalik pembilang dan penyebut",
+      "Menyatakan hasil akhir dengan pangkat positif",
+      "Konsistensi: definisi dipilih agar semua sifat eksponen tetap berlaku"
+     ],
+     "rumus": [
+      "a^0 = 1 untuk a tidak sama dengan 0",
+      "a^(-n) = 1 / a^n untuk a tidak sama dengan 0",
+      "(a/b)^(-n) = (b/a)^n",
+      "a^m : a^n = a^(m-n) tetap berlaku meskipun m < n"
+     ],
+     "keterampilan": [
+      "Menjelaskan a^0 = 1 melalui pola, bukan sekadar hafalan",
+      "Mengubah bentuk berpangkat negatif menjadi pecahan dan sebaliknya",
+      "Menyederhanakan ekspresi campuran sehingga tidak ada pangkat negatif",
+      "Menghitung nilai bentuk pangkat negatif tanpa kalkulator"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Bilangan Berpangkat (Eksponen) Bulat Positif"
+     ],
+     "miskonsepsi": [
+      "Menganggap a^0 = 0 karena mengira tidak ada faktor sama sekali",
+      "Menganggap 2^(-3) = -8, yaitu mengira pangkat negatif membuat hasilnya negatif",
+      "Menganggap 0^0 = 1 tanpa menyadari bahwa bentuk ini tak terdefinisi",
+      "Menuliskan (1/2)^(-2) = -4 karena membalik tanda alih-alih membalik pecahan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa bilangan apa pun (selain nol) dipangkatkan nol hasilnya 1?",
+      "Kenapa pangkat negatif berarti membalik bilangan, bukan membuatnya negatif?",
+      "Kenapa 0^0 tidak didefinisikan padahal a^0 = 1 dan 0^n = 0?",
+      "Kenapa definisi pangkat nol dan negatif dipilih demikian, bukan sembarangan?"
+     ]
+    },
+    {
+     "judul": "Bentuk Akar",
+     "kelas": 10,
+     "subKonsep": [
+      "Akar kuadrat dan akar pangkat n sebagai kebalikan pemangkatan",
+      "Akar utama (principal root) yang selalu bernilai tak negatif",
+      "Menyederhanakan bentuk akar dengan memisahkan faktor kuadrat sempurna",
+      "Penjumlahan dan pengurangan bentuk akar sejenis",
+      "Perkalian dan pembagian bentuk akar",
+      "Akar dari bilangan negatif yang tidak memiliki hasil real",
+      "Mengestimasi nilai akar di antara dua bilangan bulat berurutan"
+     ],
+     "rumus": [
+      "akar(a) x akar(b) = akar(a x b) untuk a, b >= 0",
+      "akar(a) / akar(b) = akar(a/b) untuk a >= 0, b > 0",
+      "akar(x^2) = |x|",
+      "p akar(c) + q akar(c) = (p + q) akar(c)",
+      "akar pangkat n dari (a^n) = a untuk a >= 0"
+     ],
+     "keterampilan": [
+      "Menyederhanakan bentuk akar seperti akar 72 menjadi 6 akar 2",
+      "Menjumlahkan dan mengurangkan bentuk akar sejenis",
+      "Mengestimasi letak akar 30 di antara 5 dan 6 tanpa kalkulator",
+      "Menempatkan bentuk akar pada garis bilangan",
+      "Menghubungkan bentuk akar dengan panjang sisi hasil teorema Pythagoras"
+     ],
+     "prasyarat": [
+      "Bilangan Berpangkat (Eksponen) Bulat Positif",
+      "Teorema Pythagoras (Fase D)",
+      "Himpunan Bilangan Real dan Garis Bilangan"
+     ],
+     "miskonsepsi": [
+      "Menuliskan akar(a + b) sebagai akar(a) + akar(b)",
+      "Menjumlahkan akar 2 dengan akar 3 menjadi akar 5",
+      "Menuliskan akar(x^2) = x tanpa nilai mutlak, sehingga salah untuk x negatif",
+      "Menuliskan akar 9 = 3 atau -3, padahal lambang akar hanya menunjuk akar tak negatif",
+      "Menganggap akar dari bilangan negatif sama saja dengan negatif dari akar bilangan itu"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa akar(a + b) tidak sama dengan akar(a) + akar(b)?",
+      "Kenapa lambang akar hanya memberi hasil positif padahal persamaan x^2 = 9 punya dua penyelesaian?",
+      "Kenapa akar(x^2) harus ditulis |x| dan bukan x?",
+      "Kenapa akar 2 muncul begitu sering dalam geometri, misalnya pada diagonal persegi?"
+     ]
+    },
+    {
+     "judul": "Pangkat Pecahan (Rasional) dan Kaitannya dengan Bentuk Akar",
+     "kelas": 10,
+     "subKonsep": [
+      "Makna a pangkat 1/2 dan a pangkat 1/n",
+      "Makna a pangkat m/n sebagai akar pangkat n dari a pangkat m",
+      "Alasan definisi dipilih agar sifat a^m x a^n = a^(m+n) tetap konsisten",
+      "Syarat bilangan pokok tak negatif ketika penyebut pangkat bernafas genap",
+      "Mengubah bolak-balik antara notasi akar dan notasi pangkat pecahan",
+      "Menyederhanakan ekspresi campuran akar dan pangkat menggunakan sifat eksponen",
+      "Penerapan pada laju pertumbuhan per periode pecahan"
+     ],
+     "rumus": [
+      "a^(1/n) = akar pangkat n dari a",
+      "a^(m/n) = akar pangkat n dari (a^m) = (akar pangkat n dari a)^m",
+      "a^(1/2) x a^(1/2) = a^1 = a",
+      "a^(-m/n) = 1 / a^(m/n)"
+     ],
+     "keterampilan": [
+      "Mengubah bentuk akar menjadi pangkat pecahan dan sebaliknya",
+      "Menyederhanakan ekspresi bercampur menggunakan sifat eksponen",
+      "Menghitung nilai seperti 8^(2/3) tanpa kalkulator",
+      "Menyelesaikan masalah kontekstual dengan pangkat pecahan, misalnya laju bunga per bulan dari laju tahunan"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Bentuk Akar",
+      "Pangkat Nol dan Pangkat Bulat Negatif"
+     ],
+     "miskonsepsi": [
+      "Mengartikan a^(1/2) sebagai a dibagi 2 atau setengah dari a",
+      "Membaca a^(2/3) sebagai akar pangkat 2 dari a pangkat 3 karena membalik peran pembilang dan penyebut",
+      "Menerapkan pangkat pecahan pada bilangan pokok negatif tanpa memeriksa penyebutnya",
+      "Menganggap notasi akar dan notasi pangkat pecahan adalah dua konsep yang berbeda"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa a pangkat 1/2 harus berarti akar a dan tidak boleh berarti hal lain?",
+      "Kenapa definisi pangkat pecahan sengaja dirancang agar sifat penjumlahan pangkat tetap berlaku?",
+      "Kenapa penyebut pangkat menjadi indeks akar, bukan pembilangnya?"
+     ]
+    },
+    {
+     "judul": "Merasionalkan Penyebut Bentuk Akar",
+     "kelas": 10,
+     "subKonsep": [
+      "Alasan historis dan praktis merasionalkan penyebut",
+      "Merasionalkan penyebut berbentuk akar tunggal",
+      "Merasionalkan penyebut berbentuk a + akar b menggunakan sekawan (konjugat)",
+      "Identitas selisih dua kuadrat sebagai kunci hilangnya akar",
+      "Mengalikan dengan bentuk yang bernilai satu sehingga nilai tidak berubah",
+      "Menuliskan hasil dalam bentuk paling sederhana"
+     ],
+     "rumus": [
+      "a / akar(b) = a akar(b) / b",
+      "c / (a + akar b) = c(a - akar b) / (a^2 - b)",
+      "c / (akar a + akar b) = c(akar a - akar b) / (a - b)",
+      "(a + akar b)(a - akar b) = a^2 - b"
+     ],
+     "keterampilan": [
+      "Menentukan bentuk pengali yang tepat untuk setiap jenis penyebut",
+      "Menggunakan sekawan untuk penyebut dua suku",
+      "Menyederhanakan hasil akhir setelah merasionalkan",
+      "Memeriksa kesetaraan hasil dengan hampiran desimal"
+     ],
+     "prasyarat": [
+      "Bentuk Akar",
+      "Perkalian Bentuk Aljabar dan Selisih Dua Kuadrat (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Mengalikan hanya penyebut tanpa mengalikan pembilang sehingga nilai pecahan berubah",
+      "Mengalikan dengan a + akar b padahal seharusnya dengan sekawannya a - akar b",
+      "Menganggap nilai bilangan berubah setelah penyebutnya dirasionalkan",
+      "Menghentikan langkah sebelum menyederhanakan pecahan hasil akhirnya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa mengalikan pembilang dan penyebut dengan bilangan yang sama tidak mengubah nilai pecahan?",
+      "Kenapa perkalian dengan bentuk sekawan justru menghilangkan tanda akar?",
+      "Kenapa dulu orang repot-repot merasionalkan penyebut sebelum ada kalkulator?"
+     ]
+    },
+    {
+     "judul": "Notasi Ilmiah, Pembulatan, dan Estimasi",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk baku a x 10 pangkat n dengan syarat 1 <= a < 10",
+      "Mengubah bilangan sangat besar dan sangat kecil ke notasi ilmiah",
+      "Operasi perkalian dan pembagian pada notasi ilmiah",
+      "Angka penting dan aturan pembulatan",
+      "Estimasi hasil sebelum menghitung untuk mengecek kewajaran",
+      "Kesadaran satuan dan konversi satuan pada hasil hitung",
+      "Penumpukan galat akibat pembulatan bertahap"
+     ],
+     "rumus": [
+      "N = a x 10^n dengan 1 <= a < 10 dan n bilangan bulat",
+      "(a x 10^m)(b x 10^n) = (a x b) x 10^(m+n)",
+      "(a x 10^m) : (b x 10^n) = (a/b) x 10^(m-n)"
+     ],
+     "keterampilan": [
+      "Menulis dan membaca bilangan dalam notasi ilmiah",
+      "Menghitung perkalian dan pembagian dengan notasi ilmiah",
+      "Membulatkan hasil ke banyak angka penting atau tempat desimal tertentu",
+      "Mengestimasi hasil kasar untuk memeriksa keluaran kalkulator",
+      "Menuliskan jawaban lengkap dengan satuan yang tepat"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Pangkat Nol dan Pangkat Bulat Negatif"
+     ],
+     "miskonsepsi": [
+      "Menuliskan 25 x 10^3 sebagai notasi ilmiah, padahal a harus lebih kecil dari 10",
+      "Membulatkan di setiap langkah sehingga galat menumpuk pada hasil akhir",
+      "Menghitung angka penting 0,0035 sebagai empat angka penting",
+      "Menghilangkan satuan setelah melakukan operasi sehingga jawaban kehilangan makna",
+      "Mengira 10^-3 berarti bilangan negatif"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa notasi ilmiah mensyaratkan bilangan depannya antara 1 dan 10?",
+      "Kenapa pembulatan bertahap bisa membuat hasil akhir melenceng cukup jauh?",
+      "Kenapa penting mengestimasi dulu sebelum memencet kalkulator?"
+     ]
+    },
+    {
+     "judul": "Logaritma: Definisi dan Sifat-sifatnya",
+     "kelas": 10,
+     "subKonsep": [
+      "Logaritma sebagai kebalikan (invers) dari pemangkatan",
+      "Istilah bilangan pokok (basis), numerus, dan hasil logaritma",
+      "Syarat basis lebih dari 0 dan tidak sama dengan 1, serta numerus lebih dari 0",
+      "Logaritma umum berbasis 10 dan logaritma natural berbasis e",
+      "Sifat logaritma perkalian, pembagian, dan perpangkatan",
+      "Sifat khusus: log 1 = 0, log basisnya sendiri = 1",
+      "Mengubah basis logaritma",
+      "Menyelesaikan persamaan eksponensial berbasis berbeda",
+      "Skala logaritmik pada kehidupan nyata: skala Richter, pH, desibel"
+     ],
+     "rumus": [
+      "a log b = c ekuivalen dengan a^c = b, dengan a > 0, a tidak sama dengan 1, b > 0",
+      "a log (x y) = a log x + a log y",
+      "a log (x/y) = a log x - a log y",
+      "a log (x^n) = n x (a log x)",
+      "a log b = (c log b) / (c log a)",
+      "a log 1 = 0 dan a log a = 1",
+      "a^(a log b) = b"
+     ],
+     "keterampilan": [
+      "Mengubah bentuk eksponen menjadi bentuk logaritma dan sebaliknya",
+      "Menyederhanakan ekspresi logaritma dengan sifat-sifatnya",
+      "Menyelesaikan persamaan eksponensial yang basisnya tidak bisa disamakan",
+      "Menafsirkan makna skala logaritmik pada berita gempa atau tingkat keasaman"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Pangkat Pecahan (Rasional) dan Kaitannya dengan Bentuk Akar",
+      "Fungsi Eksponensial: Pertumbuhan dan Peluruhan"
+     ],
+     "miskonsepsi": [
+      "Menuliskan log(x + y) sebagai log x + log y",
+      "Menganggap (log x)/(log y) sama dengan log(x/y)",
+      "Mengira logaritma bilangan negatif atau nol ada nilainya",
+      "Memperlakukan log sebagai bilangan yang dikalikan, misalnya mencoret log pada kedua ruas",
+      "Menganggap 2 log 8 berarti 2 dikali log 8"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa sifat logaritma mengubah perkalian menjadi penjumlahan?",
+      "Kenapa numerus logaritma harus positif?",
+      "Kenapa basis logaritma tidak boleh 1?",
+      "Kenapa skala gempa bumi dan tingkat keasaman memakai logaritma, bukan skala biasa?"
+     ]
+    },
+    {
+     "judul": "Barisan dan Deret Aritmetika",
+     "kelas": 10,
+     "subKonsep": [
+      "Pola bilangan, suku, dan notasi suku ke-n",
+      "Beda (selisih tetap) antara dua suku berurutan",
+      "Rumus suku ke-n dan hubungannya dengan fungsi linear",
+      "Perbedaan barisan (daftar berurut) dan deret (jumlah suku)",
+      "Penurunan rumus jumlah n suku pertama dengan cara Gauss (menjumlahkan barisan maju dan mundur)",
+      "Suku tengah barisan aritmetika",
+      "Hubungan antara suku ke-n dan jumlah: U_n = S_n - S_(n-1)",
+      "Penerapan: angsuran tetap, penyusutan garis lurus, susunan kursi gedung pertunjukan"
+     ],
+     "rumus": [
+      "U_n = a + (n - 1) b",
+      "b = U_n - U_(n-1)",
+      "S_n = (n/2)(2a + (n - 1) b)",
+      "S_n = (n/2)(a + U_n)",
+      "U_n = S_n - S_(n-1)",
+      "U_tengah = (a + U_n)/2 untuk n ganjil"
+     ],
+     "keterampilan": [
+      "Mengidentifikasi apakah sebuah barisan bersifat aritmetika",
+      "Menentukan rumus suku ke-n dari beberapa suku yang diketahui",
+      "Menghitung jumlah n suku pertama",
+      "Memodelkan masalah kontekstual menjadi barisan atau deret aritmetika",
+      "Menurunkan rumus jumlah deret dengan penalaran, bukan hafalan"
+     ],
+     "prasyarat": [
+      "Pola Bilangan (Fase D)",
+      "Persamaan Linear Satu Variabel (Fase D)",
+      "Fungsi Linear dan Gradien (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menggunakan U_n = a + n b karena lupa faktor (n - 1)",
+      "Menyamakan barisan dengan deret sehingga menjumlahkan padahal diminta suku ke-n",
+      "Menganggap setiap barisan yang nilainya naik pasti aritmetika",
+      "Menghitung beda dengan U_1 - U_2 sehingga tandanya terbalik",
+      "Mengira suku pertama selalu bernomor nol"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa ada (n - 1) di rumus suku ke-n, bukan n?",
+      "Kenapa menjumlahkan 1 sampai 100 bisa dilakukan secepat cara Gauss?",
+      "Kenapa grafik barisan aritmetika berupa titik-titik yang terletak pada satu garis lurus?",
+      "Kenapa rumus jumlah deret memuat rata-rata suku pertama dan suku terakhir?"
+     ]
+    },
+    {
+     "judul": "Barisan dan Deret Geometri serta Deret Geometri Tak Hingga",
+     "kelas": 10,
+     "subKonsep": [
+      "Rasio (pembanding tetap) antara dua suku berurutan",
+      "Rumus suku ke-n dan hubungannya dengan fungsi eksponen",
+      "Penurunan rumus jumlah n suku pertama dengan trik S_n dikurangi r S_n",
+      "Kasus khusus r = 1",
+      "Deret geometri tak hingga dan syarat konvergen |r| < 1",
+      "Deret divergen ketika |r| >= 1",
+      "Penerapan: pertumbuhan bakteri, bola memantul, lipatan kertas, fraktal, penyebaran informasi"
+     ],
+     "rumus": [
+      "U_n = a r^(n-1)",
+      "r = U_n / U_(n-1)",
+      "S_n = a(r^n - 1)/(r - 1) untuk r > 1",
+      "S_n = a(1 - r^n)/(1 - r) untuk r < 1",
+      "S_tak hingga = a/(1 - r) untuk |r| < 1"
+     ],
+     "keterampilan": [
+      "Membedakan barisan aritmetika dan geometri dari data suku-sukunya",
+      "Menentukan suku ke-n dan jumlah n suku pertama barisan geometri",
+      "Menghitung jumlah deret geometri tak hingga dan memeriksa syaratnya",
+      "Memodelkan pertumbuhan atau peluruhan diskret dengan barisan geometri",
+      "Menurunkan rumus jumlah deret geometri sendiri"
+     ],
+     "prasyarat": [
+      "Barisan dan Deret Aritmetika",
+      "Sifat-sifat Operasi Eksponen",
+      "Pangkat Nol dan Pangkat Bulat Negatif"
+     ],
+     "miskonsepsi": [
+      "Menggunakan U_n = a r^n karena lupa pangkat (n - 1)",
+      "Menerapkan rumus deret tak hingga meskipun |r| >= 1",
+      "Mengira jumlah tak hingga banyak bilangan positif pasti tak hingga besar",
+      "Menghitung rasio dengan pengurangan alih-alih pembagian",
+      "Menganggap barisan geometri selalu naik, padahal bisa turun jika 0 < r < 1"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa menjumlahkan tak hingga banyak bilangan positif bisa menghasilkan bilangan berhingga?",
+      "Dari mana rumus jumlah deret geometri berasal, dan kenapa triknya mengalikan dengan r?",
+      "Kenapa syarat deret tak hingga konvergen adalah |r| < 1?",
+      "Kenapa bola yang memantul terus-menerus akhirnya berhenti dalam waktu berhingga?"
+     ]
+    },
+    {
+     "judul": "Bunga Tunggal, Bunga Majemuk, dan Model Peluruhan",
+     "kelas": 10,
+     "subKonsep": [
+      "Modal awal, suku bunga, periode, dan nilai akhir",
+      "Bunga tunggal sebagai model linear (barisan aritmetika)",
+      "Bunga majemuk sebagai model eksponensial (barisan geometri)",
+      "Frekuensi pemajemukan: tahunan, semesteran, bulanan, harian",
+      "Perbandingan hasil bunga tunggal dan bunga majemuk pada jangka panjang",
+      "Peluruhan: penyusutan nilai aset, peluruhan radioaktif, konsep waktu paruh",
+      "Inflasi dan nilai uang terhadap waktu",
+      "Membaca dan mengkritisi tawaran investasi atau pinjaman"
+     ],
+     "rumus": [
+      "M_n = M_0 (1 + n i) untuk bunga tunggal",
+      "M_n = M_0 (1 + i)^n untuk bunga majemuk",
+      "M_n = M_0 (1 + i/k)^(k n) untuk pemajemukan k kali per periode",
+      "N(t) = N_0 (1 - p)^t untuk peluruhan",
+      "N(t) = N_0 (1/2)^(t/T) dengan T waktu paruh"
+     ],
+     "keterampilan": [
+      "Memilih model bunga tunggal atau majemuk sesuai deskripsi masalah",
+      "Menghitung nilai akhir maupun modal awal yang diperlukan",
+      "Membandingkan dua skema investasi atau pinjaman secara kuantitatif",
+      "Menafsirkan grafik pertumbuhan dan peluruhan",
+      "Mengubah suku bunga tahunan menjadi suku bunga per periode pemajemukan"
+     ],
+     "prasyarat": [
+      "Barisan dan Deret Geometri serta Deret Geometri Tak Hingga",
+      "Sifat-sifat Operasi Eksponen",
+      "Persen dan Aritmetika Sosial (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Memakai rumus bunga tunggal untuk soal bunga majemuk karena keduanya terlihat mirip",
+      "Menganggap bunga 12% per tahun langsung berarti 12% per bulan",
+      "Lupa mengubah persen menjadi bentuk desimal sebelum menghitung",
+      "Mengira bunga majemuk selama 2 tahun sama dengan dua kali bunga 1 tahun",
+      "Menganggap peluruhan berarti pengurangan jumlah tetap tiap periode"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa bunga majemuk tumbuh jauh lebih cepat daripada bunga tunggal padahal persennya sama?",
+      "Kenapa pemajemukan yang lebih sering menghasilkan uang lebih banyak?",
+      "Kenapa peluruhan radioaktif dimodelkan dengan pangkat, bukan dengan pengurangan tetap?",
+      "Kenapa pinjaman online berbunga harian bisa membengkak sangat cepat?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Aljabar dan Fungsi",
+   "capaian": "Menyelesaikan masalah yang berkaitan dengan sistem pertidaksamaan linear dua variabel; menyelesaikan masalah yang berkaitan dengan persamaan dan fungsi kuadrat (termasuk akar imajiner), serta persamaan eksponensial (berbasis/bilangan pokok sama) dan fungsi eksponensial. (Kepka BSKAP 046/H/KR/2025, butir 5.2). Catatan: sistem persamaan linear tiga variabel tercantum pada CP 2022 dan CP 2024 tetapi tidak lagi pada CP 2025; operasi vektor hanya tercantum pada CP 2022 dan kini menjadi materi Matematika Tingkat Lanjut Fase F.",
+   "topics": [
+    {
+     "judul": "Bentuk Aljabar, Persamaan, dan Pertidaksamaan Linear Satu Variabel",
+     "kelas": 10,
+     "subKonsep": [
+      "Variabel, koefisien, konstanta, suku, dan suku sejenis",
+      "Operasi penjumlahan, pengurangan, perkalian, dan pembagian bentuk aljabar",
+      "Sifat komutatif, asosiatif, dan distributif sebagai dasar manipulasi aljabar",
+      "Menyelesaikan persamaan linear dengan operasi setara pada kedua ruas",
+      "Pertidaksamaan linear dan aturan pembalikan tanda",
+      "Himpunan penyelesaian pada garis bilangan dan notasi interval",
+      "Menerjemahkan kalimat verbal menjadi kalimat matematika"
+     ],
+     "rumus": [
+      "a x + b = 0 memberi x = -b/a untuk a tidak sama dengan 0",
+      "a(b + c) = ab + ac",
+      "jika a < b dan c > 0 maka ac < bc",
+      "jika a < b dan c < 0 maka ac > bc"
+     ],
+     "keterampilan": [
+      "Menyederhanakan bentuk aljabar dengan menggabungkan suku sejenis",
+      "Menyelesaikan persamaan dan pertidaksamaan linear satu variabel",
+      "Menerjemahkan soal cerita menjadi persamaan",
+      "Memeriksa kebenaran penyelesaian dengan substitusi balik",
+      "Menggambar himpunan penyelesaian pada garis bilangan"
+     ],
+     "prasyarat": [
+      "Bilangan Bulat dan Operasinya (Fase D)",
+      "Himpunan Bilangan Real dan Garis Bilangan"
+     ],
+     "miskonsepsi": [
+      "Menyederhanakan 3x + 2 menjadi 5x karena menggabungkan suku tak sejenis",
+      "Lupa membalik tanda pertidaksamaan ketika kedua ruas dikalikan atau dibagi bilangan negatif",
+      "Memindahkan suku antar ruas tanpa mengubah tandanya",
+      "Menafsirkan tanda sama dengan sebagai perintah menghitung, bukan sebagai pernyataan kesetaraan",
+      "Membagi kedua ruas dengan variabel tanpa memeriksa kemungkinan variabel bernilai nol"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa tanda pertidaksamaan harus dibalik ketika dikalikan bilangan negatif?",
+      "Kenapa kita boleh menambahkan bilangan yang sama ke kedua ruas persamaan?",
+      "Kenapa 3x dan 2 tidak bisa digabungkan menjadi satu suku?"
+     ]
+    },
+    {
+     "judul": "Sistem Persamaan Linear Dua Variabel (SPLDV)",
+     "kelas": 10,
+     "subKonsep": [
+      "Persamaan linear dua variabel dan grafiknya berupa garis lurus",
+      "Penyelesaian sistem sebagai titik potong dua garis",
+      "Metode grafik, substitusi, eliminasi, dan gabungan",
+      "Jenis penyelesaian: tunggal, tak hingga banyak, atau tidak ada",
+      "Kaitan jenis penyelesaian dengan gradien dan konstanta kedua garis",
+      "Pemodelan masalah dua besaran (harga dua barang, campuran, kecepatan)"
+     ],
+     "rumus": [
+      "a x + b y = c dan d x + e y = f",
+      "penyelesaian tunggal jika a/d tidak sama dengan b/e",
+      "tidak ada penyelesaian jika a/d = b/e tetapi tidak sama dengan c/f",
+      "tak hingga banyak penyelesaian jika a/d = b/e = c/f",
+      "y = m x + k dengan m gradien"
+     ],
+     "keterampilan": [
+      "Memilih metode penyelesaian yang paling efisien untuk sistem tertentu",
+      "Menyelesaikan SPLDV dengan eliminasi dan substitusi",
+      "Menafsirkan titik potong dalam konteks masalah nyata",
+      "Mengenali sistem yang tidak punya penyelesaian atau punya tak hingga penyelesaian",
+      "Menyusun model SPLDV dari soal cerita"
+     ],
+     "prasyarat": [
+      "Bentuk Aljabar, Persamaan, dan Pertidaksamaan Linear Satu Variabel",
+      "Fungsi Linear dan Gradien (Fase D)",
+      "Koordinat Kartesius (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Mengeliminasi tanpa terlebih dahulu menyamakan koefisien variabel yang dihilangkan",
+      "Menganggap setiap sistem pasti punya tepat satu penyelesaian",
+      "Salah tanda ketika mengurangkan dua persamaan",
+      "Menuliskan penyelesaian sebagai satu bilangan saja, bukan sebagai pasangan berurutan (x, y)",
+      "Mengira grafik selalu memberi jawaban eksak padahal titik potong bisa berupa pecahan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa penyelesaian sistem persamaan adalah titik potong kedua garisnya?",
+      "Kenapa dua garis sejajar berarti sistem tidak punya penyelesaian?",
+      "Kenapa metode eliminasi boleh menjumlahkan atau mengurangkan dua persamaan utuh?"
+     ]
+    },
+    {
+     "judul": "Sistem Persamaan Linear Tiga Variabel (SPLTV)",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk umum sistem tiga persamaan dengan tiga variabel",
+      "Makna geometris sebagai perpotongan tiga bidang di ruang dimensi tiga",
+      "Metode eliminasi bertingkat: mereduksi SPLTV menjadi SPLDV",
+      "Metode substitusi dan metode gabungan",
+      "Kemungkinan penyelesaian: tunggal, tak hingga, atau tidak ada",
+      "Pemodelan masalah tiga besaran: harga tiga jenis barang, komposisi campuran, keliling segitiga"
+     ],
+     "rumus": [
+      "a1 x + b1 y + c1 z = d1",
+      "a2 x + b2 y + c2 z = d2",
+      "a3 x + b3 y + c3 z = d3",
+      "strategi: eliminasi variabel yang sama dari dua pasang persamaan untuk memperoleh SPLDV"
+     ],
+     "keterampilan": [
+      "Mereduksi sistem tiga variabel menjadi sistem dua variabel secara sistematis",
+      "Mengelola langkah eliminasi tanpa kehilangan jejak persamaan",
+      "Memodelkan masalah kontekstual tiga besaran",
+      "Memeriksa penyelesaian pada ketiga persamaan asal",
+      "Mengenali sistem yang tidak konsisten"
+     ],
+     "prasyarat": [
+      "Sistem Persamaan Linear Dua Variabel (SPLDV)",
+      "Bentuk Aljabar, Persamaan, dan Pertidaksamaan Linear Satu Variabel"
+     ],
+     "miskonsepsi": [
+      "Mengeliminasi variabel yang berbeda pada tiap pasangan sehingga sistem tidak pernah tereduksi",
+      "Mengira tiga persamaan selalu menjamin adanya penyelesaian tunggal",
+      "Memeriksa hasil hanya pada satu persamaan saja",
+      "Menganggap penyelesaian berupa garis di bidang, bukan sebuah titik di ruang",
+      "Menyalin ulang persamaan dengan tanda yang keliru pada langkah panjang"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dibutuhkan tiga persamaan untuk menentukan tiga variabel?",
+      "Kenapa penyelesaian SPLTV secara geometris berarti titik potong tiga bidang?",
+      "Kenapa kadang tiga persamaan tetap tidak memberi penyelesaian tunggal?"
+     ]
+    },
+    {
+     "judul": "Pertidaksamaan Linear Dua Variabel dan Daerah Penyelesaian",
+     "kelas": 10,
+     "subKonsep": [
+      "Pertidaksamaan linear dua variabel dan artinya sebagai daerah pada bidang",
+      "Garis batas (garis pembatas) dan cara menggambarnya lewat titik potong sumbu",
+      "Garis penuh untuk tanda <= atau >=, garis putus-putus untuk tanda < atau >",
+      "Uji titik untuk menentukan daerah yang memenuhi",
+      "Konvensi arsiran daerah penyelesaian dan daerah bersih",
+      "Menerjemahkan kata kunci kendala: paling banyak, sekurang-kurangnya, tidak lebih dari",
+      "Kendala kewajaran x >= 0 dan y >= 0 pada konteks nyata"
+     ],
+     "rumus": [
+      "a x + b y <= c menyatakan sebuah setengah bidang tertutup",
+      "uji titik (0, 0) jika garis batas tidak melalui titik asal",
+      "titik potong sumbu x: y = 0; titik potong sumbu y: x = 0"
+     ],
+     "keterampilan": [
+      "Menggambar garis batas dengan cepat menggunakan dua titik potong sumbu",
+      "Menentukan daerah penyelesaian dengan uji satu titik",
+      "Membaca pertidaksamaan dari gambar daerah yang diarsir",
+      "Memodelkan kendala verbal menjadi pertidaksamaan"
+     ],
+     "prasyarat": [
+      "Sistem Persamaan Linear Dua Variabel (SPLDV)",
+      "Bentuk Aljabar, Persamaan, dan Pertidaksamaan Linear Satu Variabel"
+     ],
+     "miskonsepsi": [
+      "Selalu mengarsir bagian atas garis untuk tanda >= tanpa menguji titik",
+      "Memakai garis penuh untuk tanda < atau > yang seharusnya putus-putus",
+      "Menguji titik yang justru terletak tepat pada garis batas",
+      "Melupakan kendala x >= 0 dan y >= 0 pada masalah jumlah barang",
+      "Membalik arti tanda setelah membagi pertidaksamaan dengan koefisien negatif"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa cukup menguji satu titik untuk menentukan seluruh daerah penyelesaian?",
+      "Kenapa garis batas digambar putus-putus ketika tandanya < atau >?",
+      "Kenapa satu pertidaksamaan menghasilkan daerah, sedangkan satu persamaan menghasilkan garis?"
+     ]
+    },
+    {
+     "judul": "Sistem Pertidaksamaan Linear Dua Variabel dan Program Linear Sederhana",
+     "kelas": 10,
+     "subKonsep": [
+      "Irisan beberapa daerah penyelesaian sebagai daerah himpunan penyelesaian (DHP)",
+      "Titik-titik pojok (titik ekstrem) daerah himpunan penyelesaian",
+      "Fungsi objektif atau fungsi tujuan yang ingin dioptimumkan",
+      "Nilai maksimum dan minimum yang selalu tercapai di titik pojok",
+      "Metode uji titik pojok dan metode garis selidik",
+      "Daerah penyelesaian terbatas dan tak terbatas",
+      "Pemodelan masalah optimasi: produksi terbatas bahan baku, gizi, transportasi, keuntungan pedagang"
+     ],
+     "rumus": [
+      "f(x, y) = p x + q y sebagai fungsi objektif",
+      "nilai optimum tercapai di salah satu titik pojok daerah himpunan penyelesaian",
+      "garis selidik: p x + q y = k, digeser sejajar untuk mencari nilai k ekstrem",
+      "titik pojok diperoleh dengan menyelesaikan sistem dua garis batas yang berpotongan"
+     ],
+     "keterampilan": [
+      "Menggambar daerah himpunan penyelesaian dari beberapa kendala sekaligus",
+      "Menentukan koordinat setiap titik pojok secara aljabar",
+      "Menghitung nilai fungsi objektif pada tiap titik pojok dan memilih yang optimum",
+      "Memodelkan masalah optimasi kontekstual menjadi sistem pertidaksamaan",
+      "Menafsirkan hasil optimum kembali ke konteks masalah"
+     ],
+     "prasyarat": [
+      "Pertidaksamaan Linear Dua Variabel dan Daerah Penyelesaian",
+      "Sistem Persamaan Linear Dua Variabel (SPLDV)"
+     ],
+     "miskonsepsi": [
+      "Membaca koordinat titik pojok dari gambar tanpa menyelesaikan sistem persamaannya sehingga tidak eksak",
+      "Mengarsir gabungan daerah, bukan irisannya",
+      "Mengira nilai optimum bisa terletak di tengah daerah penyelesaian",
+      "Melupakan bahwa jawaban harus bilangan bulat pada konteks jumlah barang",
+      "Mengabaikan kemungkinan daerah tak terbatas sehingga nilai maksimum sebenarnya tidak ada"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa nilai maksimum atau minimum selalu terjadi di titik pojok, bukan di tengah daerah?",
+      "Kenapa daerah penyelesaian sistem adalah irisan, bukan gabungan?",
+      "Kenapa daerah penyelesaian yang tak terbatas bisa membuat nilai maksimum tidak ada?",
+      "Kenapa metode garis selidik bekerja hanya dengan menggeser garis secara sejajar?"
+     ]
+    },
+    {
+     "judul": "Persamaan Kuadrat dan Cara Menyelesaikannya",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk umum a x^2 + b x + c = 0 dengan a tidak sama dengan 0",
+      "Sifat hasil kali nol sebagai dasar metode pemfaktoran",
+      "Pemfaktoran bentuk kuadrat, termasuk ketika a tidak sama dengan 1",
+      "Melengkapkan kuadrat sempurna",
+      "Penurunan rumus abc dari melengkapkan kuadrat",
+      "Jumlah dan hasil kali akar-akar",
+      "Menyusun persamaan kuadrat baru dari akar-akar yang diketahui",
+      "Persamaan yang dapat direduksi menjadi bentuk kuadrat"
+     ],
+     "rumus": [
+      "a x^2 + b x + c = 0 dengan a tidak sama dengan 0",
+      "x = (-b +- akar(b^2 - 4 a c)) / (2 a)",
+      "x1 + x2 = -b/a",
+      "x1 x2 = c/a",
+      "x^2 - (x1 + x2) x + (x1 x2) = 0",
+      "(x + p)^2 = x^2 + 2 p x + p^2"
+     ],
+     "keterampilan": [
+      "Memilih metode penyelesaian yang paling efisien untuk bentuk yang diberikan",
+      "Memfaktorkan bentuk kuadrat dengan berbagai koefisien",
+      "Melengkapkan kuadrat sempurna termasuk ketika a tidak sama dengan 1",
+      "Menurunkan rumus abc sendiri dari proses melengkapkan kuadrat",
+      "Menyusun persamaan kuadrat dari akar-akar yang diketahui"
+     ],
+     "prasyarat": [
+      "Bentuk Aljabar, Persamaan, dan Pertidaksamaan Linear Satu Variabel",
+      "Bentuk Akar",
+      "Merasionalkan Penyebut Bentuk Akar"
+     ],
+     "miskonsepsi": [
+      "Dari (x - 2)(x - 3) = 6 langsung menulis x - 2 = 6 atau x - 3 = 6, padahal sifat hasil kali nol hanya berlaku jika ruas kanan nol",
+      "Membagi kedua ruas dengan x sehingga penyelesaian x = 0 hilang",
+      "Menuliskan pembilang rumus abc sebagai b, bukan -b",
+      "Menganggap persamaan kuadrat selalu punya dua akar real yang berbeda",
+      "Salah tanda saat memfaktorkan bentuk dengan konstanta negatif"
+     ],
+     "pertanyaanKenapa": [
+      "Dari mana rumus abc berasal, dan kenapa bentuknya begitu?",
+      "Kenapa sifat hasil kali nol hanya bisa dipakai kalau salah satu ruas bernilai nol?",
+      "Kenapa jumlah akar-akarnya sama dengan -b/a?",
+      "Kenapa melengkapkan kuadrat disebut 'melengkapkan', dan apa yang sebenarnya dilengkapi?"
+     ]
+    },
+    {
+     "judul": "Diskriminan dan Akar Imajiner",
+     "kelas": 10,
+     "subKonsep": [
+      "Diskriminan D = b^2 - 4 a c sebagai penentu jenis akar",
+      "Kasus D > 0, D = 0, dan D < 0",
+      "Kaitan tanda diskriminan dengan banyaknya titik potong parabola terhadap sumbu x",
+      "Akar kembar dan makna geometrisnya (parabola menyinggung sumbu x)",
+      "Akar rasional ketika D merupakan kuadrat sempurna",
+      "Pengenalan satuan imajiner i dengan i^2 = -1",
+      "Menuliskan akar tak real dalam bentuk a + b i dan a - b i",
+      "Menentukan nilai parameter agar akar memenuhi syarat tertentu"
+     ],
+     "rumus": [
+      "D = b^2 - 4 a c",
+      "D > 0: dua akar real yang berbeda",
+      "D = 0: dua akar real yang sama (akar kembar)",
+      "D < 0: tidak ada akar real, akar berupa bilangan imajiner",
+      "i^2 = -1 sehingga akar(-k) = i akar(k) untuk k > 0",
+      "akar tak real: x = (-b +- i akar(4 a c - b^2)) / (2 a)"
+     ],
+     "keterampilan": [
+      "Menghitung diskriminan dan menyimpulkan jenis akar tanpa menyelesaikan persamaan",
+      "Menghubungkan nilai diskriminan dengan sketsa grafik parabola",
+      "Menuliskan akar imajiner dalam bentuk a + b i",
+      "Menentukan syarat nilai parameter agar persamaan punya dua akar berbeda, kembar, atau tak real"
+     ],
+     "prasyarat": [
+      "Persamaan Kuadrat dan Cara Menyelesaikannya",
+      "Bentuk Akar",
+      "Himpunan Bilangan Real dan Garis Bilangan"
+     ],
+     "miskonsepsi": [
+      "Menghitung D sebagai b^2 + 4 a c",
+      "Menyimpulkan bahwa D < 0 berarti persamaan sama sekali tidak punya penyelesaian",
+      "Menuliskan akar(-4) sebagai -2",
+      "Mengira akar kembar berarti persamaannya hanya punya satu akar",
+      "Mengira bilangan imajiner tidak pernah berguna karena tidak ada di garis bilangan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa tanda diskriminan menentukan berapa kali parabola memotong sumbu x?",
+      "Kenapa matematikawan menciptakan bilangan i padahal tidak ada tempatnya di garis bilangan?",
+      "Kenapa akar imajiner dari persamaan berkoefisien real selalu muncul berpasangan?",
+      "Kenapa D = 0 berarti parabola menyinggung, bukan memotong, sumbu x?"
+     ]
+    },
+    {
+     "judul": "Fungsi Kuadrat dan Grafiknya (Parabola)",
+     "kelas": 10,
+     "subKonsep": [
+      "Definisi fungsi kuadrat dan bedanya dengan persamaan kuadrat",
+      "Grafik fungsi kuadrat berupa parabola",
+      "Pengaruh nilai a terhadap arah membuka dan kelebaran parabola",
+      "Titik potong sumbu y yang selalu bernilai c",
+      "Titik potong sumbu x sebagai akar-akar persamaan kuadrat",
+      "Sumbu simetri dan alasan letaknya di tengah kedua akar",
+      "Titik puncak sebagai nilai maksimum atau minimum",
+      "Daerah asal dan daerah hasil fungsi kuadrat",
+      "Kesimetrian nilai fungsi terhadap sumbu simetri"
+     ],
+     "rumus": [
+      "f(x) = a x^2 + b x + c dengan a tidak sama dengan 0",
+      "sumbu simetri: x = -b / (2 a)",
+      "titik puncak: (-b/(2a), -D/(4a)) dengan D = b^2 - 4 a c",
+      "nilai optimum: y = f(-b/(2a))",
+      "daerah hasil: y >= -D/(4a) jika a > 0; y <= -D/(4a) jika a < 0"
+     ],
+     "keterampilan": [
+      "Menyketsa grafik fungsi kuadrat dari bentuk umumnya",
+      "Menentukan titik puncak dan sumbu simetri",
+      "Membaca nilai maksimum atau minimum dari grafik maupun rumus",
+      "Menentukan daerah asal dan daerah hasil",
+      "Menafsirkan karakteristik grafik dari tabel nilai fungsi"
+     ],
+     "prasyarat": [
+      "Persamaan Kuadrat dan Cara Menyelesaikannya",
+      "Diskriminan dan Akar Imajiner",
+      "Relasi dan Fungsi (Fase D)",
+      "Koordinat Kartesius (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menganggap a < 0 berarti seluruh grafik berada di bawah sumbu x",
+      "Menuliskan sumbu simetri sebagai x = b/(2a) tanpa tanda minus",
+      "Menyebut nilai maksimum fungsi sama dengan absis titik puncak",
+      "Menganggap setiap parabola pasti memotong sumbu x di dua titik",
+      "Mengira nilai a mengubah posisi puncak secara langsung, padahal a mengubah arah dan kelebaran"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa sumbu simetri terletak tepat di x = -b/(2a)?",
+      "Kenapa nilai a menentukan lebar sempitnya parabola?",
+      "Kenapa grafik fungsi kuadrat selalu simetris?",
+      "Kenapa titik potong sumbu y pasti bernilai c?"
+     ]
+    },
+    {
+     "judul": "Bentuk-bentuk Fungsi Kuadrat dan Mengonstruksinya",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk umum a x^2 + b x + c",
+      "Bentuk titik puncak (vertex) a(x - p)^2 + q",
+      "Bentuk akar atau bentuk faktor a(x - x1)(x - x2)",
+      "Informasi yang paling mudah dibaca dari masing-masing bentuk",
+      "Mengubah bentuk umum menjadi bentuk puncak dengan melengkapkan kuadrat",
+      "Menyusun fungsi kuadrat dari tiga titik yang dilalui",
+      "Menyusun fungsi kuadrat dari titik puncak dan satu titik lain",
+      "Menyusun fungsi kuadrat dari dua akar dan satu titik lain",
+      "Translasi dan dilatasi grafik parabola"
+     ],
+     "rumus": [
+      "bentuk puncak: f(x) = a(x - p)^2 + q dengan titik puncak (p, q)",
+      "bentuk akar: f(x) = a(x - x1)(x - x2) dengan x1, x2 titik potong sumbu x",
+      "melengkapkan kuadrat: a x^2 + b x + c = a(x + b/(2a))^2 + c - b^2/(4a)",
+      "f(x) = a(x - p)^2 + q merupakan hasil geseran y = a x^2 sejauh p ke kanan dan q ke atas"
+     ],
+     "keterampilan": [
+      "Mengubah bentuk umum menjadi bentuk puncak dan sebaliknya",
+      "Menyusun fungsi kuadrat dari informasi yang tersedia",
+      "Memilih bentuk yang paling efisien untuk menjawab pertanyaan tertentu",
+      "Menjelaskan transformasi grafik dari fungsi induk y = x^2"
+     ],
+     "prasyarat": [
+      "Fungsi Kuadrat dan Grafiknya (Parabola)",
+      "Persamaan Kuadrat dan Cara Menyelesaikannya"
+     ],
+     "miskonsepsi": [
+      "Membaca puncak dari a(x - p)^2 + q sebagai (-p, q)",
+      "Melupakan faktor a ketika mengonstruksi fungsi dari akar-akarnya sehingga grafik salah skala",
+      "Mengira bentuk puncak dan bentuk umum menyatakan dua fungsi yang berbeda",
+      "Salah membagi koefisien a ketika melengkapkan kuadrat untuk a tidak sama dengan 1",
+      "Mengira grafik bergeser ke kiri ketika bentuknya (x - p)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa pada bentuk a(x - p)^2 + q puncaknya di (p, q), bukan di (-p, q)?",
+      "Kenapa satu parabola yang sama bisa ditulis dalam tiga bentuk berbeda?",
+      "Kenapa (x - 3)^2 menggeser grafik ke kanan, bukan ke kiri?",
+      "Kenapa bentuk faktor langsung memperlihatkan titik potong sumbu x?"
+     ]
+    },
+    {
+     "judul": "Pemodelan Masalah dengan Fungsi Kuadrat",
+     "kelas": 10,
+     "subKonsep": [
+      "Memilih variabel dan menyusun fungsi dari deskripsi masalah",
+      "Gerak parabola: tinggi benda sebagai fungsi waktu",
+      "Masalah luas maksimum dengan keliling tetap",
+      "Masalah keuntungan atau pendapatan maksimum",
+      "Bentuk parabola pada jembatan gantung, antena parabola, dan pancuran air",
+      "Menafsirkan titik puncak, akar, dan titik potong sumbu y dalam konteks",
+      "Menentukan daerah asal yang masuk akal secara fisik",
+      "Mengevaluasi kesesuaian model kuadrat terhadap data"
+     ],
+     "rumus": [
+      "h(t) = -(1/2) g t^2 + v0 t + h0 untuk gerak vertikal",
+      "waktu mencapai tinggi maksimum: t = v0 / g",
+      "luas persegi panjang berkeliling k: L(x) = x(k/2 - x)",
+      "pendapatan: R(x) = x (harga awal - penurunan per unit x)"
+     ],
+     "keterampilan": [
+      "Menerjemahkan situasi nyata menjadi fungsi kuadrat",
+      "Menghitung nilai optimum dan menafsirkannya dalam konteks",
+      "Menentukan daerah asal yang realistis dan membuang penyelesaian tak masuk akal",
+      "Mengevaluasi apakah model kuadrat cocok dengan data yang diberikan",
+      "Menuliskan jawaban lengkap dengan satuan"
+     ],
+     "prasyarat": [
+      "Bentuk-bentuk Fungsi Kuadrat dan Mengonstruksinya",
+      "Fungsi Kuadrat dan Grafiknya (Parabola)"
+     ],
+     "miskonsepsi": [
+      "Menganggap grafik tinggi terhadap waktu adalah gambar lintasan fisik benda",
+      "Menerima penyelesaian negatif untuk panjang, waktu, atau jumlah barang",
+      "Menukar nilai maksimum fungsi dengan absis titik puncak",
+      "Melupakan satuan sehingga jawaban tidak bermakna",
+      "Menggunakan seluruh bilangan real sebagai daerah asal padahal konteksnya terbatas"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa lintasan bola yang dilempar berbentuk parabola, bukan busur lingkaran?",
+      "Kenapa dari semua persegi panjang berkeliling sama, persegi punya luas terbesar?",
+      "Kenapa akar negatif harus dibuang pada soal konteks meskipun secara aljabar benar?",
+      "Kenapa antena penerima sinyal dibuat berbentuk parabola?"
+     ]
+    },
+    {
+     "judul": "Persamaan dan Pertidaksamaan Eksponensial Berbasis Sama",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk persamaan a pangkat f(x) = a pangkat g(x)",
+      "Syarat bilangan pokok a > 0 dan a tidak sama dengan 1",
+      "Menyamakan bilangan pokok kedua ruas",
+      "Persamaan eksponensial yang direduksi menjadi persamaan kuadrat melalui pemisalan",
+      "Memeriksa keabsahan hasil pemisalan karena a pangkat x selalu positif",
+      "Pertidaksamaan eksponensial dasar",
+      "Pembalikan arah tanda pertidaksamaan ketika 0 < a < 1"
+     ],
+     "rumus": [
+      "jika a^m = a^n dengan a > 0 dan a tidak sama dengan 1, maka m = n",
+      "a^(f(x)) = a^(g(x)) maka f(x) = g(x)",
+      "pemisalan y = a^x untuk mereduksi bentuk seperti a^(2x) - p a^x + q = 0",
+      "jika a > 1: a^(f(x)) > a^(g(x)) maka f(x) > g(x)",
+      "jika 0 < a < 1: a^(f(x)) > a^(g(x)) maka f(x) < g(x)"
+     ],
+     "keterampilan": [
+      "Menyamakan bilangan pokok kedua ruas dengan sifat eksponen",
+      "Menyelesaikan persamaan eksponensial sederhana dan yang berbentuk kuadrat",
+      "Menggunakan pemisalan dan memeriksa keabsahan penyelesaiannya",
+      "Menyelesaikan pertidaksamaan eksponensial dengan memperhatikan besar bilangan pokok"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Pangkat Pecahan (Rasional) dan Kaitannya dengan Bentuk Akar",
+      "Persamaan Kuadrat dan Cara Menyelesaikannya"
+     ],
+     "miskonsepsi": [
+      "Langsung menyamakan pangkat padahal bilangan pokok kedua ruas berbeda",
+      "Menerima penyelesaian pemisalan yang bernilai negatif atau nol padahal a pangkat x selalu positif",
+      "Mencoret bilangan pokok pada 2^x = 3^x seolah bisa dibatalkan",
+      "Lupa membalik arah tanda pertidaksamaan ketika 0 < a < 1",
+      "Menganggap a^x = 0 punya penyelesaian"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kalau bilangan pokoknya sama, pangkatnya boleh langsung disamakan?",
+      "Kenapa bilangan pokok 1 tidak diperbolehkan dalam persamaan eksponensial?",
+      "Kenapa a pangkat x tidak pernah bernilai nol atau negatif?",
+      "Kenapa arah tanda pertidaksamaan berbalik ketika bilangan pokoknya antara 0 dan 1?"
+     ]
+    },
+    {
+     "judul": "Fungsi Eksponensial: Pertumbuhan dan Peluruhan",
+     "kelas": 10,
+     "subKonsep": [
+      "Bentuk f(x) = k a pangkat x dan syarat bilangan pokoknya",
+      "Grafik naik untuk a > 1 (pertumbuhan) dan turun untuk 0 < a < 1 (peluruhan)",
+      "Asimtot datar y = 0 dan maknanya",
+      "Titik potong sumbu y sebesar k",
+      "Ciri khas: laju perubahan berupa faktor pengali tetap per satuan waktu",
+      "Membedakan situasi yang cocok dimodelkan linear dan yang cocok dimodelkan eksponensial",
+      "Menentukan k dan a dari dua titik atau dari tabel data",
+      "Penerapan: pertumbuhan bakteri, penduduk, penyebaran wabah, kadar obat dalam darah, penyusutan kendaraan"
+     ],
+     "rumus": [
+      "f(x) = k a^x dengan a > 0 dan a tidak sama dengan 1",
+      "P(t) = P0 (1 + r)^t untuk pertumbuhan dengan laju r",
+      "P(t) = P0 (1 - r)^t untuk peluruhan dengan laju r",
+      "asimtot datar: y = 0",
+      "f(0) = k"
+     ],
+     "keterampilan": [
+      "Menyketsa dan membaca grafik fungsi eksponen",
+      "Membedakan pola linear dan pola eksponensial dari tabel data (selisih tetap vs rasio tetap)",
+      "Menentukan rumus fungsi dari dua titik yang diketahui",
+      "Menafsirkan makna asimtot dan nilai awal dalam konteks",
+      "Membandingkan dua model pertumbuhan secara numerik dan grafis"
+     ],
+     "prasyarat": [
+      "Sifat-sifat Operasi Eksponen",
+      "Pangkat Nol dan Pangkat Bulat Negatif",
+      "Relasi dan Fungsi (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Mengira grafik fungsi eksponen akhirnya memotong sumbu x",
+      "Menganggap setiap grafik yang naik dengan cepat pasti eksponensial",
+      "Menukar fungsi eksponen a pangkat x dengan fungsi pangkat x pangkat a",
+      "Mengira peluruhan berhenti ketika grafik terlihat menyentuh sumbu x",
+      "Menganggap pertumbuhan eksponensial berarti bertambah dengan jumlah tetap tiap periode"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa grafik fungsi eksponen tidak pernah menyentuh sumbu x?",
+      "Kenapa 2 pangkat x pada akhirnya pasti menyalip x pangkat 2 sebesar apa pun x?",
+      "Kenapa penyebaran penyakit pada awal wabah dimodelkan dengan fungsi eksponen?",
+      "Kenapa pertumbuhan eksponensial disebut mengalikan, bukan menambah?"
+     ]
+    },
+    {
+     "judul": "Vektor dan Operasinya",
+     "kelas": 10,
+     "subKonsep": [
+      "Besaran skalar dan besaran vektor",
+      "Notasi vektor dan penyajiannya sebagai ruas garis berarah",
+      "Panjang (besar atau modulus) dan arah vektor",
+      "Vektor nol, vektor lawan (negatif), dan vektor ekuivalen",
+      "Vektor pada sistem koordinat Kartesius dimensi dua dan dimensi tiga",
+      "Komponen vektor, vektor kolom, dan vektor baris",
+      "Vektor posisi dan vektor satuan",
+      "Penjumlahan vektor: metode segitiga, jajargenjang, poligon, dan cara komponen",
+      "Pengurangan vektor sebagai penjumlahan dengan vektor lawan",
+      "Perkalian vektor dengan skalar dan pengaruhnya terhadap panjang dan arah",
+      "Hasil kali skalar (dot product) dan sudut antara dua vektor"
+     ],
+     "rumus": [
+      "a = (a1, a2) dengan |a| = akar(a1^2 + a2^2)",
+      "|a| = akar(a1^2 + a2^2 + a3^2) pada dimensi tiga",
+      "a + b = (a1 + b1, a2 + b2)",
+      "k a = (k a1, k a2)",
+      "a . b = a1 b1 + a2 b2",
+      "cos theta = (a . b) / (|a| |b|)",
+      "vektor satuan: e = a / |a|",
+      "a tegak lurus b jika dan hanya jika a . b = 0"
+     ],
+     "keterampilan": [
+      "Menggambar dan menjumlahkan vektor secara geometris",
+      "Melakukan operasi vektor secara komponen",
+      "Menghitung panjang vektor dan menentukan vektor satuannya",
+      "Menghitung besar sudut antara dua vektor",
+      "Memodelkan perpindahan, kecepatan, dan gaya dengan vektor"
+     ],
+     "prasyarat": [
+      "Teorema Pythagoras dan Segitiga Siku-siku",
+      "Koordinat Kartesius (Fase D)",
+      "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+      "Bentuk Akar"
+     ],
+     "miskonsepsi": [
+      "Menjumlahkan panjang vektor alih-alih vektornya, sehingga menulis |a + b| = |a| + |b|",
+      "Menganggap vektor harus selalu berpangkal di titik asal",
+      "Menukar hasil kali skalar yang menghasilkan bilangan dengan operasi yang menghasilkan vektor",
+      "Menganggap dua vektor sama hanya karena panjangnya sama meskipun arahnya berbeda",
+      "Mengira perkalian vektor dengan skalar negatif hanya memperpendek, bukan membalik arah"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dua gaya masing-masing 3 N dan 4 N bisa menghasilkan gaya 5 N, bukan 7 N?",
+      "Kenapa metode segitiga dan metode jajargenjang memberikan hasil penjumlahan yang sama?",
+      "Kenapa hasil kali skalar dua vektor yang tegak lurus selalu nol?",
+      "Kenapa arah perlu ikut diperhitungkan, sedangkan pada bilangan biasa tidak?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Geometri",
+   "capaian": "Mengaplikasikan perbandingan trigonometri (sinus, cosinus, tangen) dari sudut lancip. (Kepka BSKAP 046/H/KR/2025, butir 5.3). CP 2024 merumuskannya sebagai menyelesaikan permasalahan segitiga siku-siku yang melibatkan perbandingan trigonometri dan aplikasinya. Elemen Pengukuran (luas permukaan dan volume bangun ruang) yang muncul pada sebagian ATP lama tidak lagi dirumuskan untuk Fase E pada CP 2025.",
+   "topics": [
+    {
+     "judul": "Teorema Pythagoras dan Segitiga Siku-siku",
+     "kelas": 10,
+     "subKonsep": [
+      "Unsur segitiga siku-siku: sisi miring (hipotenusa), sisi depan, dan sisi samping relatif terhadap sudut acuan",
+      "Teorema Pythagoras dan pembuktiannya lewat penyusunan luas persegi",
+      "Kebalikan teorema Pythagoras untuk menguji kesikuan segitiga",
+      "Tripel Pythagoras yang sering muncul",
+      "Kesebangunan segitiga berdasarkan kesamaan sudut",
+      "Perbandingan sisi-sisi bersesuaian pada segitiga sebangun bernilai tetap",
+      "Jarak dua titik pada bidang koordinat Kartesius"
+     ],
+     "rumus": [
+      "a^2 + b^2 = c^2 dengan c sisi miring",
+      "jarak dua titik = akar((x2 - x1)^2 + (y2 - y1)^2)",
+      "tripel Pythagoras: (3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25)",
+      "segitiga sebangun: sisi-sisi bersesuaian sebanding"
+     ],
+     "keterampilan": [
+      "Mengidentifikasi sisi depan, samping, dan miring relatif terhadap sudut acuan tertentu",
+      "Menghitung panjang sisi yang belum diketahui pada segitiga siku-siku",
+      "Menguji apakah tiga panjang membentuk segitiga siku-siku",
+      "Membuktikan dua segitiga sebangun dan memanfaatkan perbandingan sisinya",
+      "Menghitung jarak dua titik pada bidang koordinat"
+     ],
+     "prasyarat": [
+      "Bentuk Akar",
+      "Himpunan Bilangan Real dan Garis Bilangan",
+      "Kesebangunan dan Kekongruenan (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Selalu menulis sisi terpanjang sebagai c tanpa memeriksa letak sudut siku-siku",
+      "Menerapkan teorema Pythagoras pada segitiga yang bukan siku-siku",
+      "Menganggap sisi depan dan sisi samping tetap sama meskipun sudut acuannya berganti",
+      "Menyamakan sebangun dengan kongruen",
+      "Menghitung akar dari jumlah kuadrat dengan menjumlahkan akarnya terlebih dahulu"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa a^2 + b^2 = c^2 bisa dibuktikan hanya dengan menyusun ulang potongan luas persegi?",
+      "Kenapa dua segitiga yang sudut-sudutnya sama pasti punya perbandingan sisi yang sama?",
+      "Kenapa sisi depan dan sisi samping bergantung pada sudut mana yang kita pilih?"
+     ]
+    },
+    {
+     "judul": "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+     "kelas": 10,
+     "subKonsep": [
+      "Definisi sinus, cosinus, dan tangen pada segitiga siku-siku",
+      "Alasan nilai perbandingan hanya bergantung pada besar sudut, bukan ukuran segitiga (kesebangunan)",
+      "Jembatan ingatan sindemi, cosami, tandesa dan bahayanya jika tanpa pemahaman",
+      "Perbandingan kebalikan: cosecan, secan, cotangen",
+      "Rentang nilai sinus dan cosinus untuk sudut lancip antara 0 dan 1",
+      "Hubungan tangen sebagai perbandingan sinus terhadap cosinus",
+      "Menentukan besar sudut dari nilai perbandingannya dengan fungsi invers pada kalkulator"
+     ],
+     "rumus": [
+      "sin A = sisi depan / sisi miring",
+      "cos A = sisi samping / sisi miring",
+      "tan A = sisi depan / sisi samping",
+      "tan A = sin A / cos A",
+      "cosec A = 1 / sin A; sec A = 1 / cos A; cot A = 1 / tan A",
+      "0 < sin A < 1 dan 0 < cos A < 1 untuk sudut lancip A"
+     ],
+     "keterampilan": [
+      "Menuliskan ketiga perbandingan trigonometri dari gambar segitiga siku-siku",
+      "Menghitung panjang sisi yang belum diketahui menggunakan perbandingan trigonometri",
+      "Menentukan besar sudut dengan fungsi invers pada kalkulator",
+      "Memeriksa kewajaran hasil, misalnya nilai sinus tidak boleh melebihi 1",
+      "Menghubungkan perbandingan trigonometri dengan konsep kemiringan (gradien)"
+     ],
+     "prasyarat": [
+      "Teorema Pythagoras dan Segitiga Siku-siku",
+      "Rasio dan Perbandingan Senilai (Fase D)",
+      "Bentuk Akar"
+     ],
+     "miskonsepsi": [
+      "Menganggap sin adalah bilangan yang dikalikan sudut, sehingga menulis sin 30 sebagai sin dikali 30",
+      "Salah menentukan sisi depan dan sisi samping karena tidak memperhatikan sudut acuan",
+      "Menuliskan nilai sinus lebih besar dari 1 tanpa merasa janggal",
+      "Menerapkan perbandingan trigonometri dasar pada segitiga yang bukan siku-siku",
+      "Mencoret sin pada kedua ruas persamaan seolah-olah faktor perkalian"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa nilai sin 30 selalu 0,5 berapa pun ukuran segitiganya?",
+      "Kenapa nilai sinus dan cosinus tidak pernah lebih besar dari 1?",
+      "Kenapa tangen sama dengan sinus dibagi cosinus?",
+      "Kenapa tangen sudut kemiringan jalan sama dengan gradien jalan itu?"
+     ]
+    },
+    {
+     "judul": "Perbandingan Trigonometri Sudut Istimewa",
+     "kelas": 10,
+     "subKonsep": [
+      "Menurunkan nilai sudut 45 derajat dari segitiga siku-siku sama kaki",
+      "Menurunkan nilai sudut 30 dan 60 derajat dari segitiga sama sisi yang dibagi dua",
+      "Nilai perbandingan untuk sudut 0 dan 90 derajat",
+      "Tabel sudut istimewa dan pola nilai sinus akar 0/2, akar 1/2, akar 2/2, akar 3/2, akar 4/2",
+      "Alasan tangen 90 derajat tidak terdefinisi",
+      "Menyatakan hasil dalam bentuk akar yang sudah dirasionalkan",
+      "Menghitung nilai eksak tanpa kalkulator"
+     ],
+     "rumus": [
+      "sin 30 = 1/2; cos 30 = akar(3)/2; tan 30 = akar(3)/3",
+      "sin 45 = akar(2)/2; cos 45 = akar(2)/2; tan 45 = 1",
+      "sin 60 = akar(3)/2; cos 60 = 1/2; tan 60 = akar(3)",
+      "sin 0 = 0; cos 0 = 1; tan 0 = 0",
+      "sin 90 = 1; cos 90 = 0; tan 90 tidak terdefinisi"
+     ],
+     "keterampilan": [
+      "Menurunkan nilai sudut istimewa secara geometris, bukan sekadar menghafal tabel",
+      "Menghitung nilai eksak ekspresi trigonometri tanpa kalkulator",
+      "Merasionalkan hasil yang penyebutnya memuat bentuk akar",
+      "Memeriksa konsistensi nilai dengan identitas dasar"
+     ],
+     "prasyarat": [
+      "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+      "Merasionalkan Penyebut Bentuk Akar",
+      "Teorema Pythagoras dan Segitiga Siku-siku"
+     ],
+     "miskonsepsi": [
+      "Menghafal tabel tanpa mengetahui asalnya sehingga nilai 30 dan 60 derajat tertukar",
+      "Menuliskan tan 90 sebagai 0 atau sebagai bilangan tertentu",
+      "Menganggap sin 60 sama dengan dua kali sin 30",
+      "Menuliskan 1/akar(3) sebagai jawaban akhir tanpa merasionalkan",
+      "Mengira sudut istimewa hanya berlaku pada segitiga berukuran tertentu"
+     ],
+     "pertanyaanKenapa": [
+      "Dari mana nilai sin 30 = 1/2 berasal, dan kenapa persis setengah?",
+      "Kenapa tan 90 derajat tidak terdefinisi?",
+      "Kenapa sin 60 bukan dua kali sin 30 padahal sudutnya dua kali lipat?",
+      "Kenapa hanya sudut 30, 45, dan 60 yang disebut istimewa?"
+     ]
+    },
+    {
+     "judul": "Hubungan Sudut Penyiku dan Identitas Trigonometri Dasar",
+     "kelas": 10,
+     "subKonsep": [
+      "Dua sudut lancip pada segitiga siku-siku selalu berjumlah 90 derajat",
+      "Sinus suatu sudut sama dengan cosinus penyikunya dan sebaliknya",
+      "Asal usul nama cosinus sebagai sinus komplemen",
+      "Identitas Pythagoras sin kuadrat ditambah cos kuadrat sama dengan 1 dan pembuktiannya",
+      "Identitas turunan yang melibatkan tangen dan secan",
+      "Menentukan nilai perbandingan lain jika satu nilai diketahui",
+      "Penulisan pangkat pada fungsi trigonometri"
+     ],
+     "rumus": [
+      "sin A = cos(90 derajat - A)",
+      "cos A = sin(90 derajat - A)",
+      "tan A = 1 / tan(90 derajat - A)",
+      "sin^2 A + cos^2 A = 1",
+      "1 + tan^2 A = sec^2 A",
+      "1 + cot^2 A = cosec^2 A"
+     ],
+     "keterampilan": [
+      "Menyederhanakan ekspresi trigonometri menggunakan identitas dasar",
+      "Menentukan nilai cosinus jika nilai sinus diketahui, dan sebaliknya",
+      "Membuktikan identitas Pythagoras langsung dari segitiga siku-siku",
+      "Menghubungkan nilai perbandingan dua sudut yang saling berpenyiku"
+     ],
+     "prasyarat": [
+      "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+      "Teorema Pythagoras dan Segitiga Siku-siku",
+      "Perbandingan Trigonometri Sudut Istimewa"
+     ],
+     "miskonsepsi": [
+      "Menuliskan sin^2 A sebagai sin(A^2)",
+      "Menganggap sin A + cos A = 1 alih-alih sin kuadrat ditambah cos kuadrat",
+      "Mengira sin(90 - A) sama dengan 90 - sin A",
+      "Lupa memeriksa tanda ketika mengambil akar dari cos kuadrat",
+      "Mengira identitas hanya berlaku untuk sudut istimewa"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa sinus dan cosinus saling bertukar nilai pada dua sudut yang saling berpenyiku?",
+      "Kenapa sin kuadrat ditambah cos kuadrat selalu sama dengan 1, dan apa hubungannya dengan teorema Pythagoras?",
+      "Kenapa namanya cosinus, bukan sinus kedua?",
+      "Kenapa identitas ini berlaku untuk semua sudut, bukan hanya sudut istimewa?"
+     ]
+    },
+    {
+     "judul": "Penerapan Trigonometri: Sudut Elevasi dan Sudut Depresi",
+     "kelas": 10,
+     "subKonsep": [
+      "Garis horizontal acuan dan garis pandang pengamat",
+      "Sudut elevasi untuk pandangan ke atas dan sudut depresi untuk pandangan ke bawah",
+      "Kesamaan besar sudut elevasi dan sudut depresi karena sudut dalam berseberangan",
+      "Klinometer sederhana sebagai alat ukur sudut",
+      "Menghitung tinggi benda yang tidak terjangkau",
+      "Menghitung jarak mendatar dari sudut dan tinggi",
+      "Masalah dua posisi pengamatan yang memerlukan dua persamaan",
+      "Menambahkan tinggi mata pengamat pada hasil akhir",
+      "Sketsa sebagai langkah pertama penyelesaian"
+     ],
+     "rumus": [
+      "tinggi = jarak mendatar x tan(sudut elevasi)",
+      "tinggi total = tinggi mata pengamat + jarak x tan(theta)",
+      "jarak mendatar = tinggi / tan(theta)",
+      "jarak miring (garis pandang) = tinggi / sin(theta)"
+     ],
+     "keterampilan": [
+      "Membuat sketsa segitiga siku-siku dari deskripsi verbal",
+      "Memilih perbandingan trigonometri yang sesuai dengan data yang tersedia",
+      "Menyelesaikan masalah dua tahap yang melibatkan dua sudut pengamatan",
+      "Menuliskan hasil dengan satuan dan tingkat ketelitian yang wajar",
+      "Merancang cara mengukur tinggi objek nyata di sekitar sekolah"
+     ],
+     "prasyarat": [
+      "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+      "Perbandingan Trigonometri Sudut Istimewa",
+      "Teorema Pythagoras dan Segitiga Siku-siku"
+     ],
+     "miskonsepsi": [
+      "Mengukur sudut elevasi dari garis vertikal, bukan dari garis horizontal",
+      "Melupakan tinggi mata pengamat sehingga hasil kurang dari seharusnya",
+      "Memakai sinus padahal data yang tersedia adalah sisi samping dan sisi depan",
+      "Mengukur sudut depresi dari permukaan tanah, bukan dari garis horizontal di titik pengamat",
+      "Menganggap jarak pada soal selalu berarti jarak mendatar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa sudut depresi dari puncak menara sama besar dengan sudut elevasi dari kaki pengamat?",
+      "Kenapa tinggi gedung bisa diukur tanpa memanjatnya?",
+      "Kenapa perlu dua posisi pengamatan ketika jarak ke objek tidak diketahui?"
+     ]
+    },
+    {
+     "judul": "Satuan Sudut: Derajat dan Radian",
+     "kelas": 10,
+     "subKonsep": [
+      "Sudut sebagai besar putaran",
+      "Satu putaran penuh 360 derajat dan asal usul historisnya",
+      "Satuan derajat, menit, dan detik busur",
+      "Radian sebagai perbandingan panjang busur terhadap jari-jari",
+      "Alasan radian tidak bersatuan (perbandingan dua panjang)",
+      "Konversi derajat ke radian dan sebaliknya",
+      "Panjang busur dan luas juring dalam ukuran radian",
+      "Mode DEG dan RAD pada kalkulator ilmiah"
+     ],
+     "rumus": [
+      "180 derajat = pi radian",
+      "1 radian = 180/pi derajat, kira-kira 57,3 derajat",
+      "theta dalam radian = s / r",
+      "panjang busur s = r x theta",
+      "luas juring = (1/2) r^2 theta",
+      "derajat ke radian: kalikan pi/180"
+     ],
+     "keterampilan": [
+      "Mengonversi ukuran sudut antara derajat dan radian",
+      "Menghitung panjang busur dan luas juring dengan ukuran radian",
+      "Memilih mode kalkulator yang tepat sebelum menghitung nilai trigonometri",
+      "Menyatakan sudut-sudut istimewa dalam bentuk radian"
+     ],
+     "prasyarat": [
+      "Lingkaran: Keliling, Busur, dan Juring (Fase D)",
+      "Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)",
+      "Rasio dan Perbandingan Senilai (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menghitung sin 30 dalam mode radian tanpa menyadari kalkulator salah mode",
+      "Menganggap lambang pi selalu berarti 180 dalam segala konteks",
+      "Mengalikan dengan 180/pi padahal seharusnya pi/180",
+      "Mengira radian punya satuan fisik seperti derajat",
+      "Mengira rumus panjang busur s = r theta berlaku juga untuk theta dalam derajat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satu putaran penuh dibagi 360, bukan 100?",
+      "Kenapa radian dianggap satuan sudut yang alami dalam matematika?",
+      "Kenapa rumus panjang busur menjadi sesederhana s = r theta kalau memakai radian?",
+      "Kenapa radian disebut tanpa satuan padahal derajat punya lambang?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Analisis Data dan Peluang",
+   "capaian": "Merepresentasikan dan menginterpretasi data dengan cara menentukan jangkauan kuartil dan interkuartil; membuat dan menginterpretasi diagram box plot dan menggunakannya untuk membandingkan himpunan data; menentukan dan menggunakan box plot, histogram dan dot plot sesuai dengan natur (karakteristik) data dan kebutuhan; menggunakan diagram pencar untuk menyelidiki dan menjelaskan hubungan antara dua variabel numerik/kuantitatif (termasuk salah satunya variabel bebas berupa waktu); serta mengevaluasi laporan statistika di media berdasarkan tampilan, statistika dan representasi data, termasuk yang disajikan dalam bentuk matriks. (Kepka BSKAP 046/H/KR/2025, butir 5.4). Catatan: materi peluang (kejadian majemuk, saling lepas, saling bebas, peluang bersyarat) pada CP 2025 dirumuskan di Fase F, meskipun peluang dasar masih diajarkan di kelas X pada banyak sekolah dan buku teks.",
+   "topics": [
+    {
+     "judul": "Jenis Data dan Penyajian Data Tunggal",
+     "kelas": 10,
+     "subKonsep": [
+      "Populasi dan sampel serta pentingnya sampel yang representatif",
+      "Data kualitatif (nominal dan ordinal) dan data kuantitatif (diskret dan kontinu)",
+      "Data primer dan data sekunder",
+      "Tabel frekuensi data tunggal",
+      "Diagram batang, diagram garis, diagram lingkaran, dan diagram batang-daun",
+      "Memilih jenis diagram sesuai jenis data dan tujuan penyajian",
+      "Komponen grafik yang jujur: judul, label sumbu, skala seragam, sumber data",
+      "Grafik yang menyesatkan karena sumbu terpotong atau skala tidak konsisten"
+     ],
+     "rumus": [
+      "frekuensi relatif = f_i / n",
+      "persentase = (f_i / n) x 100%",
+      "besar sudut juring diagram lingkaran = (f_i / n) x 360 derajat",
+      "jumlah seluruh frekuensi = n"
+     ],
+     "keterampilan": [
+      "Mengklasifikasikan jenis data dari deskripsi variabelnya",
+      "Menyusun tabel frekuensi dari data mentah",
+      "Memilih dan membuat diagram yang tepat untuk sekumpulan data",
+      "Membaca dan menafsirkan informasi dari berbagai diagram",
+      "Mengenali dan menjelaskan grafik yang menyesatkan"
+     ],
+     "prasyarat": [
+      "Penyajian Data dan Ukuran Pemusatan (Fase D)",
+      "Persen dan Aritmetika Sosial (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Memakai diagram lingkaran untuk data yang bukan bagian dari satu keseluruhan",
+      "Menganggap nomor punggung pemain atau kode pos sebagai data kuantitatif yang bisa dirata-rata",
+      "Membaca diagram batang bersumbu terpotong seolah selisihnya sangat besar",
+      "Mengira sampel yang besar otomatis representatif",
+      "Menganggap diagram garis cocok untuk data kategorikal"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jenis data menentukan jenis diagram yang boleh dipakai?",
+      "Kenapa grafik dengan sumbu vertikal yang tidak dimulai dari nol bisa menyesatkan?",
+      "Kenapa nomor punggung pemain tidak boleh dirata-rata meskipun berupa angka?"
+     ]
+    },
+    {
+     "judul": "Tabel Distribusi Frekuensi dan Histogram (Data Kelompok)",
+     "kelas": 10,
+     "subKonsep": [
+      "Alasan mengelompokkan data ketika jumlahnya banyak",
+      "Jangkauan data, banyak kelas, dan panjang kelas",
+      "Aturan Sturges untuk menentukan banyak kelas",
+      "Batas bawah, batas atas, tepi bawah, tepi atas, dan titik tengah kelas",
+      "Tabel distribusi frekuensi kumulatif kurang dari dan lebih dari",
+      "Histogram dengan batang berdempet karena data bersifat kontinu",
+      "Poligon frekuensi dan ogif",
+      "Bentuk distribusi: simetris, menceng ke kanan, menceng ke kiri, dua puncak",
+      "Informasi yang hilang akibat pengelompokan"
+     ],
+     "rumus": [
+      "jangkauan J = x_maks - x_min",
+      "banyak kelas k = 1 + 3,3 log n (aturan Sturges)",
+      "panjang kelas p = J / k",
+      "tepi bawah = batas bawah - 0,5 (untuk data bulat)",
+      "titik tengah kelas = (batas bawah + batas atas) / 2"
+     ],
+     "keterampilan": [
+      "Menyusun tabel distribusi frekuensi dari data mentah",
+      "Menggambar histogram, poligon frekuensi, dan ogif",
+      "Membaca ogif untuk menaksir kuartil dan persentil",
+      "Mendeskripsikan bentuk distribusi data secara verbal",
+      "Menjelaskan konsekuensi pemilihan panjang kelas yang berbeda"
+     ],
+     "prasyarat": [
+      "Jenis Data dan Penyajian Data Tunggal",
+      "Logaritma: Definisi dan Sifat-sifatnya",
+      "Notasi Ilmiah, Pembulatan, dan Estimasi"
+     ],
+     "miskonsepsi": [
+      "Menggambar histogram dengan batang berjarak seperti diagram batang",
+      "Memakai batas kelas, bukan tepi kelas, sebagai lebar batang histogram",
+      "Menyusun kelas yang tumpang tindih atau menyisakan nilai yang tak masuk kelas mana pun",
+      "Mengira tidak ada informasi yang hilang ketika data dikelompokkan",
+      "Menghitung titik tengah dari tepi kelas dan batas kelas secara campur aduk"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa batang histogram menempel sedangkan diagram batang tidak?",
+      "Kenapa mengelompokkan data membuat kita kehilangan sebagian informasi tetapi tetap berguna?",
+      "Kenapa rumus banyak kelas memakai logaritma?",
+      "Kenapa panjang kelas yang berbeda bisa membuat kesan bentuk distribusi berubah?"
+     ]
+    },
+    {
+     "judul": "Dot Plot dan Memilih Tampilan Data yang Tepat",
+     "kelas": 10,
+     "subKonsep": [
+      "Dot plot: satu titik mewakili satu datum",
+      "Kelebihan dot plot untuk data sedikit dan data diskret",
+      "Membaca modus, sebaran, celah (gap), gerombolan (cluster), dan pencilan langsung dari dot plot",
+      "Perbandingan kekuatan dot plot, histogram, dan box plot",
+      "Memilih tampilan berdasarkan natur (karakteristik) data dan pertanyaan yang ingin dijawab",
+      "Menjelaskan alasan pemilihan tampilan secara argumentatif",
+      "Tampilan berdampingan untuk membandingkan dua kelompok"
+     ],
+     "rumus": [
+      "dot plot tidak memiliki rumus khusus; banyak titik pada suatu nilai sama dengan frekuensi nilai tersebut",
+      "banyak seluruh titik = n"
+     ],
+     "keterampilan": [
+      "Membuat dot plot dari data mentah",
+      "Memilih tampilan data yang paling sesuai dan mempertanggungjawabkan pilihannya",
+      "Membandingkan kelebihan dan kekurangan tiap jenis tampilan",
+      "Menyajikan satu kumpulan data dalam beberapa tampilan dan membandingkan kesan yang muncul"
+     ],
+     "prasyarat": [
+      "Jenis Data dan Penyajian Data Tunggal",
+      "Tabel Distribusi Frekuensi dan Histogram (Data Kelompok)"
+     ],
+     "miskonsepsi": [
+      "Memakai histogram untuk data yang jumlahnya sangat sedikit sehingga bentuknya tak bermakna",
+      "Mengira dot plot dan diagram batang adalah hal yang sama",
+      "Menganggap satu jenis tampilan selalu paling baik untuk semua situasi",
+      "Kehilangan nilai individual dengan mengelompokkan data padahal nilai individual itu penting",
+      "Menganggap dot plot hanya untuk data mainan, bukan data nyata"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa untuk 15 data lebih baik memakai dot plot daripada histogram?",
+      "Kenapa box plot bagus untuk membandingkan banyak kelompok tetapi menyembunyikan bentuk distribusi?",
+      "Kenapa satu data yang sama bisa memberi kesan berbeda bila ditampilkan dengan cara berbeda?"
+     ]
+    },
+    {
+     "judul": "Ukuran Pemusatan Data: Mean, Median, dan Modus",
+     "kelas": 10,
+     "subKonsep": [
+      "Mean sebagai titik keseimbangan data",
+      "Median sebagai nilai tengah setelah data diurutkan",
+      "Modus sebagai nilai yang paling sering muncul",
+      "Mean data tunggal, mean berbobot, dan mean gabungan",
+      "Mean data kelompok dengan titik tengah kelas dan dengan rataan sementara",
+      "Kelas median dan kelas modus pada data kelompok",
+      "Pengaruh pencilan terhadap mean dibanding terhadap median",
+      "Memilih ukuran pemusatan yang paling mewakili sesuai bentuk distribusi"
+     ],
+     "rumus": [
+      "mean = (jumlah seluruh data) / n",
+      "mean data kelompok = (sigma f_i x_i) / (sigma f_i)",
+      "mean gabungan = (n1 x rata1 + n2 x rata2) / (n1 + n2)",
+      "Me = Tb + p((n/2 - F) / f)",
+      "Mo = Tb + p(d1 / (d1 + d2))"
+     ],
+     "keterampilan": [
+      "Menghitung mean, median, dan modus untuk data tunggal dan data kelompok",
+      "Memilih ukuran pemusatan yang paling mewakili dan menjelaskan alasannya",
+      "Menganalisis pengaruh penambahan atau penghapusan data terhadap ketiga ukuran",
+      "Menghitung mean gabungan dari beberapa kelompok",
+      "Menafsirkan ukuran pemusatan dalam konteks masalah nyata"
+     ],
+     "prasyarat": [
+      "Tabel Distribusi Frekuensi dan Histogram (Data Kelompok)",
+      "Penyajian Data dan Ukuran Pemusatan (Fase D)",
+      "Jenis Data dan Penyajian Data Tunggal"
+     ],
+     "miskonsepsi": [
+      "Menghitung median tanpa mengurutkan data terlebih dahulu",
+      "Menganggap modus selalu ada dan selalu tunggal",
+      "Menghitung mean gabungan dengan merata-rata dua rata-rata tanpa memperhatikan banyak datanya",
+      "Mengira mean selalu ukuran terbaik meskipun ada pencilan ekstrem",
+      "Mengira mean data kelompok hasilnya persis sama dengan mean data aslinya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa gaji rata-rata sering menyesatkan dibanding gaji median?",
+      "Kenapa mean bisa berupa bilangan yang mustahil ada di data, misalnya 2,3 anak per keluarga?",
+      "Kenapa mean disebut titik keseimbangan data?",
+      "Kenapa median lebih tahan terhadap pencilan daripada mean?"
+     ]
+    },
+    {
+     "judul": "Ukuran Penempatan: Kuartil, Desil, dan Persentil",
+     "kelas": 10,
+     "subKonsep": [
+      "Membagi data terurut menjadi bagian-bagian yang sama banyak",
+      "Kuartil bawah Q1, kuartil tengah Q2 (median), dan kuartil atas Q3",
+      "Desil dan persentil",
+      "Perbedaan letak kuartil dengan nilai kuartil",
+      "Kuartil data tunggal untuk n ganjil dan n genap",
+      "Kuartil dan persentil pada data kelompok dengan interpolasi",
+      "Menaksir kuartil dari ogif",
+      "Menafsirkan persentil dalam konteks nyata: kurva pertumbuhan anak, peringkat nilai ujian"
+     ],
+     "rumus": [
+      "letak Q_i = i(n + 1)/4 untuk data tunggal",
+      "Q_i = Tb + p((i n / 4 - F) / f) untuk data kelompok",
+      "P_i = Tb + p((i n / 100 - F) / f)",
+      "D_i = Tb + p((i n / 10 - F) / f)",
+      "Q2 = median"
+     ],
+     "keterampilan": [
+      "Menentukan kuartil data tunggal dan data kelompok",
+      "Menaksir kuartil dan persentil dari ogif",
+      "Menafsirkan makna persentil dalam konteks nyata",
+      "Membandingkan posisi relatif seseorang pada dua kelompok yang berbeda"
+     ],
+     "prasyarat": [
+      "Ukuran Pemusatan Data: Mean, Median, dan Modus",
+      "Tabel Distribusi Frekuensi dan Histogram (Data Kelompok)"
+     ],
+     "miskonsepsi": [
+      "Menyebut letak kuartil sebagai nilai kuartil",
+      "Menganggap Q2 selalu sama dengan mean",
+      "Mengira persentil ke-90 berarti nilainya 90",
+      "Menganggap jarak Q1 ke Q2 selalu sama dengan jarak Q2 ke Q3",
+      "Mengira semua rumus kuartil memberi hasil yang persis sama"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kuartil dibutuhkan padahal sudah ada rata-rata?",
+      "Kenapa persentil ke-90 tidak berarti nilai 90?",
+      "Kenapa ada beberapa cara menghitung kuartil dan hasilnya bisa sedikit berbeda?",
+      "Kenapa Q2 selalu sama dengan median?"
+     ]
+    },
+    {
+     "judul": "Ukuran Penyebaran: Jangkauan, Jangkauan Interkuartil, Ragam, dan Simpangan Baku",
+     "kelas": 10,
+     "subKonsep": [
+      "Alasan ukuran pemusatan saja tidak cukup menggambarkan data",
+      "Jangkauan (range) dan kelemahannya terhadap pencilan",
+      "Jangkauan interkuartil (IQR) dan ketahanannya terhadap pencilan",
+      "Simpangan kuartil (jangkauan semi interkuartil)",
+      "Simpangan rata-rata dengan nilai mutlak",
+      "Ragam (varians) dan alasan simpangan dikuadratkan",
+      "Simpangan baku dan alasan hasilnya diakarkan kembali",
+      "Ragam populasi dengan pembagi n dan ragam sampel dengan pembagi n - 1",
+      "Membandingkan konsistensi dua kelompok data"
+     ],
+     "rumus": [
+      "jangkauan R = x_maks - x_min",
+      "IQR = Q3 - Q1",
+      "simpangan kuartil Qd = (Q3 - Q1) / 2",
+      "ragam s^2 = (sigma (x_i - mean)^2) / n",
+      "simpangan baku s = akar(s^2)",
+      "ragam data kelompok = (sigma f_i (x_i - mean)^2) / (sigma f_i)",
+      "sigma (x_i - mean) = 0 selalu"
+     ],
+     "keterampilan": [
+      "Menghitung IQR dan simpangan baku untuk data tunggal dan kelompok",
+      "Membandingkan dua kelompok data menggunakan mean bersama simpangan bakunya",
+      "Menjelaskan makna simpangan baku besar dan kecil dalam konteks",
+      "Memilih ukuran penyebaran yang tepat sesuai ada tidaknya pencilan",
+      "Menganalisis pengaruh penambahan konstanta atau pengalian konstanta terhadap ukuran penyebaran"
+     ],
+     "prasyarat": [
+      "Ukuran Penempatan: Kuartil, Desil, dan Persentil",
+      "Ukuran Pemusatan Data: Mean, Median, dan Modus",
+      "Bentuk Akar"
+     ],
+     "miskonsepsi": [
+      "Menjumlahkan simpangan tanpa mengkuadratkan sehingga hasilnya selalu nol",
+      "Menganggap simpangan baku bisa bernilai negatif",
+      "Membandingkan simpangan baku dua kelompok yang satuannya berbeda",
+      "Mengira ragam punya satuan yang sama dengan data aslinya",
+      "Menganggap simpangan baku besar selalu berarti data buruk"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa simpangan terhadap mean dikuadratkan, bukan sekadar diambil nilai mutlaknya?",
+      "Kenapa jumlah semua simpangan terhadap mean selalu nol?",
+      "Kenapa perlu simpangan baku padahal ragam sudah menggambarkan sebaran?",
+      "Kenapa jangkauan interkuartil lebih tahan terhadap pencilan daripada jangkauan biasa?"
+     ]
+    },
+    {
+     "judul": "Box Plot (Diagram Kotak Garis) dan Pencilan",
+     "kelas": 10,
+     "subKonsep": [
+      "Lima serangkai: nilai minimum, Q1, median, Q3, nilai maksimum",
+      "Kotak yang panjangnya sama dengan jangkauan interkuartil",
+      "Kumis (whisker) dan batasnya",
+      "Aturan pagar 1,5 kali IQR untuk menandai pencilan",
+      "Membaca kemencengan distribusi dari posisi median di dalam kotak",
+      "Membandingkan dua atau lebih himpunan data dengan box plot berdampingan",
+      "Keterbatasan box plot: tidak menampilkan banyaknya data dan bentuk distribusi rinci",
+      "Menyusun box plot dari data mentah maupun dari data kelompok"
+     ],
+     "rumus": [
+      "IQR = Q3 - Q1",
+      "pagar dalam bawah = Q1 - 1,5 x IQR",
+      "pagar dalam atas = Q3 + 1,5 x IQR",
+      "data di luar pagar dalam dinyatakan sebagai pencilan",
+      "setiap bagian (min ke Q1, Q1 ke Q2, Q2 ke Q3, Q3 ke maks) memuat sekitar 25% data"
+     ],
+     "keterampilan": [
+      "Membuat box plot dari data mentah",
+      "Mengidentifikasi pencilan dengan aturan 1,5 kali IQR",
+      "Membandingkan dua kelompok data dari box plot berdampingan",
+      "Menyimpulkan kemencengan dan sebaran dari bentuk box plot",
+      "Menjelaskan keterbatasan box plot dalam menyajikan data"
+     ],
+     "prasyarat": [
+      "Ukuran Penempatan: Kuartil, Desil, dan Persentil",
+      "Ukuran Penyebaran: Jangkauan, Jangkauan Interkuartil, Ragam, dan Simpangan Baku"
+     ],
+     "miskonsepsi": [
+      "Mengira bagian yang panjang pada box plot berarti datanya lebih banyak",
+      "Menganggap garis di dalam kotak adalah mean, bukan median",
+      "Mengira kumis selalu mencapai nilai minimum dan maksimum meskipun ada pencilan",
+      "Membandingkan dua box plot tanpa memperhatikan ukuran sampel masing-masing",
+      "Menganggap box plot yang simetris pasti berasal dari distribusi berbentuk lonceng"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa setiap bagian box plot memuat sekitar 25% data walaupun panjangnya berbeda-beda?",
+      "Kenapa batas pencilan memakai angka 1,5 kali IQR dan bukan angka lain?",
+      "Kenapa box plot bisa menyembunyikan distribusi berpuncak dua?",
+      "Kenapa box plot sangat berguna untuk membandingkan banyak kelompok sekaligus?"
+     ]
+    },
+    {
+     "judul": "Diagram Pencar, Asosiasi, Tren, dan Korelasi versus Sebab-Akibat",
+     "kelas": 10,
+     "subKonsep": [
+      "Data bivariat berupa pasangan dua variabel numerik",
+      "Variabel bebas pada sumbu mendatar dan variabel terikat pada sumbu tegak",
+      "Kasus khusus ketika variabel bebasnya adalah waktu (data deret waktu)",
+      "Arah asosiasi: positif, negatif, atau tidak ada",
+      "Bentuk hubungan: linear atau nonlinear",
+      "Kekuatan hubungan: kuat, sedang, lemah",
+      "Garis kecenderungan atau model linear terbaik secara visual",
+      "Pencilan pada data bivariat dan pengaruhnya",
+      "Perbedaan asosiasi (korelasi) dan hubungan sebab-akibat",
+      "Variabel perancu (lurking variable) sebagai penjelas alternatif",
+      "Bahaya ekstrapolasi jauh di luar rentang data"
+     ],
+     "rumus": [
+      "data bivariat berupa pasangan (x_i, y_i)",
+      "garis kecenderungan: y = m x + c",
+      "asosiasi positif jika kenaikan x cenderung diikuti kenaikan y",
+      "asosiasi negatif jika kenaikan x cenderung diikuti penurunan y"
+     ],
+     "keterampilan": [
+      "Membuat dan membaca diagram pencar",
+      "Mendeskripsikan arah, bentuk, dan kekuatan hubungan dua variabel",
+      "Menggambar garis kecenderungan secara visual dan memakainya untuk menaksir",
+      "Membedakan asosiasi dan sebab-akibat serta memberi contoh tandingan",
+      "Mengidentifikasi variabel perancu yang mungkin menjelaskan asosiasi"
+     ],
+     "prasyarat": [
+      "Jenis Data dan Penyajian Data Tunggal",
+      "Sistem Persamaan Linear Dua Variabel (SPLDV)",
+      "Fungsi Linear dan Gradien (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menyimpulkan hubungan sebab-akibat hanya dari korelasi yang kuat",
+      "Menghubungkan titik-titik pada diagram pencar seperti pada diagram garis",
+      "Mengira korelasi mendekati nol berarti tidak ada hubungan sama sekali, padahal bisa ada hubungan lengkung",
+      "Melakukan ekstrapolasi jauh di luar rentang data yang tersedia",
+      "Mengira garis kecenderungan harus melewati setidaknya beberapa titik data"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa penjualan es krim dan jumlah kasus tenggelam berkorelasi padahal tidak saling menyebabkan?",
+      "Kenapa garis kecenderungan bisa saja tidak melewati satu pun titik data?",
+      "Kenapa berbahaya meramalkan nilai jauh di luar rentang data yang ada?",
+      "Kenapa data dengan pola melengkung bisa punya korelasi linear mendekati nol?"
+     ]
+    },
+    {
+     "judul": "Tabel Frekuensi Dua Arah dan Frekuensi Relatif",
+     "kelas": 10,
+     "subKonsep": [
+      "Data kategorikal dua variabel dan tabel kontingensi baris-kolom",
+      "Frekuensi bersama (joint), frekuensi marginal, dan frekuensi kondisional",
+      "Frekuensi relatif dan persentase",
+      "Membandingkan proporsi antar-kelompok yang ukurannya berbeda",
+      "Mengenali ada tidaknya asosiasi antara dua variabel kategorikal",
+      "Penyajian dengan diagram batang bersusun dan diagram batang berdampingan",
+      "Kehati-hatian menafsirkan proporsi dari kelompok berukuran kecil"
+     ],
+     "rumus": [
+      "frekuensi relatif bersama = n_ij / N",
+      "frekuensi relatif marginal baris = (total baris i) / N",
+      "frekuensi relatif kondisional terhadap baris = n_ij / (total baris i)",
+      "frekuensi relatif kondisional terhadap kolom = n_ij / (total kolom j)",
+      "N = jumlah seluruh frekuensi"
+     ],
+     "keterampilan": [
+      "Menyusun tabel frekuensi dua arah dari data mentah",
+      "Menghitung ketiga jenis frekuensi relatif dan membedakan maknanya",
+      "Membandingkan proporsi kondisional untuk menyimpulkan ada tidaknya asosiasi",
+      "Menyajikan tabel dua arah dengan diagram batang yang tepat",
+      "Menarik kesimpulan berbasis data dan menuliskan argumennya"
+     ],
+     "prasyarat": [
+      "Jenis Data dan Penyajian Data Tunggal",
+      "Ukuran Pemusatan Data: Mean, Median, dan Modus"
+     ],
+     "miskonsepsi": [
+      "Membandingkan jumlah mentah alih-alih proporsi ketika ukuran kelompok berbeda",
+      "Menghitung persentase terhadap total keseluruhan padahal seharusnya terhadap total baris",
+      "Menyimpulkan adanya asosiasi hanya dari satu sel tabel",
+      "Mengira frekuensi kondisional baris dan kolom pasti memberi kesimpulan yang sama",
+      "Menganggap tabel dua arah hanya berlaku untuk dua kategori saja"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa membandingkan persentase lebih adil daripada membandingkan jumlah mentah?",
+      "Kenapa frekuensi kondisional terhadap baris dan terhadap kolom bisa memberi kesan berbeda?",
+      "Kenapa proporsi dari kelompok yang sangat kecil perlu dibaca dengan hati-hati?"
+     ]
+    },
+    {
+     "judul": "Membaca Data dalam Bentuk Matriks dan Mengevaluasi Laporan Statistika di Media",
+     "kelas": 10,
+     "subKonsep": [
+      "Matriks sebagai susunan bilangan dalam baris dan kolom",
+      "Ordo matriks, elemen a_ij, baris ke-i dan kolom ke-j",
+      "Membaca data multi-kategori yang disajikan dalam bentuk matriks",
+      "Menelusuri sumber data, ukuran sampel, dan metode pengambilan sampel suatu laporan",
+      "Bias sampel, sampel sukarela, dan sampel tidak acak",
+      "Pertanyaan survei yang menggiring jawaban",
+      "Skala grafik yang menyesatkan dan sumbu yang terpotong",
+      "Rata-rata mana yang dipakai dalam sebuah klaim",
+      "Selisih persen versus selisih poin persentase",
+      "Klaim sebab-akibat yang berlebihan dari data pengamatan"
+     ],
+     "rumus": [
+      "A = [a_ij] berordo m x n dengan m baris dan n kolom",
+      "a_ij adalah elemen pada baris ke-i dan kolom ke-j",
+      "total baris ke-i = sigma_j a_ij",
+      "total kolom ke-j = sigma_i a_ij"
+     ],
+     "keterampilan": [
+      "Membaca dan menafsirkan data yang disajikan dalam bentuk matriks",
+      "Menelusuri dan mengevaluasi sumber serta metode pengumpulan data suatu berita",
+      "Mengkritisi tampilan grafik pada media dan menjelaskan letak kesesatannya",
+      "Menyusun argumen berbasis data secara tertulis dan lisan",
+      "Merancang ulang penyajian data yang menyesatkan menjadi penyajian yang jujur"
+     ],
+     "prasyarat": [
+      "Jenis Data dan Penyajian Data Tunggal",
+      "Tabel Frekuensi Dua Arah dan Frekuensi Relatif",
+      "Diagram Pencar, Asosiasi, Tren, dan Korelasi versus Sebab-Akibat",
+      "Ukuran Pemusatan Data: Mean, Median, dan Modus"
+     ],
+     "miskonsepsi": [
+      "Menganggap angka dalam berita pasti benar karena disertai grafik",
+      "Membaca elemen a_23 sebagai baris ke-3 kolom ke-2",
+      "Mengira survei daring dengan responden sangat banyak pasti mewakili populasi",
+      "Menyamakan kenaikan sebesar 5 persen dengan kenaikan sebesar 5 poin persentase",
+      "Menganggap grafik yang terlihat rapi pasti tidak menyesatkan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dua grafik yang dibuat dari data yang sama bisa memberi kesan berlawanan?",
+      "Kenapa jumlah responden yang besar tidak menjamin hasil survei akurat?",
+      "Kenapa data disusun dalam bentuk matriks, bukan sebagai daftar biasa?",
+      "Kenapa kenaikan 5 persen berbeda dari kenaikan 5 poin persentase?"
+     ]
+    },
+    {
+     "judul": "Ruang Sampel, Kejadian, dan Peluang",
+     "kelas": 10,
+     "subKonsep": [
+      "Percobaan, hasil percobaan, ruang sampel, dan titik sampel",
+      "Kejadian sebagai himpunan bagian dari ruang sampel",
+      "Mendaftar ruang sampel dengan tabel, diagram pohon, dan pasangan berurutan",
+      "Peluang klasik untuk percobaan yang hasilnya berpeluang sama",
+      "Rentang nilai peluang antara 0 dan 1",
+      "Kejadian pasti, kejadian mustahil, dan komplemen kejadian",
+      "Frekuensi relatif sebagai peluang empiris",
+      "Hukum bilangan besar dan pentingnya ukuran percobaan",
+      "Frekuensi harapan dan maknanya sebagai nilai rata-rata jangka panjang"
+     ],
+     "rumus": [
+      "P(A) = n(A) / n(S)",
+      "0 <= P(A) <= 1",
+      "P(S) = 1 dan P(himpunan kosong) = 0",
+      "P(A komplemen) = 1 - P(A)",
+      "frekuensi harapan = P(A) x banyak percobaan",
+      "peluang empiris = banyak kemunculan kejadian / banyak percobaan"
+     ],
+     "keterampilan": [
+      "Mendaftar ruang sampel dengan tabel atau diagram pohon",
+      "Menghitung peluang kejadian sederhana",
+      "Menghitung frekuensi harapan suatu kejadian",
+      "Membandingkan peluang teoretis dengan hasil percobaan nyata",
+      "Menjelaskan makna nilai peluang dalam konteks pengambilan keputusan"
+     ],
+     "prasyarat": [
+      "Peluang Kejadian Tunggal (Fase D)",
+      "Himpunan dan Diagram Venn (Fase D)",
+      "Jenis Data dan Penyajian Data Tunggal"
+     ],
+     "miskonsepsi": [
+      "Menganggap ruang sampel pelemparan dua dadu berisi 12 titik sampel, bukan 36",
+      "Kekeliruan penjudi: mengira setelah muncul angka lima kali berturut-turut, gambar menjadi lebih mungkin muncul",
+      "Menuliskan nilai peluang lebih dari 1 atau mencampur bentuk pecahan dengan persen tanpa konversi",
+      "Mengira frekuensi harapan pasti terjadi persis sebanyak itu",
+      "Menganggap dua hasil selalu berpeluang sama tanpa memeriksa percobaannya"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa nilai peluang tidak pernah lebih dari 1?",
+      "Kenapa koin yang sudah muncul angka lima kali tetap berpeluang 1/2 pada lemparan berikutnya?",
+      "Kenapa makin banyak percobaan, frekuensi relatif makin mendekati peluang teoretis?",
+      "Kenapa ruang sampel dua dadu ada 36, bukan 21, padahal (1,2) dan (2,1) terlihat sama?"
+     ]
+    },
+    {
+     "judul": "Gabungan Dua Kejadian, Kejadian Saling Lepas, dan Aturan Penjumlahan",
+     "kelas": 10,
+     "subKonsep": [
+      "Gabungan dan irisan dua kejadian",
+      "Penyajian kejadian dengan diagram Venn",
+      "Kejadian saling lepas (tidak dapat terjadi bersamaan)",
+      "Aturan penjumlahan umum dan aturan penjumlahan khusus",
+      "Alasan irisan harus dikurangkan agar tidak dihitung dua kali",
+      "Perbedaan kejadian saling lepas dan kejadian saling bebas",
+      "Aturan perkalian dasar untuk kejadian saling bebas",
+      "Makna kata hubung 'atau' dalam matematika yang bersifat inklusif"
+     ],
+     "rumus": [
+      "P(A gabungan B) = P(A) + P(B) - P(A irisan B)",
+      "jika A dan B saling lepas: P(A irisan B) = 0 sehingga P(A gabungan B) = P(A) + P(B)",
+      "jika A dan B saling bebas: P(A irisan B) = P(A) x P(B)",
+      "P(A komplemen) = 1 - P(A)"
+     ],
+     "keterampilan": [
+      "Menggambar diagram Venn untuk dua kejadian dan mengisi peluangnya",
+      "Menerapkan aturan penjumlahan pada masalah peluang",
+      "Menentukan apakah dua kejadian saling lepas, saling bebas, atau keduanya bukan",
+      "Menyelesaikan masalah peluang gabungan dalam konteks nyata"
+     ],
+     "prasyarat": [
+      "Ruang Sampel, Kejadian, dan Peluang",
+      "Himpunan dan Diagram Venn (Fase D)"
+     ],
+     "miskonsepsi": [
+      "Menjumlahkan peluang tanpa mengurangi irisan sehingga hasilnya melebihi 1",
+      "Menyamakan kejadian saling lepas dengan kejadian saling bebas",
+      "Mengira dua kejadian yang saling lepas pasti juga saling bebas",
+      "Menafsirkan 'atau' secara eksklusif seperti dalam percakapan sehari-hari",
+      "Mengalikan peluang untuk kejadian yang sebenarnya tidak saling bebas"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa irisan harus dikurangkan dalam aturan penjumlahan peluang?",
+      "Apa bedanya saling lepas dan saling bebas, dan kenapa dua kejadian saling lepas justru tidak saling bebas?",
+      "Kenapa 'atau' dalam matematika mencakup kemungkinan keduanya terjadi bersamaan?",
+      "Kenapa peluang dikalikan untuk kejadian saling bebas, bukan dijumlahkan?"
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf",
+  "https://static.perangkat-ajar.belajar.id/SMA.E.MAT.ARF.1.pdf",
+  "https://static.perangkat-ajar.belajar.id/SMA.E.MAT.HAA.1.pdf",
+  "https://sman20-jkt.sch.id/E-Learning/siswa_merdeka/MATEMATIKA-BS-KLS_X_Rev.pdf",
+  "https://wislah.com/cp-matematika-fase-e-2025-capaian-pembelajaran-kelas-10-bilangan-aljabar-dan-fungsi-geometri-analisis-data-dan-peluang/",
+  "https://www.sinmat.my.id/capaian-pembelajaran-cp-matematika-fase-e-kelas-x/",
+  "https://www.slideshare.net/slideshow/perbandingan-cp-2024-dan-2025-matematika-umum-dan-matematika-tl-pdf/282169071",
+  "https://www.catatanmatematika.com/2023/02/materi-matematika-kelas-x-kurikulum-merdeka-fase-e.html",
+  "https://kurikulum.kemendikdasmen.go.id/",
+  "https://modulkelas.com/atp-matematika-kelas-10-fase-e-kurikulum-merdeka/"
+ ],
+ "catatan": "SUMBER PRIMER YANG DIBACA LANGSUNG. Rumusan CP Fase E dikutip verbatim dari teks hasil ekstraksi PDF salinan resmi Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025 (Lampiran II, bab IV.1 huruf D butir 5), file lokal C:\\Users\\ajahv\\AppData\\Local\\Temp\\claude\\C--Users-ajahv-SourceCodes-VisualMTK\\239aa5f8-bacc-4f61-9858-70c914a03592\\scratchpad\\kepka046.txt baris 4779-4805. Dua ATP resmi Fase E dari platform perangkat ajar Kemendikbud (SMA.E.MAT.ARF.1 dan SMA.E.MAT.HAA.1) dibaca penuh, keduanya HTTP 206 saat diverifikasi. Buku teks resmi Matematika untuk SMA/SMK Kelas X (Dicky Susanto dkk, Pusat Kurikulum dan Perbukuan, cetakan pertama 2021, ISBN 978-602-244-526-5) dibaca daftar isi dan sebagian isinya. Cross-check dilakukan ke minimal 3 sumber independen: dokumen primer, ATP resmi, buku teks resmi, plus konfirmasi silang ke wislah.com, sinmat.my.id, catatanmatematika.com, dan dokumen perbandingan CP 2024-2025.\n\nPERUBAHAN CP DAN STATUS TIAP TOPIK (penting, ini sumber kebingungan terbesar di lapangan). Ada tiga generasi CP yang beredar bersamaan:\n(1) CP 2022 (Kepmendikbudristek/Kepka 008/H/KR/2022) - dasar ATP resmi dan buku teks kelas X yang masih dipakai luas. Fase E memuat: eksponen, LOGARITMA, barisan-deret, SPLTV, SPtLDV, fungsi kuadrat, fungsi eksponen, VEKTOR, trigonometri segitiga siku-siku, statistika data kelompok, peluang.\n(2) CP 2024 (Kepka BSKAP 032/H/KR/2024) - logaritma dan vektor DIHAPUS dari Fase E; barisan-deret + bunga tunggal/majemuk masih ada; SPLTV masih ada; peluang kejadian majemuk masih ada.\n(3) CP 2025 (Kepka BSKAP 046/H/KR/2025) - YANG BERLAKU SEKARANG. Barisan-deret, bunga, dan SPLTV DIPINDAH KE FASE F atau dihapus. Yang BARU MASUK: akar imajiner pada persamaan/fungsi kuadrat, dan evaluasi laporan statistika termasuk yang disajikan dalam bentuk matriks. Peluang tidak lagi dirumuskan di Fase E; peluang kejadian majemuk, saling lepas, saling bebas, dan peluang bersyarat ada di Fase F.\n\nVerifikasi langsung pada teks Kepka 046/H/KR/2025 bab IV.1 (Matematika umum, Fase A sampai F): kata \"logaritma\" TIDAK MUNCUL SAMA SEKALI; kata \"vektor\" hanya muncul di bab IV.2 (Matematika Tingkat Lanjut, elemen Geometri Fase F); \"imajiner\" dan \"matriks\" masing-masing muncul sekali, keduanya di rumusan Fase E.\n\nKEPUTUSAN PENYUSUNAN PETA INI. Peta tetap memuat 5 topik yang secara normatif TIDAK lagi ada di CP 2025 Fase E, karena masih diajarkan luas di kelas X TA 2025/2026 (buku teks resmi belum diganti, ATP resmi di platform Kemendikbud masih versi lama, dan banyak sekolah masih memakai K-13 secara sah sampai TA 2025/2026 menurut Pasal 31 Permendikbudristek 12/2024). Kelima topik tersebut: Logaritma (Bilangan), Barisan dan Deret Aritmetika (Bilangan), Barisan dan Deret Geometri (Bilangan), Bunga Tunggal dan Majemuk (Bilangan), SPLTV (Aljabar dan Fungsi), Vektor dan Operasinya (Aljabar dan Fungsi), Ruang Sampel dan Peluang (Analisis Data), serta Gabungan Dua Kejadian (Analisis Data). Status masing-masing sudah ditulis pada field capaian tiap domain. Jika aplikasi ini harus mengikuti CP 2025 secara ketat, topik-topik itu perlu ditandai atau dipindahkan ke Fase F.\n\nELEMEN FASE E. Pada CP 2025 Fase E hanya ada EMPAT elemen: Bilangan, Aljabar dan Fungsi, Geometri, Analisis Data dan Peluang. Elemen \"Pengukuran\" TIDAK dirumuskan untuk Fase E dan F (hanya Fase A sampai D), dan nama elemen aljabar berubah dari \"Aljabar\" menjadi \"Aljabar dan Fungsi\". Karena itu topik luas permukaan dan volume bangun ruang yang muncul di sebagian ATP lama tidak dimasukkan sebagai domain tersendiri di peta ini.\n\nTOPIK FONDASI YANG SENGAJA DIMASUKKAN meski tidak eksplisit di CP, karena tanpa ini siswa kelas X sering tersendat: Himpunan Bilangan Real dan Garis Bilangan, Notasi Ilmiah dan Pembulatan dan Estimasi, Bentuk Aljabar dan PLSV, SPLDV, Teorema Pythagoras dan Kesebangunan, Satuan Sudut Derajat dan Radian, Jenis Data dan Penyajian Data Tunggal. Beberapa di antaranya secara formal milik Fase D tetapi wajib direview di awal kelas X.\n\nPERLU VERIFIKASI LEBIH LANJUT.\n1. Buku teks Matematika Kelas X versi baru yang selaras CP 046/H/KR/2025 belum saya temukan. Buku yang beredar (Dicky Susanto dkk) masih edisi 2021 berbasis CP 2022, sehingga masih memuat logaritma, barisan-deret, SPLTV, vektor, dan peluang. Perlu dicek apakah Pusat Perbukuan sudah menerbitkan revisi.\n2. Domain static.buku.kemdikbud.go.id dan kurikulum.kemdikbud.go.id sudah tidak resolve (migrasi ke kemendikdasmen.go.id). URL buku yang saya cantumkan adalah mirror sekolah (sman20-jkt.sch.id) yang terverifikasi HTTP 206; URL resmi penggantinya perlu dikonfirmasi.\n3. Alokasi JP Matematika kelas X menurut Lampiran I Permendikdasmen 13/2025 adalah 108 JP intrakurikuler + 36 JP kokurikuler = 144 JP per tahun (sekitar 3 JP per minggu intrakurikuler, 36 minggu, 1 JP = 45 menit). Dengan alokasi ini, memuat seluruh 43 topik di peta ini dalam satu tahun kemungkinan besar TIDAK REALISTIS; itulah salah satu alasan CP 2025 memangkas Fase E. Perlu penetapan prioritas jika peta ini dipakai untuk menyusun ATP nyata.\n4. Panduan Pembelajaran Mendalam khusus mata pelajaran Matematika (yang didelegasikan oleh Permendikdasmen 13/2025) belum saya verifikasi keberadaannya; jika sudah terbit, dokumen itu bisa mengubah penekanan proses pembelajaran meskipun tidak mengubah CP.\n5. Rumus banyak kelas aturan Sturges (k = 1 + 3,3 log n) dan aturan pencilan 1,5 x IQR adalah konvensi statistika, bukan ketentuan CP; beberapa buku memakai varian berbeda. Demikian pula ada beberapa konvensi penghitungan kuartil (metode Tukey, metode Moore, letak (n+1)/4) yang hasilnya bisa berbeda tipis - guru perlu konsisten pada satu konvensi.\n6. Notasi logaritma di Indonesia umumnya ditulis dengan basis sebagai superskrip kiri (a log b); di literatur internasional ditulis log_a(b). Perbedaan notasi ini sering membingungkan siswa yang memakai sumber berbahasa Inggris."
+}

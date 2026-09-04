@@ -1,0 +1,1585 @@
+{
+ "fase": "A",
+ "kelas": [
+  1,
+  2
+ ],
+ "ringkasanCP": "Menurut Keputusan Kepala BSKAP Kemendikdasmen Nomor 046/H/KR/2025 (Lampiran II, bab IV.1.D.1), pada akhir Fase A murid menunjukkan pemahaman dan memiliki intuisi bilangan (number sense) pada bilangan cacah sampai 100: membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, serta melakukan komposisi (menyusun) dan dekomposisi (mengurai) bilangan. Operasi penjumlahan dan pengurangan dilakukan menggunakan benda-benda konkret yang banyaknya sampai 20, dan murid menunjukkan pemahaman pecahan sebagai bagian dari keseluruhan melalui konteks membagi sebuah benda atau kumpulan benda sama banyak (yang diperkenalkan hanya setengah dan seperempat). Pada elemen Aljabar, murid memahami makna simbol \"=\" dalam kalimat matematika penjumlahan dan pengurangan bilangan cacah sampai 20 menggunakan gambar, serta mengenali, meniru, dan melanjutkan pola bukan bilangan (gambar, warna, bunyi). Pada Pengukuran, murid membandingkan panjang dan berat benda secara langsung, membandingkan durasi waktu, serta mengukur dan mengestimasi panjang dan berat menggunakan satuan tidak baku — satuan baku belum dituntut di Fase A. Pada Geometri, murid mengenal bangun datar (segitiga, segiempat, segi banyak, lingkaran) dan bangun ruang (balok, kubus, kerucut, bola), melakukan komposisi dan dekomposisi bangun datar, serta menentukan posisi benda terhadap benda lain. Pada Analisis Data dan Peluang, murid mengurutkan, menyortir, mengelompokkan, membandingkan, dan menyajikan data dari banyak benda menggunakan turus dan piktogram paling banyak 4 kategori.",
+ "domains": [
+  {
+   "nama": "Bilangan",
+   "capaian": "Menunjukkan pemahaman dan memiliki intuisi bilangan (number sense) pada bilangan cacah sampai 100; membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, serta melakukan komposisi (menyusun) dan dekomposisi (mengurai) bilangan; melakukan operasi penjumlahan dan pengurangan menggunakan benda-benda konkret yang banyaknya sampai 20; dan menunjukkan pemahaman pecahan sebagai bagian dari keseluruhan melalui konteks membagi sebuah benda atau kumpulan benda sama banyak (pecahan yang diperkenalkan adalah setengah dan seperempat). [Kepka BSKAP 046/H/KR/2025, butir 1.1]",
+   "topics": [
+    {
+     "judul": "Membilang Benda sampai 10",
+     "kelas": 1,
+     "subKonsep": [
+      "Korespondensi satu-satu: satu benda ditunjuk untuk satu bilangan yang disebut",
+      "Urutan hitung yang stabil: 1, 2, 3, ... selalu dalam urutan yang sama",
+      "Prinsip kardinalitas: bilangan terakhir yang disebut menyatakan banyaknya seluruh benda",
+      "Prinsip abstraksi: apa saja dapat dihitung (benda, bunyi, orang, kejadian)",
+      "Prinsip urutan tidak relevan: mulai menghitung dari benda mana pun hasilnya sama",
+      "Subitizing: mengenali banyak benda 1-5 secara langsung tanpa membilang (pola dadu, jari)",
+      "Kekekalan bilangan: banyaknya tidak berubah walaupun benda dirapatkan atau direnggangkan",
+      "Bilangan nol sebagai lambang 'tidak ada'"
+     ],
+     "keterampilan": [
+      "Membilang benda konkret 1-10 sambil menunjuk satu per satu",
+      "Menyebutkan banyak benda tanpa ada yang terlewat atau terhitung dua kali",
+      "Mengenali banyak titik pada dadu atau jari tangan tanpa membilang",
+      "Membilang dari benda yang berbeda-beda dan menyimpulkan hasilnya tetap sama",
+      "Menyusun benda sebanyak bilangan yang diminta"
+     ],
+     "prasyarat": [],
+     "miskonsepsi": [
+      "Mengucapkan urutan bilangan lebih cepat atau lebih lambat daripada gerakan menunjuk sehingga ada benda terlewat atau terhitung dua kali",
+      "Mengira bilangan terakhir yang disebut hanya nama benda terakhir, bukan banyaknya seluruh benda",
+      "Mengira benda yang disusun renggang lebih banyak daripada benda yang dirapatkan meskipun jumlahnya sama",
+      "Menolak menulis 0 karena menganggap 'tidak ada' berarti tidak ada bilangannya",
+      "Harus selalu mengulang dari 1 dan tidak percaya hasilnya sama jika mulai dari benda lain"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa hasil hitung tetap sama walaupun kita mulai menghitung dari benda yang berbeda?",
+      "Kenapa merapatkan atau merenggangkan benda tidak mengubah banyaknya?",
+      "Kenapa bilangan yang disebut paling akhir justru menjadi jawaban pertanyaan 'ada berapa'?",
+      "Kenapa kita bisa langsung tahu ada 3 titik pada dadu tanpa menghitungnya?"
+     ],
+     "rumus": [
+      "Banyak benda = bilangan terakhir yang disebut saat membilang satu-satu (prinsip kardinalitas)"
+     ]
+    },
+    {
+     "judul": "Membaca dan Menulis Lambang Bilangan sampai 20",
+     "kelas": 1,
+     "subKonsep": [
+      "Perbedaan bilangan (konsep banyaknya), angka/lambang bilangan (simbol tertulis), dan nama bilangan (kata)",
+      "Menulis angka 0-9 dengan arah goresan yang benar",
+      "Bilangan 11-19 sebagai 'satu puluhan lebih sekian'",
+      "Pola nama bilangan Indonesia: sebelas, dua belas, tiga belas, ... sembilan belas, dua puluh",
+      "Memasangkan tiga representasi: banyak benda - lambang bilangan - nama bilangan",
+      "Bilangan 20 sebagai dua kelompok sepuluh"
+     ],
+     "keterampilan": [
+      "Menulis lambang bilangan 0-20 dengan bentuk yang benar",
+      "Membaca dan menuliskan nama bilangan 0-20",
+      "Memasangkan kartu benda, kartu lambang, dan kartu nama bilangan",
+      "Menunjukkan atau mengambil benda sebanyak lambang bilangan yang diberikan",
+      "Menuliskan bilangan yang sesuai dengan gambar kumpulan benda"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10"
+     ],
+     "miskonsepsi": [
+      "Menulis angka terbalik cermin, terutama 3, 5, 7, dan 9",
+      "Menulis 'sebelas' menjadi 101 dan 'dua belas' menjadi 102 karena menerjemahkan kata per kata",
+      "Menyamakan istilah 'angka' dengan 'bilangan' sehingga menyebut 12 sebagai 'dua angka jadi dua bilangan'",
+      "Membaca 12 sebagai 'dua satu' karena membaca dari kanan ke kiri",
+      "Mengira nama bilangan 11 sampai 19 mengikuti pola 'puluh' seperti 'satu puluh satu'"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 'sebelas' ditulis 11 dan bukan 101?",
+      "Kenapa lambang angka 1 yang sama bisa berarti banyak yang berbeda tergantung letaknya (1, 12, 21)?",
+      "Kenapa kita perlu lambang bilangan padahal bisa saja menggambar bendanya?",
+      "Kenapa hanya dengan 10 angka (0 sampai 9) kita bisa menuliskan bilangan sebanyak apa pun?"
+     ]
+    },
+    {
+     "judul": "Bilangan Urutan (Ordinal): ke-1, ke-2, ke-3",
+     "kelas": 1,
+     "subKonsep": [
+      "Perbedaan bilangan kardinal (berapa banyak) dan bilangan ordinal (urutan ke berapa)",
+      "Titik awal sebagai acuan menghitung urutan",
+      "Arah urutan: dari depan atau dari belakang, dari kiri atau dari kanan",
+      "Penulisan bentuk ordinal: ke-3, ketiga, pertama/kesatu",
+      "Bilangan ordinal dalam kehidupan sehari-hari: antrean, lomba, lantai gedung, tanggal"
+     ],
+     "keterampilan": [
+      "Menyebut posisi benda atau orang dalam barisan",
+      "Menentukan benda yang berada pada urutan tertentu",
+      "Menjelaskan bahwa urutan berubah jika titik awal atau arah menghitung berubah",
+      "Menuliskan bentuk ordinal dengan benar (ke-5, kelima)"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membaca dan Menulis Lambang Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Mencampur makna '3 benda' dengan 'benda ke-3'",
+      "Mengira posisi ke-3 berarti ada 3 benda di posisi itu",
+      "Tidak menyadari bahwa urutan menjadi berbeda bila dihitung dari ujung yang lain",
+      "Menuliskan 'ke3' tanpa tanda hubung atau menulis 'ke-satu' alih-alih 'pertama'"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 'ada 5 anak' berbeda artinya dengan 'anak ke-5'?",
+      "Kenapa jawaban 'siapa yang ke-2' bisa berubah kalau kita menghitung dari arah yang lain?",
+      "Kenapa kita perlu menyebutkan dari mana kita mulai menghitung urutan?"
+     ]
+    },
+    {
+     "judul": "Membandingkan Banyak Benda dan Bilangan sampai 20",
+     "kelas": 1,
+     "subKonsep": [
+      "Membandingkan dengan memasangkan satu-satu tanpa perlu membilang",
+      "Kata perbandingan: lebih banyak, lebih sedikit, sama banyak",
+      "Simbol perbandingan >, <, dan = beserta cara membacanya",
+      "Membandingkan lewat urutan membilang: bilangan yang disebut belakangan lebih besar",
+      "Membandingkan dengan bantuan garis bilangan (letak lebih kanan berarti lebih besar)",
+      "Menentukan selisih banyak benda dengan memasangkan"
+     ],
+     "keterampilan": [
+      "Memasangkan dua kelompok benda untuk menentukan mana yang lebih banyak",
+      "Membandingkan dua bilangan sampai 20 dan menuliskan simbolnya",
+      "Menggunakan kata lebih banyak, lebih sedikit, dan sama banyak dengan tepat",
+      "Menentukan berapa lebih banyak (selisih) dari dua kelompok benda"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membaca dan Menulis Lambang Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Menilai 'lebih banyak' dari ukuran benda yang lebih besar, bukan dari banyaknya",
+      "Menilai dari panjang barisan benda, bukan dari banyaknya benda",
+      "Membaca simbol < dan > terbalik",
+      "Mengira 'sama banyak' harus berarti bentuk, warna, dan ukurannya juga sama",
+      "Mengira kelompok benda yang menempati tempat lebih luas pasti lebih banyak"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kita bisa tahu mana yang lebih banyak tanpa menghitung satu per satu?",
+      "Kenapa 5 kelereng besar tidak otomatis lebih banyak daripada 8 kelereng kecil?",
+      "Kenapa mulut simbol < dan > selalu menghadap ke bilangan yang lebih besar?",
+      "Kenapa barisan yang lebih panjang belum tentu berisi benda lebih banyak?"
+     ],
+     "rumus": [
+      "a < b dibaca 'a kurang dari b'; a > b dibaca 'a lebih dari b'; a = b dibaca 'a sama dengan b'"
+     ]
+    },
+    {
+     "judul": "Garis Bilangan dan Membilang Maju-Mundur",
+     "kelas": 1,
+     "subKonsep": [
+      "Garis bilangan sebagai deretan titik dengan jarak yang sama",
+      "Titik nol sebagai pangkal garis bilangan",
+      "Membilang maju sebagai lompatan +1 ke kanan dan membilang mundur sebagai lompatan -1 ke kiri",
+      "Bilangan sebelum dan bilangan sesudah suatu bilangan",
+      "Melompat teratur 2, 5, dan 10 pada garis bilangan",
+      "Letak pada garis bilangan menentukan besar-kecilnya bilangan",
+      "Jarak antara dua bilangan dihitung dari banyaknya lompatan, bukan banyaknya titik"
+     ],
+     "keterampilan": [
+      "Menempatkan bilangan pada garis bilangan sampai 20 lalu sampai 100",
+      "Membilang maju dan mundur mulai dari bilangan mana pun",
+      "Menyebutkan bilangan sebelum dan sesudah suatu bilangan",
+      "Melompat teratur 2-an, 5-an, dan 10-an pada garis bilangan",
+      "Menentukan berapa langkah dari satu bilangan ke bilangan lain"
+     ],
+     "prasyarat": [
+      "Membaca dan Menulis Lambang Bilangan sampai 20",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Menghitung titik alih-alih menghitung lompatan saat menentukan jarak dua bilangan",
+      "Membuat jarak antarbilangan tidak sama saat menggambar garis bilangan sendiri",
+      "Lupa menuliskan 0 sebagai pangkal garis bilangan",
+      "Mengira posisi lebih ke kanan berarti 'lebih baru' atau 'lebih akhir', bukan 'lebih besar'",
+      "Kesulitan membilang mundur saat menyeberang puluhan (30, 29, 28 diucapkan 30, 20, 19)",
+      "Mengira membilang maju harus selalu dimulai dari 1"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jarak antarbilangan pada garis bilangan harus dibuat sama?",
+      "Kenapa bilangan yang letaknya di sebelah kanan selalu lebih besar?",
+      "Kenapa menghitung 'berapa langkah dari 3 ke 7' tidak sama dengan menghitung titik dari 3 sampai 7?",
+      "Kenapa membilang mundur lebih sulit daripada membilang maju?"
+     ],
+     "rumus": [
+      "Bilangan sesudah n adalah n + 1",
+      "Bilangan sebelum n adalah n - 1",
+      "Banyak langkah dari a ke b = b - a (untuk b lebih dari a)"
+     ]
+    },
+    {
+     "judul": "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)",
+     "kelas": 1,
+     "subKonsep": [
+      "Komposisi: menyusun dua bilangan menjadi satu bilangan",
+      "Dekomposisi: mengurai satu bilangan menjadi dua bagian atau lebih",
+      "Semua pasangan pembentuk 10: 0+10, 1+9, 2+8, 3+7, 4+6, 5+5",
+      "Model bagian-bagian-keseluruhan (part-part-whole)",
+      "Papan sepuluh (ten frame) sebagai alat bantu visual",
+      "Jari tangan sebagai model alami bilangan 5 dan 10",
+      "Pasangan pembentuk 5 sebagai batu loncatan menuju pasangan 10",
+      "Dekomposisi bilangan 11-20 menjadi 10 dan sisanya"
+     ],
+     "keterampilan": [
+      "Menyebutkan pasangan bilangan pembentuk 10 secara cepat dan otomatis",
+      "Mengurai bilangan 5 sampai 10 menjadi berbagai pasangan",
+      "Melengkapi papan sepuluh dan membaca bagian yang kosong",
+      "Menjawab pertanyaan 'berapa lagi supaya menjadi 10'",
+      "Mengurai bilangan 11-20 menjadi satu puluhan dan sisanya"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Menganggap satu bilangan hanya punya satu cara diurai (7 hanya bisa 5 dan 2)",
+      "Menolak 0 sebagai salah satu bagian sehingga tidak menerima 10 = 10 + 0",
+      "Menghitung ulang dari 1 setiap kali, bukan mengingat pasangan bilangan",
+      "Mengira 3 + 7 dan 7 + 3 menghasilkan bilangan yang berbeda karena ceritanya berbeda",
+      "Mengira dekomposisi hanya boleh menjadi dua bagian, tidak boleh tiga"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa bilangan 10 punya banyak pasangan, bukan hanya satu?",
+      "Kenapa menghafal pasangan pembentuk 10 membuat berhitung menjadi jauh lebih cepat?",
+      "Kenapa 3 + 7 dan 7 + 3 memberi hasil yang sama padahal ceritanya berbeda?",
+      "Kenapa mengurai bilangan justru membantu kita menyusunnya kembali?"
+     ],
+     "rumus": [
+      "Pasangan pembentuk 10: 0+10, 1+9, 2+8, 3+7, 4+6, 5+5",
+      "Keseluruhan = bagian + bagian",
+      "Bilangan 11-20 = 10 + sisanya (contoh: 16 = 10 + 6)"
+     ]
+    },
+    {
+     "judul": "Penjumlahan Bilangan Cacah sampai 20 dengan Benda Konkret",
+     "kelas": 1,
+     "subKonsep": [
+      "Makna penjumlahan sebagai menggabungkan dua kumpulan benda",
+      "Makna penjumlahan sebagai menambah / bergerak maju pada garis bilangan",
+      "Strategi menghitung maju (counting on) dari bilangan terbesar",
+      "Strategi membuat sepuluh dulu (contoh 8 + 5 = 8 + 2 + 3)",
+      "Strategi bilangan kembar dan hampir kembar (6 + 6, lalu 6 + 7)",
+      "Fakta dasar penjumlahan sampai 10 yang dihafal otomatis",
+      "Sifat pertukaran (komutatif) pada penjumlahan",
+      "Menjumlah dengan 0 sebagai unsur identitas",
+      "Menuliskan cerita sehari-hari menjadi kalimat matematika penjumlahan"
+     ],
+     "keterampilan": [
+      "Mengubah soal cerita menjadi kalimat penjumlahan",
+      "Menjumlahkan dua bilangan dengan hasil sampai 20 menggunakan benda konkret dan gambar",
+      "Menggunakan garis bilangan untuk melakukan penjumlahan",
+      "Memakai strategi membuat sepuluh untuk penjumlahan menyeberang puluhan",
+      "Mengingat fakta dasar penjumlahan sampai 10 secara otomatis",
+      "Menghitung maju dari bilangan yang lebih besar"
+     ],
+     "prasyarat": [
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)",
+      "Garis Bilangan dan Membilang Maju-Mundur",
+      "Makna Simbol +, -, dan = (Keseimbangan)"
+     ],
+     "miskonsepsi": [
+      "Selalu menghitung ulang dari 1 sehingga lambat dan sering keliru",
+      "Menghitung bilangan awal sebagai langkah pertama (5 + 3 dihitung 5, 6, 7 lalu dijawab 7)",
+      "Mengira penjumlahan selalu membuat bilangan lebih besar sehingga bingung dengan a + 0",
+      "Menuliskan hasil sebagai rangkaian angka (7 + 5 ditulis 75)",
+      "Menganggap tanda + berarti perintah 'kerjakan sekarang' sehingga menolak bentuk 7 + ... = 12",
+      "Menggunakan jari melebihi 10 lalu kehilangan hitungan pada penjumlahan menyeberang puluhan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 8 + 5 bisa dikerjakan dengan cara 'pinjam 2 dari 5 supaya 8 menjadi 10'?",
+      "Kenapa menghitung maju dari bilangan yang lebih besar lebih hemat langkah?",
+      "Kenapa menambahkan 0 tidak mengubah bilangannya?",
+      "Kenapa 6 + 9 pasti sama hasilnya dengan 9 + 6?",
+      "Kenapa menggabungkan dua kumpulan benda disebut penjumlahan padahal tidak ada yang ditambahkan dari luar?"
+     ],
+     "rumus": [
+      "a + b = b + a (sifat pertukaran / komutatif)",
+      "a + 0 = a (unsur identitas penjumlahan)",
+      "Strategi membuat sepuluh: 8 + 5 = 8 + 2 + 3 = 10 + 3 = 13",
+      "Bagian + bagian = keseluruhan"
+     ]
+    },
+    {
+     "judul": "Pengurangan Bilangan Cacah sampai 20 dengan Benda Konkret",
+     "kelas": 1,
+     "subKonsep": [
+      "Makna pengurangan sebagai mengambil sebagian (take away)",
+      "Makna pengurangan sebagai mencari sisa",
+      "Makna pengurangan sebagai mencari selisih atau membandingkan dua banyaknya",
+      "Makna pengurangan sebagai mencari bagian yang belum diketahui",
+      "Pengurangan sebagai bergerak mundur pada garis bilangan",
+      "Strategi menghitung mundur dan strategi menghitung maju dari pengurang",
+      "Strategi lewat sepuluh (13 - 5 = 13 - 3 - 2)",
+      "Mengurangi dengan 0 dan mengurangi bilangan dengan dirinya sendiri",
+      "Pengurangan tidak bersifat pertukaran"
+     ],
+     "keterampilan": [
+      "Mengubah soal cerita menjadi kalimat pengurangan",
+      "Mengurangkan bilangan sampai 20 dengan benda konkret dan garis bilangan",
+      "Menentukan selisih dua bilangan dengan memasangkan benda",
+      "Menjelaskan pengurangan sebagai mencari bagian yang hilang",
+      "Memilih strategi hitung mundur atau hitung maju sesuai bilangannya"
+     ],
+     "prasyarat": [
+      "Penjumlahan Bilangan Cacah sampai 20 dengan Benda Konkret",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)",
+      "Garis Bilangan dan Membilang Maju-Mundur"
+     ],
+     "miskonsepsi": [
+      "Mengira pengurangan boleh dibalik seperti penjumlahan sehingga 5 - 8 dianggap sama dengan 8 - 5",
+      "Pada bentuk bersusun, selalu mengurangkan angka kecil dari angka besar di setiap kolom",
+      "Menganggap pengurangan hanya berarti 'mengambil' sehingga tidak mengenali soal selisih sebagai pengurangan",
+      "Salah menghitung mundur karena ikut menghitung bilangan awal sebagai satu langkah",
+      "Mengira hasil pengurangan selalu lebih kecil dari kedua bilangan yang dikurangkan",
+      "Mengira 0 - a bisa dikerjakan seperti a - 0"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 8 - 5 tidak sama dengan 5 - 8 padahal 6 + 9 sama dengan 9 + 6?",
+      "Kenapa soal 'berapa selisih tinggi Ani dan Budi' diselesaikan dengan pengurangan padahal tidak ada yang diambil?",
+      "Kenapa 12 - 5 bisa dicari dengan bertanya '5 ditambah berapa supaya menjadi 12'?",
+      "Kenapa mengurangi dengan 0 tidak mengubah bilangannya?"
+     ],
+     "rumus": [
+      "a - b = c apabila dan hanya apabila c + b = a",
+      "a - 0 = a",
+      "a - a = 0",
+      "Keseluruhan - bagian = bagian yang lain"
+     ]
+    },
+    {
+     "judul": "Hubungan Penjumlahan dan Pengurangan (Keluarga Fakta)",
+     "kelas": 1,
+     "subKonsep": [
+      "Penjumlahan dan pengurangan sebagai dua operasi yang saling berkebalikan",
+      "Keluarga fakta dari tiga bilangan (contoh 4, 6, 10 menghasilkan empat kalimat matematika)",
+      "Diagram bagian-bagian-keseluruhan sebagai penghubung kedua operasi",
+      "Memeriksa hasil pengurangan dengan penjumlahan dan sebaliknya",
+      "Mengubah soal pengurangan menjadi soal penjumlahan dengan bagian yang hilang",
+      "Syarat tiga bilangan bisa membentuk keluarga fakta"
+     ],
+     "keterampilan": [
+      "Menuliskan empat kalimat matematika dari satu keluarga fakta",
+      "Memeriksa kebenaran hasil hitung menggunakan operasi kebalikannya",
+      "Menggambar diagram bagian-keseluruhan dari sebuah soal cerita",
+      "Menyusun sendiri keluarga fakta dari tiga bilangan yang diberikan"
+     ],
+     "prasyarat": [
+      "Penjumlahan Bilangan Cacah sampai 20 dengan Benda Konkret",
+      "Pengurangan Bilangan Cacah sampai 20 dengan Benda Konkret"
+     ],
+     "miskonsepsi": [
+      "Menganggap penjumlahan dan pengurangan sebagai dua hal terpisah yang harus dihafal sendiri-sendiri",
+      "Menulis keluarga fakta yang keliru, misalnya 10 + 6 = 4",
+      "Mengira setiap tiga bilangan apa pun bisa membentuk keluarga fakta",
+      "Menempatkan bilangan terbesar bukan pada posisi keseluruhan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dari tiga bilangan yang sama bisa dibuat empat kalimat matematika yang berbeda?",
+      "Kenapa hasil pengurangan bisa diperiksa dengan penjumlahan?",
+      "Kenapa mengetahui 6 + 4 = 10 langsung memberi tahu kita bahwa 10 - 6 = 4?",
+      "Kenapa bilangan terbesar selalu menjadi 'keseluruhan' dalam keluarga fakta?"
+     ],
+     "rumus": [
+      "Jika a + b = c maka berlaku juga b + a = c, c - a = b, dan c - b = a"
+     ]
+    },
+    {
+     "judul": "Membilang dan Mengelompokkan Bilangan sampai 100",
+     "kelas": 2,
+     "subKonsep": [
+      "Mengelompokkan sepuluh-sepuluh sebagai kunci membilang benda yang banyak",
+      "Nama dan lambang bilangan 21 sampai 100",
+      "Pola nama bilangan puluhan: dua puluh, tiga puluh, empat puluh, dan seterusnya",
+      "Membilang lompat 2, 5, dan 10 dari bilangan mana pun",
+      "Papan seratus (hundred chart) dan pola baris serta kolomnya",
+      "Menyeberang puluhan saat membilang maju maupun mundur",
+      "Bilangan 100 sebagai sepuluh kelompok sepuluh"
+     ],
+     "keterampilan": [
+      "Membilang benda yang banyak dengan mengelompokkan per sepuluh",
+      "Membaca dan menuliskan bilangan sampai 100",
+      "Melengkapi bagian yang kosong pada papan seratus",
+      "Membilang lompat 2, 5, dan 10 mulai dari bilangan mana pun",
+      "Menemukan pola bilangan pada baris dan kolom papan seratus"
+     ],
+     "prasyarat": [
+      "Membaca dan Menulis Lambang Bilangan sampai 20",
+      "Garis Bilangan dan Membilang Maju-Mundur",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)"
+     ],
+     "miskonsepsi": [
+      "Kesulitan menyeberang puluhan sehingga setelah 29 menyebut 'dua puluh sepuluh'",
+      "Menuliskan 'tujuh puluh lima' menjadi 705 karena menerjemahkan kata per kata",
+      "Tetap membilang satu-satu untuk benda yang sangat banyak sehingga sering keliru",
+      "Mengira urutan pada papan seratus dibaca dari bawah ke atas",
+      "Mengira lompat 5 hanya boleh dimulai dari 5 atau dari 0"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa lebih mudah menghitung 84 kelereng dengan mengelompokkan sepuluh-sepuluh?",
+      "Kenapa setelah 29 yang muncul 30, bukan 'dua puluh sepuluh'?",
+      "Kenapa pada papan seratus, turun satu baris berarti bertambah 10?",
+      "Kenapa 100 disebut sepuluh puluhan?"
+     ]
+    },
+    {
+     "judul": "Nilai Tempat Puluhan dan Satuan",
+     "kelas": 2,
+     "subKonsep": [
+      "Sistem bilangan berbasis sepuluh (desimal)",
+      "Aturan penukaran: 10 satuan = 1 puluhan",
+      "Letak angka menentukan nilainya",
+      "Perbedaan angka, nilai angka, dan nilai tempat",
+      "Peran angka 0 sebagai penahan tempat (contoh 40, 70)",
+      "Representasi konkret: kubus satuan dan batang puluhan (blok Dienes), sedotan diikat sepuluhan",
+      "Bentuk panjang bilangan (67 = 60 + 7)",
+      "Uang rupiah sebagai konteks nilai tempat (Rp10.000 dan Rp1.000)"
+     ],
+     "keterampilan": [
+      "Menyebutkan nilai tempat dan nilai setiap angka pada bilangan dua angka",
+      "Menyatakan bilangan dalam bentuk panjang",
+      "Menukar 10 satuan menjadi 1 puluhan dan sebaliknya menggunakan benda konkret",
+      "Menjelaskan dengan kata-kata sendiri perbedaan 24 dan 42",
+      "Menyusun bilangan dari kartu nilai tempat"
+     ],
+     "prasyarat": [
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)"
+     ],
+     "miskonsepsi": [
+      "Membaca 45 sebagai 'angka 4 dan angka 5' tanpa menyadari 4 bernilai 40",
+      "Menganggap 24 dan 42 sama karena angkanya sama",
+      "Mengira 0 pada 30 tidak ada gunanya sehingga menuliskan 30 sebagai 3",
+      "Menyebut nilai tempat (puluhan) padahal yang ditanya nilai angka (40), dan sebaliknya",
+      "Mengurutkan bilangan dua angka berdasarkan angka satuannya saja",
+      "Mengira 1 puluhan sama nilainya dengan 1 satuan karena sama-sama ditulis dengan angka 1"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa angka 4 pada 45 bernilai 40, bukan 4?",
+      "Kenapa 24 dan 42 berbeda padahal angkanya sama persis?",
+      "Kenapa kita harus menuliskan 0 pada bilangan 30?",
+      "Kenapa sistem bilangan kita berkelompok sepuluh, bukan lima atau dua belas?",
+      "Kenapa 10 satuan boleh ditukar menjadi 1 puluhan?"
+     ],
+     "rumus": [
+      "Bilangan dua angka = (angka puluhan x 10) + (angka satuan x 1)",
+      "67 = 60 + 7 (bentuk panjang)",
+      "10 satuan = 1 puluhan; 10 puluhan = 1 ratusan"
+     ]
+    },
+    {
+     "judul": "Komposisi dan Dekomposisi Bilangan Dua Angka",
+     "kelas": 2,
+     "subKonsep": [
+      "Menyusun bilangan dari puluhan dan satuan",
+      "Mengurai bilangan dua angka dengan lebih dari satu cara (45 = 40 + 5 = 30 + 15 = 20 + 25)",
+      "Penukaran satu puluhan menjadi sepuluh satuan saat mengurai",
+      "Dekomposisi sebagai dasar strategi berhitung",
+      "Menyusun bilangan menjadi tiga bagian atau lebih",
+      "Hubungan dekomposisi dengan pasangan pembentuk 100 (60 dan 40, 70 dan 30)"
+     ],
+     "keterampilan": [
+      "Mengurai bilangan dua angka menjadi puluhan dan satuan",
+      "Mengurai satu bilangan dengan lebih dari satu cara",
+      "Menyusun bilangan dari kartu puluhan dan kartu satuan",
+      "Menjelaskan alasan memilih suatu cara penguraian",
+      "Menemukan pasangan bilangan yang membentuk 100"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Puluhan dan Satuan",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)"
+     ],
+     "miskonsepsi": [
+      "Mengira 45 hanya bisa diurai menjadi 40 dan 5",
+      "Menolak penguraian 45 = 30 + 15 karena menganggap 15 'terlalu besar untuk satuan'",
+      "Menukar puluhan menjadi satuan dengan nilai yang keliru (1 puluhan dianggap 1 satuan)",
+      "Mengira dekomposisi hanya berlaku untuk bilangan kecil"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satu bilangan bisa diurai dengan banyak cara yang berbeda?",
+      "Kenapa 45 boleh ditulis 30 + 15 padahal 15 lebih dari satu puluhan?",
+      "Kenapa mengurai bilangan justru membantu kita berhitung tanpa alat?",
+      "Kenapa pasangan pembentuk 100 mirip dengan pasangan pembentuk 10?"
+     ],
+     "rumus": [
+      "Bilangan = puluhan + satuan (contoh 45 = 40 + 5)",
+      "Pasangan pembentuk 100: 10 dan 90, 20 dan 80, 30 dan 70, 40 dan 60, 50 dan 50"
+     ]
+    },
+    {
+     "judul": "Membandingkan dan Mengurutkan Bilangan sampai 100",
+     "kelas": 2,
+     "subKonsep": [
+      "Membandingkan dengan melihat nilai tempat terbesar terlebih dahulu",
+      "Simbol >, <, = dan cara membacanya untuk bilangan dua angka",
+      "Mengurutkan naik (dari terkecil) dan mengurutkan turun (dari terbesar)",
+      "Menentukan bilangan yang terletak di antara dua bilangan",
+      "Menggunakan garis bilangan dan papan seratus sebagai alat pembanding",
+      "Menentukan bilangan terbesar dan terkecil dari sekumpulan bilangan"
+     ],
+     "keterampilan": [
+      "Membandingkan dua bilangan sampai 100 disertai alasan nilai tempat",
+      "Mengurutkan sekelompok bilangan naik maupun turun",
+      "Menuliskan simbol perbandingan yang tepat",
+      "Menyebutkan bilangan yang terletak di antara dua bilangan",
+      "Menempatkan bilangan pada garis bilangan sampai 100"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Puluhan dan Satuan",
+      "Garis Bilangan dan Membilang Maju-Mundur",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Membandingkan hanya dari angka satuan sehingga menganggap 19 lebih besar dari 91",
+      "Membandingkan dari banyaknya angka tanpa memperhatikan nilainya",
+      "Membalik arah simbol > dan <",
+      "Mengira 'mengurutkan' selalu berarti dari kecil ke besar saja",
+      "Mengira bilangan yang angkanya lebih besar (misal 9 pada 19) pasti membuat bilangannya lebih besar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa cukup melihat angka puluhan lebih dulu untuk tahu mana yang lebih besar?",
+      "Kenapa 91 lebih besar dari 19 padahal angka penyusunnya sama?",
+      "Kenapa simbol < dan > selalu 'membuka mulut' ke arah bilangan yang lebih besar?",
+      "Kenapa kita baru melihat angka satuan kalau angka puluhannya sama?"
+     ],
+     "rumus": [
+      "Bandingkan angka puluhan lebih dulu; jika sama, baru bandingkan angka satuannya"
+     ]
+    },
+    {
+     "judul": "Bilangan Ganjil dan Genap",
+     "kelas": 2,
+     "subKonsep": [
+      "Genap sebagai bilangan yang dapat dipasangkan dua-dua tanpa sisa",
+      "Ganjil sebagai bilangan yang menyisakan satu saat dipasangkan dua-dua",
+      "Ciri angka satuan: 0, 2, 4, 6, 8 genap; 1, 3, 5, 7, 9 ganjil",
+      "Pola selang-seling ganjil-genap pada urutan bilangan",
+      "Pola kolom ganjil dan genap pada papan seratus",
+      "Kedudukan bilangan 0 sebagai bilangan genap",
+      "Konteks sehari-hari: pembagian pasangan, nomor rumah, nomor sepatu"
+     ],
+     "keterampilan": [
+      "Menentukan ganjil atau genap dengan memasangkan benda dua-dua",
+      "Menentukan ganjil atau genap dengan melihat angka satuannya",
+      "Melanjutkan pola bilangan genap dan ganjil",
+      "Menjelaskan alasan suatu bilangan genap menggunakan model pasangan",
+      "Mewarnai pola ganjil-genap pada papan seratus"
+     ],
+     "prasyarat": [
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Nilai Tempat Puluhan dan Satuan"
+     ],
+     "miskonsepsi": [
+      "Melihat angka puluhan untuk menentukan ganjil atau genap sehingga menganggap 34 ganjil karena 3 ganjil",
+      "Mengira bilangan yang besar pasti genap",
+      "Mengira 0 ganjil, atau menganggap 0 bukan keduanya",
+      "Mengira 'ganjil' berarti aneh atau jelek karena arti kata sehari-hari",
+      "Mengira bilangan ganjil tidak bisa dibagi sama sekali"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa cukup melihat angka terakhir untuk tahu suatu bilangan ganjil atau genap?",
+      "Kenapa 34 genap padahal 3 adalah bilangan ganjil?",
+      "Kenapa bilangan genap selalu bisa dibagi menjadi dua kelompok sama banyak tanpa sisa?",
+      "Kenapa 0 termasuk bilangan genap?"
+     ],
+     "rumus": [
+      "Bilangan genap: dapat dipasangkan dua-dua tanpa sisa (0, 2, 4, 6, 8, 10, ...)",
+      "Bilangan ganjil: bersisa satu saat dipasangkan dua-dua (1, 3, 5, 7, 9, 11, ...)",
+      "genap + genap = genap; ganjil + ganjil = genap; genap + ganjil = ganjil"
+     ]
+    },
+    {
+     "judul": "Estimasi dan Perkiraan Banyak Benda",
+     "kelas": 2,
+     "subKonsep": [
+      "Perbedaan menghitung tepat dan memperkirakan",
+      "Memperkirakan dengan patokan (benchmark) sekelompok 10 atau 20",
+      "Kata-kata perkiraan: kira-kira, sekitar, hampir, lebih dari, kurang dari",
+      "Memeriksa perkiraan dengan menghitung sebenarnya",
+      "Menilai kewajaran suatu jawaban",
+      "Kapan perkiraan sudah cukup dan kapan diperlukan hitungan tepat"
+     ],
+     "keterampilan": [
+      "Memperkirakan banyak benda dalam wadah dengan patokan sekelompok 10",
+      "Menilai apakah suatu perkiraan masuk akal",
+      "Membandingkan perkiraan dengan hasil hitung sebenarnya",
+      "Memperkirakan hasil penjumlahan sederhana sebelum menghitungnya",
+      "Membulatkan banyak benda ke puluhan terdekat secara sederhana"
+     ],
+     "prasyarat": [
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Membandingkan dan Mengurutkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Menganggap perkiraan yang tidak persis sebagai jawaban yang salah",
+      "Menghitung dulu dengan tepat lalu menuliskan hasilnya sebagai 'perkiraan'",
+      "Menyebut angka asal tanpa memakai patokan apa pun",
+      "Mengira estimasi selalu harus lebih kecil dari jumlah sebenarnya",
+      "Mengira estimasi tidak berguna karena kita bisa menghitung dengan tepat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa perkiraan berguna padahal hasilnya tidak persis benar?",
+      "Kenapa memakai patokan sekelompok 10 membuat perkiraan kita jauh lebih dekat?",
+      "Kapan kita boleh memperkirakan dan kapan kita harus menghitung dengan tepat?",
+      "Kenapa memperkirakan lebih dulu membantu kita menyadari kalau hitungan kita salah?"
+     ]
+    },
+    {
+     "judul": "Pecahan Setengah dan Seperempat",
+     "kelas": 2,
+     "subKonsep": [
+      "Keseluruhan (satu utuh) sebagai acuan pecahan",
+      "Syarat mutlak: bagian-bagian harus sama besar atau sama banyak",
+      "Setengah sebagai 1 dari 2 bagian yang sama",
+      "Seperempat sebagai 1 dari 4 bagian yang sama",
+      "Pecahan pada satu benda utuh (luas, panjang) dan pada kumpulan benda",
+      "Lambang pecahan 1/2 dan 1/4 serta cara membacanya",
+      "Makna sederhana pembilang (bagian yang diambil) dan penyebut (banyak bagian sama)",
+      "Hubungan dua seperempat sama dengan setengah",
+      "Bentuk potongan setengah bisa berbeda-beda asal luasnya sama"
+     ],
+     "keterampilan": [
+      "Melipat atau memotong benda menjadi 2 dan 4 bagian yang sama besar",
+      "Menunjukkan bagian setengah dan seperempat pada gambar",
+      "Menentukan setengah dan seperempat dari kumpulan benda (contoh 8 kelereng)",
+      "Menuliskan dan membaca lambang 1/2 dan 1/4",
+      "Menilai apakah suatu pembagian sudah menghasilkan bagian yang sama besar",
+      "Mewarnai bagian setengah atau seperempat pada berbagai bentuk"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)"
+     ],
+     "miskonsepsi": [
+      "Menyebut bagian mana pun sebagai 'setengah' walaupun ukurannya tidak sama besar",
+      "Mengira setengah harus selalu berbentuk sama persis, sehingga menolak lingkaran yang dipotong dengan arah berbeda",
+      "Mengira 1/4 lebih besar dari 1/2 karena 4 lebih besar dari 2",
+      "Melupakan acuan 'utuhnya apa' sehingga membandingkan setengah roti kecil dengan setengah roti besar",
+      "Mengira pecahan hanya berlaku untuk benda yang dipotong, bukan untuk kumpulan benda",
+      "Membaca 1/2 sebagai 'satu dua' atau 'dua satu'"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa dua bagian yang tidak sama besar tidak boleh disebut setengah?",
+      "Kenapa 1/4 lebih kecil daripada 1/2 padahal angka 4 lebih besar dari 2?",
+      "Kenapa setengah dari 8 kelereng adalah 4, bukan 2?",
+      "Kenapa 'setengah' bisa berbeda banyaknya kalau benda utuhnya berbeda?",
+      "Kenapa semakin banyak bagian yang dibuat, semakin kecil setiap bagiannya?"
+     ],
+     "rumus": [
+      "1/2 = 1 dari 2 bagian yang sama besar",
+      "1/4 = 1 dari 4 bagian yang sama besar",
+      "1/4 + 1/4 = 1/2",
+      "1/2 + 1/2 = 1 (satu utuh)",
+      "1/4 + 1/4 + 1/4 + 1/4 = 1 (satu utuh)"
+     ]
+    },
+    {
+     "judul": "Strategi Berhitung Mental dengan Puluhan",
+     "kelas": 2,
+     "subKonsep": [
+      "Menjumlah dan mengurangi puluhan bulat (30 + 20, 70 - 40)",
+      "Menjumlah bilangan dua angka dengan satuan tanpa menyimpan (34 + 5)",
+      "Melompat ke puluhan terdekat lebih dulu (38 + 7 = 38 + 2 + 5)",
+      "Mengurai bilangan menurut nilai tempat sebelum menghitung",
+      "Menambah dan mengurangi 10 dari bilangan dua angka",
+      "Memeriksa kewajaran hasil hitung",
+      "Menjelaskan langkah berhitung secara lisan"
+     ],
+     "keterampilan": [
+      "Berhitung mental dengan puluhan bulat",
+      "Melompat ke puluhan terdekat lebih dulu saat menjumlah",
+      "Menambah atau mengurangi 10 secara langsung dari bilangan dua angka",
+      "Memilih strategi hitung yang paling hemat langkah",
+      "Menjelaskan langkah berhitungnya kepada teman"
+     ],
+     "prasyarat": [
+      "Nilai Tempat Puluhan dan Satuan",
+      "Komposisi dan Dekomposisi Bilangan Dua Angka",
+      "Penjumlahan Bilangan Cacah sampai 20 dengan Benda Konkret",
+      "Pasangan Bilangan 10 (Komposisi dan Dekomposisi sampai 10)"
+     ],
+     "miskonsepsi": [
+      "Menjumlah angka per angka tanpa memperhatikan nilai tempat (34 + 5 dijawab 84 karena 3 + 5)",
+      "Mengira berhitung mental berarti harus membayangkan cara bersusun di kepala",
+      "Menjumlahkan puluhan dengan satuan tanpa memahami alasannya",
+      "Menganggap berhitung mental hanya soal kecepatan, bukan soal memilih strategi",
+      "Menambah 10 dengan menambah 1 pada angka satuan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 30 + 20 bisa dijawab cepat dengan berpikir '3 puluhan tambah 2 puluhan'?",
+      "Kenapa melompat ke puluhan terdekat lebih dulu membuat hitungan jadi lebih mudah?",
+      "Kenapa 34 + 5 bukan 84?",
+      "Kenapa menambah 10 hanya mengubah angka puluhannya saja?"
+     ],
+     "rumus": [
+      "30 + 20 = (3 + 2) puluhan = 5 puluhan = 50",
+      "38 + 7 = 38 + 2 + 5 = 40 + 5 = 45 (lompat ke puluhan terdekat)",
+      "n + 10 menambah 1 pada angka puluhan, angka satuan tetap"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Aljabar",
+   "capaian": "Menunjukkan pemahaman makna simbol matematika '=' dalam suatu kalimat matematika yang terkait dengan penjumlahan dan pengurangan bilangan cacah sampai 20 menggunakan gambar. Murid dapat mengenali, meniru, dan melanjutkan pola bukan bilangan (misalnya gambar, warna, bunyi/suara). [Kepka BSKAP 046/H/KR/2025, butir 1.2]",
+   "topics": [
+    {
+     "judul": "Makna Simbol +, -, dan = (Keseimbangan)",
+     "kelas": 1,
+     "subKonsep": [
+      "Simbol + dibaca 'ditambah', bermakna digabungkan dengan",
+      "Simbol - dibaca 'dikurang', bermakna diambil atau dibandingkan",
+      "Simbol = dibaca 'sama dengan', bermakna kedua ruas bernilai sama, bukan 'hasilnya'",
+      "Timbangan atau neraca dua lengan sebagai model keseimbangan tanda sama dengan",
+      "Kalimat matematika yang benar dan yang salah",
+      "Bentuk tidak baku yang tetap benar: 7 = 3 + 4 dan 3 + 4 = 4 + 3",
+      "Ruas kiri dan ruas kanan sebuah kalimat matematika",
+      "Menerjemahkan gambar menjadi kalimat matematika dan sebaliknya"
+     ],
+     "keterampilan": [
+      "Membaca dan menuliskan kalimat matematika dengan simbol +, -, dan =",
+      "Menilai benar atau salah suatu kalimat matematika sederhana",
+      "Memperagakan keseimbangan menggunakan timbangan atau gambar",
+      "Menerima dan menuliskan bentuk dengan tanda = di sebelah kiri (7 = 3 + 4)",
+      "Mengubah gambar kumpulan benda menjadi kalimat matematika"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20",
+      "Membaca dan Menulis Lambang Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Membaca '=' sebagai perintah 'tulis jawabannya di sini' sehingga menolak bentuk 7 = 3 + 4",
+      "Menjawab 8 pada soal 3 + 5 = ... + 2 karena mengisi hasil ruas kiri saja",
+      "Menuliskan kalimat berantai yang salah, misalnya 3 + 5 = 8 + 2 = 10",
+      "Mengira tanda = hanya boleh muncul satu kali dan harus di bagian akhir",
+      "Mengira ruas kanan harus selalu berupa satu bilangan tunggal",
+      "Membaca simbol - sebagai tanda hubung atau garis biasa"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa tanda '=' berarti 'sama nilainya', bukan 'hasilnya adalah'?",
+      "Kenapa 7 = 3 + 4 juga merupakan kalimat matematika yang benar?",
+      "Kenapa menuliskan 3 + 5 = 8 + 2 = 10 itu keliru padahal jawabannya 10?",
+      "Kenapa timbangan yang seimbang bisa dipakai untuk menjelaskan tanda sama dengan?"
+     ],
+     "rumus": [
+      "Ruas kiri = ruas kanan (kedua ruas harus bernilai sama)",
+      "Jika a = b maka b = a (tanda sama dengan berlaku dua arah)"
+     ]
+    },
+    {
+     "judul": "Kalimat Matematika dengan Bilangan yang Hilang",
+     "kelas": 2,
+     "subKonsep": [
+      "Posisi bilangan yang hilang bisa di mana saja: 5 + kotak = 12, kotak + 5 = 12, 12 - kotak = 5",
+      "Model gambar dan model pita (bar model) untuk menemukan bilangan yang hilang",
+      "Menggunakan operasi kebalikan untuk mencari bilangan yang hilang",
+      "Menerjemahkan soal cerita menjadi kalimat matematika bersimbol",
+      "Menguji jawaban dengan mengganti kembali ke kalimat semula",
+      "Bentuk seimbang dua ruas: 4 + 6 = kotak + 3"
+     ],
+     "keterampilan": [
+      "Menemukan bilangan yang hilang pada berbagai posisi dalam kalimat matematika",
+      "Menggambar model bagian-keseluruhan dari sebuah soal cerita",
+      "Memeriksa jawaban dengan memasukkannya kembali ke kalimat matematika",
+      "Menerjemahkan cerita sehari-hari menjadi kalimat matematika",
+      "Menyelesaikan kalimat matematika berbentuk seimbang dua ruas"
+     ],
+     "prasyarat": [
+      "Makna Simbol +, -, dan = (Keseimbangan)",
+      "Hubungan Penjumlahan dan Pengurangan (Keluarga Fakta)",
+      "Pengurangan Bilangan Cacah sampai 20 dengan Benda Konkret"
+     ],
+     "miskonsepsi": [
+      "Selalu menjumlahkan semua bilangan yang tampak, apa pun posisi kotak kosongnya",
+      "Menjawab 17 untuk 12 - kotak = 5 karena 'ada tanda kurang jadi dikurangi' atau justru dijumlahkan asal",
+      "Hanya bisa mengerjakan bila kotak kosong berada di paling kanan",
+      "Tidak memeriksa kembali jawaban ke kalimat semula",
+      "Mengira kotak kosong selalu berisi bilangan yang lebih besar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kotak + 5 = 12 diselesaikan dengan pengurangan padahal tandanya penjumlahan?",
+      "Kenapa letak kotak kosong mengubah cara mengerjakan soalnya?",
+      "Kenapa jawaban harus dimasukkan kembali untuk diperiksa?",
+      "Kenapa 4 + 6 = kotak + 3 tidak dijawab 10?"
+     ],
+     "rumus": [
+      "kotak + b = c maka kotak = c - b",
+      "a - kotak = c maka kotak = a - c",
+      "kotak - b = c maka kotak = c + b"
+     ]
+    },
+    {
+     "judul": "Pola Bukan Bilangan (Gambar, Warna, Bunyi, dan Gerak)",
+     "kelas": 1,
+     "subKonsep": [
+      "Unit pola: bagian terkecil yang berulang",
+      "Jenis pola berulang: AB, ABB, AAB, ABC",
+      "Empat kegiatan pola: mengenali, meniru, melanjutkan, dan membuat sendiri",
+      "Pola pada bunyi (tepuk-hentak), gerak (jongkok-berdiri), dan warna",
+      "Pola pada benda budaya sehari-hari: motif batik, susunan ubin, anyaman, pagar",
+      "Memperbaiki pola yang rusak atau ada bagian hilang di tengah",
+      "Menerjemahkan pola dari satu bentuk ke bentuk lain (warna menjadi bunyi menjadi huruf)"
+     ],
+     "keterampilan": [
+      "Menemukan bagian pola yang berulang (unit pola)",
+      "Meniru dan melanjutkan pola yang diberikan",
+      "Membuat pola sendiri dan menjelaskan aturannya",
+      "Menemukan dan memperbaiki kesalahan pada sebuah pola",
+      "Memprediksi benda atau bunyi berikutnya dalam pola",
+      "Menerjemahkan pola warna menjadi pola bunyi atau pola gerak"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Menyortir dan Mengelompokkan Benda Menurut Ciri"
+     ],
+     "miskonsepsi": [
+      "Hanya melanjutkan satu benda berikutnya tanpa menemukan unit pola yang berulang",
+      "Mengira pola harus selalu berbentuk AB (dua benda bergantian)",
+      "Menganggap urutan acak yang menarik sebagai sebuah pola",
+      "Menyalin panjang pola guru, bukan aturannya, sehingga berhenti di tempat yang sama",
+      "Tidak mengenali pola yang sama bila bahannya berbeda (merah-biru-biru sama polanya dengan tepuk-hentak-hentak)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kita harus menemukan bagian yang berulang dulu sebelum melanjutkan pola?",
+      "Kenapa pola warna merah-biru-biru bisa diterjemahkan menjadi pola bunyi tepuk-hentak-hentak?",
+      "Kenapa pola membantu kita menebak apa yang akan terjadi berikutnya?",
+      "Kenapa motif batik dan susunan ubin disebut mengandung pola?"
+     ]
+    },
+    {
+     "judul": "Pola Bilangan Membesar dan Mengecil (Pengantar)",
+     "kelas": 2,
+     "subKonsep": [
+      "Pola bertambah tetap: +1, +2, +5, +10",
+      "Pola berkurang tetap: -1, -2, -5, -10",
+      "Aturan pola (beda) dan cara menemukan suku berikutnya",
+      "Melengkapi bilangan yang hilang di tengah pola",
+      "Pola bilangan pada papan seratus dan pada garis bilangan",
+      "Membedakan barisan yang berpola teratur dan yang tidak teratur",
+      "Hubungan pola bilangan dengan membilang lompat"
+     ],
+     "keterampilan": [
+      "Menemukan aturan sebuah pola bilangan sederhana",
+      "Melanjutkan barisan bilangan sesuai aturannya",
+      "Melengkapi bilangan yang hilang di tengah pola",
+      "Membuat pola bilangan sendiri dan menantang teman menebak aturannya",
+      "Memeriksa apakah aturan berlaku untuk semua suku"
+     ],
+     "prasyarat": [
+      "Garis Bilangan dan Membilang Maju-Mundur",
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Pola Bukan Bilangan (Gambar, Warna, Bunyi, dan Gerak)",
+      "Strategi Berhitung Mental dengan Puluhan"
+     ],
+     "miskonsepsi": [
+      "Menebak suku berikutnya tanpa memeriksa aturan pada seluruh suku yang ada",
+      "Hanya memeriksa selisih dua suku pertama lalu langsung menyimpulkan aturan",
+      "Mengira pola bilangan selalu bertambah dan tidak pernah berkurang",
+      "Salah melanjutkan pola saat menyeberangi puluhan (28, 30, 32 menjadi 28, 30, 31)",
+      "Mengira setiap barisan bilangan pasti punya pola"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kita harus memeriksa selisih lebih dari satu kali sebelum menyimpulkan aturan pola?",
+      "Kenapa pola melompat 10 pada papan seratus membentuk garis lurus ke bawah?",
+      "Kenapa pola bilangan bisa dipakai untuk menebak bilangan yang letaknya jauh di depan?",
+      "Kenapa barisan 2, 5, 9, 14 juga berpola padahal bedanya tidak tetap?"
+     ],
+     "rumus": [
+      "Pola membesar: suku berikutnya = suku sekarang + beda",
+      "Pola mengecil: suku berikutnya = suku sekarang - beda",
+      "Beda = suku kedua - suku pertama (diperiksa pada semua pasangan suku)"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Pengukuran",
+   "capaian": "Membandingkan panjang dan berat benda secara langsung, dan membandingkan durasi waktu; mengukur dan mengestimasi panjang dan berat benda menggunakan satuan tidak baku. [Kepka BSKAP 046/H/KR/2025, butir 1.3]",
+   "topics": [
+    {
+     "judul": "Membandingkan Panjang dan Tinggi Secara Langsung",
+     "kelas": 1,
+     "subKonsep": [
+      "Panjang sebagai atribut benda yang dapat dibandingkan",
+      "Kata perbandingan: lebih panjang/lebih pendek, lebih tinggi/lebih rendah, sama panjang",
+      "Syarat perbandingan langsung: kedua ujung benda disejajarkan dari titik awal yang sama",
+      "Membandingkan tiga benda atau lebih dan mengurutkannya",
+      "Sifat transitif: jika A lebih panjang dari B dan B lebih panjang dari C maka A lebih panjang dari C",
+      "Perbandingan tak langsung menggunakan benda perantara (tali, pita, lidi)",
+      "Membedakan panjang, tinggi, lebar, dan tebal sebagai penyebutan atribut yang sama"
+     ],
+     "keterampilan": [
+      "Menyejajarkan ujung dua benda lalu menentukan mana yang lebih panjang",
+      "Mengurutkan tiga benda dari terpendek ke terpanjang dan sebaliknya",
+      "Menggunakan tali sebagai perantara untuk membandingkan benda yang tidak bisa didekatkan",
+      "Menggunakan kata perbandingan panjang dan tinggi dengan tepat",
+      "Menyimpulkan urutan panjang tanpa membandingkan semua pasangan"
+     ],
+     "prasyarat": [
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Membandingkan tanpa menyamakan titik awal sehingga kesimpulannya keliru",
+      "Mengira benda yang lebih besar atau lebih tebal pasti lebih panjang",
+      "Mengira benda yang diletakkan lebih tinggi posisinya berarti lebih panjang",
+      "Menyerah membandingkan benda yang tidak bisa dipindahkan atau didekatkan",
+      "Mengira benda yang melengkung lebih pendek daripada benda lurus dengan panjang sama"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kedua ujung benda harus disejajarkan dulu sebelum dibandingkan?",
+      "Kenapa kita bisa membandingkan tinggi pintu dan lemari yang berjauhan dengan bantuan tali?",
+      "Kenapa kalau A lebih panjang dari B dan B lebih panjang dari C, kita sudah pasti tahu A lebih panjang dari C?",
+      "Kenapa tali yang dilengkungkan tetap sama panjang dengan saat diluruskan?"
+     ]
+    },
+    {
+     "judul": "Membandingkan Berat Secara Langsung",
+     "kelas": 1,
+     "subKonsep": [
+      "Berat sebagai atribut yang tidak selalu dapat dilihat mata",
+      "Kata perbandingan: lebih berat, lebih ringan, sama berat",
+      "Neraca dua lengan sederhana (gantungan baju, timbangan mainan) sebagai alat pembanding",
+      "Membaca hasil neraca: lengan yang turun berarti lebih berat",
+      "Membandingkan dengan tangan (merasakan) dan keterbatasan cara ini",
+      "Mengurutkan tiga benda menurut beratnya",
+      "Berat tidak selalu sejalan dengan ukuran benda"
+     ],
+     "keterampilan": [
+      "Menimbang dua benda dengan neraca sederhana",
+      "Mengurutkan benda dari teringan ke terberat",
+      "Menyimpulkan hasil perbandingan dari posisi lengan neraca",
+      "Menduga berat benda lalu mengujinya dengan timbangan",
+      "Menggunakan kata perbandingan berat dengan tepat"
+     ],
+     "prasyarat": [
+      "Membandingkan Panjang dan Tinggi Secara Langsung",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Mengira benda yang lebih besar ukurannya pasti lebih berat (sekantong kapas dibanding batu kecil)",
+      "Mengira benda yang lebih panjang pasti lebih berat",
+      "Menyimpulkan lengan neraca yang naik sebagai benda yang lebih berat",
+      "Menyamakan berat dengan besar atau dengan banyaknya benda",
+      "Mengira benda yang jumlahnya lebih banyak pasti lebih berat"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa balon besar bisa lebih ringan daripada batu kecil?",
+      "Kenapa lengan neraca yang turun menunjukkan benda yang lebih berat?",
+      "Kenapa tangan kita kadang salah menebak mana yang lebih berat?",
+      "Kenapa besar dan berat adalah dua hal yang berbeda?"
+     ]
+    },
+    {
+     "judul": "Mengukur Panjang dengan Satuan Tidak Baku",
+     "kelas": 1,
+     "subKonsep": [
+      "Satuan tidak baku: jengkal, depa, langkah, klip kertas, batang lidi, pensil, korek api",
+      "Mengukur berarti menghitung berapa kali satuan disusun sepanjang benda",
+      "Syarat iterasi satuan: disusun rapat tanpa celah dan tanpa tumpang tindih",
+      "Pengukuran dimulai tepat dari ujung benda",
+      "Ukuran satuan mempengaruhi bilangan hasil ukur: satuan kecil menghasilkan bilangan besar",
+      "Melaporkan hasil ukur lengkap dengan nama satuannya",
+      "Satuan harus seragam dalam satu pengukuran",
+      "Hasil ukur bisa berupa 'lebih dari sekian dan kurang dari sekian'"
+     ],
+     "keterampilan": [
+      "Mengukur panjang benda menggunakan satuan tidak baku",
+      "Menyusun satuan berulang secara rapat tanpa celah dan tanpa tumpang tindih",
+      "Menuliskan hasil pengukuran lengkap dengan satuannya",
+      "Membandingkan hasil ukur dua benda yang diukur dengan satuan yang sama",
+      "Memilih satuan tidak baku yang sesuai untuk benda yang diukur"
+     ],
+     "prasyarat": [
+      "Membandingkan Panjang dan Tinggi Secara Langsung",
+      "Membilang Benda sampai 10",
+      "Membaca dan Menulis Lambang Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Menyusun satuan dengan celah atau saling bertumpuk sehingga hasil ukur keliru",
+      "Tidak memulai pengukuran dari ujung benda",
+      "Menuliskan hasil hanya berupa angka tanpa satuan ('panjangnya 12')",
+      "Mengira benda dengan bilangan hasil ukur lebih besar pasti lebih panjang meskipun satuannya berbeda (12 klip dibanding 5 pensil)",
+      "Mencampur beberapa jenis satuan dalam satu pengukuran",
+      "Menghitung satuan yang menonjol melewati ujung benda sebagai satu satuan penuh"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa satuan pengukur harus disusun rapat tanpa celah?",
+      "Kenapa meja yang sama bisa '12 jengkal' menurut guru tetapi '18 jengkal' menurut siswa?",
+      "Kenapa hasil pengukuran harus selalu disertai nama satuannya?",
+      "Kenapa semakin kecil satuan yang dipakai, semakin besar bilangan hasil ukurnya?",
+      "Kenapa mengukur harus dimulai tepat dari ujung benda?"
+     ],
+     "rumus": [
+      "Panjang benda = banyaknya satuan tidak baku yang disusun rapat sepanjang benda",
+      "Semakin kecil satuan yang dipakai, semakin besar bilangan hasil ukurnya (hubungan berkebalikan)"
+     ]
+    },
+    {
+     "judul": "Mengukur Berat dengan Satuan Tidak Baku",
+     "kelas": 2,
+     "subKonsep": [
+      "Satuan tidak baku untuk berat: kelereng, biji jagung, koin, kubus satuan, klip",
+      "Menimbang dengan neraca dua lengan sampai posisinya seimbang",
+      "Hasil ukur berat sebagai banyaknya satuan penyeimbang",
+      "Semua satuan penyeimbang harus sejenis dan sama beratnya",
+      "Memperkirakan berat sebelum menimbang",
+      "Membandingkan berat dua benda dari bilangan hasil ukurnya",
+      "Satuan yang lebih ringan menghasilkan bilangan hasil ukur yang lebih besar"
+     ],
+     "keterampilan": [
+      "Menimbang benda menggunakan satuan tidak baku sampai neraca seimbang",
+      "Memperkirakan berat lalu memeriksanya dengan menimbang",
+      "Membandingkan berat dua benda berdasarkan hasil ukur",
+      "Memilih satuan tidak baku yang sesuai dengan benda yang ditimbang",
+      "Mencatat hasil timbangan dalam tabel sederhana"
+     ],
+     "prasyarat": [
+      "Membandingkan Berat Secara Langsung",
+      "Mengukur Panjang dengan Satuan Tidak Baku",
+      "Membilang dan Mengelompokkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Mencampur jenis satuan penyeimbang (kelereng dan koin) dalam satu pengukuran",
+      "Mengira makin banyak satuan penyeimbang berarti benda makin besar ukurannya",
+      "Membaca hasil sebelum neraca benar-benar seimbang",
+      "Menyamakan berat dengan volume atau dengan besarnya benda",
+      "Mengira hasil timbangan dengan satuan berbeda bisa langsung dibandingkan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa semua satuan penyeimbang harus sejenis dan sama beratnya?",
+      "Kenapa kita perlu memperkirakan dulu sebelum menimbang?",
+      "Kenapa dua benda bisa sama berat walaupun ukurannya sangat berbeda?",
+      "Kenapa menimbang dengan kelereng dan menimbang dengan koin memberi bilangan yang berbeda untuk benda yang sama?"
+     ],
+     "rumus": [
+      "Berat benda = banyaknya satuan penyeimbang saat neraca seimbang"
+     ]
+    },
+    {
+     "judul": "Estimasi Panjang dan Berat",
+     "kelas": 2,
+     "subKonsep": [
+      "Memperkirakan sebelum mengukur sebagai kebiasaan berpikir",
+      "Patokan tubuh sebagai acuan: lebar jari, jengkal, langkah, depa",
+      "Menilai kewajaran hasil ukur",
+      "Selisih antara perkiraan dan hasil ukur sebenarnya",
+      "Memperbaiki kemampuan memperkirakan melalui latihan berulang",
+      "Perkiraan dinyatakan dengan kata kira-kira, sekitar, hampir",
+      "Perkiraan sebagai alat pemeriksa kesalahan pengukuran"
+     ],
+     "keterampilan": [
+      "Memperkirakan panjang benda dalam jengkal atau langkah lalu mengukurnya",
+      "Memperkirakan berat benda lalu menimbangnya",
+      "Menilai apakah suatu hasil ukur masuk akal",
+      "Menuliskan perkiraan dan hasil ukur dalam tabel sederhana lalu membandingkannya",
+      "Memperbaiki perkiraan berikutnya berdasarkan pengalaman"
+     ],
+     "prasyarat": [
+      "Mengukur Panjang dengan Satuan Tidak Baku",
+      "Mengukur Berat dengan Satuan Tidak Baku",
+      "Estimasi dan Perkiraan Banyak Benda"
+     ],
+     "miskonsepsi": [
+      "Menganggap perkiraan yang meleset sebagai kesalahan yang harus dihapus",
+      "Mengukur dulu baru menuliskannya sebagai 'perkiraan'",
+      "Menyebut angka asal tanpa memakai patokan apa pun",
+      "Mengira estimasi tidak berguna karena sudah ada alat ukur",
+      "Mengira perkiraan yang baik harus persis sama dengan hasil ukur"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa memperkirakan dulu membuat kita cepat sadar kalau hasil ukur kita salah?",
+      "Kenapa jengkal tangan bisa dipakai sebagai patokan perkiraan?",
+      "Kenapa perkiraan kita menjadi makin bagus setelah sering mengukur?",
+      "Kenapa perkiraan yang meleset sedikit masih dianggap perkiraan yang baik?"
+     ]
+    },
+    {
+     "judul": "Membandingkan Durasi Waktu",
+     "kelas": 2,
+     "subKonsep": [
+      "Waktu sebagai urutan kejadian: sebelum, sesudah, sekarang",
+      "Durasi sebagai lamanya suatu kegiatan berlangsung",
+      "Kata perbandingan durasi: lebih lama, lebih sebentar, sama lama",
+      "Mengukur durasi dengan alat tidak baku: hitungan berirama, tepukan, ayunan, botol pasir/air",
+      "Bagian hari sebagai patokan waktu: pagi, siang, sore, malam",
+      "Urutan hari dalam seminggu dan urutan bulan",
+      "Membedakan 'kapan' (saat kejadian) dan 'berapa lama' (durasi)",
+      "Membandingkan durasi memerlukan waktu mulai yang sama atau alat ukur yang sama"
+     ],
+     "keterampilan": [
+      "Mengurutkan kejadian sehari-hari menurut waktunya",
+      "Membandingkan lamanya dua kegiatan",
+      "Mengukur durasi dengan hitungan berirama atau alat sederhana",
+      "Menyebutkan urutan hari dalam seminggu dan bagian-bagian hari",
+      "Menggunakan kata lebih lama, lebih sebentar, dan sama lama dengan tepat"
+     ],
+     "prasyarat": [
+      "Membandingkan Panjang dan Tinggi Secara Langsung",
+      "Membilang Benda sampai 10",
+      "Membandingkan dan Mengurutkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Mengira kegiatan yang lebih menyenangkan berarti lebih sebentar (menilai perasaan, bukan durasi)",
+      "Mengira kegiatan yang selesai lebih dulu pasti lebih sebentar padahal waktu mulainya berbeda",
+      "Mencampur 'kapan' (waktu kejadian) dengan 'berapa lama' (durasi)",
+      "Menghitung durasi dengan kecepatan hitung yang berubah-ubah",
+      "Mengira satu hari selalu berarti waktu terang saja"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kegiatan yang selesai lebih dulu belum tentu berlangsung lebih sebentar?",
+      "Kenapa waktu istirahat terasa cepat tetapi menunggu terasa lama padahal jamnya sama?",
+      "Kenapa hitungan untuk mengukur durasi harus berirama tetap?",
+      "Kenapa membandingkan durasi lebih adil kalau kedua kegiatan dimulai bersamaan?"
+     ]
+    },
+    {
+     "judul": "Mengenal Jam dan Membaca Waktu (Pengantar)",
+     "kelas": 2,
+     "subKonsep": [
+      "Jarum pendek menunjukkan jam, jarum panjang menunjukkan menit",
+      "Membaca waktu tepat (pukul 7, pukul 12)",
+      "Membaca setengah jam (pukul 7.30 atau pukul setengah delapan)",
+      "Arah putaran jarum jam selalu searah jarum jam",
+      "Angka pada jam mewakili 5 menit untuk jarum panjang",
+      "Jam analog dan jam digital sebagai dua cara menampilkan waktu yang sama",
+      "Penulisan waktu dengan kata 'pukul', bukan 'jam'",
+      "Menghubungkan waktu dengan kegiatan sehari-hari"
+     ],
+     "keterampilan": [
+      "Membaca jam tepat dan setengah jam pada jam analog",
+      "Menunjukkan waktu tertentu pada jam mainan",
+      "Mencocokkan tampilan jam analog dengan jam digital",
+      "Menghubungkan waktu tertentu dengan kegiatan sehari-hari",
+      "Menuliskan waktu dengan format yang benar"
+     ],
+     "prasyarat": [
+      "Membandingkan Durasi Waktu",
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Bilangan Urutan (Ordinal): ke-1, ke-2, ke-3"
+     ],
+     "miskonsepsi": [
+      "Tertukar antara jarum pendek dan jarum panjang saat membaca",
+      "Membaca jarum panjang di angka 6 sebagai 'pukul 6' alih-alih 30 menit",
+      "Membaca pukul 7.30 sebagai 'pukul setengah tujuh' mengikuti kebiasaan bahasa daerah",
+      "Mengira angka pada jam menunjukkan menit secara langsung (angka 3 dibaca 3 menit)",
+      "Membaca jarum pendek yang berada di antara dua angka sebagai angka yang lebih besar"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jarum panjang di angka 6 berarti 30 menit, bukan 6 menit?",
+      "Kenapa jarum yang lebih pendek justru yang menunjukkan jam?",
+      "Kenapa satu putaran penuh jarum panjang sama dengan 1 jam?",
+      "Kenapa saat pukul 7.30 jarum pendeknya tidak tepat di angka 7?"
+     ],
+     "rumus": [
+      "1 jam = 60 menit",
+      "1 hari = 24 jam",
+      "Jarum panjang di angka n menunjuk n x 5 menit"
+     ]
+    },
+    {
+     "judul": "Mengenal Satuan Baku Panjang dan Berat (Jembatan ke Fase B)",
+     "kelas": 2,
+     "subKonsep": [
+      "Masalah satuan tidak baku: hasilnya berbeda-beda antarorang",
+      "Perlunya satuan yang disepakati bersama oleh semua orang",
+      "Sentimeter (cm) dan meter (m) sebagai satuan baku panjang",
+      "Gram (g) dan kilogram (kg) sebagai satuan baku berat",
+      "Membaca penggaris dengan memulai dari angka 0",
+      "Membaca ruas antargaris skala, bukan menghitung garisnya",
+      "Memilih satuan yang masuk akal untuk benda yang diukur",
+      "Membaca timbangan berskala sederhana"
+     ],
+     "keterampilan": [
+      "Mengukur panjang benda pendek dengan penggaris dalam satuan cm",
+      "Memperkirakan seberapa panjang 1 cm dan 1 m dengan patokan tubuh",
+      "Menimbang benda dengan timbangan berskala",
+      "Memilih satuan yang masuk akal untuk benda tertentu",
+      "Menuliskan hasil ukur dengan lambang satuan yang benar"
+     ],
+     "prasyarat": [
+      "Mengukur Panjang dengan Satuan Tidak Baku",
+      "Mengukur Berat dengan Satuan Tidak Baku",
+      "Estimasi Panjang dan Berat",
+      "Membilang dan Mengelompokkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Mulai mengukur dari ujung fisik penggaris, bukan dari angka 0, sehingga hasil kelebihan",
+      "Menghitung garis skala alih-alih menghitung ruas antargaris",
+      "Menyebut satuan yang tidak masuk akal (panjang pensil 15 m, berat gajah 5 gram)",
+      "Mengira cm dan m bisa langsung dijumlahkan tanpa disamakan satuannya",
+      "Mengira satuan baku 'lebih benar' sehingga menganggap satuan tidak baku salah",
+      "Menuliskan satuan dengan huruf kapital (Cm, KG)"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jengkal tidak cukup dipakai saat kita membeli kain di toko?",
+      "Kenapa pengukuran harus dimulai dari angka 0 pada penggaris, bukan dari ujung penggarisnya?",
+      "Kenapa satuan harus disepakati bersama oleh semua orang di dunia?",
+      "Kenapa berat gajah tidak dituliskan dalam gram?",
+      "Kenapa 1 meter dibagi menjadi tepat 100 sentimeter?"
+     ],
+     "rumus": [
+      "1 m = 100 cm",
+      "1 kg = 1.000 g",
+      "Panjang benda = bacaan skala akhir - bacaan skala awal pada penggaris"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Geometri",
+   "capaian": "Mengenal berbagai bangun datar (segitiga, segiempat, segi banyak, lingkaran) dan bangun ruang (balok, kubus, kerucut, dan bola); melakukan komposisi (penyusunan) dan dekomposisi (penguraian) suatu bangun datar (segitiga, segiempat, dan segi banyak); dan menentukan posisi benda terhadap benda lain (kanan, kiri, depan, belakang, bawah, atas). [Kepka BSKAP 046/H/KR/2025, butir 1.4]",
+   "topics": [
+    {
+     "judul": "Mengenal dan Mengelompokkan Bangun Datar",
+     "kelas": 1,
+     "subKonsep": [
+      "Bangun datar: segitiga, segiempat (persegi dan persegi panjang), segi banyak, lingkaran",
+      "Unsur bangun datar: sisi, titik sudut, dan daerah dalam",
+      "Menghitung banyak sisi dan banyak titik sudut",
+      "Mengelompokkan bangun berdasarkan ciri: banyak sisi, sisi lurus atau lengkung",
+      "Bangun tertutup dan bangun terbuka",
+      "Bangun datar pada benda sehari-hari (jendela, jam dinding, rambu lalu lintas)",
+      "Bangun tetap sama walaupun diputar, dibalik, atau diperbesar",
+      "Persegi sebagai segiempat khusus"
+     ],
+     "keterampilan": [
+      "Menyebutkan nama bangun datar yang ditunjukkan",
+      "Menghitung banyak sisi dan titik sudut suatu bangun",
+      "Mengelompokkan bangun menurut ciri yang sama",
+      "Menggambar dan menjiplak bangun datar",
+      "Menemukan bentuk bangun datar pada benda di sekitar",
+      "Membuat bangun datar dari lidi, karet gelang, atau papan paku"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Menyortir dan Mengelompokkan Benda Menurut Ciri"
+     ],
+     "miskonsepsi": [
+      "Hanya mengenali segitiga yang berdiri tegak dengan alas mendatar dan menolak segitiga miring",
+      "Menganggap persegi panjang bukan segiempat karena namanya berbeda",
+      "Menyebut nama bangun berdasarkan penampilan keseluruhan ('bentuk pintu') bukan ciri sisi dan sudut",
+      "Mengira bangun yang lebih besar adalah bangun yang berbeda jenisnya",
+      "Mencampur bangun datar dengan bangun ruang, misalnya menyebut kotak sebagai persegi",
+      "Mengira lingkaran punya banyak sudut yang sangat kecil"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa segitiga yang dimiringkan tetap disebut segitiga?",
+      "Kenapa persegi juga termasuk segiempat?",
+      "Kenapa lingkaran tidak punya titik sudut?",
+      "Kenapa kita mengelompokkan bangun berdasarkan sisi dan sudut, bukan berdasarkan warna atau ukurannya?",
+      "Kenapa bangun dengan 3 sisi selalu punya 3 titik sudut juga?"
+     ],
+     "rumus": [
+      "Segitiga: 3 sisi lurus dan 3 titik sudut",
+      "Segiempat: 4 sisi lurus dan 4 titik sudut",
+      "Segi banyak: bangun tertutup yang semua sisinya lurus",
+      "Lingkaran: satu sisi lengkung, tanpa titik sudut",
+      "Pada segi banyak, banyak sisi = banyak titik sudut"
+     ]
+    },
+    {
+     "judul": "Mengenal Bangun Ruang (Balok, Kubus, Kerucut, dan Bola)",
+     "kelas": 2,
+     "subKonsep": [
+      "Perbedaan bangun datar (rata, hanya bisa digambar) dan bangun ruang (memakan tempat, bisa dipegang)",
+      "Unsur bangun ruang: sisi atau permukaan, rusuk, dan titik sudut",
+      "Ciri balok, kubus, kerucut, dan bola",
+      "Permukaan datar dan permukaan lengkung",
+      "Sifat menggelinding, meluncur, dan dapat ditumpuk",
+      "Hubungan bangun ruang dengan bangun datar pada permukaannya",
+      "Kubus sebagai balok khusus dengan semua rusuk sama panjang",
+      "Rusuk dan titik sudut yang tersembunyi pada gambar bangun ruang"
+     ],
+     "keterampilan": [
+      "Menyebutkan nama bangun ruang beserta ciri-cirinya",
+      "Menghitung sisi, rusuk, dan titik sudut balok dan kubus",
+      "Mengelompokkan benda sehari-hari menurut bentuk ruangnya",
+      "Menjiplak permukaan bangun ruang menjadi bangun datar",
+      "Membangun bentuk atau bangunan dari balok dan kubus",
+      "Menguji sifat menggelinding dan menumpuk berbagai bangun ruang"
+     ],
+     "prasyarat": [
+      "Mengenal dan Mengelompokkan Bangun Datar",
+      "Membilang Benda sampai 10",
+      "Membilang dan Mengelompokkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Menyebut kubus sebagai 'persegi' dan balok sebagai 'persegi panjang'",
+      "Mengira semua kotak adalah kubus",
+      "Mengira bola dan lingkaran adalah hal yang sama",
+      "Tidak menghitung rusuk dan titik sudut yang tersembunyi pada gambar",
+      "Mengira bangun ruang yang lebih besar punya rusuk lebih banyak",
+      "Mengira kerucut punya titik sudut seperti kubus"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kubus berbeda dari persegi padahal semua permukaannya berbentuk persegi?",
+      "Kenapa bola bisa menggelinding ke segala arah tetapi kerucut hanya berputar melingkar?",
+      "Kenapa kubus punya 12 rusuk padahal pada gambarnya kita hanya melihat 9?",
+      "Kenapa kubus bisa disebut balok, tetapi balok belum tentu kubus?"
+     ],
+     "rumus": [
+      "Kubus: 6 sisi berbentuk persegi, 12 rusuk sama panjang, 8 titik sudut",
+      "Balok: 6 sisi berbentuk persegi panjang, 12 rusuk, 8 titik sudut",
+      "Bola: 1 permukaan lengkung, tanpa rusuk dan tanpa titik sudut",
+      "Kerucut: 1 permukaan lengkung dan 1 sisi lingkaran, 1 rusuk lengkung, 1 titik puncak"
+     ]
+    },
+    {
+     "judul": "Komposisi dan Dekomposisi Bangun Datar",
+     "kelas": 2,
+     "subKonsep": [
+      "Komposisi: menyusun bangun baru dari beberapa bangun (dua segitiga siku-siku menjadi persegi panjang)",
+      "Dekomposisi: mengurai satu bangun menjadi beberapa bangun yang lebih sederhana",
+      "Tangram sebagai alat komposisi dan dekomposisi",
+      "Pengubinan: menutup bidang tanpa celah dan tanpa tumpang tindih",
+      "Bangun yang bisa dan tidak bisa dipakai mengubin",
+      "Memutar dan membalik potongan sebagai bagian dari penyusunan",
+      "Kekekalan luas: luas total tetap sama meskipun potongan disusun ulang",
+      "Menyusun satu bangun dengan lebih dari satu cara"
+     ],
+     "keterampilan": [
+      "Menyusun bentuk baru dari potongan tangram",
+      "Mengurai bangun datar menjadi bangun-bangun yang lebih sederhana",
+      "Membuat pengubinan dari satu atau dua jenis bangun",
+      "Menjelaskan mengapa sebuah susunan masih bercelah atau bertumpuk",
+      "Menemukan lebih dari satu cara menyusun bangun yang sama"
+     ],
+     "prasyarat": [
+      "Mengenal dan Mengelompokkan Bangun Datar",
+      "Pola Bukan Bilangan (Gambar, Warna, Bunyi, dan Gerak)"
+     ],
+     "miskonsepsi": [
+      "Mengira bangun hasil susunan menjadi lebih luas hanya karena bentuknya berubah",
+      "Menyusun dengan celah atau tumpang tindih lalu tetap menyebutnya pengubinan",
+      "Mengira semua bangun datar bisa dipakai mengubin, termasuk lingkaran",
+      "Tidak mau memutar atau membalik potongan saat menyusun",
+      "Mengira satu bangun hanya bisa disusun dengan satu cara"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa luas totalnya tetap sama walaupun potongannya disusun menjadi bentuk baru?",
+      "Kenapa lingkaran tidak bisa dipakai mengubin lantai tanpa celah?",
+      "Kenapa dua segitiga siku-siku yang sama bisa membentuk persegi panjang?",
+      "Kenapa ubin lantai di rumah biasanya berbentuk persegi atau segienam, bukan lingkaran?"
+     ]
+    },
+    {
+     "judul": "Posisi dan Arah Benda",
+     "kelas": 1,
+     "subKonsep": [
+      "Kata posisi: kanan, kiri, depan, belakang, atas, bawah, di antara, di samping, di dalam, di luar",
+      "Posisi bersifat relatif terhadap acuan yang dipilih",
+      "Kanan-kiri berubah ketika sudut pandang berubah (berhadapan atau berbalik badan)",
+      "Arah gerak: maju, mundur, belok kanan, belok kiri",
+      "Denah sederhana ruang kelas dilihat dari atas",
+      "Memberi dan mengikuti petunjuk arah secara lisan",
+      "Menyebutkan acuan saat menjelaskan posisi ('di kanan lemari')"
+     ],
+     "keterampilan": [
+      "Menyebutkan posisi suatu benda terhadap benda lain",
+      "Mengikuti petunjuk arah lisan sampai menemukan benda",
+      "Memberi petunjuk arah kepada teman dengan kata yang tepat",
+      "Membaca dan membuat denah sederhana ruang kelas",
+      "Menjelaskan perubahan kanan-kiri saat berbalik badan"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10"
+     ],
+     "miskonsepsi": [
+      "Mengira kanan dan kiri bersifat mutlak, tidak tergantung siapa yang melihat",
+      "Bingung saat berhadapan dengan orang lain karena kanan lawan adalah kiri kita",
+      "Mencampur 'di atas' sebagai posisi dengan 'di atas' pada tumpukan benda",
+      "Menganggap denah harus digambar persis seperti pemandangan yang dilihat mata",
+      "Menyebutkan posisi tanpa menyebutkan acuannya sehingga membingungkan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa 'sebelah kanan' bisa berpindah tempat kalau kita berbalik badan?",
+      "Kenapa kita perlu menyebut acuan saat menjelaskan posisi, misalnya 'di kanan lemari'?",
+      "Kenapa denah kelas digambar seolah dilihat dari atas?",
+      "Kenapa kanan teman yang berhadapan dengan kita justru ada di kiri kita?"
+     ]
+    }
+   ]
+  },
+  {
+   "nama": "Analisis Data dan Peluang",
+   "capaian": "Mengurutkan, menyortir, mengelompokkan, membandingkan, dan menyajikan data dari banyak benda dengan menggunakan turus dan piktogram paling banyak 4 kategori. [Kepka BSKAP 046/H/KR/2025, butir 1.5]",
+   "topics": [
+    {
+     "judul": "Menyortir dan Mengelompokkan Benda Menurut Ciri",
+     "kelas": 1,
+     "subKonsep": [
+      "Ciri atau atribut benda: warna, bentuk, ukuran, jenis, bahan",
+      "Memilih satu ciri sebagai dasar pengelompokan",
+      "Kategori yang tidak tumpang tindih dan mencakup semua benda",
+      "Satu kumpulan benda dapat dikelompokkan dengan lebih dari satu cara",
+      "Menghitung banyak anggota setiap kelompok",
+      "Membandingkan banyak anggota antarkelompok",
+      "Menamai setiap kelompok dengan sebutan yang jelas"
+     ],
+     "keterampilan": [
+      "Menyortir benda menurut satu ciri yang dipilih",
+      "Menamai setiap kelompok hasil penyortiran",
+      "Menghitung banyak anggota setiap kelompok",
+      "Mengelompokkan kumpulan yang sama dengan cara yang berbeda",
+      "Menjelaskan dasar pengelompokan yang dipakai",
+      "Menebak dasar pengelompokan yang dibuat teman"
+     ],
+     "prasyarat": [
+      "Membilang Benda sampai 10",
+      "Membandingkan Banyak Benda dan Bilangan sampai 20"
+     ],
+     "miskonsepsi": [
+      "Mencampur dua ciri sekaligus dalam satu pengelompokan (warna dan bentuk bersamaan)",
+      "Membuat kategori yang tumpang tindih sehingga satu benda masuk ke dua kelompok",
+      "Mengira hanya ada satu cara yang benar untuk mengelompokkan",
+      "Lupa menghitung ulang setelah selesai menyortir",
+      "Meninggalkan benda yang tidak masuk kategori mana pun tanpa penjelasan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa kita harus memilih satu ciri lebih dulu sebelum mengelompokkan?",
+      "Kenapa kumpulan benda yang sama bisa dikelompokkan dengan cara yang berbeda-beda?",
+      "Kenapa kategori tidak boleh tumpang tindih?",
+      "Kenapa jumlah seluruh anggota kelompok harus sama dengan banyak benda semula?"
+     ]
+    },
+    {
+     "judul": "Mengumpulkan Data dan Mencatat dengan Turus",
+     "kelas": 2,
+     "subKonsep": [
+      "Pertanyaan sederhana sebagai awal pengumpulan data",
+      "Data sebagai kumpulan keterangan hasil pengamatan atau pertanyaan",
+      "Turus sebagai cara mencatat cepat saat data datang satu per satu",
+      "Aturan turus: empat garis tegak lalu garis kelima menyilang",
+      "Membaca turus dengan menghitung lima-lima",
+      "Tabel data sederhana berisi kategori dan banyaknya data",
+      "Memastikan setiap responden dicatat tepat satu kali",
+      "Pertanyaan yang baik menghasilkan jawaban yang bisa dikelompokkan"
+     ],
+     "keterampilan": [
+      "Menyusun pertanyaan untuk mengumpulkan data di kelas",
+      "Mencatat jawaban teman menggunakan turus",
+      "Membaca turus dan menuliskannya sebagai bilangan",
+      "Membuat tabel sederhana berisi kategori dan banyaknya data",
+      "Memeriksa apakah total data sama dengan banyak responden"
+     ],
+     "prasyarat": [
+      "Menyortir dan Mengelompokkan Benda Menurut Ciri",
+      "Membilang dan Mengelompokkan Bilangan sampai 100",
+      "Strategi Berhitung Mental dengan Puluhan"
+     ],
+     "miskonsepsi": [
+      "Menuliskan turus sebagai lima garis tegak tanpa garis menyilang",
+      "Menghitung turus satu per satu, bukan lima-lima, sehingga kehilangan keuntungan turus",
+      "Mencatat data yang sama dua kali atau melewatkan responden",
+      "Menganggap turus sekadar gambar hiasan, bukan alat menghitung",
+      "Membuat pertanyaan yang jawabannya tidak bisa dikelompokkan (pertanyaan terlalu bebas)",
+      "Membuat lebih dari 4 kategori sehingga sulit disajikan"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa turus dibuat berkelompok lima, bukan sepuluh atau tiga?",
+      "Kenapa mencatat dengan turus lebih cepat daripada menulis angka satu per satu?",
+      "Kenapa pertanyaan yang kita ajukan menentukan data yang kita dapatkan?",
+      "Kenapa jumlah seluruh turus harus sama dengan banyak teman yang ditanya?"
+     ],
+     "rumus": [
+      "Satu kelompok turus (empat garis tegak dicoret satu garis miring) = 5 data",
+      "Banyak data = (banyak kelompok turus x 5) + sisa garis turus"
+     ]
+    },
+    {
+     "judul": "Menyajikan Data dengan Piktogram (Maksimal 4 Kategori)",
+     "kelas": 2,
+     "subKonsep": [
+      "Piktogram sebagai diagram yang memakai gambar untuk mewakili data",
+      "Skala satu satuan: satu gambar mewakili satu data",
+      "Bagian piktogram: judul, nama kategori, gambar, dan keterangan",
+      "Semua gambar harus berukuran sama dan berjarak sama",
+      "Semua kolom atau baris dimulai dari garis dasar yang sama",
+      "Membaca banyak data langsung dari banyaknya gambar",
+      "Mengubah tabel turus menjadi piktogram dan sebaliknya",
+      "Batas maksimal 4 kategori agar mudah dibaca"
+     ],
+     "keterampilan": [
+      "Membuat piktogram maksimal 4 kategori dari data kelas",
+      "Menuliskan judul dan keterangan piktogram dengan lengkap",
+      "Membaca banyak data pada piktogram",
+      "Mengubah tabel turus menjadi piktogram dan sebaliknya",
+      "Memeriksa apakah piktogram yang dibuat sudah rapi dan tidak menyesatkan"
+     ],
+     "prasyarat": [
+      "Mengumpulkan Data dan Mencatat dengan Turus",
+      "Menyortir dan Mengelompokkan Benda Menurut Ciri",
+      "Membandingkan dan Mengurutkan Bilangan sampai 100"
+     ],
+     "miskonsepsi": [
+      "Menggambar dengan ukuran berbeda-beda sehingga kategori dengan gambar besar terlihat lebih banyak",
+      "Memberi jarak yang tidak sama antargambar sehingga baris terlihat lebih panjang",
+      "Lupa menuliskan keterangan bahwa satu gambar mewakili berapa data",
+      "Menyusun gambar tidak sejajar dari garis dasar yang sama",
+      "Menganggap piktogram hanya gambar dekorasi, bukan penyaji data",
+      "Menggambar gambar yang terlalu rumit sehingga tidak konsisten"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa semua gambar pada piktogram harus sama besar dan berjarak sama?",
+      "Kenapa piktogram perlu keterangan '1 gambar mewakili 1 anak'?",
+      "Kenapa data lebih mudah dibandingkan dalam bentuk gambar daripada dalam bentuk daftar angka?",
+      "Kenapa piktogram dengan gambar berukuran berbeda bisa menipu pembacanya?"
+     ],
+     "rumus": [
+      "Banyak data suatu kategori = banyak gambar x nilai satu gambar (di Fase A nilai satu gambar = 1)"
+     ]
+    },
+    {
+     "judul": "Membaca, Membandingkan, dan Menafsirkan Data Sederhana",
+     "kelas": 2,
+     "subKonsep": [
+      "Membaca banyak data setiap kategori dari tabel atau piktogram",
+      "Menentukan kategori terbanyak dan kategori tersedikit",
+      "Membandingkan dua kategori dan menghitung selisihnya",
+      "Mengurutkan kategori menurut banyak datanya",
+      "Menghitung jumlah seluruh data",
+      "Menjawab pertanyaan berdasarkan data, bukan berdasarkan pendapat pribadi",
+      "Membuat kesimpulan sederhana dan usulan tindakan dari data",
+      "Batas kesimpulan: data satu kelas tidak mewakili seluruh sekolah"
+     ],
+     "keterampilan": [
+      "Menjawab pertanyaan berdasarkan tabel atau piktogram",
+      "Menentukan kategori terbanyak dan tersedikit",
+      "Menghitung selisih dua kategori",
+      "Menghitung jumlah seluruh data",
+      "Menuliskan satu kalimat kesimpulan berdasarkan data",
+      "Mengusulkan tindakan sederhana berdasarkan data (misalnya jenis buah untuk acara kelas)"
+     ],
+     "prasyarat": [
+      "Menyajikan Data dengan Piktogram (Maksimal 4 Kategori)",
+      "Pengurangan Bilangan Cacah sampai 20 dengan Benda Konkret",
+      "Membandingkan dan Mengurutkan Bilangan sampai 100",
+      "Strategi Berhitung Mental dengan Puluhan"
+     ],
+     "miskonsepsi": [
+      "Menjawab berdasarkan kesukaan pribadi, bukan berdasarkan data yang tersaji",
+      "Menentukan kategori terbanyak dari gambar yang paling besar, bukan yang paling banyak",
+      "Menjumlahkan padahal yang ditanyakan adalah selisih",
+      "Menyimpulkan hal yang tidak ada dalam data, misalnya menyimpulkan kesukaan seluruh sekolah dari data satu kelas",
+      "Mengira kategori yang tidak muncul berarti tidak ada sama sekali di dunia nyata"
+     ],
+     "pertanyaanKenapa": [
+      "Kenapa jawaban kita harus berasal dari data, bukan dari perasaan atau tebakan?",
+      "Kenapa data satu kelas belum tentu menggambarkan keadaan seluruh sekolah?",
+      "Kenapa pertanyaan 'berapa lebih banyak' dijawab dengan pengurangan?",
+      "Kenapa jumlah seluruh data harus sama dengan banyak orang yang ditanya?"
+     ],
+     "rumus": [
+      "Selisih dua kategori = banyak data terbesar - banyak data terkecil",
+      "Jumlah seluruh data = penjumlahan banyak data semua kategori"
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf",
+  "https://kurikulum.kemendikdasmen.go.id/",
+  "https://www.kemendikdasmen.go.id/en/siaran-pers/15636-capaian-pembelajaran-baru-telah-terbit-yang-berubah-hanya-ma",
+  "https://kepalasekolah.id/capaian-pembelajaran-cp-matematika-sd-mi-2025-terbaru-berdasarkan-keputusan-kepala-bskap-nomor-046-h-kr-2025/",
+  "https://kepalasekolah.id/download-cp-matematika-2025-kelas-1-2-sd-mi/",
+  "https://static.perangkat-ajar.belajar.id/SD.A.MAT.ENA.1.pdf",
+  "https://bertema.com/contoh-alur-dan-tujuan-pembelajaran-atp-matematika-fase-a-kelas-1-dan-2/",
+  "https://www.min1gresik.sch.id/2023/12/buku-siswa-pelajaran-matematika-kelas-1.html",
+  "https://www.kherysuryawan.id/2023/07/materi-matematika-kelas-2-sd-semester-1_26.html",
+  "https://www.guru-id.com/2022/06/buku-matematika-kelas-2-sd-kurikulum.html",
+  "https://mamikos.com/info/materi-pelajaran-matematika-kelas-1-sd-semester-1-dan-2-pljr/",
+  "https://www.melintas.id/pendidikan/346328734/bskap-terbitkan-cp-terbaru-nomor-046-tahun-2025-apa-bedanya-dengan-cp-nomor-032-tahun-2024-siap-salin-cp-matematika-fase-a-c"
+ ],
+ "catatan": "SUMBER PRIMER YANG DIPAKAI. Seluruh teks \"capaian\" per elemen dikutip langsung dari salinan resmi Kepka Kepala BSKAP Kemendikdasmen No. 046/H/KR/2025, Lampiran II, bab IV.1 huruf D butir 1.1-1.5 (PDF ~22,5 MB diunduh dan diekstrak; berkas kerja lokal: C:\\\\Users\\\\ajahv\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ajahv-SourceCodes-VisualMTK\\\\239aa5f8-bacc-4f61-9858-70c914a03592\\\\scratchpad\\\\kepka046.txt, bagian Matematika mulai baris 4316). Kepka ini mencabut Kepka BSKAP 32/H/KR/2024. Perubahan terbaru (Kepka BKPDM No. 020 Tahun 2026) HANYA mengubah mapel Agama dan Budi Pekerti, sehingga CP Matematika yang berlaku TA 2025/2026 dan TA 2026/2027 tetap Kepka 046/H/KR/2025.\n\nCROSS-CHECK. Isi CP Fase A dikonfirmasi tiga kali secara independen: (1) PDF salinan resmi; (2) kepalasekolah.id (dua halaman berbeda); (3) ringkasan melintas.id yang membandingkan 046/2025 dengan 032/2024. Ketiganya konsisten. Sumber buku teks dan ATP dipakai untuk istilah kelas dan urutan pengajaran, bukan untuk menetapkan cakupan CP.\n\nPERINGATAN BESAR — BANYAK ATP/BUKU YANG BEREDAR MASIH VERSI CP LAMA. ATP resmi Kemdikbud \"Alur dan Tujuan Pembelajaran Matematika Fase A\" (SD.A.MAT.ENA.1.pdf di static.perangkat-ajar.belajar.id) dan hampir semua ATP penerbit/sekolah (mis. bertema.com, datadikdasmen) masih memakai CP 2022: bilangan cacah \"sampai 999/1.000\", pecahan sampai seperdelapan, satuan baku panjang/berat/waktu, dan pola bilangan — semuanya SUDAH DI LUAR Fase A menurut Kepka 046/2025. Dokumen-dokumen itu tetap saya pakai sebagai rujukan pedagogis (rincian sub-konsep, urutan prasyarat, contoh kegiatan) tetapi TIDAK sebagai penentu cakupan materi. Guru yang menyusun ATP untuk TA berjalan wajib menurunkan ulang dari CP 046/2025.\n\nBATAS FASE A vs FASE B (verifikasi langsung dari Kepka 046/2025 butir 2.1-2.5). Yang PINDAH ke Fase B dan tidak lagi dituntut di Fase A: bilangan cacah di atas 100; penjumlahan/pengurangan di atas 20 (Fase B sampai 1.000); perkalian dan pembagian; pecahan seperdelapan, pecahan senilai, desimal; \"menemukan nilai yang tidak diketahui dalam kalimat matematika\"; pola bilangan membesar/mengecil; satuan baku panjang dan berat serta hubungan antarsatuan; luas dan volume; diagram batang.\n\nTIGA TOPIK SENGAJA SAYA TANDAI SEBAGAI \"JEMBATAN\", DI LUAR CP FASE A. Diminta eksplisit dalam brief (\"pengukuran non-baku dan baku\", \"satuan\", \"estimasi\") dan lazim diajarkan di kelas 2 semester 2 sebagai pengantar, tetapi menurut Kepka 046/2025 sudah masuk Fase B: (a) \"Mengenal Satuan Baku Panjang dan Berat (Jembatan ke Fase B)\" — Fase A hanya menuntut satuan TIDAK baku; (b) \"Pola Bilangan Membesar dan Mengecil (Pengantar)\" — Fase A hanya menuntut pola BUKAN bilangan (gambar, warna, bunyi); (c) \"Kalimat Matematika dengan Bilangan yang Hilang\" — Fase A hanya menuntut pemahaman makna simbol \"=\", pencarian nilai yang tidak diketahui adalah rumusan Fase B. Topik \"Mengenal Jam dan Membaca Waktu (Pengantar)\" juga jembatan: Fase A hanya menuntut \"membandingkan durasi waktu\", bukan membaca jam. Sertakan atau lewati sesuai kebijakan sekolah, tetapi jangan dijadikan tuntutan ketuntasan Fase A.\n\nTOPIK YANG SAYA TAMBAHKAN SEBAGAI FONDASI TERSIRAT (tidak disebut eksplisit dalam kalimat CP tetapi prasyarat mutlak): \"Membilang Benda sampai 10\" (prinsip kardinalitas dan korespondensi satu-satu — akar semua number sense), \"Bilangan Urutan (Ordinal)\", \"Garis Bilangan dan Membilang Maju-Mundur\", \"Hubungan Penjumlahan dan Pengurangan (Keluarga Fakta)\", \"Bilangan Ganjil dan Genap\", \"Estimasi dan Perkiraan Banyak Benda\", dan \"Strategi Berhitung Mental dengan Puluhan\". Semuanya masih berada di dalam payung \"menunjukkan pemahaman dan memiliki intuisi bilangan (number sense) pada bilangan cacah sampai 100\".\n\nCATATAN PENTING TENTANG BATAS 20 vs 100. Ini titik yang paling sering disalahpahami guru: number sense, membaca-menulis, nilai tempat, membandingkan, mengurutkan, komposisi dan dekomposisi berlaku sampai 100; tetapi OPERASI penjumlahan dan pengurangan dibatasi \"menggunakan benda-benda konkret yang banyaknya sampai 20\". Karena itu topik \"Strategi Berhitung Mental dengan Puluhan\" saya rumuskan sebagai perluasan number sense (30 + 20 sebagai \"3 puluhan + 2 puluhan\"), bukan sebagai penguasaan algoritma penjumlahan bersusun dua angka.\n\nPEMBAGIAN KELAS 1 vs KELAS 2 ADALAH USULAN, BUKAN KETENTUAN. CP dirumuskan per fase (2 tahun), dan Kemendikdasmen TIDAK menetapkan pembagian per kelas. Nilai \"kelas\" pada setiap topik saya tetapkan dari triangulasi struktur buku teks resmi (buku siswa Matematika kelas 1: 8 bab — Ayo Membilang sampai dengan 10; Penjumlahan sampai dengan 10; Pengurangan sampai dengan 10; Mengenal Bentuk; Ayo Membilang sampai dengan 20; Penjumlahan dan Pengurangan sampai dengan 20; Mengukur Panjang Benda; Mengenal Diagram — dan buku kelas 2: 8 bab, memuat Ayo Membilang sampai dengan 50, penjumlahan-pengurangan, Bentuk di Sekitar Kita, posisi dan pola, pecahan setengah dan seperempat, pengukuran berat dan waktu, Ayo Membilang sampai dengan 100, penyajian data dengan turus dan diagram gambar) ditambah urutan prasyarat pada ATP resmi. Guru berhak menggeser antar kelas selama tuntas di akhir Fase A.\n\nPERLU VERIFIKASI. (1) Buku teks Matematika SD kelas 1 dan 2 edisi terbaru yang benar-benar disesuaikan dengan CP 046/2025 belum saya temukan versi PDF resminya di buku.kemendikdasmen.go.id (portal SIBI merespons 200 tetapi katalognya tidak dapat saya baca lewat WebFetch); buku Gakko Tosho \"Belajar Bersama Temanmu\" dan buku revisi 2022 masih mengacu CP lama, sehingga sebagian babnya (perkalian, pembagian, bilangan sampai 1.000, satuan baku) melampaui CP Fase A yang berlaku. (2) Belum saya temukan ATP/panduan pembelajaran mendalam Matematika Fase A terbitan resmi yang sudah selaras 046/2025 — kalau ada, itu yang seharusnya menggantikan SD.A.MAT.ENA.1.pdf. (3) Daftar miskonsepsi disusun dari pola kesalahan yang lazim dilaporkan dalam praktik kelas awal SD Indonesia (mis. menulis \"sebelas\" jadi 101, membaca \"=\" sebagai perintah, salah baca jarum jam karena kebiasaan \"setengah delapan\", menyusun satuan tidak baku bercelah); belum saya rujuk ke satu studi Indonesia tertentu, jadi anggap sebagai daftar kerja yang layak diuji di kelas, bukan temuan riset yang saya kutip.\n\nDomain \"Pengukuran\" hanya ada di Fase A-D. Mulai Fase E elemen ini hilang dan aljabar berganti nama menjadi \"Aljabar dan Fungsi\" — relevan bila peta fase lain disusun dengan skema domain yang sama."
+}

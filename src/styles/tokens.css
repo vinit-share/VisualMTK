@@ -1,0 +1,202 @@
+/* ============================================================
+   Visual MTK — Design Tokens
+   Satu sumber kebenaran untuk warna, ruang, tipografi, gerak.
+   Semua visualisasi WAJIB memakai token ini agar konsisten
+   di tema terang maupun gelap.
+   ============================================================ */
+
+:root {
+  /* ---------- Tipografi ---------- */
+  --font-ui: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+  --font-math: 'Newsreader Variable', ui-serif, Georgia, 'Times New Roman', serif;
+
+  /* Skala tipe — modular 1.2 dengan clamp agar responsif */
+  --t-2xs: 0.6875rem;   /* 11px */
+  --t-xs: 0.75rem;      /* 12px */
+  --t-sm: 0.8125rem;    /* 13px */
+  --t-base: 0.9375rem;  /* 15px */
+  --t-md: 1.0625rem;    /* 17px */
+  --t-lg: clamp(1.125rem, 1.02rem + 0.5vw, 1.375rem);
+  --t-xl: clamp(1.375rem, 1.2rem + 0.85vw, 1.875rem);
+  --t-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  --t-3xl: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+
+  --lh-tight: 1.14;
+  --lh-snug: 1.32;
+  --lh-body: 1.62;
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  /* ---------- Ruang (basis 4px) ---------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-20: 5rem;
+  --s-24: 6rem;
+
+  /* ---------- Radius ---------- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-2xl: 36px;
+  --r-pill: 999px;
+
+  /* ---------- Lebar konten ---------- */
+  --w-page: 1180px;
+  --w-prose: 68ch;
+
+  /* ---------- Gerak ---------- */
+  --d-1: 120ms;   /* mikro-interaksi */
+  --d-2: 220ms;   /* transisi UI */
+  --d-3: 380ms;   /* perubahan tata letak */
+  --d-4: 700ms;   /* animasi penjelasan */
+  --d-5: 1200ms;  /* transformasi bertahap */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- Elevasi ---------- */
+  --shadow-1: 0 1px 2px rgba(19, 21, 30, 0.05), 0 1px 3px rgba(19, 21, 30, 0.04);
+  --shadow-2: 0 2px 4px rgba(19, 21, 30, 0.04), 0 6px 16px rgba(19, 21, 30, 0.07);
+  --shadow-3: 0 8px 20px rgba(19, 21, 30, 0.08), 0 20px 44px rgba(19, 21, 30, 0.1);
+  --shadow-brand: 0 6px 18px rgba(98, 68, 245, 0.28);
+  --ring: 0 0 0 3px var(--brand-ring);
+
+  /* ---------- Warna: tema terang ---------- */
+  --paper: #faf8f4;
+  --paper-2: #f1ede6;
+  --surface: #ffffff;
+  --surface-2: #f6f4f0;
+  --surface-3: #eceae4;
+  --surface-inset: #faf9f7;
+
+  --ink: #14161d;
+  --ink-2: #4a5162;
+  --ink-3: #79809380;
+  --ink-soft: #798093;
+  --line: rgba(20, 22, 29, 0.1);
+  --line-strong: rgba(20, 22, 29, 0.18);
+
+  --brand: #6244f5;
+  --brand-hover: #5334ea;
+  --brand-ink: #3a22b5;
+  --brand-soft: #eeeafe;
+  --brand-soft-2: #ded6fd;
+  --brand-ring: rgba(98, 68, 245, 0.32);
+  --on-brand: #ffffff;
+
+  --amber: #e8801f;
+  --amber-ink: #a3540a;
+  --amber-soft: #fdeeda;
+  --teal: #0f9e8e;
+  --teal-ink: #0a6f64;
+  --teal-soft: #d9f3ef;
+  --blue: #2c7cf0;
+  --blue-ink: #1a56b0;
+  --blue-soft: #dfeafd;
+  --pink: #dd3f83;
+  --pink-ink: #a92561;
+  --pink-soft: #fce0ed;
+  --rose: #dc4b4b;
+  --rose-soft: #fbe3e3;
+
+  /* ---------- Peran warna matematika ----------
+     Dipakai konsisten di SELURUH visualisasi:
+     a = besaran pertama, b = besaran kedua, ab = interaksi keduanya,
+     c = hasil/resultan, hi = sorotan "aha". */
+  --m-a: var(--brand);
+  --m-a-soft: var(--brand-soft);
+  --m-b: var(--amber);
+  --m-b-soft: var(--amber-soft);
+  --m-ab: var(--teal);
+  --m-ab-soft: var(--teal-soft);
+  --m-c: var(--blue);
+  --m-c-soft: var(--blue-soft);
+  --m-hi: var(--pink);
+  --m-hi-soft: var(--pink-soft);
+  --m-grid: rgba(20, 22, 29, 0.09);
+  --m-axis: rgba(20, 22, 29, 0.45);
+  --m-ghost: rgba(20, 22, 29, 0.055);
+  --m-stage: #fbfaf7;
+
+  /* ---------- Status penguasaan ---------- */
+  --st-none: #a8adba;
+  --st-none-soft: #eceef2;
+  --st-learning: var(--amber);
+  --st-learning-soft: var(--amber-soft);
+  --st-understood: var(--teal);
+  --st-understood-soft: var(--teal-soft);
+  --st-mastered: var(--brand);
+  --st-mastered-soft: var(--brand-soft);
+
+  color-scheme: light;
+}
+
+/* ---------- Warna: tema gelap ---------- */
+:root[data-theme='dark'] {
+  --paper: #0d0f16;
+  --paper-2: #12151f;
+  --surface: #171b26;
+  --surface-2: #1e2331;
+  --surface-3: #272d3d;
+  --surface-inset: #131722;
+
+  --ink: #edeff6;
+  --ink-2: #a8b0c4;
+  --ink-3: #6f778c80;
+  --ink-soft: #8e97ad;
+  --line: rgba(237, 239, 246, 0.12);
+  --line-strong: rgba(237, 239, 246, 0.22);
+
+  --brand: #957fff;
+  --brand-hover: #a693ff;
+  --brand-ink: #c3b6ff;
+  --brand-soft: #241f45;
+  --brand-soft-2: #322a5e;
+  --brand-ring: rgba(149, 127, 255, 0.4);
+  --on-brand: #16112e;
+
+  --amber: #f2a44e;
+  --amber-ink: #f8c489;
+  --amber-soft: #3a2a15;
+  --teal: #2fc7b3;
+  --teal-ink: #7fe0d3;
+  --teal-soft: #10352f;
+  --blue: #5c9dfa;
+  --blue-ink: #9dc4fd;
+  --blue-soft: #14243d;
+  --pink: #f36ba4;
+  --pink-ink: #f9a6c6;
+  --pink-soft: #3b1a2b;
+  --rose: #f26a6a;
+  --rose-soft: #3a1c1c;
+
+  --m-grid: rgba(237, 239, 246, 0.1);
+  --m-axis: rgba(237, 239, 246, 0.5);
+  --m-ghost: rgba(237, 239, 246, 0.07);
+  --m-stage: #121620;
+
+  --st-none: #6b7285;
+  --st-none-soft: #232836;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.34), 0 8px 22px rgba(0, 0, 0, 0.3);
+  --shadow-3: 0 10px 26px rgba(0, 0, 0, 0.42), 0 24px 50px rgba(0, 0, 0, 0.36);
+  --shadow-brand: 0 6px 20px rgba(149, 127, 255, 0.3);
+
+  color-scheme: dark;
+}
