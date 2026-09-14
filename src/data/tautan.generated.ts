@@ -50,7 +50,7 @@ export const TAUTAN_KONSEP: Record<string, { topicId: string; kelas: number }> =
     "kelas": 7
   },
   "kuadrat-jumlah": {
-    "topicId": "smp8-pemfaktoran-bentuk-aljabar",
+    "topicId": "smp8-identitas-aljabar-dan-bentuk-kuadrat",
     "kelas": 8
   },
   "peluang-simulasi": {
@@ -84,5 +84,13 @@ export const TAUTAN_KONSEP: Record<string, { topicId: string; kelas: number }> =
   "sin-cos-lingkaran": {
     "topicId": "sma10-perbandingan-trigonometri-sudut-lancip-sinus",
     "kelas": 10
+  },
+  "turunan-kemiringan": {
+    "topicId": "sma11-definisi-turunan-sebagai-limit",
+    "kelas": 11
+  },
+  "integral-luas": {
+    "topicId": "sma12-jumlah-riemann-dan-integral-tentu",
+    "kelas": 12
   }
 }

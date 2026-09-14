@@ -1,0 +1,1135 @@
+{
+ "nama": "Analisis Data dan Peluang",
+ "capaian": "Fase F (kelas 11-12). MATEMATIKA (umum), Kepka BSKAP No. 046/H/KR/2025 Lampiran II bab IV.1, elemen 6.4 Analisis Data dan Peluang: \"Melakukan proses penyelidikan statistika untuk mengidentifikasi dan menjelaskan asosiasi antara dua variabel kategorikal (kualitatif) dan antara dua variabel numerikal (kuantitatif); memperkirakan model linear terbaik (best fit linear) pada data numerikal (kuantitatif); membedakan hubungan asosiasi dan sebab-akibat; menjelaskan peluang dan menentukan frekuensi harapan dari kejadian majemuk; menyelidiki konsep dari kejadian saling bebas dan saling lepas, dan menentukan peluangnya; serta memahami konsep peluang bersyarat dan kejadian yang saling bebas menggunakan konsep permutasi dan kombinasi.\" MATEMATIKA TINGKAT LANJUT (bab IV.2), elemen Analisis Data dan Peluang Fase F menambahkan: peserta didik memahami variabel acak diskret dan fungsi peluang serta menggunakannya dalam memodelkan data; menginterpretasi parameter distribusi data secara statistik (distribusi binomial dan distribusi normal); menghitung nilai harapan distribusi binomial dan normal; dan menggunakannya dalam penyelesaian masalah. Catatan perubahan: CP 2024 (032/H/KP/2024) menyebut distribusi \"seragam, binomial dan normal\", sedangkan revisi 2025 mempersempit fokus ke binomial dan normal; sebaliknya CP umum 2025 justru MENAMBAH kalimat peluang/frekuensi harapan kejadian majemuk serta kejadian saling lepas-saling bebas ke Fase F (pada versi sebelumnya berada di Fase E).",
+ "topics": [
+  {
+   "judul": "Proses Penyelidikan Statistika dan Data Bivariat",
+   "kelas": 11,
+   "subKonsep": [
+    "Siklus penyelidikan statistika: rumuskan pertanyaan, rencanakan, kumpulkan data, analisis, simpulkan",
+    "Pertanyaan statistika (jawabannya bervariasi) vs pertanyaan biasa (jawabannya satu angka pasti)",
+    "Data univariat (satu variabel per individu) vs data bivariat (dua variabel pada individu yang sama)",
+    "Jenis variabel: kategorikal nominal, kategorikal ordinal, numerikal diskret, numerikal kontinu",
+    "Data berpasangan: setiap baris tabel adalah satu individu, bukan dua daftar terpisah",
+    "Memilih representasi sesuai pasangan jenis variabel (kategorikal-kategorikal ke tabel kontingensi; numerikal-numerikal ke diagram pencar)",
+    "Data primer (mengumpulkan sendiri) vs data sekunder (BPS, laporan media)"
+   ],
+   "rumus": [
+    "frekuensi relatif = frekuensi kelas / banyak seluruh data",
+    "persentase baris = frekuensi sel / total baris x 100%"
+   ],
+   "keterampilan": [
+    "Mengubah pertanyaan sehari-hari menjadi pertanyaan statistika yang bisa dijawab data",
+    "Mengklasifikasikan setiap variabel dalam sebuah dataset sebagai kategorikal atau numerikal",
+    "Menyusun data bivariat dalam tabel berpasangan tanpa memutus pasangan",
+    "Memilih grafik yang tepat untuk sepasang variabel tertentu",
+    "Menuliskan kesimpulan yang dibatasi oleh data yang benar-benar dikumpulkan"
+   ],
+   "prasyarat": [
+    "Penyajian Data Univariat: Histogram, Dot Plot, dan Box Plot",
+    "Ukuran Pemusatan dan Penyebaran Data (rata-rata, median, kuartil, simpangan baku)"
+   ],
+   "miskonsepsi": [
+    "Mengira statistika hanya soal menghitung rata-rata, bukan menjawab pertanyaan",
+    "Mengurutkan dua kolom data secara terpisah sehingga pasangan individu rusak",
+    "Menganggap data yang lebih banyak otomatis membuat kesimpulan lebih benar, tanpa peduli cara pengambilannya",
+    "Memperlakukan variabel kategorikal berkode angka (1 = laki-laki, 2 = perempuan) sebagai data numerik lalu merata-ratakannya"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua kolom angka harus tetap berpasangan? Apa yang hilang kalau pasangannya diacak?",
+    "Kenapa bentuk grafiknya harus berbeda hanya karena jenis variabelnya berbeda?",
+    "Kenapa kesimpulan statistika selalu disertai kata 'cenderung' dan bukan 'pasti'?"
+   ]
+  },
+  {
+   "judul": "Tabel Kontingensi dan Asosiasi Dua Variabel Kategorikal",
+   "kelas": 11,
+   "subKonsep": [
+    "Tabel kontingensi (tabel dua arah) sebagai peta silang dua variabel kategorikal",
+    "Frekuensi sel, total baris, total kolom, dan grand total",
+    "Distribusi marginal (total tepi) vs distribusi bersyarat (persentase di dalam satu baris/kolom)",
+    "Membandingkan persentase baris, bukan frekuensi mentah, untuk melihat asosiasi",
+    "Diagram batang bersusun (stacked/segmented bar) sebagai gambar dari tabel kontingensi",
+    "Ciri tidak ada asosiasi: profil persentase tiap baris kira-kira sama dengan profil keseluruhan",
+    "Frekuensi harapan sel jika kedua variabel tidak berasosiasi"
+   ],
+   "rumus": [
+    "persentase baris = f(sel) / total baris x 100%",
+    "persentase kolom = f(sel) / total kolom x 100%",
+    "frekuensi harapan sel = (total baris x total kolom) / grand total"
+   ],
+   "keterampilan": [
+    "Menyusun tabel kontingensi dari data mentah hasil survei kelas",
+    "Menghitung dan membandingkan persentase baris untuk dua kategori",
+    "Membaca diagram batang bersusun dan menyimpulkan ada/tidaknya asosiasi",
+    "Merumuskan pernyataan asosiasi dalam kalimat lengkap: 'siswa yang ... cenderung ... dibandingkan ...'",
+    "Menghitung frekuensi harapan tiap sel dan membandingkannya dengan frekuensi teramati"
+   ],
+   "prasyarat": [
+    "Proses Penyelidikan Statistika dan Data Bivariat",
+    "Persen, perbandingan, dan proporsi"
+   ],
+   "miskonsepsi": [
+    "Membandingkan frekuensi mentah antar baris yang jumlah anggotanya berbeda jauh",
+    "Membaca persentase baris seolah persentase kolom (membalik arah bersyarat)",
+    "Mengira selisih persentase sekecil apa pun sudah membuktikan adanya asosiasi",
+    "Menganggap tabel kontingensi hanya alat menyajikan data, bukan alat menguji dugaan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa membandingkan jumlah orang bisa menipu, tapi membandingkan persentase tidak?",
+    "Dari mana rumus frekuensi harapan (total baris x total kolom / total semua) berasal?",
+    "Kenapa dua batang bersusun yang tingginya berbeda bisa tetap berarti 'tidak ada hubungan'?"
+   ]
+  },
+  {
+   "judul": "Diagram Pencar dan Asosiasi Dua Variabel Numerikal",
+   "kelas": 11,
+   "subKonsep": [
+    "Setiap titik pada diagram pencar mewakili satu individu dengan dua koordinat (x, y)",
+    "Variabel bebas (penjelas) di sumbu mendatar, variabel terikat (respons) di sumbu tegak",
+    "Empat hal yang dibaca dari sebaran titik: arah, bentuk, kekuatan, dan pencilan",
+    "Asosiasi positif, negatif, dan tidak ada asosiasi",
+    "Pola linear vs pola melengkung (nonlinear)",
+    "Pencilan (outlier) dan titik berpengaruh yang menarik pola",
+    "Deret waktu sebagai kasus khusus (x = waktu)"
+   ],
+   "rumus": [
+    "titik data ke-i ditulis (x_i, y_i)",
+    "pusat data berada di titik (rata-rata x, rata-rata y)"
+   ],
+   "keterampilan": [
+    "Membuat diagram pencar dari tabel data berpasangan dengan skala sumbu yang jujur",
+    "Mendeskripsikan arah, bentuk, kekuatan, dan pencilan dalam satu paragraf",
+    "Membedakan pola linear dari pola melengkung sebelum memaksakan garis lurus",
+    "Menandai pencilan dan memeriksa apakah itu kesalahan data atau kasus nyata",
+    "Menaksir letak titik pusat (rata-rata x, rata-rata y) pada sebaran"
+   ],
+   "prasyarat": [
+    "Proses Penyelidikan Statistika dan Data Bivariat",
+    "Koordinat Kartesius dan grafik fungsi linear"
+   ],
+   "miskonsepsi": [
+    "Menghubungkan titik-titik pada diagram pencar dengan garis patah seperti grafik garis",
+    "Mengira titik yang berdekatan pada sumbu x pasti berdekatan pada sumbu y",
+    "Menukar peran variabel bebas dan terikat tanpa sadar bahwa maknanya berubah",
+    "Menghapus pencilan begitu saja karena 'merusak pola'"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa titik-titik tidak boleh dihubungkan garis pada diagram pencar?",
+    "Kenapa satu titik yang jauh bisa mengubah kesimpulan tentang seluruh data?",
+    "Kenapa mengubah skala sumbu bisa membuat hubungan yang sama terlihat kuat atau lemah?"
+   ]
+  },
+  {
+   "judul": "Model Linear Terbaik: Regresi Kuadrat Terkecil",
+   "kelas": 11,
+   "subKonsep": [
+    "Garis model sebagai ringkasan pola, bukan garis yang melewati semua titik",
+    "Sisaan (residu) = jarak vertikal titik ke garis, bisa positif atau negatif",
+    "Kenapa sisaan dikuadratkan: agar tanda tidak saling meniadakan dan simpangan besar dihukum lebih berat",
+    "Kriteria kuadrat terkecil: pilih garis yang membuat jumlah kuadrat sisaan minimum",
+    "Kemiringan b sebagai laju perubahan rata-rata y setiap kenaikan satu satuan x",
+    "Konstanta a dan bahayanya menafsirkan a ketika x = 0 di luar jangkauan data",
+    "Garis regresi selalu melewati titik (rata-rata x, rata-rata y)",
+    "Interpolasi (aman) vs ekstrapolasi (berisiko)"
+   ],
+   "rumus": [
+    "y_topi = a + b x",
+    "b = sum((x_i - x_bar)(y_i - y_bar)) / sum((x_i - x_bar)^2)",
+    "a = y_bar - b x_bar",
+    "sisaan e_i = y_i - y_topi_i",
+    "meminimumkan S = sum(e_i^2)"
+   ],
+   "keterampilan": [
+    "Menaksir garis model terbaik secara visual lalu memperbaikinya dengan hitungan",
+    "Menghitung a dan b dari tabel bantu (x_i, y_i, x_i - x_bar, y_i - y_bar)",
+    "Menafsirkan kemiringan dalam konteks satuan nyata (misal: tiap tambah 1 jam belajar, nilai naik b poin)",
+    "Menghitung sisaan sebuah titik dan menjelaskan artinya",
+    "Memutuskan kapan prediksi masih masuk akal (interpolasi) dan kapan tidak (ekstrapolasi)"
+   ],
+   "prasyarat": [
+    "Diagram Pencar dan Asosiasi Dua Variabel Numerikal",
+    "Persamaan Garis Lurus dan Gradien",
+    "Ukuran Pemusatan dan Penyebaran Data (rata-rata, median, kuartil, simpangan baku)"
+   ],
+   "miskonsepsi": [
+    "Mengira garis terbaik harus melewati sebanyak mungkin titik atau melewati titik pertama dan terakhir",
+    "Mengukur jarak titik ke garis secara tegak lurus, padahal yang diminimumkan adalah jarak vertikal",
+    "Mengira nilai a selalu punya makna nyata meski x = 0 mustahil terjadi",
+    "Memakai model untuk memprediksi jauh di luar rentang data dan menganggap hasilnya pasti",
+    "Menganggap kemiringan besar berarti hubungan kuat (padahal kemiringan bergantung satuan)"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sisaan dikuadratkan dan bukan diambil nilai mutlaknya?",
+    "Kenapa hanya ada SATU garis yang membuat jumlah kuadrat sisaan paling kecil?",
+    "Kenapa garis terbaik selalu lewat titik rata-rata (x_bar, y_bar)?",
+    "Kenapa ramalan di luar jangkauan data bisa sangat meleset?"
+   ]
+  },
+  {
+   "judul": "Koefisien Korelasi dan Kuat-Lemahnya Hubungan",
+   "kelas": 11,
+   "subKonsep": [
+    "Kebutuhan ukuran angka untuk kekuatan hubungan, bukan sekadar kesan mata",
+    "Skor baku (z) sebagai cara menyamakan satuan dua variabel yang berbeda",
+    "Hasil kali z_x kali z_y: positif di kuadran seiring, negatif di kuadran berlawanan",
+    "Koefisien korelasi r sebagai rata-rata hasil kali skor baku",
+    "Rentang -1 <= r <= 1 dan arti tanda serta besarnya",
+    "r tidak bersatuan dan tidak berubah bila satuan data diganti",
+    "Hubungan r dengan kemiringan garis regresi",
+    "Keterbatasan r: hanya mengukur hubungan LINEAR dan sangat peka pencilan"
+   ],
+   "rumus": [
+    "z_x = (x - x_bar) / s_x",
+    "r = (1/(n-1)) x sum(z_x_i x z_y_i)",
+    "r = sum((x_i - x_bar)(y_i - y_bar)) / sqrt(sum(x_i - x_bar)^2 x sum(y_i - y_bar)^2)",
+    "b = r x (s_y / s_x)",
+    "koefisien determinasi = r^2"
+   ],
+   "keterampilan": [
+    "Menghitung r dari tabel bantu untuk data kecil",
+    "Menafsirkan nilai r dalam kalimat konteks (lemah, sedang, kuat; positif atau negatif)",
+    "Mencocokkan beberapa diagram pencar dengan nilai r yang sesuai",
+    "Menjelaskan arti r^2 sebagai bagian keragaman y yang dijelaskan oleh x",
+    "Menunjukkan contoh data melengkung dengan r mendekati nol"
+   ],
+   "prasyarat": [
+    "Model Linear Terbaik: Regresi Kuadrat Terkecil",
+    "Ukuran Pemusatan dan Penyebaran Data (rata-rata, median, kuartil, simpangan baku)"
+   ],
+   "miskonsepsi": [
+    "Mengira r = 0 berarti tidak ada hubungan sama sekali (padahal bisa berbentuk parabola)",
+    "Mengira r besar berarti garisnya curam",
+    "Menyamakan r dengan persentase (r = 0,8 dibaca '80% cocok')",
+    "Menyimpulkan sebab-akibat langsung dari r yang besar",
+    "Mengira r berubah bila satuan diubah dari kilogram ke gram"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa nilai r tidak pernah keluar dari selang -1 sampai 1?",
+    "Kenapa mengalikan dua skor baku bisa mengukur 'seiring atau berlawanan'?",
+    "Kenapa data berpola busur bisa punya r nyaris nol padahal hubungannya jelas?",
+    "Kenapa r tetap sama meski tinggi badan diukur dalam cm atau inci?"
+   ]
+  },
+  {
+   "judul": "Asosiasi Bukan Sebab-Akibat: Perancu dan Evaluasi Laporan Statistika",
+   "kelas": 11,
+   "subKonsep": [
+    "Beda asosiasi (dua hal bergerak bersama) dan sebab-akibat (satu menyebabkan yang lain)",
+    "Variabel perancu (lurking variable) yang menjelaskan keduanya sekaligus",
+    "Korelasi kebetulan (spurious correlation) pada data deret waktu",
+    "Arah sebab yang terbalik (y sebenarnya menyebabkan x)",
+    "Studi observasional vs eksperimen terkontrol beracak sebagai syarat klaim kausal",
+    "Bias pemilihan sampel dan bias sukarelawan",
+    "Trik penyesatan grafik: sumbu tegak dipotong, skala tidak seragam, sumbu ganda"
+   ],
+   "rumus": [
+    "Tidak ada rumus baru; kuncinya kerangka penalaran: asosiasi ada -> cek perancu -> cek arah sebab -> cek cara data dikumpulkan"
+   ],
+   "keterampilan": [
+    "Mengusulkan minimal satu variabel perancu untuk sebuah klaim di berita",
+    "Menulis ulang judul berita kausal menjadi pernyataan asosiasi yang jujur",
+    "Menilai apakah sebuah studi berhak mengklaim sebab-akibat",
+    "Membongkar grafik menyesatkan dan menggambar ulang dengan sumbu dari nol",
+    "Merancang eksperimen sederhana dengan pengacakan dan kelompok pembanding"
+   ],
+   "prasyarat": [
+    "Koefisien Korelasi dan Kuat-Lemahnya Hubungan",
+    "Proses Penyelidikan Statistika dan Data Bivariat"
+   ],
+   "miskonsepsi": [
+    "Menganggap korelasi kuat sudah cukup membuktikan sebab-akibat",
+    "Mengira contoh 'penjualan es krim dan kasus tenggelam' hanya lelucon, bukan pola umum",
+    "Menganggap sampel besar otomatis menghapus bias pemilihan",
+    "Mengira grafik dari lembaga resmi pasti tidak menyesatkan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa penjualan es krim naik bersamaan dengan kasus tenggelam padahal es krim tidak menyebabkannya?",
+    "Kenapa pengacakan dalam eksperimen membuat klaim sebab-akibat jadi sah?",
+    "Kenapa memotong sumbu tegak bisa mengubah cerita dari data yang sama persis?"
+   ]
+  },
+  {
+   "judul": "Aturan Penjumlahan dan Aturan Perkalian (Kaidah Pencacahan)",
+   "kelas": 12,
+   "subKonsep": [
+    "Kapan memakai 'ATAU' (pilih satu jalur, dijumlahkan) dan kapan 'DAN' (tahap demi tahap, dikalikan)",
+    "Aturan pengisian tempat dengan diagram kotak",
+    "Diagram pohon sebagai gambar dari aturan perkalian",
+    "Syarat sahnya aturan penjumlahan: kasus-kasusnya saling lepas",
+    "Prinsip inklusi-eksklusi sederhana untuk kasus yang beririsan",
+    "Pencacahan bersyarat: angka tidak berulang, harus genap, harus lebih dari sekian",
+    "Strategi komplemen: hitung semua lalu kurangi yang tidak boleh"
+   ],
+   "rumus": [
+    "aturan penjumlahan: n(A atau B) = n(A) + n(B) bila A dan B saling lepas",
+    "inklusi-eksklusi: n(A gabung B) = n(A) + n(B) - n(A iris B)",
+    "aturan perkalian: n = n1 x n2 x ... x nk",
+    "banyak cara bersyarat = banyak semua cara - banyak cara terlarang"
+   ],
+   "keterampilan": [
+    "Membedakan situasi 'pilih salah satu jalur' dari 'lakukan tahap demi tahap'",
+    "Menggambar diagram kotak atau diagram pohon untuk soal cerita pencacahan",
+    "Menghitung banyak nomor plat, PIN, rute perjalanan, dan menu paket",
+    "Memecah soal bersyarat menjadi kasus-kasus saling lepas lalu menjumlahkannya",
+    "Memilih strategi komplemen ketika kasus 'yang boleh' terlalu banyak"
+   ],
+   "prasyarat": [
+    "Himpunan, Irisan, Gabungan, dan Diagram Venn",
+    "Operasi hitung bilangan cacah"
+   ],
+   "miskonsepsi": [
+    "Langsung mengalikan begitu melihat dua bilangan, tanpa mengecek apakah tahapnya berurutan",
+    "Menganggap kata 'atau' selalu berarti dijumlahkan padahal kejadiannya beririsan",
+    "Lupa bahwa pilihan berkurang bila unsur tidak boleh diulang (menulis 5 x 5 x 5 padahal 5 x 4 x 3)",
+    "Menghitung ganda pada soal 'paling sedikit satu' karena tidak memakai komplemen",
+    "Mengisi kotak dari kiri padahal syarat terberat (misal harus genap) ada di kotak kanan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa 'atau' dijumlahkan tapi 'dan' dikalikan? Apa gambarnya?",
+    "Kenapa aturan penjumlahan rusak kalau kedua kelompok punya anggota bersama?",
+    "Kenapa kotak dengan syarat paling ketat sebaiknya diisi lebih dulu?",
+    "Kenapa menghitung 'yang tidak boleh' kadang jauh lebih cepat daripada menghitung 'yang boleh'?"
+   ]
+  },
+  {
+   "judul": "Faktorial dan Permutasi",
+   "kelas": 12,
+   "subKonsep": [
+    "Faktorial n! sebagai hasil aturan perkalian yang pilihannya menyusut 1 tiap tahap",
+    "Kesepakatan 0! = 1 dan alasannya dari pola n! = n x (n-1)!",
+    "Permutasi = susunan yang MEMPERHATIKAN urutan",
+    "Permutasi r unsur dari n unsur sebagai perkalian menyusut sebanyak r faktor",
+    "Menurunkan P(n,r) = n!/(n-r)! dengan trik mengalikan dan membagi ekor faktorial",
+    "Kasus khusus P(n,n) = n! dan P(n,1) = n",
+    "Permutasi dengan unsur yang harus berdampingan (teknik pengelompokan)"
+   ],
+   "rumus": [
+    "n! = n x (n-1) x (n-2) x ... x 2 x 1",
+    "0! = 1",
+    "P(n,r) = n! / (n-r)!",
+    "P(n,n) = n!",
+    "unsur berdampingan: perlakukan blok sebagai 1 unsur, lalu kalikan permutasi di dalam blok"
+   ],
+   "keterampilan": [
+    "Menghitung nilai faktorial dan menyederhanakan pecahan faktorial tanpa kalkulator",
+    "Menentukan apakah sebuah soal peduli urutan atau tidak",
+    "Menghitung banyak susunan juara 1-2-3, jadwal, dan sandi tanpa pengulangan",
+    "Menyelesaikan persamaan sederhana yang memuat faktorial",
+    "Menangani syarat 'harus berdampingan' atau 'tidak boleh berdampingan' dengan komplemen"
+   ],
+   "prasyarat": [
+    "Aturan Penjumlahan dan Aturan Perkalian (Kaidah Pencacahan)"
+   ],
+   "miskonsepsi": [
+    "Menganggap 0! = 0",
+    "Mengira (a x b)! = a! x b! atau (a+b)! = a! + b!",
+    "Memakai permutasi untuk soal memilih regu yang urutannya tidak penting",
+    "Mencoret faktorial sembarangan, misal 8!/4! dianggap 2!",
+    "Mengira P(n,r) adalah n! dibagi r!"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa 0! harus bernilai 1 dan bukan 0?",
+    "Dari mana pembagian n!/(n-r)! muncul, padahal yang kita lakukan hanya mengalikan r angka?",
+    "Kenapa menyusun 5 buku berbeda punya 120 cara, bukan 25 cara?",
+    "Kenapa syarat 'harus berdampingan' membuat dua unsur boleh dianggap satu?"
+   ]
+  },
+  {
+   "judul": "Permutasi dengan Unsur Sama, Permutasi Siklis, dan Permutasi Berulang",
+   "kelas": 12,
+   "subKonsep": [
+    "Permutasi unsur sama: membagi kelebihan hitungan akibat unsur yang tak terbedakan",
+    "Contoh klasik menyusun huruf pada kata (MATEMATIKA, STATISTIKA)",
+    "Permutasi siklis: susunan melingkar, hanya posisi relatif yang berarti",
+    "Mengapa satu orang dipaku sebagai titik acuan pada susunan melingkar",
+    "Susunan melingkar yang boleh dibalik (kalung, gelang) dibagi 2 lagi",
+    "Permutasi berulang (dengan pengulangan) = n^r untuk pilihan yang boleh diulang",
+    "Membedakan 'boleh diulang' dari 'tidak boleh diulang' dalam soal cerita"
+   ],
+   "rumus": [
+    "permutasi unsur sama: n! / (n1! x n2! x ... x nk!)",
+    "permutasi siklis: (n-1)!",
+    "susunan melingkar yang bisa dibalik: (n-1)!/2",
+    "permutasi berulang: n^r"
+   ],
+   "keterampilan": [
+    "Menghitung banyak susunan huruf pada kata yang memuat huruf kembar",
+    "Menentukan banyak cara duduk melingkar dengan atau tanpa syarat tambahan",
+    "Membedakan soal PIN (boleh berulang) dari soal juara (tidak boleh berulang)",
+    "Menggabungkan aturan siklis dengan syarat 'dua orang harus bersebelahan'",
+    "Memeriksa hasil dengan mendaftar semua kemungkinan untuk n kecil"
+   ],
+   "prasyarat": [
+    "Faktorial dan Permutasi"
+   ],
+   "miskonsepsi": [
+    "Menghitung MATEMATIKA sebagai 10! tanpa membagi huruf yang sama",
+    "Memakai n! untuk susunan melingkar, lupa bahwa memutar meja tidak menghasilkan susunan baru",
+    "Membagi 2 pada semua soal melingkar, padahal hanya berlaku bila susunan boleh dibalik",
+    "Memakai n^r untuk soal yang unsurnya tidak boleh diulang",
+    "Mengira permutasi berulang selalu lebih kecil daripada permutasi biasa"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa huruf yang sama harus dibagi faktorialnya? Apa yang sebenarnya dihitung dua kali?",
+    "Kenapa duduk melingkar hanya (n-1)! dan bukan n!?",
+    "Kenapa gelang dibagi 2 tetapi meja bundar tidak?",
+    "Kenapa mengizinkan pengulangan mengubah perkalian menyusut menjadi pangkat?"
+   ]
+  },
+  {
+   "judul": "Kombinasi: Memilih Tanpa Memperhatikan Urutan",
+   "kelas": 12,
+   "subKonsep": [
+    "Kombinasi = memilih sekelompok unsur, urutan tidak dipedulikan",
+    "Hubungan permutasi dan kombinasi: setiap kelompok terhitung r! kali pada permutasi",
+    "Menurunkan C(n,r) = P(n,r)/r! = n!/(r!(n-r)!)",
+    "Sifat simetri C(n,r) = C(n, n-r) dan maknanya (memilih yang masuk = memilih yang keluar)",
+    "C(n,0) = C(n,n) = 1 dan C(n,1) = n",
+    "Kombinasi bertingkat: memilih dari beberapa kelompok lalu dikalikan",
+    "Soal 'paling sedikit' dan 'paling banyak' yang dipecah menjadi kasus"
+   ],
+   "rumus": [
+    "C(n,r) = n! / (r! (n-r)!)",
+    "C(n,r) = P(n,r) / r!",
+    "C(n,r) = C(n, n-r)",
+    "C(n,0) = C(n,n) = 1",
+    "sum dari r=0 sampai n dari C(n,r) = 2^n"
+   ],
+   "keterampilan": [
+    "Menguji cepat apakah soal memerlukan permutasi atau kombinasi",
+    "Menghitung banyak cara memilih regu, panitia, dan sampel",
+    "Menyelesaikan soal campuran (misal 3 putra dari 7 dan 2 putri dari 5)",
+    "Memecah soal 'sekurang-kurangnya 2 perempuan' menjadi kasus saling lepas",
+    "Memakai sifat simetri untuk mempercepat hitungan C(20,18)"
+   ],
+   "prasyarat": [
+    "Faktorial dan Permutasi",
+    "Aturan Penjumlahan dan Aturan Perkalian (Kaidah Pencacahan)"
+   ],
+   "miskonsepsi": [
+    "Memakai permutasi untuk soal memilih tim karena kata 'susunan' muncul di soal",
+    "Mengira C(n,r) selalu lebih besar dari P(n,r)",
+    "Menjumlahkan kombinasi kelompok yang seharusnya dikalikan (dan 3 putra DAN 2 putri)",
+    "Mengira C(10,3) dan C(10,7) berbeda",
+    "Mengalikan kasus-kasus pada soal 'paling sedikit' yang seharusnya dijumlahkan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kombinasi harus dibagi r!? Apa tepatnya yang terhitung berulang?",
+    "Kenapa memilih 3 dari 10 sama banyaknya dengan memilih 7 dari 10?",
+    "Kenapa jumlah semua kombinasi dari n unsur tepat 2^n?",
+    "Kenapa kata 'jabat tangan' dan kata 'juara 1-2-3' menuntut rumus yang berbeda?"
+   ]
+  },
+  {
+   "judul": "Segitiga Pascal dan Binomial Newton",
+   "kelas": 12,
+   "subKonsep": [
+    "Segitiga Pascal sebagai tabel nilai C(n,r)",
+    "Aturan penjumlahan Pascal: setiap bilangan adalah jumlah dua bilangan di atasnya",
+    "Bukti kombinatorial aturan Pascal (unsur tertentu ikut dipilih atau tidak)",
+    "Koefisien binomial pada penjabaran (a+b)^n",
+    "Suku umum penjabaran binomial dan cara mencari suku ke-k",
+    "Jumlah baris ke-n segitiga Pascal sama dengan 2^n",
+    "Kaitannya dengan distribusi binomial yang akan datang"
+   ],
+   "rumus": [
+    "C(n,r) = C(n-1, r-1) + C(n-1, r)",
+    "(a+b)^n = sum dari r=0 sampai n dari C(n,r) a^(n-r) b^r",
+    "suku ke-(r+1) = C(n,r) a^(n-r) b^r",
+    "jumlah koefisien satu baris = 2^n"
+   ],
+   "keterampilan": [
+    "Membangun segitiga Pascal beberapa baris tanpa rumus faktorial",
+    "Menjabarkan (a+b)^n untuk n kecil",
+    "Mencari suku tertentu atau koefisien x^k dalam penjabaran binomial",
+    "Menjelaskan aturan Pascal dengan argumen 'unsur ini ikut atau tidak'",
+    "Mengaitkan baris ke-n dengan banyak hasil pelemparan n koin"
+   ],
+   "prasyarat": [
+    "Kombinasi: Memilih Tanpa Memperhatikan Urutan",
+    "Perpangkatan dan operasi bentuk aljabar"
+   ],
+   "miskonsepsi": [
+    "Mengira segitiga Pascal hanya pola angka lucu, tanpa hubungan dengan memilih",
+    "Salah menempatkan indeks: menganggap suku ke-r padahal C(n,r) menghasilkan suku ke-(r+1)",
+    "Lupa bahwa pangkat a menurun sementara pangkat b menaik",
+    "Mengira (a+b)^n = a^n + b^n"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua bilangan di atas dijumlahkan menghasilkan bilangan di bawahnya?",
+    "Kenapa koefisien penjabaran (a+b)^n persis sama dengan banyak cara memilih?",
+    "Kenapa jumlah satu baris segitiga Pascal selalu kelipatan dua yang rapi (2^n)?"
+   ]
+  },
+  {
+   "judul": "Ruang Sampel, Kejadian, dan Frekuensi Harapan",
+   "kelas": 12,
+   "subKonsep": [
+    "Percobaan acak, titik sampel, ruang sampel S, dan kejadian sebagai himpunan bagian S",
+    "Ruang sampel berpeluang sama vs tidak sama (dadu adil vs paku payung)",
+    "Definisi peluang klasik dan syarat titik sampel berpeluang sama",
+    "Peluang empiris (frekuensi relatif) dan hukum bilangan besar",
+    "Sifat dasar: 0 <= P(A) <= 1, P(S) = 1, P(himpunan kosong) = 0",
+    "Kejadian komplemen dan peluangnya",
+    "Frekuensi harapan sebagai peluang dikali banyak percobaan"
+   ],
+   "rumus": [
+    "P(A) = n(A) / n(S)",
+    "0 <= P(A) <= 1",
+    "P(A komplemen) = 1 - P(A)",
+    "frekuensi harapan = n x P(A)",
+    "peluang empiris = banyak kemunculan / banyak percobaan"
+   ],
+   "keterampilan": [
+    "Mendaftar ruang sampel dengan tabel silang atau diagram pohon (dua dadu, dua koin)",
+    "Menghitung peluang kejadian sederhana dan kejadian komplemennya",
+    "Menaksir peluang dari data percobaan nyata dan membandingkannya dengan peluang teoretis",
+    "Menghitung frekuensi harapan dalam konteks (berapa kali muncul angka dalam 200 lemparan)",
+    "Mengenali kapan titik sampel TIDAK berpeluang sama"
+   ],
+   "prasyarat": [
+    "Peluang Kejadian Tunggal dan Frekuensi Relatif (Fase D)",
+    "Himpunan, Irisan, Gabungan, dan Diagram Venn"
+   ],
+   "miskonsepsi": [
+    "Menulis n(S) = 11 untuk jumlah dua dadu karena mendaftar hasil jumlah, bukan pasangan",
+    "Mengira peluang empiris yang menyimpang dari teoretis berarti dadunya curang",
+    "Kekeliruan penjudi: mengira setelah 5 kali gambar, peluang angka jadi lebih besar",
+    "Menganggap frekuensi harapan pasti terjadi persis segitu",
+    "Mengira dua hasil yang mungkin berarti peluang masing-masing 1/2"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa peluang harus berupa bilangan antara 0 dan 1?",
+    "Kenapa melempar dua dadu memberi 36 kemungkinan, bukan 12 atau 11?",
+    "Kenapa koin tidak 'ingat' hasil lemparan sebelumnya?",
+    "Kenapa frekuensi relatif makin mendekati peluang teoretis kalau percobaannya diperbanyak?"
+   ]
+  },
+  {
+   "judul": "Menghitung Peluang dengan Permutasi dan Kombinasi",
+   "kelas": 12,
+   "subKonsep": [
+    "Memakai kombinasi untuk menghitung n(A) dan n(S) sekaligus",
+    "Pengambilan tanpa pengembalian sebagai model kombinasi",
+    "Pengambilan dengan pengembalian sebagai model permutasi berulang",
+    "Soal klasik: bola berwarna dalam kotak, kartu remi, lotre",
+    "Menyusun peluang sebagai hasil bagi dua kombinasi (distribusi hipergeometrik sederhana)",
+    "Konsistensi: pembilang dan penyebut harus memakai cara mencacah yang sama",
+    "Soal 'paling sedikit' diselesaikan lewat komplemen"
+   ],
+   "rumus": [
+    "P(A) = C(k, r) x C(n-k, m-r) / C(n, m)  (mengambil m benda, r di antaranya jenis tertentu)",
+    "P(A) = P(n,r) di pembilang dan penyebut bila urutan diperhatikan",
+    "P(sekurang-kurangnya satu) = 1 - P(tidak satu pun)"
+   ],
+   "keterampilan": [
+    "Memodelkan soal pengambilan bola/kartu dengan kombinasi yang tepat",
+    "Menjaga konsistensi cara mencacah antara pembilang dan penyebut",
+    "Menghitung peluang mendapat kartu dengan syarat tertentu dari 52 kartu",
+    "Memakai komplemen untuk soal 'sekurang-kurangnya satu'",
+    "Membandingkan hasil pengambilan dengan dan tanpa pengembalian"
+   ],
+   "prasyarat": [
+    "Kombinasi: Memilih Tanpa Memperhatikan Urutan",
+    "Ruang Sampel, Kejadian, dan Frekuensi Harapan"
+   ],
+   "miskonsepsi": [
+    "Memakai kombinasi di pembilang tetapi permutasi di penyebut",
+    "Mengira pengambilan sekaligus berbeda peluangnya dengan pengambilan satu per satu tanpa pengembalian",
+    "Lupa mengurangi jumlah benda setelah pengambilan tanpa pengembalian",
+    "Menjumlahkan peluang kasus yang sebenarnya beririsan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa mengambil 3 bola sekaligus sama peluangnya dengan mengambil satu per satu tanpa dikembalikan?",
+    "Kenapa cara mencacah di atas dan di bawah pecahan harus sejenis?",
+    "Kenapa 'sekurang-kurangnya satu' hampir selalu lebih mudah lewat komplemen?"
+   ]
+  },
+  {
+   "judul": "Kejadian Majemuk: Gabungan dan Kejadian Saling Lepas",
+   "kelas": 12,
+   "subKonsep": [
+    "Kejadian majemuk sebagai gabungan/irisan beberapa kejadian",
+    "Kejadian saling lepas (mutually exclusive): irisannya himpunan kosong, tidak bisa terjadi bersamaan",
+    "Aturan penjumlahan peluang untuk kejadian saling lepas",
+    "Aturan penjumlahan umum (inklusi-eksklusi) untuk kejadian yang beririsan",
+    "Diagram Venn peluang: luas daerah sebagai peluang",
+    "Beda 'saling lepas' dan 'komplemen' (komplemen pasti saling lepas, tetapi tidak sebaliknya)",
+    "Perluasan ke tiga kejadian"
+   ],
+   "rumus": [
+    "P(A gabung B) = P(A) + P(B) - P(A iris B)",
+    "bila A dan B saling lepas: P(A iris B) = 0 sehingga P(A gabung B) = P(A) + P(B)",
+    "P(A gabung B gabung C) = P(A)+P(B)+P(C) - P(A iris B) - P(A iris C) - P(B iris C) + P(A iris B iris C)",
+    "P(A iris B komplemen) = P(A) - P(A iris B)"
+   ],
+   "keterampilan": [
+    "Menentukan apakah dua kejadian bisa terjadi bersamaan atau tidak",
+    "Menggambar diagram Venn peluang dan mengisi tiap daerah",
+    "Menghitung peluang gabungan dengan dan tanpa irisan",
+    "Menyelesaikan soal 'kartu As atau kartu hati' tanpa menghitung ganda",
+    "Menerapkan inklusi-eksklusi untuk tiga kejadian pada data survei"
+   ],
+   "prasyarat": [
+    "Ruang Sampel, Kejadian, dan Frekuensi Harapan",
+    "Himpunan, Irisan, Gabungan, dan Diagram Venn"
+   ],
+   "miskonsepsi": [
+    "Selalu menjumlahkan P(A) + P(B) tanpa memeriksa apakah kejadiannya beririsan",
+    "Mencampuradukkan 'saling lepas' dengan 'saling bebas'",
+    "Mengira P(A gabung B) tidak boleh lebih dari P(A) atau harus selalu 1",
+    "Mengira dua kejadian yang saling lepas pasti juga saling bebas"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa irisan harus dikurangkan satu kali, bukan dua kali?",
+    "Kenapa dua kejadian saling lepas justru TIDAK saling bebas?",
+    "Kenapa diagram Venn dengan luas daerah adalah gambar yang tepat untuk peluang?"
+   ]
+  },
+  {
+   "judul": "Kejadian Saling Bebas dan Aturan Perkalian Peluang",
+   "kelas": 12,
+   "subKonsep": [
+    "Kejadian saling bebas: terjadinya A tidak mengubah peluang B",
+    "Uji kebebasan: P(A iris B) = P(A) x P(B), atau P(B|A) = P(B)",
+    "Pengambilan dengan pengembalian menghasilkan kejadian saling bebas",
+    "Pengambilan tanpa pengembalian menghasilkan kejadian bergantung",
+    "Kebebasan pada percobaan berulang (koin, dadu, kelahiran anak)",
+    "Menghitung peluang rangkaian kejadian bebas dengan perkalian",
+    "Beda tegas antara saling bebas (perkalian) dan saling lepas (penjumlahan)"
+   ],
+   "rumus": [
+    "A dan B saling bebas jika dan hanya jika P(A iris B) = P(A) x P(B)",
+    "P(A1 iris A2 iris ... iris An) = P(A1) x P(A2) x ... x P(An) bila semuanya saling bebas",
+    "P(sekurang-kurangnya satu berhasil) = 1 - (1 - p)^n"
+   ],
+   "keterampilan": [
+    "Menguji kebebasan dua kejadian dari tabel kontingensi atau ruang sampel",
+    "Menghitung peluang rangkaian percobaan berulang yang saling bebas",
+    "Membedakan skenario dengan pengembalian dan tanpa pengembalian",
+    "Menyelesaikan soal keandalan (dua alarm bekerja bebas, berapa peluang setidaknya satu berbunyi)",
+    "Membuktikan bahwa dua kejadian saling lepas dengan peluang tak nol pasti tidak saling bebas"
+   ],
+   "prasyarat": [
+    "Kejadian Majemuk: Gabungan dan Kejadian Saling Lepas",
+    "Menghitung Peluang dengan Permutasi dan Kombinasi"
+   ],
+   "miskonsepsi": [
+    "Menganggap saling bebas dan saling lepas itu sama",
+    "Mengira semua kejadian dalam satu soal otomatis saling bebas",
+    "Menerapkan P(A) x P(B) pada pengambilan tanpa pengembalian",
+    "Kekeliruan penjudi: mengira lemparan berikutnya dipengaruhi hasil sebelumnya",
+    "Mengira 'saling bebas' berarti 'tidak berhubungan sama sekali dalam kehidupan nyata'"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa peluang kejadian bebas dikalikan, sedangkan kejadian saling lepas dijumlahkan?",
+    "Kenapa dua kejadian yang tidak mungkin terjadi bersamaan justru sangat bergantung satu sama lain?",
+    "Kenapa mengembalikan bola ke kotak mengubah seluruh perhitungan?",
+    "Kenapa peluang 'setidaknya satu' cepat mendekati 1 saat percobaan diulang?"
+   ]
+  },
+  {
+   "judul": "Peluang Bersyarat",
+   "kelas": 12,
+   "subKonsep": [
+    "Peluang bersyarat P(B|A): peluang B dengan syarat A sudah terjadi",
+    "Penyempitan ruang sampel: A menjadi 'dunia baru' tempat menghitung",
+    "Menurunkan rumus P(B|A) = P(A iris B)/P(A) dari penyempitan ruang sampel",
+    "Aturan perkalian umum P(A iris B) = P(A) x P(B|A)",
+    "Membaca peluang bersyarat langsung dari tabel kontingensi",
+    "Kebebasan sebagai kasus khusus: P(B|A) = P(B)",
+    "P(B|A) tidak sama dengan P(A|B) dan bahaya membaliknya"
+   ],
+   "rumus": [
+    "P(B|A) = P(A iris B) / P(A), dengan P(A) > 0",
+    "P(A iris B) = P(A) x P(B|A) = P(B) x P(A|B)",
+    "dari tabel: P(B|A) = n(A iris B) / n(A)",
+    "A dan B saling bebas jika P(B|A) = P(B)"
+   ],
+   "keterampilan": [
+    "Menghitung peluang bersyarat dari tabel kontingensi dan diagram Venn",
+    "Menerjemahkan kalimat 'diketahui bahwa ...' menjadi notasi P(B|A)",
+    "Memakai aturan perkalian umum untuk pengambilan berurutan tanpa pengembalian",
+    "Membedakan P(B|A) dan P(A|B) pada konteks nyata (tes medis, seleksi)",
+    "Menguji kebebasan dua kejadian melalui peluang bersyarat"
+   ],
+   "prasyarat": [
+    "Kejadian Saling Bebas dan Aturan Perkalian Peluang",
+    "Tabel Kontingensi dan Asosiasi Dua Variabel Kategorikal"
+   ],
+   "miskonsepsi": [
+    "Menukar P(B|A) dengan P(A|B) (kekeliruan jaksa penuntut)",
+    "Membagi dengan n(S) padahal seharusnya dibagi n(A)",
+    "Mengira syarat selalu memperkecil peluang",
+    "Mengira 'A sudah terjadi' berarti A menyebabkan B",
+    "Memakai P(A) x P(B) pada kejadian bergantung"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa mengetahui satu informasi bisa mengubah peluang, padahal kejadiannya sudah tetap?",
+    "Kenapa penyebutnya berubah dari n(S) menjadi n(A)?",
+    "Kenapa 'peluang sakit jika hasil tes positif' sangat berbeda dari 'peluang tes positif jika sakit'?"
+   ]
+  },
+  {
+   "judul": "Diagram Pohon Berbobot dan Teorema Bayes",
+   "kelas": 12,
+   "subKonsep": [
+    "Diagram pohon berbobot: setiap cabang diberi peluang, jalur dikalikan",
+    "Aturan peluang total: menjumlahkan semua jalur menuju hasil yang sama",
+    "Membalik arah pohon untuk menjawab pertanyaan terbalik",
+    "Teorema Bayes sebagai rumus dari pembalikan pohon",
+    "Frekuensi alami (bayangkan 10.000 orang) sebagai cara paling mudah dipahami",
+    "Penerapan pada tes medis, deteksi spam, dan kendali mutu",
+    "Peluang awal (prior), bukti, dan peluang akhir (posterior)"
+   ],
+   "rumus": [
+    "P(A iris B) = P(A) x P(B|A)  (kalikan sepanjang cabang)",
+    "peluang total: P(B) = P(A) P(B|A) + P(A komplemen) P(B|A komplemen)",
+    "Bayes: P(A|B) = P(A) P(B|A) / P(B)"
+   ],
+   "keterampilan": [
+    "Menggambar diagram pohon berbobot dua tingkat untuk soal pengambilan berurutan",
+    "Menghitung peluang total sebuah hasil dari beberapa jalur",
+    "Membalik pertanyaan dan menghitung peluang posterior",
+    "Menerjemahkan soal tes medis ke tabel frekuensi alami 10.000 orang",
+    "Menjelaskan mengapa tes yang akurat 99% bisa tetap sering salah pada penyakit langka"
+   ],
+   "prasyarat": [
+    "Peluang Bersyarat",
+    "Kejadian Majemuk: Gabungan dan Kejadian Saling Lepas"
+   ],
+   "miskonsepsi": [
+    "Menjumlahkan peluang sepanjang satu cabang, bukan mengalikannya",
+    "Mengabaikan peluang awal (base rate) sehingga hasil tes dianggap kepastian",
+    "Mengira akurasi tes 99% berarti peluang benar-benar sakit juga 99%",
+    "Lupa bahwa jumlah peluang cabang dari satu simpul harus 1"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa peluang sepanjang cabang dikalikan tetapi antar-cabang dijumlahkan?",
+    "Kenapa tes yang akurat 99% bisa memberi hasil positif yang lebih sering salah daripada benar?",
+    "Dari mana rumus Bayes berasal kalau kita hanya membalik sebuah pohon?",
+    "Kenapa membayangkan 10.000 orang membuat soal ini tiba-tiba jelas?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Variabel Acak Diskret dan Fungsi Peluang",
+   "kelas": 12,
+   "subKonsep": [
+    "Variabel acak sebagai aturan yang memetakan hasil percobaan ke bilangan",
+    "Variabel acak diskret vs kontinu",
+    "Fungsi peluang (distribusi peluang) sebagai daftar nilai beserta peluangnya",
+    "Dua syarat wajib: setiap peluang tak negatif dan jumlah seluruh peluang sama dengan 1",
+    "Menyajikan distribusi dalam tabel, diagram batang, dan rumus",
+    "Fungsi distribusi kumulatif F(x) = P(X <= x)",
+    "Distribusi seragam diskret sebagai kasus paling sederhana",
+    "Memodelkan data nyata dengan variabel acak"
+   ],
+   "rumus": [
+    "p(x) = P(X = x)",
+    "p(x) >= 0 untuk setiap x",
+    "sum p(x) = 1",
+    "F(x) = P(X <= x) = sum p(t) untuk t <= x",
+    "P(a < X <= b) = F(b) - F(a)"
+   ],
+   "keterampilan": [
+    "Mendefinisikan variabel acak dari sebuah percobaan (misal X = banyak angka pada 3 koin)",
+    "Menyusun tabel distribusi peluang lengkap dan memeriksa jumlahnya 1",
+    "Menggambar diagram batang distribusi peluang",
+    "Menghitung peluang kumulatif dan peluang selang",
+    "Menentukan nilai konstanta k agar sebuah fungsi menjadi fungsi peluang sah"
+   ],
+   "prasyarat": [
+    "Ruang Sampel, Kejadian, dan Frekuensi Harapan",
+    "Menghitung Peluang dengan Permutasi dan Kombinasi"
+   ],
+   "miskonsepsi": [
+    "Menganggap variabel acak sama dengan variabel aljabar biasa yang nilainya dicari",
+    "Lupa memeriksa bahwa jumlah seluruh peluang harus 1",
+    "Mencampur nilai X dengan peluang X pada tabel",
+    "Mengira P(X <= 2) sama dengan P(X < 2) pada variabel diskret",
+    "Mengira semua nilai variabel acak pasti berpeluang sama"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa hasil percobaan yang berupa gambar/angka perlu diubah menjadi bilangan?",
+    "Kenapa jumlah semua peluang harus tepat 1 dan tidak boleh 0,99?",
+    "Kenapa pada variabel diskret P(X < 2) dan P(X <= 2) bisa berbeda, tetapi pada variabel kontinu tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Nilai Harapan dan Variansi Variabel Acak Diskret",
+   "kelas": 12,
+   "subKonsep": [
+    "Nilai harapan sebagai rata-rata berbobot peluang, bukan nilai yang pasti muncul",
+    "Nilai harapan sebagai titik keseimbangan (titik tumpu) diagram batang distribusi",
+    "Variansi sebagai rata-rata kuadrat simpangan terhadap nilai harapan",
+    "Rumus pintas Var(X) = E(X^2) - [E(X)]^2",
+    "Simpangan baku sebagai akar variansi, bersatuan sama dengan X",
+    "Sifat linear: E(aX + b) = a E(X) + b dan Var(aX + b) = a^2 Var(X)",
+    "Penerapan: permainan adil, ekspektasi keuntungan, premi asuransi"
+   ],
+   "rumus": [
+    "E(X) = mu = sum x p(x)",
+    "Var(X) = sigma^2 = sum (x - mu)^2 p(x)",
+    "Var(X) = E(X^2) - [E(X)]^2",
+    "sigma = akar dari Var(X)",
+    "E(aX + b) = a E(X) + b",
+    "Var(aX + b) = a^2 Var(X)"
+   ],
+   "keterampilan": [
+    "Menghitung E(X) dan Var(X) dari tabel distribusi peluang",
+    "Menafsirkan nilai harapan dalam konteks (rata-rata jangka panjang per permainan)",
+    "Menentukan apakah sebuah permainan adil (E = 0) atau merugikan pemain",
+    "Memakai rumus pintas untuk mempercepat perhitungan variansi",
+    "Menghitung E dan Var setelah transformasi linear (misal untung = 5X - 2)"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Variabel Acak Diskret dan Fungsi Peluang",
+    "Ukuran Pemusatan dan Penyebaran Data (rata-rata, median, kuartil, simpangan baku)"
+   ],
+   "miskonsepsi": [
+    "Mengira nilai harapan pasti akan muncul (E(X) = 2,5 dianggap mustahil karena bukan bilangan bulat)",
+    "Menghitung E(X) sebagai rata-rata biasa dari nilai X tanpa bobot peluang",
+    "Menganggap Var(aX + b) = a Var(X) + b",
+    "Mengira variansi bisa bernilai negatif",
+    "Mengira E(X^2) = [E(X)]^2"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa nilai harapan bisa berupa angka yang tidak mungkin terjadi?",
+    "Kenapa nilai harapan adalah titik tumpu yang membuat diagram batang seimbang?",
+    "Kenapa menambah konstanta b tidak mengubah variansi sama sekali?",
+    "Kenapa rumus pintas E(X^2) - [E(X)]^2 memberi hasil yang sama dengan rumus panjangnya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Percobaan Bernoulli dan Distribusi Binomial",
+   "kelas": 12,
+   "subKonsep": [
+    "Percobaan Bernoulli: satu percobaan dengan tepat dua hasil (sukses/gagal)",
+    "Empat syarat binomial: banyak percobaan tetap n, tiap percobaan bebas, dua hasil, peluang sukses p tetap",
+    "Menurunkan rumus binomial: peluang satu urutan p^x q^(n-x), lalu dikalikan banyak urutan C(n,x)",
+    "Peran C(n,x) sebagai penghitung banyaknya jalur pada diagram pohon",
+    "Bentuk histogram binomial: simetris saat p = 0,5, menceng saat p jauh dari 0,5",
+    "Nilai harapan dan variansi distribusi binomial",
+    "Peluang kumulatif binomial dan soal 'paling sedikit'/'paling banyak'",
+    "Batas kesahihan model binomial pada pengambilan tanpa pengembalian"
+   ],
+   "rumus": [
+    "P(X = x) = C(n,x) p^x (1-p)^(n-x), untuk x = 0,1,...,n",
+    "q = 1 - p",
+    "E(X) = n p",
+    "Var(X) = n p q",
+    "sigma = akar(n p q)",
+    "P(X >= 1) = 1 - P(X = 0) = 1 - q^n"
+   ],
+   "keterampilan": [
+    "Memeriksa apakah sebuah situasi memenuhi keempat syarat binomial",
+    "Menghitung peluang binomial untuk nilai x tertentu",
+    "Menghitung peluang kumulatif (paling sedikit, paling banyak, antara)",
+    "Menggambar histogram distribusi binomial dan mendeskripsikan bentuknya",
+    "Menghitung dan menafsirkan nilai harapan serta simpangan baku binomial"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Nilai Harapan dan Variansi Variabel Acak Diskret",
+    "Segitiga Pascal dan Binomial Newton",
+    "Kejadian Saling Bebas dan Aturan Perkalian Peluang"
+   ],
+   "miskonsepsi": [
+    "Lupa faktor C(n,x) sehingga hanya menghitung satu urutan",
+    "Memakai binomial pada pengambilan tanpa pengembalian dari populasi kecil",
+    "Mengira p harus selalu 0,5",
+    "Mengira P(X >= 3) = 1 - P(X <= 3)",
+    "Menukar peran n dan x dalam rumus",
+    "Mengira nilai harapan np harus berupa bilangan bulat"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa harus dikalikan C(n,x)? Apa yang dihitung angka itu?",
+    "Kenapa koefisien binomial dari segitiga Pascal muncul lagi di sini?",
+    "Kenapa nilai harapannya tepat n x p dan bukan sesuatu yang rumit?",
+    "Kenapa histogram binomial makin menyerupai lonceng saat n diperbesar?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Distribusi Normal dan Kurva Lonceng",
+   "kelas": 12,
+   "subKonsep": [
+    "Peralihan dari variabel diskret ke kontinu: dari batang menjadi kurva mulus",
+    "Peluang variabel kontinu adalah LUAS di bawah kurva, bukan tinggi kurva",
+    "Luas total di bawah kurva normal sama dengan 1",
+    "Ciri kurva normal: simetris terhadap mu, berbentuk lonceng, asimtotik terhadap sumbu x",
+    "Peran mu (letak puncak) dan sigma (lebar/kegemukan kurva)",
+    "Titik belok kurva berada di mu - sigma dan mu + sigma",
+    "Aturan empiris 68-95-99,7",
+    "P(X = a) = 0 pada distribusi kontinu"
+   ],
+   "rumus": [
+    "f(x) = (1 / (sigma akar(2 pi))) e^(-(x-mu)^2 / (2 sigma^2))",
+    "luas total di bawah kurva = 1",
+    "P(a <= X <= b) = luas daerah di bawah kurva antara a dan b",
+    "P(mu - sigma < X < mu + sigma) kira-kira 68%",
+    "P(mu - 2sigma < X < mu + 2sigma) kira-kira 95%",
+    "P(mu - 3sigma < X < mu + 3sigma) kira-kira 99,7%"
+   ],
+   "keterampilan": [
+    "Membedakan histogram diskret dari kurva kepadatan kontinu",
+    "Menggambar sketsa kurva normal dengan mu dan sigma tertentu",
+    "Memakai aturan empiris untuk menaksir peluang tanpa tabel",
+    "Menafsirkan pergeseran mu dan perubahan sigma pada bentuk kurva",
+    "Mengenali data nyata yang mendekati normal (tinggi badan, kesalahan pengukuran)"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Percobaan Bernoulli dan Distribusi Binomial",
+    "Ukuran Pemusatan dan Penyebaran Data (rata-rata, median, kuartil, simpangan baku)"
+   ],
+   "miskonsepsi": [
+    "Membaca tinggi kurva sebagai peluang",
+    "Mengira P(X = 170) bisa bernilai positif pada distribusi kontinu",
+    "Mengira semua data yang berbentuk 'gundukan' pasti normal",
+    "Mengira kurva normal menyentuh sumbu x pada mu + 3sigma",
+    "Mengira sigma yang lebih besar berarti kurva lebih tinggi"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa peluang pada data kontinu berupa luas, bukan tinggi?",
+    "Kenapa peluang tinggi badan tepat 170,000... cm sama dengan nol?",
+    "Kenapa banyak sekali gejala alam berbentuk lonceng yang sama?",
+    "Kenapa memperbesar sigma membuat kurva melebar dan sekaligus memendek?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Skor-z dan Tabel Distribusi Normal Baku",
+   "kelas": 12,
+   "subKonsep": [
+    "Masalahnya: ada tak hingga banyak kurva normal, tetapi tabel hanya satu",
+    "Transformasi baku: menggeser dengan mu lalu menyekala dengan sigma",
+    "Distribusi normal baku Z dengan mu = 0 dan sigma = 1",
+    "Makna skor-z: berapa simpangan baku sebuah nilai dari rata-ratanya",
+    "Membaca tabel z sebagai luas kumulatif dari kiri",
+    "Menghitung luas selang, luas ekor kanan, dan luas simetris",
+    "Soal terbalik: dari peluang/persentil menuju nilai x",
+    "Pendekatan normal terhadap binomial saat n besar (dengan koreksi kontinuitas)"
+   ],
+   "rumus": [
+    "z = (x - mu) / sigma",
+    "x = mu + z sigma",
+    "P(X < x) = P(Z < z)",
+    "P(a < X < b) = P(z_b) - P(z_a)",
+    "P(Z > z) = 1 - P(Z < z)",
+    "P(Z < -z) = 1 - P(Z < z)",
+    "pendekatan normal untuk binomial: mu = np, sigma = akar(npq), pakai koreksi 0,5"
+   ],
+   "keterampilan": [
+    "Mengubah nilai data menjadi skor-z dan sebaliknya",
+    "Membaca tabel distribusi normal baku dengan benar (dua angka di belakang koma)",
+    "Menghitung persentase data di suatu selang dan menandainya pada sketsa kurva",
+    "Menyelesaikan soal terbalik: mencari nilai ambang untuk 10% teratas",
+    "Membandingkan dua nilai dari distribusi berbeda memakai skor-z"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Distribusi Normal dan Kurva Lonceng",
+    "Koefisien Korelasi dan Kuat-Lemahnya Hubungan"
+   ],
+   "miskonsepsi": [
+    "Membaca tabel z sebagai peluang ekor kanan padahal tabelnya kumulatif kiri",
+    "Mengira skor-z negatif berarti peluang negatif",
+    "Lupa menggambar sketsa sehingga salah menentukan luas mana yang dicari",
+    "Mengira z = 2 berarti 'dua kali lebih besar'",
+    "Membalik rumus menjadi z = (mu - x)/sigma"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa mengurangi mu lalu membagi sigma bisa membuat SEMUA kurva normal menjadi satu kurva yang sama?",
+    "Kenapa satu tabel saja cukup untuk semua soal distribusi normal?",
+    "Kenapa skor-z memungkinkan membandingkan nilai ujian Matematika dan Bahasa yang skalanya berbeda?",
+    "Kenapa histogram binomial dengan n besar bisa dihitung memakai kurva normal?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Populasi, Sampel, dan Teknik Sampling",
+   "kelas": 11,
+   "subKonsep": [
+    "Populasi vs sampel; parameter (mu, sigma, p) vs statistik (x_bar, s, p_topi)",
+    "Sensus vs survei sampel dan alasan praktis memilih sampel",
+    "Sampling acak sederhana dan cara mengundinya",
+    "Sampling sistematis, berstrata (stratified), dan berkelompok (cluster)",
+    "Sampling tidak acak (kemudahan, sukarelawan) dan biasnya",
+    "Bias pemilihan, bias tanpa respons, dan bias pertanyaan",
+    "Ukuran sampel: perannya pada ketelitian, bukan pada keterwakilan"
+   ],
+   "rumus": [
+    "x_bar sebagai penduga mu",
+    "p_topi = x/n sebagai penduga p",
+    "s sebagai penduga sigma",
+    "Tidak ada rumus baku untuk teknik sampling; yang penting prosedur pengacakannya"
+   ],
+   "keterampilan": [
+    "Membedakan pernyataan tentang parameter dan tentang statistik",
+    "Merancang prosedur sampling acak untuk populasi sekolah",
+    "Memilih teknik sampling yang tepat untuk situasi tertentu dan menjelaskan alasannya",
+    "Mengenali sumber bias pada berita jajak pendapat",
+    "Menjelaskan mengapa sampel besar yang bias tetap tidak bisa diperbaiki"
+   ],
+   "prasyarat": [
+    "Proses Penyelidikan Statistika dan Data Bivariat",
+    "Asosiasi Bukan Sebab-Akibat: Perancu dan Evaluasi Laporan Statistika"
+   ],
+   "miskonsepsi": [
+    "Mengira sampel yang lebih besar selalu lebih baik walaupun cara pengambilannya bias",
+    "Mengira jajak pendapat daring terbuka bisa mewakili seluruh penduduk",
+    "Menyamakan sampling acak dengan 'asal ambil'",
+    "Mengira statistik sampel pasti sama dengan parameter populasi",
+    "Mengira sampel harus berukuran persentase tetap dari populasi (misal selalu 10%)"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa 1.200 orang bisa mewakili 280 juta penduduk?",
+    "Kenapa sampel besar yang bias justru lebih berbahaya daripada sampel kecil yang acak?",
+    "Kenapa pengacakan adalah satu-satunya cara melindungi diri dari bias yang tidak kita sadari?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Distribusi Sampling Rata-rata dan Teorema Limit Pusat",
+   "kelas": 12,
+   "subKonsep": [
+    "Variasi antar sampel (sampling variability): tiap sampel memberi x_bar berbeda",
+    "Distribusi sampling sebagai distribusi dari x_bar bila sampling diulang berkali-kali",
+    "Rata-rata distribusi sampling sama dengan mu (penduga tak bias)",
+    "Galat baku (standard error) mengecil sebanding 1/akar(n)",
+    "Teorema Limit Pusat: bentuk distribusi x_bar mendekati normal untuk n cukup besar, apa pun bentuk populasinya",
+    "Aturan praktis n >= 30 dan pengecualiannya",
+    "Distribusi sampling proporsi p_topi",
+    "Simulasi ulang-sampel sebagai cara melihat teorema ini bekerja"
+   ],
+   "rumus": [
+    "E(x_bar) = mu",
+    "galat baku: sigma_x_bar = sigma / akar(n)",
+    "z = (x_bar - mu) / (sigma / akar(n))",
+    "untuk proporsi: E(p_topi) = p dan sigma_p_topi = akar(p(1-p)/n)"
+   ],
+   "keterampilan": [
+    "Membedakan sebaran data individu dari sebaran rata-rata sampel",
+    "Menghitung galat baku dan menjelaskan akibat menaikkan n empat kali lipat",
+    "Menghitung peluang bahwa rata-rata sampel jatuh di selang tertentu",
+    "Menjalankan atau membaca hasil simulasi pengambilan sampel berulang",
+    "Menentukan kapan pendekatan normal untuk x_bar layak dipakai"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Populasi, Sampel, dan Teknik Sampling",
+    "[Tingkat Lanjut] Skor-z dan Tabel Distribusi Normal Baku"
+   ],
+   "miskonsepsi": [
+    "Mengira Teorema Limit Pusat membuat DATA menjadi normal (padahal yang normal adalah rata-rata sampel)",
+    "Memakai sigma alih-alih sigma/akar(n) saat menghitung peluang tentang x_bar",
+    "Mengira menggandakan n memotong galat baku menjadi setengah",
+    "Mengira n >= 30 adalah aturan mutlak tanpa kekecualian"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa rata-rata sampel jauh lebih stabil daripada satu data tunggal?",
+    "Kenapa galat baku dibagi akar n, bukan dibagi n?",
+    "Kenapa bentuk lonceng selalu muncul walaupun populasi aslinya sangat menceng?",
+    "Kenapa untuk melipatduakan ketelitian kita perlu empat kali lipat data?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Pendugaan Parameter dan Interval Kepercayaan",
+   "kelas": 12,
+   "subKonsep": [
+    "Pendugaan titik (satu angka) vs pendugaan selang (rentang)",
+    "Margin of error sebagai 'radius' ketidakpastian",
+    "Membangun interval kepercayaan dari distribusi sampling",
+    "Nilai kritis z untuk tingkat kepercayaan 90%, 95%, dan 99%",
+    "Interval kepercayaan untuk rata-rata dan untuk proporsi",
+    "Pengaruh n, sigma, dan tingkat kepercayaan terhadap lebar interval",
+    "Tafsiran yang benar: 95% mengacu pada prosedur jangka panjang, bukan pada satu interval",
+    "Membaca margin of error pada berita hasil survei"
+   ],
+   "rumus": [
+    "IK rata-rata (sigma diketahui): x_bar plus-minus z_(alpha/2) x sigma/akar(n)",
+    "IK proporsi: p_topi plus-minus z_(alpha/2) x akar(p_topi(1-p_topi)/n)",
+    "margin of error E = z_(alpha/2) x sigma/akar(n)",
+    "z untuk 90% = 1,645; 95% = 1,96; 99% = 2,576",
+    "ukuran sampel minimum: n = (z sigma / E)^2"
+   ],
+   "keterampilan": [
+    "Menghitung interval kepercayaan untuk rata-rata dan proporsi dari data sampel",
+    "Menafsirkan interval kepercayaan dalam kalimat konteks yang benar",
+    "Menentukan ukuran sampel yang dibutuhkan untuk margin of error tertentu",
+    "Menjelaskan pertukaran antara tingkat kepercayaan dan ketelitian",
+    "Membaca dan menilai klaim 'margin of error plus-minus 3%' pada hasil survei"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Distribusi Sampling Rata-rata dan Teorema Limit Pusat"
+   ],
+   "miskonsepsi": [
+    "Mengatakan 'peluang mu berada di interval ini adalah 95%' (mu bukan variabel acak)",
+    "Mengira interval 99% lebih baik karena lebih sempit (justru lebih lebar)",
+    "Mengira margin of error mencakup bias sampling dan kesalahan pertanyaan",
+    "Mengira dua interval yang bertumpang tindih pasti berarti tidak ada perbedaan",
+    "Mengira memperbesar n selalu bisa membuat interval sesempit apa pun tanpa biaya"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kita tidak cukup melaporkan satu angka dugaan saja?",
+    "Kenapa dari mana angka 1,96 pada interval 95% berasal?",
+    "Kenapa makin yakin (99%) justru makin lebar dan makin tidak informatif?",
+    "Kenapa 'kepercayaan 95%' bicara tentang metode, bukan tentang satu interval tertentu?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Uji Hipotesis Rata-rata dan Proporsi",
+   "kelas": 12,
+   "subKonsep": [
+    "Logika bukti tak langsung: anggap H0 benar, lalu lihat seberapa aneh data kita",
+    "Hipotesis nol H0 dan hipotesis alternatif H1 (satu arah dan dua arah)",
+    "Statistik uji sebagai skor-z dari data terhadap dunia H0",
+    "Nilai-p: peluang mendapat data seekstrem ini bila H0 benar",
+    "Taraf signifikansi alpha dan daerah penolakan",
+    "Galat jenis I (menolak H0 yang benar) dan galat jenis II",
+    "Kesimpulan yang jujur: 'tidak cukup bukti' bukan 'H0 terbukti benar'",
+    "Signifikansi statistik vs kebermaknaan praktis"
+   ],
+   "rumus": [
+    "uji rata-rata (sigma diketahui): z = (x_bar - mu0) / (sigma / akar(n))",
+    "uji proporsi: z = (p_topi - p0) / akar(p0(1-p0)/n)",
+    "tolak H0 bila nilai-p < alpha",
+    "dua arah: daerah penolakan |z| > z_(alpha/2)",
+    "satu arah: z > z_alpha atau z < -z_alpha"
+   ],
+   "keterampilan": [
+    "Merumuskan H0 dan H1 dari pernyataan masalah nyata",
+    "Menghitung statistik uji dan menaksir nilai-p dari tabel z",
+    "Menyimpulkan hasil uji dalam kalimat konteks, bukan sekadar 'tolak H0'",
+    "Membedakan uji satu arah dan dua arah beserta akibatnya pada daerah penolakan",
+    "Menjelaskan konsekuensi galat jenis I dan II pada kasus nyata (uji obat, kendali mutu)"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Pendugaan Parameter dan Interval Kepercayaan",
+    "[Tingkat Lanjut] Skor-z dan Tabel Distribusi Normal Baku"
+   ],
+   "miskonsepsi": [
+    "Menganggap nilai-p sebagai peluang bahwa H0 benar",
+    "Menyimpulkan 'H0 terbukti benar' ketika gagal menolak H0",
+    "Mengira hasil signifikan secara statistik pasti penting secara praktis",
+    "Menentukan arah H1 setelah melihat data",
+    "Mengira alpha = 0,05 adalah aturan alam, bukan kesepakatan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kita menguji dugaan dengan cara mengandaikan lawannya benar lebih dulu?",
+    "Kenapa nilai-p kecil membuat kita curiga pada H0, bukan membuktikan H1?",
+    "Kenapa 'tidak menolak H0' tidak sama dengan 'H0 benar'?",
+    "Kenapa dengan n yang sangat besar, perbedaan sekecil apa pun bisa menjadi signifikan?"
+   ]
+  }
+ ],
+ "sources": [
+  "https://www.pembelajaranmendalam.com/2025/11/cp-matematika-fase-f-kelas-11-12-sma-ma-smk-mak-semester-1-2-kurmer-pm.html",
+  "https://karyaanugrah.sch.id/rumus-cp/capaian-pembelajaran-matematika-fase-f/",
+  "https://kepalasekolah.id/cp-matematika-2025-fase-e-f-sma-ma-smk-mak/",
+  "https://www.slideshare.net/slideshow/perbandingan-cp-2024-dan-2025-matematika-umum-dan-matematika-tl-pdf/282169071",
+  "https://repositori.kemendikdasmen.go.id/33608",
+  "http://repositori.kemendikdasmen.go.id/33608/1/5.%20Final%20Panduan%20Mata%20Pelajaran%20Matematika_12_09_2025_Revisi%203.pdf",
+  "https://wislah.com/cp-matematika-fase-e-2025-capaian-pembelajaran-kelas-10-bilangan-aljabar-dan-fungsi-geometri-analisis-data-dan-peluang/",
+  "https://www.mtssmusliminbjp.sch.id/2025/08/cp-matematika-tahun-2025.html",
+  "https://www.ruangguru.com/blog/materi-matematika-kelas-12-kurikulum-merdeka",
+  "https://www.catatanmatematika.com/2025/07/matematika-umum-kelas-11.html",
+  "https://www.catatanmatematika.com/2024/10/materi-matematika-tingkat-lanjut-kelas-12-kurikulum-merdeka.html.html",
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf"
+ ],
+ "catatan": "26 topik. Verifikasi CP: teks elemen 6.4 Fase F Matematika umum dikutip verbatim dari dua sumber independen (pembelajaranmendalam.com dan karyaanugrah.sch.id) dan cocok. PDF resmi Kepka BSKAP di uploads.belajar.id TIDAK berhasil diambil utuh (ukuran melebihi batas 10 MB pengambil web) dan PDF Panduan Mapel Matematika 2025 berukuran 59 MB — keduanya dicantumkan sebagai rujukan primer yang perlu dicek manual. Domain guru.kemdikbud.go.id sudah mati (DNS gagal), sesuai catatan tugas.\n\nPenempatan kelas (CP Fase F tidak memerinci per kelas) mengikuti struktur buku teks resmi Kemendikbud yang paling lazim dipakai di Indonesia: kelas XI Bab 3 Statistika (data bivariat, diagram pencar, regresi, korelasi) → semua topik statistika bivariat ditaruh di kelas 11; kelas XII Bab 3 Kaidah Pencacahan dan Bab 4 Peluang → seluruh kombinatorika dan peluang ditaruh di kelas 12; Matematika Tingkat Lanjut kelas XII Bab 4 Analisis Data dan Peluang → distribusi variabel acak, binomial, dan normal di kelas 12. Perhatikan: urutan ini KEBALIKAN dari sebagian ATP penerbit swasta yang menaruh kombinatorika di kelas 11 — silakan sesuaikan bila kurikulum sekolah target berbeda.\n\nPenandaan [Tingkat Lanjut] (9 topik terakhir): hanya 4 di antaranya eksplisit disebut CP Matematika Tingkat Lanjut 2025 — variabel acak diskret & fungsi peluang, nilai harapan, distribusi binomial, dan distribusi normal (termasuk skor-z sebagai alat bacanya). Lima topik statistika inferensia (populasi & sampling, distribusi sampling & Teorema Limit Pusat, interval kepercayaan, uji hipotesis) TIDAK disebut dalam CP mana pun; dimasukkan sebagai PENGAYAAN karena CP umum mewajibkan \"proses penyelidikan statistika\" dan Fase E mewajibkan \"mengevaluasi laporan statistika di media\", yang keduanya menuntut paham sampel dan margin of error. Turunkan prioritasnya bila ingin ketat pada CP. Topik \"Populasi, Sampel, dan Teknik Sampling\" diberi kelas 11 karena melekat pada bab statistika kelas XI, sedangkan sisanya kelas 12.\n\nPerubahan CP 2024 → 2025 yang perlu diperhatikan: (a) kalimat peluang kejadian majemuk, saling lepas, dan saling bebas BERPINDAH dari Fase E ke Fase F pada Matematika umum, sehingga kelas 10 kini fokus pada representasi data univariat saja; (b) distribusi \"seragam\" dihapus dari CP Matematika Tingkat Lanjut 2025 — di sini hanya diselipkan sebagai subkonsep, bukan topik tersendiri.\n\nBatas domain: kuartil, jangkauan interkuartil, box plot, histogram, dot plot, dan ukuran pemusatan/penyebaran adalah materi Fase E — ditulis sebagai prasyarat, bukan topik Fase F. \"Segitiga Pascal dan Binomial Newton\" secara formal masuk elemen Aljabar, tetapi disertakan di sini karena menjadi tulang punggung rumus binomial — koordinasikan dengan agen domain Aljabar agar tidak ganda.\n\nPeluang visual terkuat untuk aplikasi: (1) kotak-kotak kuadrat sisaan yang mengecil saat garis regresi digeser sampai minimum; (2) hasil kali skor-z per kuadran yang menjelaskan tanda r; (3) diagram batang bersusun yang profilnya identik = tidak ada asosiasi; (4) barisan permutasi yang \"dilipat\" menjadi kombinasi (membagi r!); (5) diagram Venn peluang berbasis luas untuk inklusi-eksklusi; (6) diagram pohon berbobot dengan 10.000 orang untuk Bayes/tes medis; (7) histogram binomial yang perlahan menjadi kurva lonceng saat n naik; (8) semua kurva normal menyatu jadi satu saat dibakukan dengan z; (9) simulasi ambil-sampel berulang yang memperlihatkan Teorema Limit Pusat dan penyempitan galat baku."
+}

@@ -23,11 +23,37 @@ const W = 680
 const H = 430
 const SKALA = 24 // piksel per satuan panjang
 
+/** Mulai dari jumlah potongan ini susunannya tampak hampir persis persegi panjang. */
+const POTONGAN_RAPI = 24
+
+/**
+ * Selisih tinggi susunan terhadap r, dalam persen. Tinggi susunan yang
+ * sebenarnya r·cos(π/n), selalu kurang dari r.
+ */
+const galatTinggi = (n: number) => (1 - Math.cos(Math.PI / n)) * 100
+
+/**
+ * Nilai bongkar yang diturunkan dari penggeser — dipakai bersama oleh gambar
+ * dan teks langkah, supaya angka di narasi selalu sama dengan angka di gambar.
+ */
+function bacaBongkar(p: Record<string, number>) {
+  const r = p.r ?? 4
+  const n = Math.max(4, Math.round(p.n ?? 12))
+  return {
+    r,
+    n,
+    /** panjang susunan = setengah keliling. */
+    setengah: Math.PI * r,
+    luas: Math.PI * r * r,
+    galat: galatTinggi(n),
+    rapi: n >= POTONGAN_RAPI,
+  }
+}
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const r = p.r ?? 4
-  const n = Math.max(4, Math.round(p.n ?? 12))
+  const { r, n, setengah, luas } = bacaBongkar(p)
   const R = r * SKALA
 
   const cx = W / 2
@@ -43,8 +69,6 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaTinggi = fase(step, t, 4) || sorot === 'r2' || sorot === 'jari'
   const nyalaPanjang = fase(step, t, 5) || sorot === 'pi'
   const selesai = step >= 6
-
-  const luas = Math.PI * r * r
 
   return (
     <Svg w={W} h={H} maxH={440} label="Lingkaran dipotong menjadi juring lalu disusun menyerupai persegi panjang">
@@ -114,7 +138,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             y1={ry + R + 26}
             x2={rx + lebar}
             y2={ry + R + 26}
-            label={nyalaPanjang ? `π × r = ${fmt(Math.PI * r, 2)}` : 'setengah keliling'}
+            label={nyalaPanjang ? `π × r = ${fmt(setengah, 2)}` : 'setengah keliling'}
             warna={nyalaPanjang ? 'var(--m-a)' : 'var(--m-axis)'}
           />
         </g>
@@ -128,7 +152,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 3 && (
         <Tag x={cx} y={54} warna="var(--ink-2)" size={16}>
-          {n >= 24 ? 'sudah hampir persis persegi panjang' : 'geser jumlah potongan ke kanan'}
+          {n >= POTONGAN_RAPI ? 'sudah hampir persis persegi panjang' : 'geser jumlah potongan ke kanan'}
         </Tag>
       )}
       {step === 5 && (
@@ -160,8 +184,12 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const ry = cy - R / 2
 
   // Selisih bentuk: tinggi susunan sebenarnya r*cos(pi/n), bukan tepat r.
+  // Bila potongan dirapatkan sisi lurus ke sisi lurus, ujung runcing bawah
+  // jatuh tepat pada garis y = ry + r*cos(pi/n), yaitu garis yang melewati
+  // sudut bawah potongan yang menghadap ke bawah. Garis merah muda digambar
+  // di sana, jadi jaraknya dari tepi atas bingkai = tinggi sebenarnya.
   const tinggiNyata = R * Math.cos(Math.PI / n)
-  const galat = (1 - Math.cos(Math.PI / n)) * 100
+  const galat = galatTinggi(n)
 
   return (
     <Svg w={W} h={H} maxH={440} label="Lingkaran yang bisa diubah jari-jari dan jumlah potongannya">
@@ -203,9 +231,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
           {galat > 0.4 && (
             <line
               x1={rx}
-              y1={ry + (R - tinggiNyata) / 2 + tinggiNyata}
+              y1={ry + tinggiNyata}
               x2={rx + lebar}
-              y2={ry + (R - tinggiNyata) / 2 + tinggiNyata}
+              y2={ry + tinggiNyata}
               stroke="var(--m-hi)"
               strokeWidth={1.4}
               strokeDasharray="3 4"
@@ -285,16 +313,16 @@ const konsep: Konsep = {
       {
         id: 's0',
         judul: 'Mulai dari satu lingkaran',
-        narasi:
-          'Yang kita tahu tentang lingkaran ini cuma satu angka: jari-jarinya. Belum ada rumus luas sama sekali.',
-        rumus: 'jari-jari = [jari:r]',
+        narasi: (p) =>
+          `Yang kamu tahu tentang lingkaran ini cuma satu angka: jari-jarinya ${fmt(bacaBongkar(p).r)}. Belum ada rumus luas sama sekali.`,
+        rumus: (p) => `jari-jari = [jari:r] = ${fmt(bacaBongkar(p).r)}`,
         durasi: 1400,
       },
       {
         id: 's1',
         judul: 'Potong menjadi juring',
-        narasi:
-          'Lingkaran dibelah dari pusat menjadi potongan-potongan seperti irisan pizza. Tidak ada bagian yang dibuang, jadi luas totalnya tetap sama.',
+        narasi: (p) =>
+          `Lingkaran dibelah dari pusat menjadi ${fmt(bacaBongkar(p).n)} potongan seperti irisan pizza. Tidak ada bagian yang dibuang, jadi luas totalnya tetap sama.`,
         durasi: 1600,
       },
       {
@@ -307,32 +335,49 @@ const konsep: Konsep = {
       {
         id: 's3',
         judul: 'Makin banyak potongan, makin rapi',
-        narasi:
-          'Geser "jumlah potongan" ke kanan. Sisi bergelombangnya makin lurus, dan bentuknya makin mendekati persegi panjang.',
+        narasi: (p) => {
+          const { n, rapi } = bacaBongkar(p)
+          return rapi
+            ? `Dengan ${fmt(n)} potongan, sisinya sudah hampir lurus dan bentuknya hampir persis persegi panjang. Geser "jumlah potongan" ke kiri kalau kamu ingin melihat gelombangnya muncul lagi.`
+            : `Dengan ${fmt(n)} potongan, sisinya masih bergelombang. Geser "jumlah potongan" ke kanan: sisinya makin lurus dan bentuknya makin mendekati persegi panjang.`
+        },
         durasi: 2000,
       },
       {
         id: 's4',
         judul: 'Tingginya adalah jari-jari',
-        narasi:
-          'Setiap potongan berdiri setinggi jarak dari pusat ke tepi. Jadi tinggi susunan ini mendekati r.',
-        rumus: 'tinggi ≈ [jari:r]',
+        narasi: (p) => {
+          // Gambar menaruh ujung runcing tepat r terpisah (potongannya sedikit
+          // bertumpuk). Kalau dirapatkan pas sisi lurus ke sisi lurus, jarak
+          // kedua barisan ujung runcing r·cos(π/n) — itulah selisih yang disebut.
+          const { r, n, galat, rapi } = bacaBongkar(p)
+          const awal = `Setiap potongan berdiri setinggi jarak dari pusat ke tepi, yaitu ${fmt(r)}.`
+          return rapi
+            ? `${awal} Dengan ${fmt(n)} potongan yang dirapatkan pas sisi lurus ke sisi lurus, tinggi susunannya hanya sekitar ${fmt(galat, 1)}% lebih pendek dari ${fmt(r)} — praktis sudah ${fmt(r)}.`
+            : `${awal} Tapi dengan ${fmt(n)} potongan yang dirapatkan pas sisi lurus ke sisi lurus, jarak ujung runcing atas ke ujung runcing bawah masih sekitar ${fmt(galat, 1)}% lebih pendek dari ${fmt(r)}.`
+        },
+        rumus: (p) => `tinggi ≈ [jari:r] = ${fmt(bacaBongkar(p).r)}`,
         durasi: 1800,
       },
       {
         id: 's5',
         judul: 'Panjangnya adalah setengah keliling',
-        narasi:
-          'Sisi lengkung semua potongan bergantian ke atas dan ke bawah, jadi masing-masing sisi memakai separuh keliling. Karena keliling 2πr, panjangnya πr.',
-        rumus: '[keliling:2πr] ÷ 2 = [pi:π] × [jari:r]',
+        narasi: (p) => {
+          const { r, setengah } = bacaBongkar(p)
+          return `Sisi lengkung semua potongan bergantian ke atas dan ke bawah, jadi masing-masing sisi memakai separuh keliling. Keliling lingkaran ini 2 × π × ${fmt(r)}, dan separuhnya π × ${fmt(r)} = ${fmt(setengah, 2)}.`
+        },
+        rumus: (p) => `[keliling:2πr] ÷ 2 = [pi:π] × [jari:r] = ${fmt(bacaBongkar(p).setengah, 2)}`,
         durasi: 2200,
       },
       {
         id: 's6',
         judul: 'Luas persegi panjang itu jawabannya',
-        narasi:
-          'Luas persegi panjang adalah panjang kali lebar. Di sini: πr dikali r. Dari situlah r dikuadratkan — bukan dari aturan hafalan.',
-        rumus: '[luas:L] = [pi:π] × [jari:r] × [jari:r] = [pi:π][r2:r^2]',
+        narasi: (p) => {
+          const { r, luas } = bacaBongkar(p)
+          return `Luas persegi panjang adalah panjang kali tinggi: π × ${fmt(r)} × ${fmt(r)} = ${fmt(luas, 2)}. Panjangnya π × r dan tingginya r, jadi r terpakai dua kali — dari situlah r dikuadratkan, bukan dari aturan hafalan.`
+        },
+        rumus: (p) =>
+          `[luas:L] = [pi:π] × [jari:r] × [jari:r] = [pi:π][r2:r^2] = ${fmt(bacaBongkar(p).luas, 2)}`,
         durasi: 2200,
       },
     ],
@@ -341,7 +386,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Geser potongannya, lalu geser jari-jarinya',
     ajakan:
-      'Penggeser "susunan" memindahkan potongan dari bentuk lingkaran ke bentuk persegi panjang. Perhatikan garis merah muda: itu tinggi susunan yang sebenarnya.',
+      'Penggeser "susunan" memindahkan potongan dari bentuk lingkaran ke bentuk persegi panjang. Perhatikan garis merah muda: jaraknya dari tepi atas bingkai adalah tinggi susunan yang sebenarnya, r × cos(π/n), selalu kurang dari r. Garisnya hilang sendiri kalau potongannya sudah terlalu banyak untuk terlihat bedanya.',
     params: [
       { key: 'r', label: 'Jari-jari', min: 1, max: 6, step: 0.5, awal: 4 },
       { key: 'n', label: 'Jumlah potongan', min: 4, max: 64, step: 2, awal: 16, bulat: true },
@@ -351,7 +396,7 @@ const konsep: Konsep = {
     temuan: (p) => {
       const r = p.r ?? 4
       const n = Math.max(4, Math.round(p.n ?? 16))
-      const galat = (1 - Math.cos(Math.PI / n)) * 100
+      const galat = galatTinggi(n)
       return (
         <p>
           <strong>Luasnya {fmt(Math.PI * r * r, 2)} satuan persegi.</strong> Dengan {n} potongan,
@@ -387,7 +432,8 @@ const konsep: Konsep = {
     SMP: (
       <>
         <p>
-          Potong lingkaran menjadi <em>n</em> juring sama besar. Menyusun ulang tidak mengubah luas,
+          Potong lingkaran menjadi <em>n</em> juring sama besar, dengan <em>n</em> genap supaya
+          potongannya bisa dibagi rata ke sisi atas dan sisi bawah. Menyusun ulang tidak mengubah luas,
           karena luas bersifat aditif: luas gabungan potongan yang tidak tumpang tindih sama dengan
           jumlah luas potongannya.
         </p>
@@ -400,7 +446,8 @@ const konsep: Konsep = {
         <h4>Kata "mendekati" itu penting</h4>
         <p>
           Untuk jumlah potongan berapa pun yang berhingga, bentuk itu <strong>bukan</strong> persegi
-          panjang: tingginya sebenarnya r·cos(π/n) dan sisinya masih bergerigi. Yang benar adalah
+          panjang: jarak antara barisan ujung runcing di bawah dan di atas sebenarnya r·cos(π/n),
+          selalu kurang dari r, dan sisi atas-bawahnya masih bergerigi. Yang benar adalah
           bentuknya <em>menuju</em> persegi panjang ketika n diperbesar tanpa batas. Inilah gagasan
           limit, dan kamu bisa melihat galatnya mengecil sendiri di bagian eksperimen.
         </p>
@@ -408,7 +455,9 @@ const konsep: Konsep = {
         <p>
           Anggap tiap juring tipis hampir berupa segitiga beralas busur dan bertinggi r. Luas satu
           juring ≈ ½ × busur × r. Jumlahkan semuanya: ½ × (jumlah semua busur) × r = ½ × 2πr × r ={' '}
-          <strong>πr²</strong>. Cara ini memberi hasil yang sama tanpa perlu menyusun ulang apa pun.
+          <strong>πr²</strong>. Cara ini tidak perlu menyusun ulang apa pun, tetapi tetap memakai
+          limit yang sama: hampiran "juring = segitiga" baru menjadi tepat ketika potongannya
+          dibuat setipis-tipisnya.
         </p>
       </>
     ),
@@ -427,16 +476,24 @@ const konsep: Konsep = {
         </p>
         <h4>Kenapa susunan itu benar-benar konvergen</h4>
         <p>
-          Dengan n juring, susunan berselang-seling memiliki tinggi r·cos(π/n) dan panjang alas
-          n·r·sin(π/n). Luas susunannya adalah n·r²·sin(π/n)·cos(π/n) = (n r²/2)·sin(2π/n). Ketika n
-          → ∞, gunakan sin x ≈ x untuk x kecil:
+          Hati-hati satu hal: luas susunan juring selalu <em>tepat</em> sama dengan luas lingkaran,
+          berapa pun n — menyusun ulang tidak menambah atau mengurangi apa pun. Jadi yang perlu
+          dibuktikan bukan luas susunannya, melainkan bahwa luas lingkaran itu sendiri bernilai πr².
+        </p>
+        <p>
+          Untuk itu, ganti dulu tiap sisi lengkung dengan tali busurnya. Susunan berselang-seling
+          tadi menjadi jajar genjang bertinggi r·cos(π/n) dan beralas n·r·sin(π/n) — isinya persis
+          segi-n beraturan di dalam lingkaran, hanya ditata ulang. Luasnya n·r²·sin(π/n)·cos(π/n) =
+          (n r²/2)·sin(2π/n). Ketika n → ∞, gunakan sin x ≈ x untuk x kecil:
         </p>
         <p style={{ textAlign: 'center' }}>
           (n r²/2) · sin(2π/n) → (n r²/2) · (2π/n) = πr²
         </p>
         <p>
-          Jadi luas susunan memang menuju πr², dan selisihnya berorde 1/n². Angka galat yang kamu
-          lihat pada eksperimen adalah 1 − cos(π/n), yang juga berorde 1/n².
+          Segi-n beraturan di <em>luar</em> lingkaran luasnya n·r²·tan(π/n), dan itu pun menuju πr².
+          Luas lingkaran terjepit di antara keduanya, jadi nilainya haruslah πr². Selisih segi-n
+          dalam terhadap πr² berorde 1/n² (tepatnya ≈ (2π³/3)·r²/n²). Angka galat yang kamu lihat
+          pada eksperimen adalah 1 − cos(π/n) ≈ π²/(2n²), yang juga berorde 1/n².
         </p>
       </>
     ),
@@ -500,7 +557,8 @@ const konsep: Konsep = {
         {
           id: 'd',
           label: '308 cm²',
-          diagnosa: 'Sepertinya kamu menghitung πrd atau lupa membagi diameter menjadi jari-jari.',
+          diagnosa:
+            '308 adalah π × r × d, yaitu jari-jari dikali diameter. Rumus luas memakai jari-jari dua kali: 22/7 × 7 × 7.',
         },
       ],
       hint: [
@@ -532,7 +590,7 @@ const konsep: Konsep = {
         'Bandingkan π × 9r² dengan πr² semula.',
       ],
       pembahasan:
-        'L baru = π(3r)² = 9πr² = 9 × L lama. Karena r muncul dua kali dalam rumus, setiap penggandaan r berlaku dua kali juga.',
+        'L baru = π(3r)² = 9πr² = 9 × L lama. Karena r muncul dua kali dalam rumus, faktor pengali pada r ikut terpakai dua kali: 3 × 3 = 9.',
     },
     {
       id: 'lin-4',
@@ -552,7 +610,7 @@ const konsep: Konsep = {
         'Apakah cos(π/1000) sama dengan 1, atau hanya sangat dekat dengan 1?',
       ],
       pembahasan:
-        'Salah. Untuk n berapa pun yang berhingga, bentuknya hanya MENDEKATI persegi panjang. Tingginya r·cos(π/n) selalu sedikit kurang dari r. Rumus πr² benar sebagai nilai limit ketika jumlah potongan diperbesar tanpa batas.',
+        'Salah. Untuk n berapa pun yang berhingga, bentuknya hanya MENDEKATI persegi panjang. Tingginya r·cos(π/n) selalu kurang dari r, walaupun untuk n = 1.000 selisihnya hanya sekitar 0,0005%. Rumus πr² benar sebagai nilai limit ketika jumlah potongan diperbesar tanpa batas.',
     },
     {
       id: 'lin-5',
@@ -586,16 +644,16 @@ const konsep: Konsep = {
         kelas: 8,
         tingkat: 'sulit',
         konsep: 'lingkaran-luas',
-        pertanyaan: `Luas sebuah lingkaran ${fmt(L, 2)} cm². Berapa jari-jarinya? Gunakan π = 3,14.`,
+        pertanyaan: `Luas sebuah lingkaran ${fmt(L)} cm². Berapa jari-jarinya? Gunakan π = 3,14.`,
         jawaban: r,
         satuan: 'cm',
         toleransi: 0.05,
         hint: [
           'Tulis rumusnya lebih dulu: L = πr². Yang dicari sekarang r.',
-          `Bagi luas dengan π: ${fmt(L, 2)} ÷ 3,14 = ${fmt(r * r)}.`,
+          `Bagi luas dengan π: ${fmt(L)} ÷ 3,14 = ${fmt(r * r)}.`,
           `Angka ${fmt(r * r)} itu adalah r². Jadi r adalah akar dari ${fmt(r * r)}.`,
         ],
-        pembahasan: `Dari L = πr² diperoleh r² = L ÷ π = ${fmt(L, 2)} ÷ 3,14 = ${fmt(r * r)}, sehingga r = ${fmt(r)} cm.`,
+        pembahasan: `Dari L = πr² diperoleh r² = L ÷ π = ${fmt(L)} ÷ 3,14 = ${fmt(r * r)}, sehingga r = ${fmt(r)} cm.`,
       }
     },
   ],

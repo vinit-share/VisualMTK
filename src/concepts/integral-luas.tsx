@@ -28,6 +28,9 @@ const GY1 = 380
 /** Jumlah Riemann dengan titik ujung kanan untuk f(x) = x² pada [0, b]. */
 const jumlahRiemann = (b: number, n: number) => (b ** 3 * (n + 1) * (2 * n + 1)) / (6 * n * n)
 
+/** Luas sejati di bawah y = x² pada [0, b] — angka yang didekati jumlah batang. */
+const luasTepat = (b: number) => b ** 3 / 3
+
 function Panel({ baris }: { baris: { teks: string; warna?: string; besar?: boolean }[] }) {
   return (
     <g>
@@ -165,10 +168,21 @@ function Daerah({
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
+/** Banyak batang pada akhir setiap langkah bongkar. */
 const N_LANGKAH = [0, 4, 4, 16, 64, 200, 200]
 
+/** Batas kanan seperti yang dibaca gambar — teks langkah memakai turunan yang sama. */
+const bBongkar = (p: Record<string, number>) => clamp(p.b ?? 1, 0.5, 3)
+
+/** Lebar satu batang pada akhir langkah ke-i, sama dengan label "lebar" di gambar. */
+const lebarLangkah = (p: Record<string, number>, i: number) => bBongkar(p) / N_LANGKAH[i]
+
+/** Jumlah luas batang pada akhir langkah ke-i, sama dengan angka di panel. */
+const jumlahLangkah = (p: Record<string, number>, i: number) =>
+  jumlahRiemann(bBongkar(p), N_LANGKAH[i])
+
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const b = clamp(p.b ?? 1, 0.5, 3)
+  const b = bBongkar(p)
 
   const nDasar = N_LANGKAH[Math.min(step, N_LANGKAH.length - 1)]
   // Pada langkah 3 jumlah persegi panjangnya bertambah mulus.
@@ -183,7 +197,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const eksak = fase(step, t, 5)
 
   const S = n > 0 ? jumlahRiemann(b, n) : 0
-  const tepat = b ** 3 / 3
+  const tepat = luasTepat(b)
 
   const nyalaLebar = sorot === 'dx'
   const nyalaTinggi = sorot === 'f'
@@ -225,7 +239,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 2 && (
         <Tag x={(GX0 + GX1) / 2} y={38} warna="var(--m-b)" size={16}>
-          {`jumlah ${fmt(n)} persegi panjang = ${fmt(S, 4)}`}
+          {`jumlah ${fmt(n)} persegi panjang = ${fmt(S, 5)}`}
         </Tag>
       )}
       {(step === 3 || step === 4) && (
@@ -248,7 +262,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const b = clamp(p.b ?? 1, 0.5, 3)
   const n = clamp(Math.round(p.n ?? 8), 1, 200)
   const S = jumlahRiemann(b, n)
-  const tepat = b ** 3 / 3
+  const tepat = luasTepat(b)
 
   return (
     <Svg w={W} h={H} maxH={450} label="Daerah di bawah kurva dengan jumlah persegi panjang yang bisa diubah">
@@ -276,7 +290,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'integral-luas',
-  topicId: 'sma12-integral',
+  topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
   judul: 'Integral',
   pertanyaan: 'Kenapa integral bisa menghitung luas daerah melengkung?',
   tagline: 'Isi daerahnya dengan persegi panjang. Perkecil lebarnya. Perhatikan ke mana angkanya menuju.',
@@ -292,7 +306,7 @@ const konsep: Konsep = {
         id: 'a',
         label: 'Setengah persegi',
         balasan:
-          'Setengah akan tepat kalau batas atasnya berupa garis lurus diagonal. Tapi kurva x² melengkung ke bawah dari garis itu, jadi luasnya lebih kecil lagi.',
+          'Setengah akan tepat kalau batas atasnya berupa garis lurus diagonal y = x. Tapi di antara x = 0 dan x = 1 kurva x² berada di bawah garis itu (keduanya hanya bertemu di ujung-ujungnya), jadi luasnya lebih kecil daripada setengah.',
       },
       {
         id: 'b',
@@ -304,7 +318,7 @@ const konsep: Konsep = {
         id: 'c',
         label: 'Seperempat persegi',
         balasan:
-          'Cukup dekat, tetapi masih terlalu kecil. Coba bandingkan dengan garis diagonal: daerah x² berada di bawahnya, namun tidak sekecil itu.',
+          'Cukup dekat, tetapi masih terlalu kecil. Garis diagonal hanya memberi tahu bahwa luasnya kurang dari setengah; ternyata luasnya tidak sampai sekecil seperempat.',
       },
     ],
     penutup:
@@ -318,7 +332,7 @@ const konsep: Konsep = {
     arti: {
       dx: 'Lebar setiap persegi panjang. Inilah yang terus diperkecil.',
       f: 'Tinggi persegi panjang, yaitu nilai fungsi di titik itu.',
-      integral: 'Lambang integral — sebenarnya huruf S yang dipanjangkan, singkatan dari "sum" alias jumlah.',
+      integral: 'Lambang integral — sebenarnya huruf S yang dipanjangkan, dari kata "summa" yang berarti jumlah.',
       batas: 'Batas kanan daerah yang dihitung.',
     },
     steps: [
@@ -326,43 +340,47 @@ const konsep: Konsep = {
         id: 's0',
         judul: 'Daerah dengan sisi atas melengkung',
         narasi:
-          'Kita ingin tahu luas daerah antara kurva dan sumbu mendatar. Rumus luas yang kamu kenal semuanya untuk bentuk bersisi lurus — jadi belum ada yang bisa dipakai.',
+          'Kita ingin tahu luas daerah antara kurva dan sumbu mendatar, tetapi rumus luas yang kamu hafal masing-masing dibuat untuk satu bentuk tertentu — persegi panjang, segitiga, lingkaran. Untuk lengkungan seperti ini belum ada yang bisa dipakai.',
         durasi: 2200,
       },
       {
         id: 's1',
         judul: 'Isi dengan bentuk yang kita kuasai',
-        narasi:
-          'Persegi panjang luasnya jelas: panjang kali lebar. Jadi daerah tadi kita isi dengan beberapa persegi panjang, meskipun belum pas benar.',
+        narasi: (p) =>
+          `Persegi panjang luasnya jelas: panjang kali lebar. Jadi daerah tadi kamu isi dengan ${fmt(N_LANGKAH[1])} batang selebar ${fmt(lebarLangkah(p, 1), 3)}, meskipun belum pas benar.`,
         rumus: 'luas satu batang = [f:f(x)] × [dx:Δx]',
         durasi: 2600,
       },
       {
         id: 's2',
         judul: 'Jumlahkan semuanya',
-        narasi:
-          'Hasilnya belum tepat: ada bagian yang kelebihan karena batangnya menonjol keluar dari kurva. Tetapi kita sudah punya angka untuk diperbaiki.',
+        narasi: (p) =>
+          `Jumlah luas ${fmt(N_LANGKAH[2])} batang itu ${fmt(jumlahLangkah(p, 2), 5)} — masih kelebihan, karena tiap batang menonjol keluar dari kurva. Tetapi sekarang kamu punya angka untuk diperbaiki.`,
         durasi: 2400,
       },
       {
         id: 's3',
         judul: 'Perkecil lebarnya',
-        narasi:
-          'Batang yang lebih tipis berarti bagian yang menonjol makin sedikit. Perhatikan angkanya bergerak turun mendekati sesuatu.',
+        narasi: (p) =>
+          `Batang yang lebih tipis berarti bagian yang menonjol makin sedikit. Perhatikan angkanya turun dari ${fmt(jumlahLangkah(p, 2), 5)} dengan ${fmt(N_LANGKAH[2])} batang menjadi ${fmt(jumlahLangkah(p, 3), 5)} dengan ${fmt(N_LANGKAH[3])} batang.`,
         durasi: 3000,
       },
       {
         id: 's4',
         judul: 'Perbanyak terus',
-        narasi:
-          'Dengan puluhan batang, selisihnya sudah sangat kecil. Angkanya tidak melompat ke mana-mana — ia menempel pada satu nilai.',
+        narasi: (p) =>
+          `Dengan ${fmt(N_LANGKAH[4])} batang jumlahnya tinggal ${fmt(jumlahLangkah(p, 4), 5)}, padahal dengan ${fmt(N_LANGKAH[3])} batang tadi masih ${fmt(jumlahLangkah(p, 3), 5)}. Angkanya tidak melompat ke mana-mana — ia makin rapat mendekati satu nilai.`,
         durasi: 3000,
       },
       {
         id: 's5',
         judul: 'Nilai yang didekati itulah luasnya',
-        narasi:
-          'Untuk y = x², jumlahnya persis b³(n+1)(2n+1)/(6n²). Ketika n diperbesar tanpa batas, pecahan itu menuju b³/3.',
+        narasi: (p) => {
+          const tepat = luasTepat(bBongkar(p))
+          // b³/3 sering berupa desimal berulang (mis. 1/3), jadi pakai ≈ bila angkanya dibulatkan.
+          const tanda = Math.abs(Math.round(tepat * 1e4) / 1e4 - tepat) < 1e-9 ? '=' : '≈'
+          return `Untuk y = x², jumlah luas batang ujung kanan bernilai persis b³(n+1)(2n+1)/(6n²), dan ketika n diperbesar tanpa batas pecahan itu menuju b³/3 ${tanda} ${fmt(tepat, 4)}. Kalau tingginya diambil di ujung kiri (tidak digambar di sini), jumlahnya naik dari bawah menuju angka yang sama, jadi luasnya terjepit di situ.`
+        },
         rumus: 'luas = [batas:b]^3 ÷ 3',
         durasi: 2800,
       },
@@ -370,8 +388,8 @@ const konsep: Konsep = {
         id: 's6',
         judul: 'Dan itulah arti lambang integral',
         narasi:
-          'Lambang ∫ adalah huruf S yang dipanjangkan, singkatan dari penjumlahan. Sedangkan dx adalah sisa dari lebar batang yang menyusut tanpa batas.',
-        rumus: '[integral:∫] f(x) [dx:dx] = luas daerah',
+          'Lambang ∫ adalah huruf S yang dipanjangkan, dari kata Latin "summa" yang berarti jumlah, sedangkan dx adalah sisa dari lebar batang yang menyusut tanpa batas. Angka 0 dan b yang menempel pada ∫ menandai batas daerahnya — tanpa keduanya, ∫ f(x) dx hanya berarti antiturunan, bukan sebuah luas.',
+        rumus: '[integral:∫]₀ᵇ f(x) [dx:dx] = luas daerah',
         durasi: 2600,
       },
     ],
@@ -390,14 +408,14 @@ const konsep: Konsep = {
       const b = clamp(p.b ?? 1, 0.5, 3)
       const n = clamp(Math.round(p.n ?? 8), 1, 200)
       const S = jumlahRiemann(b, n)
-      const tepat = b ** 3 / 3
+      const tepat = luasTepat(b)
       return (
         <p>
           Dengan {fmt(n)} batang, jumlah luasnya <strong>{fmt(S, 5)}</strong>, sedangkan nilai
           tepatnya b³/3 = {fmt(tepat, 5)}. Selisihnya {fmt(S - tepat, 5)} — selalu positif, karena
           batang dengan tinggi diambil di ujung kanan selalu sedikit menonjol keluar dari kurva. Coba
           gandakan n: selisihnya kira-kira menjadi separuh, bukan seperempat. Itu berarti
-          ketelitiannya membaik sebanding dengan 1/n.
+          selisihnya mengecil sebanding dengan 1/n.
         </p>
       )
     },
@@ -427,12 +445,26 @@ const konsep: Konsep = {
           Sederhanakan menjadi S<sub>n</sub> = b³(n+1)(2n+1)/(6n²). Ketika n → ∞, pecahan
           (n+1)(2n+1)/n² menuju 2, sehingga S<sub>n</sub> → b³·2/6 = <strong>b³/3</strong>.
         </p>
+        <h4>Kenapa angka itu benar-benar luasnya</h4>
+        <p>
+          Ada satu langkah yang mudah terlewat. Setiap S<sub>n</sub> <em>lebih besar</em> dari luas
+          sebenarnya, karena batang ujung kanan selalu menonjol keluar. Dari S<sub>n</sub> saja kita
+          baru boleh menyimpulkan luas ≤ b³/3, belum sama dengan.
+        </p>
+        <p>
+          Batas bawahnya didapat dengan mengambil tinggi di ujung kiri: s<sub>n</sub> =
+          (b³/n³)·Σ<sub>k=0</sub><sup>n−1</sup>k² = b³(n−1)(2n−1)/(6n²), dan batang seperti ini
+          selalu berada di dalam daerah. Jadi s<sub>n</sub> ≤ luas ≤ S<sub>n</sub> untuk setiap n.
+          Karena s<sub>n</sub> juga menuju b³/3, luasnya terjepit dari dua sisi dan tidak punya
+          nilai lain yang mungkin. Itulah yang membuat limitnya sah disebut luas, bukan sekadar
+          hampiran yang bagus.
+        </p>
         <h4>Hubungannya dengan turunan</h4>
         <p>
           Perhatikan bahwa turunan dari b³/3 adalah b². Ini bukan kebetulan, melainkan{' '}
-          <strong>Teorema Dasar Kalkulus</strong>: kalau A(b) menyatakan luas dari 0 sampai b, maka
-          A′(b) = f(b). Alasannya bisa dibayangkan: menambah b sedikit sebesar Δb menambah luas
-          kira-kira sebesar satu batang tipis, yaitu f(b)·Δb.
+          <strong>Teorema Dasar Kalkulus</strong>: kalau f kontinu dan A(b) menyatakan luas dari 0
+          sampai b, maka A′(b) = f(b). Alasannya bisa dibayangkan: menambah b sedikit sebesar Δb
+          menambah luas kira-kira sebesar satu batang tipis, yaitu f(b)·Δb.
         </p>
         <p>
           Karena itu menghitung luas berubah menjadi mencari fungsi yang turunannya f — jauh lebih
@@ -443,7 +475,7 @@ const konsep: Konsep = {
         <p>
           Kalau kurvanya berada di bawah sumbu-x, tinggi batangnya negatif dan sumbangannya
           mengurangi. Integral tentu menghitung <em>luas bertanda</em>. Untuk luas geometris yang
-          sesungguhnya, dipakai ∫|f(x)|dx.
+          sesungguhnya, dipakai ∫ₐᵇ |f(x)| dx.
         </p>
       </>
     ),
@@ -467,10 +499,11 @@ const konsep: Konsep = {
   },
 
   rumus: {
-    src: 'luas = [integral:∫] f(x) [dx:dx] = lim Σ [f:f(x)] × [dx:Δx]',
+    src: 'luas = [integral:∫]₀ᵇ f(x) [dx:dx] = lim(n→∞) Σ [f:f(x)] × [dx:Δx]',
     roles: { integral: 'hi', dx: 'b', f: 'ab' },
     arti: {
-      integral: 'Huruf S yang dipanjangkan — lambang penjumlahan tak hingga banyak batang tipis.',
+      integral:
+        'Huruf S yang dipanjangkan — lambang penjumlahan tak hingga banyak batang tipis. Angka 0 dan b di pangkalnya menyatakan dari mana sampai mana daerahnya dihitung.',
       dx: 'Sisa dari lebar batang yang diperkecil tanpa batas.',
       f: 'Tinggi tiap batang, yaitu nilai fungsi di titik itu.',
     },
@@ -480,7 +513,7 @@ const konsep: Konsep = {
     {
       id: 'int-1',
       tipe: 'angka',
-      topicId: 'sma12-integral',
+      topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
       kelas: 12,
       tingkat: 'mudah',
       konsep: 'integral-luas',
@@ -498,22 +531,22 @@ const konsep: Konsep = {
     {
       id: 'int-2',
       tipe: 'benar-salah',
-      topicId: 'sma12-integral',
+      topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
       kelas: 12,
       tingkat: 'sedang',
       konsep: 'integral-luas',
       pertanyaan:
-        'Dengan menambah jumlah persegi panjang, hasil jumlah Riemann untuk y = x² selalu mendekati nilai sebenarnya dari atas (nilainya menurun).',
+        'Untuk y = x² pada selang [0, b] dengan b > 0: menambah jumlah persegi panjang membuat jumlah Riemann kanan mendekati nilai sebenarnya dari atas (nilainya menurun).',
       jawaban: true,
       diagnosa:
-        'Untuk kurva yang naik seperti x², batang dengan tinggi diambil di ujung kanan selalu menonjol keluar. Kalau tingginya diambil di ujung kiri, hasilnya justru selalu kurang.',
+        'Pada [0, b] kurva x² menanjak, sehingga batang yang tingginya diambil di ujung kanan selalu menonjol keluar. Kalau tingginya diambil di ujung kiri, hasilnya justru selalu kurang — jadi arah pendekatannya tergantung titik mana yang dipakai.',
       hint: [
-        'Perhatikan letak batang terhadap kurva pada gambar.',
-        'Tinggi batang diambil di ujung kanan setiap potongan.',
+        'Bayangkan batang-batang itu digambar bersama kurva y = x², seperti di bagian Bongkar.',
+        'Tinggi batang di sini diambil di ujung kanan setiap potongan.',
         'Untuk kurva yang menanjak, ujung kanan adalah titik tertinggi pada potongan itu.',
       ],
       pembahasan:
-        'Benar untuk jumlah Riemann kanan pada fungsi naik: setiap batang menonjol sedikit di atas kurva, sehingga jumlahnya selalu lebih besar dari luas sebenarnya dan turun mendekatinya. Dengan titik ujung kiri, hasilnya akan selalu lebih kecil dan naik mendekat.',
+        'Benar untuk jumlah Riemann kanan pada fungsi naik: setiap batang menonjol sedikit di atas kurva, sehingga jumlahnya selalu lebih besar dari luas sebenarnya dan turun mendekatinya. Selisihnya persis b³(3n+1)/(6n²) — selalu positif dan mengecil saat n bertambah. Dengan titik ujung kiri, hasilnya akan selalu lebih kecil dan naik mendekat.',
     },
     (rnd) => {
       const n = [4, 5, 10][Math.floor(rnd() * 3)]
@@ -521,7 +554,7 @@ const konsep: Konsep = {
       return {
         id: 'int-3',
         tipe: 'angka',
-        topicId: 'sma12-integral',
+        topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
         kelas: 12,
         tingkat: 'sulit',
         konsep: 'integral-luas',
@@ -539,11 +572,11 @@ const konsep: Konsep = {
     {
       id: 'int-4',
       tipe: 'pilihan',
-      topicId: 'sma12-integral',
+      topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
       kelas: 12,
       tingkat: 'sedang',
       konsep: 'integral-luas',
-      pertanyaan: 'Apa arti lambang dx pada penulisan ∫ f(x) dx?',
+      pertanyaan: 'Apa arti lambang dx pada penulisan integral tentu ∫ₐᵇ f(x) dx?',
       pilihan: [
         { id: 'a', label: 'Sisa dari lebar batang yang menyusut tanpa batas', benar: true },
         {
@@ -559,7 +592,7 @@ const konsep: Konsep = {
         },
       ],
       hint: [
-        'Bandingkan bentuk Σ f(x)·Δx dengan ∫ f(x) dx.',
+        'Bandingkan bentuk Σ f(x)·Δx dengan ∫ₐᵇ f(x) dx.',
         'Bagian mana pada jumlah Riemann yang berubah menjadi dx?',
         'Δx adalah lebar batang.',
       ],
@@ -569,7 +602,7 @@ const konsep: Konsep = {
     {
       id: 'int-5',
       tipe: 'urutkan',
-      topicId: 'sma12-integral',
+      topicId: 'sma12-jumlah-riemann-dan-integral-tentu',
       kelas: 12,
       tingkat: 'sulit',
       konsep: 'integral-luas',

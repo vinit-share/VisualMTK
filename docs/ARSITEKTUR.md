@@ -44,12 +44,22 @@ pertanyaan: *"aku harus mulai dari mana?"* — lewat empat pintu masuk, kartu
 
 Ada tiga lapis data yang sengaja dipisahkan.
 
-### Lapis 1 — Peta kurikulum (`src/data/kurikulum.generated.ts`)
+### Lapis 1 — Peta kurikulum (`src/data/kurikulum/`)
 
 Daftar topik kelas 1–12 hasil riset Capaian Pembelajaran resmi. Setiap topik
 memuat subkonsep, rumus kunci, prasyarat, miskonsepsi umum, dan pertanyaan
-"kenapa". Berkas ini dihasilkan otomatis dari `docs/riset/` dan **tidak** disunting
-dengan tangan.
+"kenapa". Dihasilkan otomatis dari `docs/riset/` dan **tidak** disunting dengan
+tangan.
+
+Datanya dipecah dua supaya halaman tidak memuat yang tidak dipakai:
+
+- `ringkas.generated.ts` — seluruh topik tanpa teks panjang (±14 KB gzip).
+  Cukup untuk daftar kelas, peta pengetahuan, dan penamaan prasyarat.
+- `kelas-N.generated.ts` — rincian satu kelas (6–20 KB gzip), dimuat malas
+  lewat `muatKelas(n)` hanya ketika kelas itu dibuka.
+
+Sebelum dipecah, membuka satu halaman kelas menarik 110 KB gzip data seluruh
+jenjang. Sekarang ±20–34 KB.
 
 ### Lapis 2 — Katalog konsep (`src/data/katalog.ts`)
 
@@ -104,6 +114,11 @@ dan dipakai ulang semua konsep. Sebuah konsep hanya menyediakan:
 
 - daftar langkah (judul, narasi, rumus, durasi),
 - komponen `Visual` yang menggambar keadaan `{ step, t, p, sorot }`.
+
+Judul, narasi, dan rumus langkah boleh berupa fungsi dari nilai penggeser
+(`(p) => string`). Penggeser tampil di semua langkah, jadi teks yang menyebut
+angka dari gambar harus ikut berubah — kalau tidak, narasi dan gambar bisa
+menyebut dua angka berbeda untuk hal yang sama.
 
 Sisanya — pemutar, rel langkah, penggeser parameter, dukungan papan ketik,
 `prefers-reduced-motion` — ditangani mesinnya.

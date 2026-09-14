@@ -21,6 +21,14 @@ const H = 430
 
 const skala = (a: number, b: number) => Math.min(40, 290 / Math.max(a, b))
 
+/** Nilai baris (a) dan isi tiap baris (b) pada animasi bongkar — dipakai gambar DAN teks langkah. */
+function ukuran(p: Record<string, number>) {
+  return {
+    a: clamp(Math.round(p.a ?? 4), 1, 10),
+    b: clamp(Math.round(p.b ?? 6), 1, 10),
+  }
+}
+
 /** Kisi a baris × b kolom, digambar sebagai kotak satuan. */
 function Kisi({
   a,
@@ -71,8 +79,7 @@ function Kisi({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const a = clamp(Math.round(p.a ?? 4), 1, 10) // baris
-  const b = clamp(Math.round(p.b ?? 6), 1, 10) // kolom
+  const { a, b } = ukuran(p) // a baris, b kolom
   const u = skala(a, b)
 
   const rapat = step === 1 ? 1 - seg(t, 0.15, 0.9) : step >= 1 ? 0 : 1
@@ -159,7 +166,11 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 1 && (
         <Tag x={W / 2} y={54} warna="var(--ink-2)" size={16}>
-          titik-titik dirapatkan menjadi persegi panjang
+          {a === 1 && b === 1
+            ? 'titiknya diubah menjadi sebuah kotak'
+            : a === b
+              ? 'titik-titik dirapatkan menjadi persegi'
+              : 'titik-titik dirapatkan menjadi persegi panjang'}
         </Tag>
       )}
       {step === 2 && (
@@ -255,7 +266,7 @@ const konsep: Konsep = {
       {
         id: 'b',
         label: 'Berkurang',
-        balasan: 'Memutar juga tidak membuang apa pun — semua kursi masih ada di tempatnya.',
+        balasan: 'Memutar juga tidak membuang apa pun — semua kursi masih ada, hanya posisinya yang ikut berputar.',
       },
       {
         id: 'c',
@@ -276,24 +287,37 @@ const konsep: Konsep = {
     ],
     roles: { a: 'a', b: 'b', hasil: 'ab' },
     arti: {
-      a: 'Banyaknya baris pada susunan.',
-      b: 'Banyaknya kotak di setiap baris.',
+      a: 'Banyaknya baris pada susunan awal — setelah diputar, menjadi isi tiap baris.',
+      b: 'Banyaknya kotak di setiap baris pada susunan awal — setelah diputar, menjadi banyaknya baris.',
       hasil: 'Seluruh kotak — sekaligus luas persegi panjangnya.',
     },
     steps: [
       {
         id: 's0',
-        judul: 'Empat baris, tiap baris enam',
-        narasi:
-          'Hitung baris demi baris: enam, lalu enam lagi, lalu enam lagi. Itulah arti pertama perkalian — penjumlahan yang diulang.',
-        rumus: '[a:4] baris × [b:6] = [hasil:24]',
+        judul: (p) => (ukuran(p).a === 1 ? 'Hitung isi barisnya' : 'Hitung baris demi baris'),
+        narasi: (p) => {
+          const { a, b } = ukuran(p)
+          return a === 1
+            ? `Hanya ada satu baris, jadi isinya cukup dihitung sekali: ${fmt(b)}. Perkalian adalah penjumlahan yang diulang — di sini ${fmt(b)} hanya diambil satu kali, sehingga 1 × ${fmt(b)} = ${fmt(b)}.`
+            : `Jumlahkan isi baris pertama, lalu baris berikutnya, sampai baris ke-${fmt(a)}: ${fmt(b)} dijumlahkan sebanyak ${fmt(a)} kali, hasilnya ${fmt(a * b)}. Itulah arti pertama perkalian — penjumlahan yang diulang.`
+        },
+        rumus: '[a:banyak baris] × [b:isi tiap baris] = [hasil:banyak kotak]',
         durasi: 2400,
       },
       {
         id: 's1',
-        judul: 'Rapatkan menjadi satu bangun',
-        narasi:
-          'Titik-titik tadi dirapatkan menjadi kotak-kotak yang bersentuhan. Sekarang susunan itu berbentuk persegi panjang.',
+        judul: (p) => {
+          const { a, b } = ukuran(p)
+          return a === 1 && b === 1 ? 'Ubah titiknya menjadi kotak' : 'Rapatkan menjadi satu bangun'
+        },
+        narasi: (p) => {
+          const { a, b } = ukuran(p)
+          if (a === 1 && b === 1)
+            return 'Titik tadi berubah menjadi sebuah kotak. Bentuknya persegi — persegi panjang yang semua sisinya sama panjang.'
+          return a === b
+            ? `Titik-titik tadi dirapatkan menjadi kotak-kotak yang bersentuhan. Karena banyak baris dan isi tiap baris sama-sama ${fmt(a)}, susunan itu berbentuk persegi — persegi panjang yang semua sisinya sama panjang.`
+            : 'Titik-titik tadi dirapatkan menjadi kotak-kotak yang bersentuhan. Sekarang susunan itu berbentuk persegi panjang.'
+        },
         durasi: 1800,
       },
       {
@@ -305,24 +329,39 @@ const konsep: Konsep = {
       },
       {
         id: 's3',
-        judul: 'Sekarang terbacanya berbeda',
-        narasi:
-          'Susunan yang sama kini terbaca sebagai enam baris berisi empat. Cara membacanya berubah, bangunnya tidak.',
-        rumus: '[b:6] baris × [a:4] = [hasil:24]',
+        judul: (p) => {
+          const { a, b } = ukuran(p)
+          return a === b ? 'Terbacanya tetap sama' : 'Sekarang terbacanya berbeda'
+        },
+        narasi: (p) => {
+          const { a, b } = ukuran(p)
+          return a === b
+            ? `Karena banyak baris dan isi tiap baris sama-sama ${fmt(a)}, setelah diputar susunan itu tetap terbaca ${fmt(a)} baris berisi ${fmt(a)}. Persegi memang tampak sama persis setelah diputar seperempat putaran.`
+            : `Susunan yang sama kini terbaca terbalik: ${fmt(b)} baris, tiap baris berisi ${fmt(a)} — isi tiap baris yang lama menjadi banyak baris, dan banyak baris yang lama menjadi isi tiap baris. Cara membacanya berubah, bangunnya tidak.`
+        },
+        rumus: '[b:banyak baris baru] × [a:isi tiap baris baru] = [hasil:banyak kotak]',
         durasi: 2200,
       },
       {
         id: 's4',
         judul: 'Jumlah kotaknya tidak berubah',
-        narasi:
-          'Karena kotaknya sama saja, kedua cara membaca itu wajib memberi hasil yang sama.',
+        narasi: (p) => {
+          const { a, b } = ukuran(p)
+          return a === b
+            ? `Mau kamu hitung lewat baris atau lewat kolom, yang kamu hitung tetap kotak yang sama: ${fmt(a * b)} kotak. Karena bangunnya persegi, kedua cara itu bahkan terbaca serupa, ${fmt(a)} × ${fmt(a)}.`
+            : `Kamu menghitung kotak yang sama persis, hanya dari arah yang berbeda: ${fmt(a)} × ${fmt(b)} dan ${fmt(b)} × ${fmt(a)}. Jadi keduanya wajib berhenti di angka yang sama, ${fmt(a * b)} kotak.`
+        },
         durasi: 1800,
       },
       {
         id: 's5',
         judul: 'Itulah sifat komutatif',
-        narasi:
-          'Dan sekaligus benih dari semua rumus luas: hasil kali dua bilangan adalah luas persegi panjang dengan ukuran kedua bilangan itu.',
+        narasi: (p) => {
+          const { a, b } = ukuran(p)
+          return a === b
+            ? `Urutan mengalikan boleh kamu tukar; di sini kedua urutannya kebetulan sama, ${fmt(a)} × ${fmt(a)} = ${fmt(a * a)}. Ini sekaligus benih rumus-rumus luas: hasil kali dua panjang sisi adalah luas persegi panjang yang sisi-sisinya sepanjang itu.`
+            : `${fmt(a)} × ${fmt(b)} dan ${fmt(b)} × ${fmt(a)} sama-sama ${fmt(a * b)}, jadi urutan mengalikan boleh kamu tukar. Ini sekaligus benih rumus-rumus luas: hasil kali dua panjang sisi adalah luas persegi panjang yang sisi-sisinya sepanjang itu.`
+        },
         rumus: '[a:a] × [b:b] = [b:b] × [a:a]',
         durasi: 2200,
       },
@@ -370,8 +409,9 @@ const konsep: Konsep = {
           melainkan karena keduanya menggambarkan susunan yang sama, hanya dilihat dari arah berbeda.
         </p>
         <p>
-          Gagasan ini akan terus kamu pakai: perkalian selalu bisa dibayangkan sebagai{' '}
-          <strong>luas</strong> — banyaknya kotak yang menutupi sebuah persegi panjang.
+          Gagasan ini akan terus kamu pakai: perkalian bisa dibayangkan sebagai{' '}
+          <strong>luas</strong> persegi panjang. Untuk bilangan cacah, luas itu tepat sama dengan
+          banyaknya kotak satuan yang menutupinya.
         </p>
       </>
     ),
@@ -384,10 +424,15 @@ const konsep: Konsep = {
         </p>
         <h4>Kenapa "penjumlahan berulang" tidak cukup</h4>
         <p>
-          Arti "6 + 6 + 6 + 6" bekerja rapi untuk bilangan cacah, tetapi runtuh begitu masuk ke
-          pecahan: apa artinya menjumlahkan sesuatu sebanyak ½ kali? Model <strong>luas</strong>{' '}
-          tetap bertahan — ½ × ¾ adalah luas persegi panjang berukuran ½ dan ¾. Karena itu, model
-          luaslah yang dipakai seterusnya, sampai ke aljabar dan integral.
+          Arti "6 + 6 + 6 + 6" bekerja rapi selama pengalinya bilangan cacah, tetapi runtuh begitu
+          pengalinya pecahan: apa artinya menjumlahkan sesuatu sebanyak ½ kali? Model{' '}
+          <strong>luas</strong> tetap bertahan — ½ × ¾ adalah luas persegi panjang berukuran ½ dan
+          ¾. Karena itu, model luas terus dipakai sampai ke aljabar dan integral.
+        </p>
+        <p>
+          Model luas pun punya batas: panjang sisi tidak bisa negatif. Untuk perkalian bilangan
+          negatif, misalnya (−2) × 3, gambar persegi panjang saja tidak cukup; kita memerlukan
+          aturan tambahan (misalnya sifat distributif) atau gagasan luas yang bertanda.
         </p>
         <p>
           Model yang sama juga menjelaskan sifat distributif: a × (b + c) berarti memperlebar persegi
@@ -440,7 +485,7 @@ const konsep: Konsep = {
       pertanyaan: 'Susunan 3 baris berisi 8 kotak memiliki jumlah kotak yang sama dengan 8 baris berisi 3 kotak.',
       jawaban: true,
       diagnosa:
-        'Coba bayangkan memutar papannya seperempat putaran. Bentuknya berubah, tetapi tidak ada kotak yang hilang.',
+        'Coba bayangkan memutar papannya seperempat putaran. Hanya arahnya yang berubah — bangunnya tetap sama dan tidak ada kotak yang hilang.',
       hint: [
         'Apa yang berubah saat susunan diputar: jumlah kotaknya, atau hanya cara membacanya?',
         'Hitung keduanya: 3 × 8 dan 8 × 3.',
@@ -458,13 +503,13 @@ const konsep: Konsep = {
         'Sebuah lantai berbentuk persegi panjang berukuran 7 ubin × 5 ubin. Kalau sisi panjangnya digandakan menjadi 14 ubin, berapa ubin yang dibutuhkan?',
       pilihan: [
         { id: 'a', label: '70 ubin', benar: true },
-        { id: 'b', label: '40 ubin', diagnosa: 'Sepertinya ukurannya dijumlahkan (14 + 5 lalu dikali dua), bukan dikalikan.' },
+        { id: 'b', label: '38 ubin', diagnosa: 'Ini keliling lantainya: (14 + 5) × 2. Ukurannya dijumlahkan, padahal banyak ubin didapat dengan mengalikan.' },
         { id: 'c', label: '140 ubin', diagnosa: 'Kedua sisinya ikut digandakan. Padahal yang digandakan hanya satu sisi.' },
         { id: 'd', label: '35 ubin', diagnosa: 'Ini jumlah ubin sebelum digandakan.' },
       ],
       hint: [
         'Hitung dulu jumlah ubin semula: 7 × 5.',
-        'Kalau satu sisi digandakan, luasnya juga menggandakan.',
+        'Kalau satu sisi digandakan, luasnya juga menjadi dua kali lipat.',
         '14 × 5, atau cukup 35 × 2.',
       ],
       pembahasan:

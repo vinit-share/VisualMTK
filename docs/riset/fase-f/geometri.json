@@ -1,0 +1,1237 @@
+{
+ "nama": "Geometri",
+ "capaian": "Fase F (kelas XI-XII), Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025 Lampiran II. (a) MATEMATIKA (umum), bab IV.1, elemen Geometri: \"Menerapkan, mengidentifikasi dan menjelaskan hubungan antara unsur-unsur lingkaran untuk menyelesaikan masalah.\" — cakupannya lingkaran sebagai bangun datar (unsur, sudut pusat/keliling, tali busur, garis singgung, busur & juring); rumusan 2025 ini menyempitkan CP 2024 yang masih menyebut \"menerapkan teorema tentang lingkaran, dan menentukan panjang busur dan luas juring lingkaran\". (b) MATEMATIKA TINGKAT LANJUT, bab IV.2, tiga elemen menyumbang materi geometris: elemen Geometri — \"Peserta didik dapat menyatakan vektor pada bidang datar, melakukan operasi aljabar pada vektor dan menggunakannya pada pembuktian geometris\" serta \"menyatakan sifat-sifat geometri dengan persamaan pada sistem koordinat\" (geometri analitik: persamaan lingkaran, elips, parabola, hiperbola; kedudukan titik dan garis terhadap irisan kerucut; persamaan garis singgung); elemen Trigonometri — \"Peserta didik dapat menyatakan fungsi trigonometri menggunakan lingkaran satuan, memodelkan fenomena periodik dengan fungsi trigonometri, dan membuktikan serta menerapkan identitas trigonometri dan aturan cosinus dan sinus\"; elemen Aljabar dan Fungsi — \"melakukan operasi aljabar pada matriks dan menerapkannya dalam transformasi geometri\". Elemen Kalkulus hanya ada pada Matematika Tingkat Lanjut dan tidak dibahas di domain ini.",
+ "topics": [
+  {
+   "judul": "Unsur-Unsur Lingkaran dan Hubungan Antar Unsurnya",
+   "kelas": 11,
+   "subKonsep": [
+    "Titik pusat, jari-jari, dan diameter sebagai unsur pengukur",
+    "Tali busur, busur (minor dan mayor), dan apotema",
+    "Juring dan tembereng: beda daerah yang dibatasi dua jari-jari vs satu tali busur",
+    "Hubungan tegak lurus apotema dengan tali busur yang dibaginya",
+    "Semua titik pada lingkaran berjarak sama ke pusat sebagai definisi pembangkit",
+    "Lingkaran sebagai tempat kedudukan titik, bukan sekadar bentuk bulat"
+   ],
+   "rumus": [
+    "r = d/2",
+    "K = 2·pi·r = pi·d",
+    "L = pi·r^2",
+    "apotema tegak lurus tali busur dan membagi tali busur menjadi dua sama panjang"
+   ],
+   "keterampilan": [
+    "Menamai dan menggambar setiap unsur lingkaran pada satu gambar utuh",
+    "Menghitung panjang tali busur dari jari-jari dan apotema memakai Pythagoras",
+    "Membedakan juring dan tembereng lalu memilih rumus luas yang tepat",
+    "Menerjemahkan soal kontekstual (roda, kolam, jam) ke unsur lingkaran"
+   ],
+   "prasyarat": [
+    "Lingkaran: Keliling dan Luas (Fase D)",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Menyamakan busur (lengkungan) dengan tali busur (ruas garis lurus)",
+    "Mengira apotema adalah jari-jari, sehingga dipakai langsung sebagai r",
+    "Menganggap juring dan tembereng sama karena sama-sama 'potongan lingkaran'",
+    "Menggunakan diameter di rumus L = pi·r^2 tanpa dibagi dua"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa apotema selalu tegak lurus tali busur dan membelahnya tepat di tengah?",
+    "Kenapa keliling dibagi diameter selalu menghasilkan angka yang sama (pi) untuk lingkaran mana pun?",
+    "Dari mana rumus luas pi·r^2 muncul kalau lingkaran diiris jadi juring-juring tipis lalu disusun ulang?"
+   ]
+  },
+  {
+   "judul": "Sudut Pusat, Sudut Keliling, dan Sudut Tali Busur",
+   "kelas": 11,
+   "subKonsep": [
+    "Sudut pusat: titik sudut di pusat, kaki sudut berupa dua jari-jari",
+    "Sudut keliling: titik sudut di lingkaran, kaki sudut berupa dua tali busur",
+    "Sudut keliling = setengah sudut pusat bila menghadap busur yang sama",
+    "Semua sudut keliling yang menghadap busur sama besarnya sama",
+    "Sudut keliling menghadap diameter selalu 90 derajat (Teorema Thales)",
+    "Sudut antara tali busur dan garis singgung sama dengan sudut keliling di segmen seberang"
+   ],
+   "rumus": [
+    "sudut keliling = 1/2 × sudut pusat (busur sama)",
+    "sudut keliling menghadap diameter = 90 derajat",
+    "panjang busur / keliling = sudut pusat / 360 derajat"
+   ],
+   "keterampilan": [
+    "Mengenali busur mana yang sedang dihadapi oleh sebuah sudut",
+    "Menghitung sudut yang belum diketahui dengan merantai beberapa teorema",
+    "Menggunakan Teorema Thales untuk membuktikan suatu segitiga siku-siku",
+    "Menyusun argumen deduktif singkat, bukan sekadar menghitung"
+   ],
+   "prasyarat": [
+    "Unsur-Unsur Lingkaran dan Hubungan Antar Unsurnya",
+    "Sudut pada Segitiga dan Garis Sejajar (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira sudut keliling selalu setengah sudut pusat walau busur yang dihadapi berbeda",
+    "Mengira semua sudut keliling dalam satu lingkaran sama besar",
+    "Salah membaca busur mayor sebagai busur minor sehingga sudut pusat diambil 360 - x",
+    "Menganggap Teorema Thales berlaku untuk tali busur mana pun, bukan hanya diameter"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sudut keliling tepat setengah sudut pusat, apa hubungannya dengan segitiga sama kaki di dalam lingkaran?",
+    "Kenapa titik sudut boleh digeser-geser sepanjang busur tanpa mengubah besar sudutnya?",
+    "Kenapa segitiga dengan diameter sebagai sisi terpanjang selalu siku-siku?"
+   ]
+  },
+  {
+   "judul": "Tali Busur dan Segi Empat Tali Busur",
+   "kelas": 11,
+   "subKonsep": [
+    "Sifat dua tali busur yang berpotongan di dalam lingkaran",
+    "Sifat dua tali busur/sekan yang berpotongan di luar lingkaran",
+    "Segi empat tali busur: keempat titik sudut terletak pada satu lingkaran",
+    "Sudut-sudut berhadapan pada segi empat tali busur berjumlah 180 derajat",
+    "Sudut luar segi empat tali busur sama dengan sudut dalam yang berhadapan",
+    "Kapan empat titik dijamin sikliks (konsiklis)"
+   ],
+   "rumus": [
+    "Dua tali busur berpotongan di dalam: AP·PB = CP·PD",
+    "Dua sekan dari titik luar: PA·PB = PC·PD",
+    "A + C = 180 derajat dan B + D = 180 derajat pada segi empat tali busur"
+   ],
+   "keterampilan": [
+    "Menghitung panjang ruas yang hilang pada perpotongan dua tali busur",
+    "Menentukan besar sudut pada segi empat tali busur",
+    "Menguji apakah empat titik terletak pada satu lingkaran",
+    "Mengaitkan sifat tali busur dengan kesebangunan segitiga"
+   ],
+   "prasyarat": [
+    "Sudut Pusat, Sudut Keliling, dan Sudut Tali Busur",
+    "Kesebangunan dan Kekongruenan Segitiga (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira sudut berhadapan pada segi empat tali busur selalu sama besar (seperti jajargenjang)",
+    "Menyangka aturan hasil kali berlaku untuk sembarang segi empat, bukan yang titiknya di lingkaran",
+    "Salah memasangkan ruas garis pada rumus AP·PB = CP·PD",
+    "Menganggap semua segi empat dapat dilingkari (padahal syaratnya sudut berhadapan 180 derajat)"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa hasil kali potongan dua tali busur selalu sama, dari mana kesebangunannya?",
+    "Kenapa sudut berhadapan segi empat tali busur pasti berjumlah 180 derajat?",
+    "Kenapa tidak setiap segi empat bisa 'dipasang' lingkaran yang melewati keempat titiknya?"
+   ]
+  },
+  {
+   "judul": "Garis Singgung Lingkaran dan Garis Singgung Persekutuan",
+   "kelas": 11,
+   "subKonsep": [
+    "Garis singgung menyentuh lingkaran tepat di satu titik",
+    "Garis singgung selalu tegak lurus jari-jari di titik singgung",
+    "Dua garis singgung dari satu titik luar punya panjang sama (layang-layang garis singgung)",
+    "Garis singgung persekutuan dalam dan luar dua lingkaran",
+    "Panjang garis singgung dari titik luar sebagai penerapan Pythagoras",
+    "Kedudukan garis terhadap lingkaran: memotong, menyinggung, atau tidak menyentuh"
+   ],
+   "rumus": [
+    "Panjang garis singgung dari titik luar: t = akar(d^2 - r^2), d = jarak titik ke pusat",
+    "Garis singgung persekutuan luar: gl = akar(p^2 - (R - r)^2)",
+    "Garis singgung persekutuan dalam: gd = akar(p^2 - (R + r)^2)"
+   ],
+   "keterampilan": [
+    "Menghitung panjang garis singgung dari titik di luar lingkaran",
+    "Membedakan kapan memakai (R - r) dan kapan (R + r)",
+    "Melukis garis singgung melalui titik pada dan di luar lingkaran",
+    "Menyelesaikan masalah kontekstual sabuk/rantai dua roda"
+   ],
+   "prasyarat": [
+    "Unsur-Unsur Lingkaran dan Hubungan Antar Unsurnya",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira garis singgung tegak lurus tali busur, bukan tegak lurus jari-jari",
+    "Tertukar rumus garis singgung persekutuan dalam dan luar",
+    "Mengira jarak pusat ke pusat sama dengan panjang garis singgungnya",
+    "Menyangka garis singgung boleh memotong lingkaran di dua titik jika 'hampir' menyinggung"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa garis singgung harus tegak lurus jari-jari, kenapa tidak boleh miring?",
+    "Kenapa dua garis singgung dari satu titik luar selalu sama panjang?",
+    "Kenapa rumus garis singgung persekutuan dalam memakai R + r padahal lingkarannya terpisah?"
+   ]
+  },
+  {
+   "judul": "Panjang Busur, Luas Juring, dan Ukuran Radian",
+   "kelas": 11,
+   "subKonsep": [
+    "Perbandingan senilai: sudut pusat berbanding 360 derajat sama dengan busur berbanding keliling",
+    "Panjang busur dan luas juring dalam derajat",
+    "Radian sebagai perbandingan panjang busur terhadap jari-jari (bilangan tanpa satuan)",
+    "Konversi derajat-radian dan mengapa 1 putaran = 2·pi radian",
+    "Rumus busur dan juring menjadi jauh lebih sederhana dalam radian",
+    "Luas tembereng = luas juring dikurangi luas segitiga"
+   ],
+   "rumus": [
+    "Busur = (theta/360) × 2·pi·r",
+    "Juring = (theta/360) × pi·r^2",
+    "theta radian: s = r·theta ; L juring = 1/2 · r^2 · theta",
+    "180 derajat = pi radian",
+    "Tembereng = 1/2·r^2·(theta - sin theta), theta dalam radian"
+   ],
+   "keterampilan": [
+    "Mengonversi derajat ke radian dan sebaliknya tanpa kalkulator untuk sudut istimewa",
+    "Menghitung panjang busur dan luas juring dari sudut pusat",
+    "Menghitung luas tembereng sebagai selisih dua daerah",
+    "Menerapkan pada konteks kipas, jam, roda gigi, dan lintasan melingkar"
+   ],
+   "prasyarat": [
+    "Unsur-Unsur Lingkaran dan Hubungan Antar Unsurnya",
+    "Perbandingan Senilai (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira radian adalah satuan panjang, bukan perbandingan",
+    "Memakai rumus s = r·theta dengan theta masih dalam derajat",
+    "Menyamakan luas juring dengan luas tembereng",
+    "Mengira pi radian sama dengan 180 satuan sehingga 1 radian dikira 1 derajat"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa satu putaran penuh bernilai 2·pi radian, dari mana angka 2·pi-nya?",
+    "Kenapa rumus panjang busur jadi sesederhana s = r·theta kalau memakai radian?",
+    "Kenapa radian disebut tidak bersatuan padahal mengukur sudut?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri",
+   "kelas": 11,
+   "subKonsep": [
+    "Lingkaran satuan: pusat di (0,0) dengan jari-jari 1",
+    "Koordinat titik pada lingkaran satuan adalah (cos theta, sin theta)",
+    "Perluasan sinus dan cosinus ke sudut tumpul, refleks, negatif, dan lebih dari 360 derajat",
+    "Tanda nilai trigonometri di empat kuadran",
+    "Sudut relasi/berelasi: 180 - x, 180 + x, 360 - x, -x",
+    "Sudut koterminal dan sifat periodik nilai trigonometri"
+   ],
+   "rumus": [
+    "x = cos theta, y = sin theta pada lingkaran satuan",
+    "tan theta = sin theta / cos theta",
+    "sin^2 theta + cos^2 theta = 1",
+    "sin(180 - x) = sin x ; cos(180 - x) = -cos x",
+    "sin(theta + 360k) = sin theta"
+   ],
+   "keterampilan": [
+    "Menentukan nilai trigonometri sudut di semua kuadran tanpa menghafal tabel",
+    "Menggunakan sudut relasi untuk mengubah sudut besar menjadi sudut lancip",
+    "Menentukan tanda nilai trigonometri dari letak kuadran",
+    "Membaca koordinat titik pada lingkaran satuan sebagai pasangan (cos, sin)"
+   ],
+   "prasyarat": [
+    "Perbandingan Trigonometri Segitiga Siku-Siku (Fase E)",
+    "Panjang Busur, Luas Juring, dan Ukuran Radian"
+   ],
+   "miskonsepsi": [
+    "Mengira sinus dan cosinus hanya berlaku untuk sudut 0-90 derajat",
+    "Menukar sumbu: mengira x adalah sin dan y adalah cos",
+    "Menganggap nilai negatif berarti 'panjang negatif', bukan arah koordinat",
+    "Menghafal 'All-Sin-Tan-Cos' tanpa tahu asalnya sehingga sering salah kuadran"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sinus sudut tumpul bisa didefinisikan padahal segitiga siku-siku tidak punya sudut tumpul?",
+    "Kenapa sin^2 + cos^2 = 1 hanyalah Teorema Pythagoras yang menyamar?",
+    "Kenapa nilai sinus berulang tiap 360 derajat tetapi tangen berulang tiap 180 derajat?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Grafik Fungsi Trigonometri: Amplitudo, Periode, dan Pergeseran",
+   "kelas": 11,
+   "subKonsep": [
+    "Menggulung lingkaran satuan menjadi grafik sinus dan cosinus",
+    "Amplitudo a sebagai peregangan vertikal",
+    "Periode dari koefisien b: periode = 360/b (atau 2pi/b)",
+    "Pergeseran fasa (horizontal) c dan pergeseran vertikal d",
+    "Grafik tangen, asimtot tegak, dan periode 180 derajat",
+    "Domain, range, nilai maksimum dan minimum fungsi trigonometri"
+   ],
+   "rumus": [
+    "y = a·sin(b(x - c)) + d",
+    "Amplitudo = |a| ; Periode = 360/|b| derajat = 2pi/|b| radian",
+    "Nilai maks = d + |a| ; nilai min = d - |a|",
+    "y = tan x punya asimtot di x = 90 + 180k derajat"
+   ],
+   "keterampilan": [
+    "Menggambar sketsa grafik sinus/cosinus dari bentuk umumnya",
+    "Membaca amplitudo, periode, dan pergeseran dari sebuah grafik",
+    "Menyusun persamaan fungsi trigonometri dari grafik yang diberikan",
+    "Membandingkan efek tiap parameter secara terpisah"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri",
+    "Transformasi Fungsi (Fase F, Aljabar)"
+   ],
+   "miskonsepsi": [
+    "Mengira b adalah periode, padahal periode = 360/b",
+    "Mengira pergeseran horizontal sebesar c padahal harus difaktorkan dulu menjadi b(x - c)",
+    "Menukar arah pergeseran: (x - c) dikira geser ke kiri",
+    "Mengira grafik cosinus dan sinus bentuknya berbeda, bukan sekadar bergeser 90 derajat"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa grafik sinus berbentuk gelombang, dari mana lekukannya bila ditarik dari lingkaran satuan?",
+    "Kenapa memperbesar b justru membuat gelombang lebih rapat, bukan lebih lebar?",
+    "Kenapa grafik tangen punya asimtot tegak sedangkan sinus tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Pemodelan Fenomena Periodik dengan Fungsi Trigonometri",
+   "kelas": 11,
+   "subKonsep": [
+    "Ciri fenomena periodik: berulang dengan pola dan selang waktu tetap",
+    "Menerjemahkan data nyata menjadi amplitudo, periode, garis tengah, dan fasa",
+    "Contoh: pasang surut air laut, panjang siang hari, roda bianglala, denyut jantung, arus AC",
+    "Memilih sin atau cos berdasarkan kondisi awal",
+    "Menafsirkan makna fisis tiap parameter",
+    "Memakai model untuk memprediksi nilai pada waktu tertentu"
+   ],
+   "rumus": [
+    "h(t) = a·sin(2pi/T · (t - t0)) + d dengan T = periode",
+    "d = (maks + min)/2 ; a = (maks - min)/2",
+    "frekuensi = 1/T"
+   ],
+   "keterampilan": [
+    "Menentukan garis tengah dan amplitudo dari nilai maksimum dan minimum data",
+    "Menyusun model fungsi trigonometri dari deskripsi verbal atau tabel",
+    "Memprediksi dan menafsirkan hasil dalam konteks aslinya",
+    "Mengecek kewajaran model terhadap data"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Grafik Fungsi Trigonometri: Amplitudo, Periode, dan Pergeseran"
+   ],
+   "miskonsepsi": [
+    "Mengira amplitudo sama dengan nilai maksimum, bukan setengah jangkauan",
+    "Melupakan pergeseran vertikal sehingga model berayun di sekitar nol",
+    "Memakai derajat dan radian bercampur dalam satu model",
+    "Menganggap semua data yang naik-turun pasti periodik"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa ketinggian penumpang bianglala membentuk grafik sinus, bukan garis zig-zag?",
+    "Kenapa amplitudo dihitung dari selisih maksimum-minimum dibagi dua?",
+    "Kenapa dua model berbeda (sin dan cos) bisa menggambarkan gerakan yang sama persis?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Identitas Trigonometri Dasar dan Pembuktiannya",
+   "kelas": 11,
+   "subKonsep": [
+    "Identitas kebalikan: cosec, secan, cotangen",
+    "Identitas perbandingan: tan dan cot sebagai rasio sin dan cos",
+    "Identitas Pythagoras dan dua turunannya",
+    "Beda identitas (berlaku untuk semua nilai) dengan persamaan (berlaku untuk nilai tertentu)",
+    "Strategi pembuktian: kerjakan satu ruas, ubah semua ke sin dan cos",
+    "Menyederhanakan bentuk trigonometri yang rumit"
+   ],
+   "rumus": [
+    "sin^2 x + cos^2 x = 1",
+    "1 + tan^2 x = sec^2 x",
+    "1 + cot^2 x = cosec^2 x",
+    "tan x = sin x / cos x ; cot x = cos x / sin x",
+    "sec x = 1/cos x ; cosec x = 1/sin x"
+   ],
+   "keterampilan": [
+    "Membuktikan identitas dengan langkah yang runtut dan sah",
+    "Menyederhanakan ekspresi trigonometri menjadi bentuk paling ringkas",
+    "Mengubah semua fungsi menjadi sin dan cos sebagai strategi baku",
+    "Menentukan nilai fungsi lain bila satu nilai trigonometri diketahui"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri",
+    "Operasi Bentuk Aljabar dan Pecahan Aljabar (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Menulis sin^2 x sebagai sin(x^2)",
+    "Mengira sin 2x = 2 sin x (menganggap sin bersifat linear)",
+    "Membuktikan identitas dengan mengerjakan kedua ruas sekaligus lalu 'bertemu' tanpa alasan sah",
+    "Mengira identitas hanya perlu dicek pada satu nilai sudut untuk terbukti"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sin^2 + cos^2 selalu 1 untuk sudut apa pun, termasuk sudut tumpul?",
+    "Kenapa 1 + tan^2 = sec^2 hanyalah identitas Pythagoras yang dibagi cos^2?",
+    "Kenapa membuktikan identitas tidak boleh dengan memasukkan satu nilai sudut saja?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Rumus Jumlah dan Selisih Dua Sudut",
+   "kelas": 11,
+   "subKonsep": [
+    "Kenapa cos(A + B) tidak sama dengan cos A + cos B",
+    "Rumus jumlah dan selisih untuk sinus, cosinus, dan tangen",
+    "Pembuktian geometris dengan dua segitiga siku-siku bertumpuk atau rotasi lingkaran satuan",
+    "Menghitung nilai sudut tak istimewa (15, 75, 105 derajat) dari sudut istimewa",
+    "Rumus perkalian ke jumlah dan jumlah ke perkalian sebagai lanjutan",
+    "Penerapan pada penyederhanaan dan pembuktian identitas"
+   ],
+   "rumus": [
+    "sin(A ± B) = sin A cos B ± cos A sin B",
+    "cos(A ± B) = cos A cos B ∓ sin A sin B",
+    "tan(A ± B) = (tan A ± tan B)/(1 ∓ tan A tan B)",
+    "sin A + sin B = 2 sin((A+B)/2) cos((A-B)/2)",
+    "cos A + cos B = 2 cos((A+B)/2) cos((A-B)/2)"
+   ],
+   "keterampilan": [
+    "Menentukan nilai eksak sin 75, cos 15, tan 105 dan sejenisnya",
+    "Memilih pemecahan sudut yang tepat (75 = 45 + 30)",
+    "Menyederhanakan bentuk sin x cos y ± cos x sin y menjadi satu suku",
+    "Membuktikan identitas yang memuat dua sudut berbeda"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Identitas Trigonometri Dasar dan Pembuktiannya",
+    "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri"
+   ],
+   "miskonsepsi": [
+    "Mendistribusikan: sin(A + B) dikira sin A + sin B",
+    "Lupa tanda berlawanan pada rumus cosinus (cos jumlah memakai tanda minus)",
+    "Menukar posisi sin dan cos pada suku kedua rumus sinus",
+    "Mengira rumus hanya berlaku untuk sudut lancip"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sin(A + B) tidak boleh dijabarkan seperti perkalian aljabar biasa?",
+    "Kenapa rumus cos(A + B) memakai tanda minus padahal sudutnya dijumlahkan?",
+    "Dari mana rumus ini muncul kalau dua segitiga siku-siku ditumpuk membentuk sudut A + B?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Rumus Sudut Rangkap dan Setengah Sudut",
+   "kelas": 11,
+   "subKonsep": [
+    "Sudut rangkap sebagai kasus khusus A + A pada rumus jumlah sudut",
+    "Tiga bentuk setara cos 2A dan kapan masing-masing dipakai",
+    "Rumus setengah sudut sebagai kebalikan rumus sudut rangkap",
+    "Penentuan tanda pada rumus setengah sudut berdasarkan kuadran",
+    "Rumus penurunan pangkat (sin^2 dan cos^2 dinyatakan dalam cos 2A)",
+    "Sudut rangkap tiga sebagai perluasan"
+   ],
+   "rumus": [
+    "sin 2A = 2 sin A cos A",
+    "cos 2A = cos^2 A - sin^2 A = 2cos^2 A - 1 = 1 - 2sin^2 A",
+    "tan 2A = 2 tan A/(1 - tan^2 A)",
+    "sin^2 A = (1 - cos 2A)/2 ; cos^2 A = (1 + cos 2A)/2",
+    "sin(A/2) = ± akar((1 - cos A)/2)"
+   ],
+   "keterampilan": [
+    "Menurunkan rumus sudut rangkap sendiri dari rumus jumlah sudut",
+    "Memilih bentuk cos 2A yang paling menyederhanakan soal",
+    "Menentukan tanda hasil rumus setengah sudut lewat kuadran",
+    "Menurunkan pangkat kuadrat trigonometri untuk keperluan integral dan penyederhanaan"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Rumus Jumlah dan Selisih Dua Sudut"
+   ],
+   "miskonsepsi": [
+    "Menulis sin 2A = 2 sin A",
+    "Mengira ketiga bentuk cos 2A adalah rumus berbeda yang harus dihafal terpisah",
+    "Selalu mengambil tanda positif pada rumus setengah sudut",
+    "Mengira tan 2A = 2 tan A"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sin 2A = 2 sin A cos A dan bukan 2 sin A, apa yang terjadi pada segitiganya?",
+    "Kenapa cos 2A punya tiga wajah yang semuanya benar?",
+    "Kenapa rumus setengah sudut butuh tanda plus-minus sedangkan rumus sudut rangkap tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Persamaan Trigonometri",
+   "kelas": 11,
+   "subKonsep": [
+    "Beda persamaan trigonometri dengan identitas trigonometri",
+    "Penyelesaian dasar sin x = sin a, cos x = cos a, tan x = tan a",
+    "Himpunan penyelesaian pada interval terbatas vs penyelesaian umum",
+    "Peran periodisitas: kenapa penyelesaiannya tak berhingga banyak",
+    "Persamaan berbentuk kuadrat dalam sin/cos",
+    "Bentuk a cos x + b sin x = c dan pengubahannya menjadi k cos(x - alpha)"
+   ],
+   "rumus": [
+    "sin x = sin a → x = a + 360k atau x = (180 - a) + 360k",
+    "cos x = cos a → x = ±a + 360k",
+    "tan x = tan a → x = a + 180k",
+    "a cos x + b sin x = k cos(x - alpha), k = akar(a^2 + b^2), tan alpha = b/a"
+   ],
+   "keterampilan": [
+    "Menentukan seluruh penyelesaian pada interval 0 sampai 360 derajat",
+    "Mengubah persamaan menjadi satu fungsi trigonometri sebelum diselesaikan",
+    "Menyelesaikan persamaan berbentuk kuadrat dengan pemisalan",
+    "Memeriksa penyelesaian terhadap syarat interval dan domain"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Identitas Trigonometri Dasar dan Pembuktiannya",
+    "[Tingkat Lanjut] Grafik Fungsi Trigonometri: Amplitudo, Periode, dan Pergeseran"
+   ],
+   "miskonsepsi": [
+    "Hanya menuliskan satu penyelesaian (hasil arcsin kalkulator) dan mengabaikan yang lain",
+    "Membagi kedua ruas dengan cos x tanpa memeriksa kemungkinan cos x = 0, sehingga akar hilang",
+    "Mengira sin x = 2 punya penyelesaian",
+    "Menggunakan rumus sin x = sin a untuk persamaan cos"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa satu persamaan trigonometri bisa punya penyelesaian tak berhingga?",
+    "Kenapa dari sin x = 1/2 muncul dua sudut dalam satu putaran, bukan satu?",
+    "Kenapa a cos x + b sin x bisa 'dilipat' menjadi satu gelombang tunggal?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Aturan Sinus",
+   "kelas": 11,
+   "subKonsep": [
+    "Kebutuhan aturan baru saat segitiga tidak siku-siku",
+    "Perbandingan sisi terhadap sinus sudut di hadapannya selalu tetap",
+    "Hubungan nilai tetap itu dengan diameter lingkaran luar segitiga",
+    "Kasus penggunaan: dua sudut satu sisi (ASA/AAS) dan dua sisi satu sudut (SSA)",
+    "Kasus ambigu SSA: bisa muncul dua segitiga berbeda",
+    "Penerapan pada pengukuran jarak tak terjangkau (triangulasi)"
+   ],
+   "rumus": [
+    "a/sin A = b/sin B = c/sin C",
+    "a/sin A = 2R, R = jari-jari lingkaran luar",
+    "a = 2R sin A"
+   ],
+   "keterampilan": [
+    "Memilih pasangan sisi-sudut yang lengkap datanya",
+    "Menentukan unsur segitiga sembarang yang belum diketahui",
+    "Mengenali dan menangani kasus ambigu SSA",
+    "Menerapkan pada masalah navigasi, sudut elevasi, dan survei tanah"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri",
+    "Perbandingan Trigonometri Segitiga Siku-Siku (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Memasangkan sisi dengan sudut yang bersebelahan, bukan yang berhadapan",
+    "Menganggap hanya ada satu jawaban pada kasus SSA",
+    "Memakai aturan sinus padahal data yang diketahui dua sisi dan sudut apit (harus cosinus)",
+    "Mengira aturan sinus hanya berlaku untuk segitiga lancip"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa perbandingan sisi terhadap sinus sudut di depannya selalu sama untuk ketiga pasangan?",
+    "Kenapa nilai tetap itu ternyata sama dengan diameter lingkaran luar segitiga?",
+    "Kenapa data dua sisi dan satu sudut kadang menghasilkan dua segitiga yang berbeda?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Aturan Cosinus",
+   "kelas": 11,
+   "subKonsep": [
+    "Aturan cosinus sebagai perluasan Teorema Pythagoras",
+    "Suku koreksi -2bc cos A dan artinya untuk sudut lancip vs tumpul",
+    "Kasus penggunaan: sisi-sudut-sisi (SAS) dan ketiga sisi (SSS)",
+    "Bentuk terbalik untuk mencari besar sudut dari tiga sisi",
+    "Menentukan jenis segitiga dari tanda cos A",
+    "Penerapan pada jarak dan resultan dua vektor"
+   ],
+   "rumus": [
+    "a^2 = b^2 + c^2 - 2bc cos A",
+    "b^2 = a^2 + c^2 - 2ac cos B",
+    "c^2 = a^2 + b^2 - 2ab cos C",
+    "cos A = (b^2 + c^2 - a^2)/(2bc)"
+   ],
+   "keterampilan": [
+    "Menghitung sisi ketiga dari dua sisi dan sudut apitnya",
+    "Menghitung besar sudut dari tiga sisi yang diketahui",
+    "Menentukan segitiga lancip/siku-siku/tumpul dari tanda cos",
+    "Memilih antara aturan sinus dan cosinus sesuai data"
+   ],
+   "prasyarat": [
+    "Teorema Pythagoras (Fase D)",
+    "[Tingkat Lanjut] Aturan Sinus"
+   ],
+   "miskonsepsi": [
+    "Memasangkan cos dengan sudut yang bukan sudut apit kedua sisi",
+    "Menganggap -2bc cos A selalu mengurangi (padahal bertambah bila sudut tumpul)",
+    "Lupa menarik akar di akhir sehingga menjawab a^2 sebagai a",
+    "Mengira aturan cosinus tidak berlaku bila segitiga siku-siku"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa aturan cosinus berubah menjadi Pythagoras persis saat sudutnya 90 derajat?",
+    "Kenapa ada suku koreksi -2bc cos A, apa yang sebenarnya dikoreksi?",
+    "Kenapa cos A yang negatif langsung memberi tahu bahwa segitiganya tumpul?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Luas Segitiga dengan Trigonometri",
+   "kelas": 11,
+   "subKonsep": [
+    "Menurunkan tinggi segitiga dengan sinus sudut",
+    "Rumus luas dari dua sisi dan sudut apit",
+    "Rumus luas dari satu sisi dan dua sudut",
+    "Rumus Heron dari tiga sisi dan kaitannya dengan aturan cosinus",
+    "Luas segi banyak beraturan sebagai gabungan segitiga sama kaki",
+    "Luas jajargenjang dan segi empat dari diagonal dan sudutnya"
+   ],
+   "rumus": [
+    "L = 1/2 · a·b·sin C",
+    "L = a^2 sin B sin C / (2 sin A)",
+    "Heron: L = akar(s(s-a)(s-b)(s-c)), s = (a+b+c)/2",
+    "L = abc/(4R)",
+    "Segi-n beraturan: L = (n/2)·r^2·sin(360/n)"
+   ],
+   "keterampilan": [
+    "Menghitung luas segitiga tanpa mengetahui tingginya",
+    "Memilih rumus luas sesuai data yang tersedia",
+    "Menghitung luas segi banyak beraturan dari jari-jari lingkaran luar",
+    "Menerapkan pada perhitungan luas lahan berbentuk tak beraturan"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Aturan Cosinus",
+    "Luas Segitiga (Fase C/D)"
+   ],
+   "miskonsepsi": [
+    "Memakai sudut yang tidak diapit oleh kedua sisi pada rumus 1/2·ab·sin C",
+    "Mengira sin C harus selalu sudut lancip sehingga luas segitiga tumpul dihitung salah",
+    "Mencampur satuan derajat dan radian pada kalkulator",
+    "Mengira rumus Heron butuh sudut, padahal hanya butuh tiga sisi"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa 1/2·a·b·sin C, dari mana sin C menggantikan tinggi segitiga?",
+    "Kenapa luas segitiga tumpul dengan sudut 150 derajat sama dengan yang bersudut 30 derajat bila sisinya sama?",
+    "Kenapa rumus Heron hanya butuh panjang tiga sisi tanpa satu pun sudut?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Translasi dan Refleksi pada Bidang Koordinat",
+   "kelas": 11,
+   "subKonsep": [
+    "Transformasi sebagai pemetaan titik ke titik (bukan sekadar 'menggeser gambar')",
+    "Translasi oleh vektor (a, b) dan sifatnya mengawetkan bentuk dan ukuran",
+    "Refleksi terhadap sumbu x, sumbu y, garis y = x, y = -x, dan titik asal",
+    "Refleksi terhadap garis x = h dan y = k",
+    "Isometri: transformasi yang mengawetkan jarak",
+    "Menentukan bayangan kurva/persamaan, bukan hanya bayangan titik"
+   ],
+   "rumus": [
+    "Translasi (a,b): (x, y) → (x + a, y + b)",
+    "Refleksi sumbu x: (x, y) → (x, -y)",
+    "Refleksi sumbu y: (x, y) → (-x, y)",
+    "Refleksi y = x: (x, y) → (y, x)",
+    "Refleksi x = h: (x, y) → (2h - x, y)"
+   ],
+   "keterampilan": [
+    "Menentukan bayangan titik, ruas garis, dan bangun datar",
+    "Menentukan persamaan bayangan kurva dengan substitusi balik",
+    "Menentukan translasi/refleksi yang memetakan satu bangun ke bangun lain",
+    "Menggambar hasil transformasi pada bidang koordinat"
+   ],
+   "prasyarat": [
+    "Sistem Koordinat Kartesius (Fase C/D)",
+    "Transformasi Geometri Tunggal (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mensubstitusi x dan y bayangan langsung ke persamaan asal (harus substitusi balik)",
+    "Mengira refleksi terhadap x = 3 sama dengan (x, y) → (3 - x, y)",
+    "Menukar aturan refleksi y = x dengan y = -x",
+    "Menganggap refleksi mengubah ukuran bangun"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa untuk mencari persamaan bayangan kita justru memasukkan rumus kebalikannya?",
+    "Kenapa refleksi terhadap x = h menghasilkan 2h - x, dari mana angka 2-nya?",
+    "Kenapa dua kali refleksi terhadap dua garis sejajar sama dengan satu translasi?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Rotasi dan Dilatasi pada Bidang Koordinat",
+   "kelas": 11,
+   "subKonsep": [
+    "Rotasi terhadap titik asal sebesar sudut theta berlawanan arah jarum jam",
+    "Rotasi terhadap pusat sembarang (p, q)",
+    "Rotasi istimewa 90, 180, dan 270 derajat",
+    "Dilatasi dengan pusat dan faktor skala k, termasuk k negatif dan |k| < 1",
+    "Pengaruh dilatasi pada panjang (×k) dan luas (×k^2)",
+    "Dilatasi bukan isometri: bentuk tetap sebangun, ukuran berubah"
+   ],
+   "rumus": [
+    "Rotasi pusat O sudut theta: x' = x cos theta - y sin theta ; y' = x sin theta + y cos theta",
+    "Rotasi 90 derajat: (x, y) → (-y, x)",
+    "Rotasi 180 derajat: (x, y) → (-x, -y)",
+    "Dilatasi [O, k]: (x, y) → (kx, ky)",
+    "Dilatasi [(p,q), k]: (x, y) → (p + k(x - p), q + k(y - q))"
+   ],
+   "keterampilan": [
+    "Menentukan bayangan titik dan kurva oleh rotasi dan dilatasi",
+    "Menghitung perbandingan luas bangun asal dan bayangan",
+    "Menentukan pusat rotasi dari sebuah bangun dan bayangannya",
+    "Menggabungkan rotasi dengan pusat bukan titik asal lewat translasi bantu"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Translasi dan Refleksi pada Bidang Koordinat",
+    "[Tingkat Lanjut] Lingkaran Satuan dan Perluasan Perbandingan Trigonometri"
+   ],
+   "miskonsepsi": [
+    "Mengira rotasi positif searah jarum jam",
+    "Menghitung luas bayangan dilatasi dengan mengalikan k, bukan k^2",
+    "Mengira dilatasi dengan k negatif hanya memperkecil, bukan juga memutar 180 derajat",
+    "Menerapkan rumus rotasi pusat O untuk pusat (p, q) tanpa penyesuaian"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa rumus rotasi memuat cos dan sin, apa hubungannya dengan lingkaran satuan?",
+    "Kenapa luas berubah k^2 kali sedangkan panjang hanya k kali?",
+    "Kenapa rotasi 180 derajat memberi hasil yang sama dengan dilatasi berfaktor -1?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Matriks Transformasi dan Komposisi Transformasi",
+   "kelas": 11,
+   "subKonsep": [
+    "Menyatakan transformasi sebagai perkalian matriks 2×2 dengan vektor kolom",
+    "Matriks baku untuk refleksi, rotasi, dan dilatasi",
+    "Komposisi transformasi sebagai hasil kali matriks (urutan berpengaruh)",
+    "Determinan matriks transformasi sebagai faktor perubahan luas",
+    "Transformasi invers sebagai invers matriks",
+    "Kenapa translasi tidak bisa ditulis sebagai matriks 2×2 biasa"
+   ],
+   "rumus": [
+    "Rotasi theta: [[cos theta, -sin theta],[sin theta, cos theta]]",
+    "Refleksi sumbu x: [[1,0],[0,-1]] ; sumbu y: [[-1,0],[0,1]] ; y = x: [[0,1],[1,0]]",
+    "Dilatasi k: [[k,0],[0,k]]",
+    "Komposisi T2 setelah T1 = M2 · M1 (bukan M1 · M2)",
+    "Luas bayangan = |det M| × luas asal"
+   ],
+   "keterampilan": [
+    "Menyusun matriks transformasi dari deskripsi verbal",
+    "Menghitung bayangan lewat perkalian matriks",
+    "Menentukan matriks tunggal yang setara dengan komposisi beberapa transformasi",
+    "Menggunakan determinan untuk menghitung perubahan luas"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Rotasi dan Dilatasi pada Bidang Koordinat",
+    "Matriks: Operasi, Determinan, dan Invers (Fase F, Tingkat Lanjut)"
+   ],
+   "miskonsepsi": [
+    "Menulis komposisi dengan urutan matriks terbalik",
+    "Mengira perkalian matriks bersifat komutatif sehingga urutan transformasi tidak penting",
+    "Mengira determinan negatif berarti luas negatif, bukan pembalikan orientasi",
+    "Memaksa translasi menjadi matriks 2×2"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kolom-kolom matriks transformasi ternyata adalah bayangan titik (1,0) dan (0,1)?",
+    "Kenapa transformasi yang dilakukan belakangan justru ditulis di sebelah kiri?",
+    "Kenapa determinan bisa memberi tahu berapa kali luas bangun membesar?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Vektor pada Bidang Datar dan Operasinya",
+   "kelas": 11,
+   "subKonsep": [
+    "Vektor sebagai besaran berarah: beda dengan skalar dan dengan titik",
+    "Notasi vektor: ruas garis berarah, pasangan komponen, dan kombinasi i-j",
+    "Penjumlahan vektor: aturan segitiga dan aturan jajargenjang",
+    "Pengurangan vektor dan vektor negatif",
+    "Perkalian vektor dengan skalar dan syarat dua vektor sejajar/kolinear",
+    "Vektor posisi, panjang vektor, dan vektor satuan"
+   ],
+   "rumus": [
+    "u = (x, y) ; |u| = akar(x^2 + y^2)",
+    "u + v = (x1 + x2, y1 + y2)",
+    "AB = OB - OA",
+    "Vektor satuan: e = u/|u|",
+    "Titik pembagi: P = (m·B + n·A)/(m + n) untuk AP : PB = m : n"
+   ],
+   "keterampilan": [
+    "Menggambar penjumlahan vektor secara geometris dan menghitungnya secara komponen",
+    "Menentukan vektor dari dua titik dan panjangnya",
+    "Membuktikan pernyataan geometri sederhana (titik segaris, titik tengah) dengan vektor",
+    "Menentukan koordinat titik yang membagi ruas garis dengan perbandingan tertentu"
+   ],
+   "prasyarat": [
+    "Sistem Koordinat Kartesius (Fase C/D)",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Menganggap vektor sama dengan titik koordinat sehingga arah diabaikan",
+    "Menjumlahkan panjang vektor secara langsung: |u + v| dikira |u| + |v|",
+    "Menganggap AB dan BA vektor yang sama",
+    "Mengira vektor harus selalu berpangkal di titik asal"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua vektor dijumlahkan dengan disambung ujung-ke-pangkal, bukan diadu langsung?",
+    "Kenapa panjang jumlah dua vektor bisa lebih kecil dari panjang salah satunya?",
+    "Kenapa bukti geometri (misal diagonal jajargenjang saling membagi dua) jadi jauh lebih pendek dengan vektor?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Perkalian Titik, Sudut Antarvektor, dan Proyeksi Vektor",
+   "kelas": 11,
+   "subKonsep": [
+    "Perkalian skalar dua vektor dan hasilnya berupa bilangan, bukan vektor",
+    "Dua rumus perkalian titik: bentuk komponen dan bentuk |u||v| cos theta",
+    "Menentukan sudut antara dua vektor",
+    "Syarat tegak lurus (hasil kali titik nol) dan syarat sejajar",
+    "Proyeksi skalar ortogonal dan proyeksi vektor ortogonal",
+    "Penerapan pada usaha dalam fisika dan penguraian gaya"
+   ],
+   "rumus": [
+    "u·v = x1x2 + y1y2",
+    "u·v = |u||v| cos theta",
+    "cos theta = (u·v)/(|u||v|)",
+    "u tegak lurus v jika u·v = 0",
+    "Proyeksi skalar u pada v = (u·v)/|v| ; proyeksi vektor = ((u·v)/|v|^2)·v"
+   ],
+   "keterampilan": [
+    "Menghitung sudut antara dua vektor dari komponennya",
+    "Menguji ketegaklurusan dua vektor",
+    "Menentukan proyeksi ortogonal satu vektor pada vektor lain",
+    "Mengaitkan perkalian titik dengan aturan cosinus"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Vektor pada Bidang Datar dan Operasinya",
+    "[Tingkat Lanjut] Aturan Cosinus"
+   ],
+   "miskonsepsi": [
+    "Mengira hasil perkalian titik adalah vektor",
+    "Menukar proyeksi skalar dengan proyeksi vektor",
+    "Membagi dengan |v| padahal seharusnya |v|^2 pada proyeksi vektor",
+    "Mengira u·v = 0 berarti salah satu vektor adalah vektor nol"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa perkalian dua vektor bisa menghasilkan bilangan biasa, apa makna geometrisnya?",
+    "Kenapa u·v = 0 tepat berarti kedua vektor saling tegak lurus?",
+    "Kenapa rumus u·v = |u||v| cos theta sebenarnya adalah aturan cosinus yang ditulis ulang?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Persamaan Lingkaran pada Bidang Koordinat",
+   "kelas": 12,
+   "subKonsep": [
+    "Lingkaran sebagai tempat kedudukan titik berjarak tetap dari pusat",
+    "Bentuk baku dengan pusat (0,0) dan pusat (a,b)",
+    "Bentuk umum x^2 + y^2 + Ax + By + C = 0",
+    "Melengkapkan kuadrat untuk mengubah bentuk umum ke bentuk baku",
+    "Syarat sebuah persamaan benar-benar mewakili lingkaran (jari-jari kuadrat positif)",
+    "Menyusun persamaan lingkaran dari tiga titik atau dari syarat menyinggung suatu garis"
+   ],
+   "rumus": [
+    "x^2 + y^2 = r^2",
+    "(x - a)^2 + (y - b)^2 = r^2",
+    "x^2 + y^2 + Ax + By + C = 0",
+    "Pusat = (-A/2, -B/2) ; r = akar(A^2/4 + B^2/4 - C)"
+   ],
+   "keterampilan": [
+    "Mengubah bentuk umum menjadi bentuk baku dan sebaliknya",
+    "Menentukan pusat dan jari-jari dari persamaan mana pun",
+    "Menyusun persamaan lingkaran dari data pusat, jari-jari, atau titik yang dilalui",
+    "Menggambar lingkaran dari persamaannya"
+   ],
+   "prasyarat": [
+    "Unsur-Unsur Lingkaran dan Hubungan Antar Unsurnya",
+    "Melengkapkan Kuadrat Sempurna (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Membaca pusat lingkaran (x - 3)^2 + (y + 2)^2 = 25 sebagai (-3, 2)",
+    "Mengira r^2 = 25 berarti r = 25",
+    "Lupa membagi -A/2 sehingga pusat dikira (-A, -B)",
+    "Mengira setiap persamaan berbentuk x^2 + y^2 + ... = 0 pasti berupa lingkaran"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa persamaan lingkaran berbentuk kuadrat, dari mana Pythagoras masuk ke situ?",
+    "Kenapa tanda di dalam kurung berlawanan dengan koordinat pusatnya?",
+    "Kenapa melengkapkan kuadrat bisa 'memunculkan' pusat lingkaran yang tersembunyi?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Kedudukan Titik, Garis, dan Dua Lingkaran",
+   "kelas": 12,
+   "subKonsep": [
+    "Kedudukan titik: di dalam, pada, atau di luar lingkaran lewat kuasa titik",
+    "Kedudukan garis terhadap lingkaran lewat jarak pusat ke garis",
+    "Kedudukan garis lewat diskriminan hasil substitusi",
+    "Kuasa titik terhadap lingkaran dan maknanya",
+    "Kedudukan dua lingkaran: lepas, bersinggungan luar/dalam, berpotongan, sepusat",
+    "Garis kuasa (radikal) dan tali busur persekutuan dua lingkaran"
+   ],
+   "rumus": [
+    "Kuasa titik P: k = x1^2 + y1^2 + Ax1 + By1 + C",
+    "Jarak pusat ke garis: d = |Aa + Bb + C|/akar(A^2 + B^2)",
+    "d > r lepas, d = r menyinggung, d < r memotong",
+    "Diskriminan D > 0 memotong, D = 0 menyinggung, D < 0 tidak memotong",
+    "Bersinggungan luar bila jarak pusat = R + r ; dalam bila = |R - r|"
+   ],
+   "keterampilan": [
+    "Menentukan posisi titik terhadap lingkaran tanpa menggambar",
+    "Menentukan hubungan garis dan lingkaran lewat jarak maupun diskriminan",
+    "Menentukan batas nilai parameter agar garis menyinggung lingkaran",
+    "Menganalisis kedudukan dua lingkaran dari pusat dan jari-jarinya"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Persamaan Lingkaran pada Bidang Koordinat",
+    "Persamaan Garis Lurus dan Jarak Titik ke Garis (Fase D/E)"
+   ],
+   "miskonsepsi": [
+    "Menyimpulkan posisi titik dari tanda kuasa secara terbalik",
+    "Membandingkan jarak pusat ke garis dengan r^2, bukan dengan r",
+    "Mengira D = 0 berarti garis tidak menyentuh lingkaran",
+    "Mengira dua lingkaran yang persamaannya berbeda pasti tidak berpotongan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa memasukkan koordinat titik ke persamaan lingkaran bisa memberi tahu posisinya?",
+    "Kenapa diskriminan nol tepat berarti garis menyinggung, bukan memotong?",
+    "Kenapa syarat bersinggungan dalam memakai selisih jari-jari, bukan jumlahnya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Garis Singgung Lingkaran secara Analitik",
+   "kelas": 12,
+   "subKonsep": [
+    "Garis singgung melalui titik pada lingkaran (rumus bagi adil)",
+    "Garis singgung dengan gradien m tertentu",
+    "Garis singgung dari titik di luar lingkaran (selalu ada dua)",
+    "Hubungan gradien garis singgung dan gradien jari-jari (saling tegak lurus)",
+    "Garis polar sebagai alat menemukan titik singgung dari titik luar",
+    "Penerapan pada lintasan, pantulan, dan desain lengkung jalan"
+   ],
+   "rumus": [
+    "Titik (x1,y1) pada x^2 + y^2 = r^2: x·x1 + y·y1 = r^2",
+    "Titik pada (x-a)^2+(y-b)^2=r^2: (x-a)(x1-a) + (y-b)(y1-b) = r^2",
+    "Gradien m pada x^2+y^2=r^2: y = mx ± r·akar(m^2 + 1)",
+    "Gradien m pada pusat (a,b): y - b = m(x - a) ± r·akar(m^2 + 1)",
+    "m garis singgung × m jari-jari = -1"
+   ],
+   "keterampilan": [
+    "Menyusun persamaan garis singgung untuk ketiga kasus baku",
+    "Membedakan kasus titik pada lingkaran dan titik di luar lingkaran",
+    "Menentukan titik singgung dari garis singgung yang diperoleh",
+    "Memeriksa hasil dengan syarat jarak pusat ke garis sama dengan r"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Kedudukan Titik, Garis, dan Dua Lingkaran",
+    "Garis Singgung Lingkaran dan Garis Singgung Persekutuan"
+   ],
+   "miskonsepsi": [
+    "Memakai rumus bagi adil untuk titik yang ternyata berada di luar lingkaran",
+    "Mengira dari titik luar hanya ada satu garis singgung",
+    "Lupa tanda plus-minus pada rumus garis singgung bergradien m",
+    "Menyubstitusi titik singgung ke ruas kanan juga, bukan hanya pada koefisien"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa rumus garis singgung cukup 'membagi adil' kuadrat menjadi x·x1 dan y·y1?",
+    "Kenapa dari satu titik di luar lingkaran selalu ada tepat dua garis singgung?",
+    "Kenapa rumus bergradien m punya dua jawaban yang letaknya berseberangan?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Irisan Kerucut: Satu Kerucut, Empat Kurva",
+   "kelas": 12,
+   "subKonsep": [
+    "Kerucut ganda dan bidang pengiris sebagai sumber semua kurva",
+    "Sudut kemiringan bidang menentukan lingkaran, elips, parabola, atau hiperbola",
+    "Definisi terpadu lewat fokus, direktriks, dan eksentrisitas",
+    "Nilai eksentrisitas tiap kurva dan artinya",
+    "Bentuk umum derajat dua Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0",
+    "Irisan kerucut degenerat: titik, garis, dan dua garis berpotongan"
+   ],
+   "rumus": [
+    "e = jarak ke fokus / jarak ke direktriks",
+    "e = 0 lingkaran, 0 < e < 1 elips, e = 1 parabola, e > 1 hiperbola",
+    "Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0",
+    "Diskriminan B^2 - 4AC: negatif elips, nol parabola, positif hiperbola"
+   ],
+   "keterampilan": [
+    "Mengaitkan sudut irisan bidang dengan jenis kurva yang dihasilkan",
+    "Mengenali jenis irisan kerucut dari bentuk umum persamaannya",
+    "Menyebutkan contoh nyata tiap kurva (orbit planet, antena parabola, bayangan senter)",
+    "Membandingkan definisi fokus-direktriks keempat kurva"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Persamaan Lingkaran pada Bidang Koordinat"
+   ],
+   "miskonsepsi": [
+    "Mengira lingkaran dan elips adalah dua keluarga yang sama sekali terpisah",
+    "Menganggap parabola pada irisan kerucut sama saja dengan grafik fungsi kuadrat y = ax^2 + bx + c",
+    "Mengira hiperbola adalah dua kurva berbeda, bukan satu kurva dua cabang",
+    "Mengira eksentrisitas mengukur ukuran, bukan bentuk"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa satu kerucut yang sama bisa menghasilkan empat kurva yang tampak sangat berbeda?",
+    "Kenapa lingkaran hanyalah elips dengan dua fokus yang berimpit?",
+    "Kenapa parabola menjadi batas antara elips dan hiperbola saat bidang dimiringkan?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Parabola: Fokus, Direktriks, dan Persamaannya",
+   "kelas": 12,
+   "subKonsep": [
+    "Parabola sebagai tempat kedudukan titik berjarak sama ke fokus dan ke direktriks",
+    "Unsur: titik puncak, fokus, direktriks, sumbu simetri, latus rectum",
+    "Persamaan baku parabola horizontal dan vertikal dengan puncak O(0,0)",
+    "Persamaan baku dengan puncak (h, k)",
+    "Sifat pemantulan parabola: semua sinar sejajar sumbu dipantulkan ke fokus",
+    "Penerapan: antena parabola, lampu sorot, kompor surya, jembatan"
+   ],
+   "rumus": [
+    "y^2 = 4px (fokus (p,0), direktriks x = -p)",
+    "x^2 = 4py (fokus (0,p), direktriks y = -p)",
+    "(y - k)^2 = 4p(x - h)",
+    "(x - h)^2 = 4p(y - k)",
+    "Panjang latus rectum = |4p|"
+   ],
+   "keterampilan": [
+    "Menentukan puncak, fokus, direktriks, dan sumbu simetri dari persamaan",
+    "Menyusun persamaan parabola dari fokus dan direktriks",
+    "Menggambar sketsa parabola lengkap dengan unsur-unsurnya",
+    "Menyelesaikan masalah kontekstual antena/reflektor"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Irisan Kerucut: Satu Kerucut, Empat Kurva",
+    "Fungsi Kuadrat dan Grafiknya (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Mengira semua parabola pasti terbuka ke atas atau ke bawah",
+    "Menukar peran p sebagai jarak puncak-fokus dengan 4p",
+    "Mengira fokus terletak pada kurva parabola",
+    "Menganggap direktriks memotong parabola"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa antena parabola bisa mengumpulkan semua sinyal tepat di satu titik?",
+    "Kenapa definisi 'jarak ke titik = jarak ke garis' menghasilkan kurva melengkung seperti itu?",
+    "Kenapa persamaannya memuat 4p, dari mana angka 4 muncul?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Elips: Dua Fokus dan Jumlah Jarak Tetap",
+   "kelas": 12,
+   "subKonsep": [
+    "Elips sebagai tempat kedudukan titik dengan jumlah jarak ke dua fokus tetap",
+    "Konstruksi tali dan dua paku sebagai definisi yang bisa diperagakan",
+    "Sumbu mayor, sumbu minor, puncak, pusat, dan fokus",
+    "Hubungan a, b, c dan eksentrisitas e = c/a",
+    "Persamaan baku elips horizontal dan vertikal, pusat O dan pusat (h,k)",
+    "Penerapan: orbit planet (Hukum Kepler I), bilik bisik, lengkung arsitektur"
+   ],
+   "rumus": [
+    "x^2/a^2 + y^2/b^2 = 1 (a > b, sumbu mayor mendatar)",
+    "(x-h)^2/a^2 + (y-k)^2/b^2 = 1",
+    "c^2 = a^2 - b^2",
+    "e = c/a, dengan 0 < e < 1",
+    "Jumlah jarak ke dua fokus = 2a ; latus rectum = 2b^2/a"
+   ],
+   "keterampilan": [
+    "Menentukan pusat, puncak, fokus, dan panjang sumbu dari persamaan",
+    "Membedakan elips horizontal dan vertikal dari letak penyebut terbesar",
+    "Menyusun persamaan elips dari unsur yang diketahui",
+    "Menghitung eksentrisitas dan menafsirkan kelonjongan elips"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Irisan Kerucut: Satu Kerucut, Empat Kurva",
+    "[Tingkat Lanjut] Persamaan Lingkaran pada Bidang Koordinat"
+   ],
+   "miskonsepsi": [
+    "Memakai c^2 = a^2 + b^2 (rumus hiperbola) untuk elips",
+    "Mengira a selalu penyebut di bawah x^2 tanpa memeriksa mana yang lebih besar",
+    "Mengira fokus terletak pada kurva atau di ujung sumbu minor",
+    "Mengira elips yang lebih besar pasti lebih lonjong (mencampur ukuran dan eksentrisitas)"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa tali sepanjang tetap yang dikaitkan pada dua paku menghasilkan elips?",
+    "Kenapa c^2 = a^2 - b^2 pada elips tetapi c^2 = a^2 + b^2 pada hiperbola?",
+    "Kenapa orbit planet berbentuk elips dengan Matahari di salah satu fokus, bukan di pusat?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Hiperbola: Selisih Jarak Tetap dan Asimtot",
+   "kelas": 12,
+   "subKonsep": [
+    "Hiperbola sebagai tempat kedudukan titik dengan selisih jarak ke dua fokus tetap",
+    "Dua cabang, pusat, puncak, fokus, sumbu nyata dan sumbu imajiner",
+    "Asimtot sebagai garis pemandu arah cabang di kejauhan",
+    "Persegi panjang bantu untuk melukis asimtot",
+    "Persamaan baku hiperbola horizontal dan vertikal, pusat O dan (h,k)",
+    "Hiperbola ortogonal xy = k dan penerapan (navigasi LORAN, gelombang kejut, teleskop)"
+   ],
+   "rumus": [
+    "x^2/a^2 - y^2/b^2 = 1 ; y^2/a^2 - x^2/b^2 = 1",
+    "(x-h)^2/a^2 - (y-k)^2/b^2 = 1",
+    "c^2 = a^2 + b^2",
+    "Asimtot: y = ±(b/a)x untuk hiperbola horizontal berpusat O",
+    "e = c/a > 1 ; selisih jarak ke dua fokus = 2a"
+   ],
+   "keterampilan": [
+    "Menentukan pusat, puncak, fokus, dan persamaan asimtot dari persamaan hiperbola",
+    "Menentukan arah bukaan cabang dari suku mana yang positif",
+    "Menggambar sketsa hiperbola dengan bantuan persegi panjang asimtot",
+    "Menyusun persamaan hiperbola dari unsur yang diketahui"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Elips: Dua Fokus dan Jumlah Jarak Tetap"
+   ],
+   "miskonsepsi": [
+    "Menentukan arah cabang dari besar penyebut, bukan dari suku yang bertanda positif",
+    "Memakai c^2 = a^2 - b^2 untuk hiperbola",
+    "Mengira kurva hiperbola akan menyentuh asimtotnya",
+    "Menganggap dua cabang hiperbola adalah dua kurva yang tidak berhubungan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa selisih jarak yang tetap menghasilkan dua cabang, bukan satu kurva tertutup?",
+    "Kenapa hiperbola mendekati asimtot tetapi tidak pernah menyentuhnya?",
+    "Kenapa pada hiperbola c justru lebih besar dari a, kebalikan dari elips?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Garis Singgung Irisan Kerucut",
+   "kelas": 12,
+   "subKonsep": [
+    "Prinsip bagi adil (splitting) yang berlaku untuk semua irisan kerucut",
+    "Garis singgung parabola melalui titik pada kurva dan dengan gradien m",
+    "Garis singgung elips melalui titik pada kurva dan dengan gradien m",
+    "Garis singgung hiperbola dan syarat menyinggungnya",
+    "Syarat menyinggung lewat diskriminan nol sebagai metode umum",
+    "Sifat pemantulan tiap kurva dan kaitannya dengan garis singgung"
+   ],
+   "rumus": [
+    "Parabola y^2 = 4px di (x1,y1): y·y1 = 2p(x + x1)",
+    "Elips di (x1,y1): x·x1/a^2 + y·y1/b^2 = 1",
+    "Hiperbola di (x1,y1): x·x1/a^2 - y·y1/b^2 = 1",
+    "Elips bergradien m: y = mx ± akar(a^2·m^2 + b^2)",
+    "Hiperbola bergradien m: y = mx ± akar(a^2·m^2 - b^2)"
+   ],
+   "keterampilan": [
+    "Menerapkan aturan bagi adil pada keempat irisan kerucut",
+    "Menentukan garis singgung dengan gradien tertentu",
+    "Menentukan syarat sebuah garis menyinggung irisan kerucut",
+    "Mengaitkan garis singgung dengan sifat pemantulan pada penerapan nyata"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Garis Singgung Lingkaran secara Analitik",
+    "[Tingkat Lanjut] Hiperbola: Selisih Jarak Tetap dan Asimtot"
+   ],
+   "miskonsepsi": [
+    "Menghafal empat rumus terpisah tanpa melihat pola bagi adil yang sama",
+    "Menukar tanda plus dan minus pada rumus bergradien m antara elips dan hiperbola",
+    "Mengira syarat menyinggung selalu D > 0",
+    "Menyubstitusi titik singgung ke seluruh persamaan, bukan hanya membagi adil"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa aturan 'ganti x^2 jadi x·x1' berlaku untuk lingkaran, elips, parabola, sekaligus hiperbola?",
+    "Kenapa syarat menyinggung selalu berujung pada diskriminan nol?",
+    "Kenapa sinar dari satu fokus elips selalu memantul menuju fokus yang lain?"
+   ]
+  },
+  {
+   "judul": "Kedudukan Titik, Garis, dan Bidang dalam Ruang",
+   "kelas": 12,
+   "subKonsep": [
+    "Titik, garis, dan bidang sebagai unsur dasar geometri ruang",
+    "Aksioma penentuan bidang (tiga titik tak segaris, garis dan titik, dua garis berpotongan)",
+    "Kedudukan dua garis: berpotongan, sejajar, berimpit, atau bersilangan",
+    "Kedudukan garis terhadap bidang dan dua bidang terhadap satu sama lain",
+    "Garis bersilangan sebagai hal yang khas ruang dan tidak ada pada bidang datar",
+    "Bidang diagonal, diagonal ruang, dan diagonal sisi pada kubus dan balok"
+   ],
+   "rumus": [
+    "Kubus rusuk a: diagonal sisi = a·akar(2) ; diagonal ruang = a·akar(3)",
+    "Balok p,l,t: diagonal ruang = akar(p^2 + l^2 + t^2)",
+    "Banyak diagonal ruang kubus/balok = 4 ; diagonal sisi = 12"
+   ],
+   "keterampilan": [
+    "Membaca gambar bangun ruang dan menyebut kedudukan unsur-unsurnya",
+    "Membedakan garis sejajar dan garis bersilangan pada kubus",
+    "Menentukan bidang yang memuat sekumpulan titik tertentu",
+    "Menggambar bidang irisan sederhana pada kubus dan balok"
+   ],
+   "prasyarat": [
+    "Bangun Ruang Sisi Datar (Fase D)",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira dua garis yang tidak berpotongan pada gambar pasti sejajar (padahal bersilangan)",
+    "Mengira gambar perspektif menunjukkan panjang dan sudut yang sebenarnya",
+    "Menyamakan diagonal sisi dengan diagonal ruang",
+    "Mengira dua bidang yang tidak berpotongan di gambar selalu sejajar"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua garis bisa tidak sejajar dan tidak pernah berpotongan sekaligus?",
+    "Kenapa tiga titik selalu menentukan tepat satu bidang, tetapi empat titik belum tentu?",
+    "Kenapa sudut siku-siku pada kubus terlihat tumpul di gambar dua dimensi?"
+   ]
+  },
+  {
+   "judul": "Jarak dalam Bangun Ruang",
+   "kelas": 12,
+   "subKonsep": [
+    "Jarak selalu berarti panjang lintasan terpendek, yaitu ruas tegak lurus",
+    "Jarak titik ke titik dan jarak titik ke garis lewat proyeksi",
+    "Jarak titik ke bidang sebagai panjang ruas tegak lurus ke bidang",
+    "Jarak garis ke bidang sejajar dan jarak dua bidang sejajar",
+    "Jarak dua garis bersilangan lewat garis tegak lurus persekutuan",
+    "Teknik segitiga bantu dan perbandingan luas untuk menghitung tinggi"
+   ],
+   "rumus": [
+    "Jarak dua titik di ruang: d = akar((x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2)",
+    "Jarak titik ke garis: gunakan luas segitiga, t = 2L/alas",
+    "Kubus rusuk a: jarak titik sudut ke diagonal ruang = a·akar(6)/3",
+    "Kubus rusuk a: jarak titik sudut ke bidang diagonal = a·akar(2)/2",
+    "Kubus rusuk a: jarak dua garis bersilangan tertentu = a·akar(3)/3"
+   ],
+   "keterampilan": [
+    "Menentukan proyeksi titik pada garis dan pada bidang",
+    "Memilih segitiga bantu yang tepat lalu menghitung dengan Pythagoras atau luas",
+    "Menghitung jarak titik ke bidang diagonal pada kubus dan balok",
+    "Menghitung jarak dua garis bersilangan"
+   ],
+   "prasyarat": [
+    "Kedudukan Titik, Garis, dan Bidang dalam Ruang",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengukur jarak sepanjang garis miring pada gambar, bukan sepanjang ruas tegak lurus",
+    "Mengira jarak titik ke bidang sama dengan jarak titik ke salah satu titik pada bidang",
+    "Mengabaikan langkah proyeksi dan langsung memakai rusuk terdekat",
+    "Mengira jarak dua garis bersilangan sama dengan jarak antar titik terdekat yang terlihat di gambar"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa jarak harus diukur tegak lurus, kenapa lintasan miring selalu lebih panjang?",
+    "Kenapa jarak titik ke bidang diagonal kubus keluar sebagai a·akar(2)/2, dari mana akarnya?",
+    "Kenapa dua garis bersilangan punya satu-satunya ruas tegak lurus persekutuan?"
+   ]
+  },
+  {
+   "judul": "Sudut dalam Bangun Ruang",
+   "kelas": 12,
+   "subKonsep": [
+    "Sudut antara dua garis berpotongan dan antara dua garis bersilangan (lewat garis sejajar bantu)",
+    "Sudut antara garis dan bidang sebagai sudut garis dengan proyeksinya",
+    "Sudut antara dua bidang (sudut tumpuan) dan garis potong sebagai sumbunya",
+    "Membentuk segitiga bantu untuk menghitung sudut",
+    "Penggunaan aturan cosinus untuk sudut pada bangun ruang",
+    "Sudut istimewa pada kubus: diagonal ruang dengan alas, bidang diagonal dengan alas"
+   ],
+   "rumus": [
+    "Sudut garis-bidang: sin theta = jarak tegak / panjang garis miring",
+    "Aturan cosinus: cos theta = (b^2 + c^2 - a^2)/(2bc)",
+    "Kubus: tan sudut diagonal ruang terhadap alas = 1/akar(2)",
+    "Kubus: sudut antara dua bidang diagonal yang berpotongan = 60 derajat"
+   ],
+   "keterampilan": [
+    "Memproyeksikan garis ke bidang untuk memperoleh sudut yang benar",
+    "Menggeser salah satu garis bersilangan agar berpotongan tanpa mengubah sudut",
+    "Menyusun segitiga bantu lalu memakai perbandingan trigonometri atau aturan cosinus",
+    "Menentukan sudut tumpuan dua bidang lewat garis tegak lurus pada garis potong"
+   ],
+   "prasyarat": [
+    "Jarak dalam Bangun Ruang",
+    "Perbandingan Trigonometri Segitiga Siku-Siku (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Membaca sudut langsung dari gambar dua dimensi",
+    "Mengira sudut antara garis dan bidang adalah sudut dengan sembarang garis pada bidang itu",
+    "Menentukan sudut dua bidang tanpa memastikan kedua kaki sudut tegak lurus garis potong",
+    "Mengira dua garis bersilangan tidak punya sudut karena tidak bertemu"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua garis yang tidak pernah bertemu tetap punya sudut yang jelas?",
+    "Kenapa sudut garis dengan bidang diambil terhadap proyeksinya, kenapa itu yang paling kecil?",
+    "Kenapa sudut dua bidang harus diukur pada arah tegak lurus garis potongnya?"
+   ]
+  }
+ ],
+ "sources": [
+  "https://kepalasekolah.id/cp-matematika-2025-fase-e-f-sma-ma-smk-mak/",
+  "https://www.pembelajaranmendalam.com/2025/11/cp-matematika-fase-f-kelas-11-12-sma-ma-smk-mak-semester-1-2-kurmer-pm.html",
+  "https://www.slideshare.net/slideshow/perbandingan-cp-2024-dan-2025-matematika-umum-dan-matematika-tl-pdf/282169071",
+  "https://repositori.kemendikdasmen.go.id/33608",
+  "https://djavasoft.com/kurikulum-merdeka/alur-tujuan-pembelajaran/sd-sma/matematika-tingkat-lanjut/fase-f",
+  "https://www.catatanmatematika.com/2024/09/materi-matematika-tingkat-lanjut-kelas-11-kurikulum-merdeka.html",
+  "https://www.ruangguru.com/blog/materi-matematika-kelas-11-kurikulum-merdeka",
+  "https://www.ruangguru.com/blog/materi-matematika-kelas-12-kurikulum-merdeka",
+  "https://www.mtssmusliminbjp.sch.id/2025/08/cp-matematika-tahun-2025.html",
+  "https://app.ruangguru.com/ruangbelajar/sma-kelas-12-kurikulum-merdeka/tka/materi-tka-matematika/konsep-kilat-bidang-ruang-dimensi-tiga-ii",
+  "https://journal.institutpendidikan.ac.id/index.php/plusminus/article/view/1226"
+ ],
+ "catatan": "31 topik. Pembagian kelas & penandaan: (1) Topik 1-5 (lingkaran sebagai bangun datar) = Matematika umum, kelas 11 — sesuai CP 2025 elemen Geometri dan bab \"Lingkaran\" pada buku/ATP kelas 11 (Ruangguru: Bab Lingkaran kelas 11 memuat busur, tali busur, garis singgung, segi empat tali busur). (2) Semua trigonometri lanjut (topik 6-15), transformasi geometri dengan matriks (16-18), dan vektor (19-20) HANYA ada di Matematika Tingkat Lanjut kelas 11 — karena itu diberi awalan [Tingkat Lanjut]. Dasarnya: elemen Trigonometri MTL (\"lingkaran satuan, fenomena periodik, identitas, aturan cosinus dan sinus\"), elemen Aljabar dan Fungsi MTL (\"operasi aljabar pada matriks dan menerapkannya dalam transformasi geometri\"), dan elemen Geometri MTL (\"vektor pada bidang datar ... pembuktian geometris\"). Pada Matematika umum, trigonometri berhenti di Fase E (perbandingan trigonometri sudut lancip). (3) Geometri analitik & irisan kerucut (topik 21-28) = MTL kelas 12, sesuai urutan buku MTL kelas 12 (Bab 1 Geometri Analitik: lingkaran, garis singgung, parabola, elips, hiperbola). (4) Topik 29-31 (geometri ruang / dimensi tiga) SENGAJA TIDAK diberi awalan [Tingkat Lanjut]: materi ini tidak disebut eksplisit pada CP 046/H/KR/2025 baik di Matematika umum maupun MTL, tetapi tetap diajarkan luas di kelas 12 dan masuk cakupan materi TKA Matematika kelas 12 Kurikulum Merdeka; ditandai kelas 12. Perlu keputusan produk bila ingin diperlakukan sebagai materi pengayaan. Keterbatasan riset: PDF salinan resmi Kepka BSKAP di uploads.belajar.id gagal diunduh (melebihi batas 10 MB alat) dan PDF Panduan Mata Pelajaran Matematika 2025 berukuran 59 MB sehingga hanya halaman katalog repositori yang terbaca; domain guru.kemdikbud.go.id terbukti sudah mati (DNS tidak ditemukan). Kutipan CP karena itu diverifikasi silang dari tiga sumber sekunder yang mengutip Lampiran II Kepka 046/H/KR/2025, termasuk dokumen perbandingan CP 2024 vs 2025 yang menegaskan rumusan Trigonometri MTL tidak berubah dan rumusan Geometri Matematika umum dipersempit menjadi \"hubungan antara unsur-unsur lingkaran\". Disarankan verifikasi akhir langsung pada PDF resmi sebelum konten dikunci."
+}

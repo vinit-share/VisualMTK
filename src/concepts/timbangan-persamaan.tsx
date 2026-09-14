@@ -146,7 +146,7 @@ function Bola({ x, y, o, warna }: { x: number; y: number; o: number; warna: stri
 }
 
 /** Susun benda dalam piring: baris berisi maksimal `perBaris`. */
-function baris(n: number, perBaris: number, lebar: number) {
+function baris(n: number, perBaris: number, lebar: number, tinggiBaris = 30) {
   const pos: { x: number; y: number; i: number }[] = []
   const total = Math.ceil(n)
   for (let i = 0; i < total; i++) {
@@ -154,18 +154,40 @@ function baris(n: number, perBaris: number, lebar: number) {
     const dalamBaris = Math.min(perBaris, total - b * perBaris)
     const k = i % perBaris
     const step = lebar / Math.max(1, dalamBaris)
-    pos.push({ x: (k - (dalamBaris - 1) / 2) * step, y: -b * 30, i })
+    pos.push({ x: (k - (dalamBaris - 1) / 2) * step, y: -b * tinggiBaris, i })
   }
   return pos
 }
 
+/** Kotak tingginya 40, jadi barisnya harus berjarak lebih dari itu agar tidak saling tindih. */
+const TINGGI_BARIS_KOTAK = 46
+/** Bola di kiri diletakkan di atas baris kotak tertinggi (kotak ke-4 membuka baris kedua). */
+const angkatBola = (nKotak: number) => -46 - TINGGI_BARIS_KOTAK * (Math.ceil(nKotak / 3) - 1)
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+/**
+ * Angka yang dipakai gambar bongkar. Narasi dan judul langkah WAJIB memakai
+ * fungsi ini juga, supaya teks tidak pernah menyebut angka yang berbeda dengan
+ * yang benar-benar terlihat di timbangan.
+ */
+function nilaiBongkar(p: Record<string, number>) {
   const a = Math.max(1, Math.round(p.a ?? 2))
   const b = Math.max(0, Math.round(p.b ?? 3))
   const x = Math.max(1, Math.round(p.x ?? 4))
-  const c = a * x + b
+  return {
+    a,
+    b,
+    x,
+    /** bola di kanan pada keadaan awal. */
+    c: a * x + b,
+    /** bola yang tersisa di kanan setelah b bola dibuang dari KEDUA sisi. */
+    sisaKanan: a * x,
+  }
+}
+
+function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const { a, b, x, c } = nilaiBongkar(p)
 
   const buangSepihak = step === 1 ? seg(t, 0.15, 0.6) : 0
   const buangDua = step >= 2 ? (step === 2 ? seg(t, 0.15, 0.7) : 1) : 0
@@ -202,14 +224,14 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         catatan={catatan}
         isiKiri={(px, py) => (
           <g>
-            {baris(a, 3, PAN_LEBAR - 46).map(({ x: dx, y: dy, i }) => (
+            {baris(a, 3, PAN_LEBAR - 46, TINGGI_BARIS_KOTAK).map(({ x: dx, y: dy, i }) => (
               <KotakX key={`k${i}`} x={px + dx} y={py + dy} o={hidup(i, nKotak)} nyala={nyalaX} />
             ))}
             {baris(b, 4, PAN_LEBAR - 40).map(({ x: dx, y: dy, i }) => (
               <Bola
                 key={`b${i}`}
                 x={px + dx}
-                y={py + dy - 46}
+                y={py + dy + angkatBola(a)}
                 o={hidup(i, nBolaKiri)}
                 warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
               />
@@ -234,7 +256,9 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* kelompok pembagian */}
       {kelompok > 0.2 && ambilSatu < 0.5 && (
         <Tag x={CX} y={40} warna="var(--m-ab)" size={16}>
-          {`kedua sisi dibagi menjadi ${fmt(a)} kelompok sama besar`}
+          {a === 1
+            ? 'cuma satu kotak — tidak ada yang perlu dibagi'
+            : `kedua sisi dibagi menjadi ${fmt(a)} kelompok sama besar`}
         </Tag>
       )}
       {periksa && (
@@ -277,14 +301,14 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         }}
         isiKiri={(px, py) => (
           <g>
-            {baris(a, 3, PAN_LEBAR - 46).map(({ x: dx, y: dy, i }) => (
+            {baris(a, 3, PAN_LEBAR - 46, TINGGI_BARIS_KOTAK).map(({ x: dx, y: dy, i }) => (
               <KotakX key={`k${i}`} x={px + dx} y={py + dy} o={1} nyala={nyalaX} />
             ))}
             {baris(b, 4, PAN_LEBAR - 40).map(({ x: dx, y: dy, i }) => (
               <Bola
                 key={`b${i}`}
                 x={px + dx}
-                y={py + dy - 46}
+                y={py + dy + angkatBola(a)}
                 o={1}
                 warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
               />
@@ -316,7 +340,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'timbangan-persamaan',
-  topicId: 'smp7-persamaan-linear',
+  topicId: 'smp7-persamaan-linear-satu-variabel',
   judul: 'Menyelesaikan persamaan',
   pertanyaan: 'Kenapa boleh mengurangi kedua ruas persamaan?',
   tagline: 'Persamaan itu timbangan. Selama kedua sisi diperlakukan sama, ia tetap seimbang.',
@@ -356,7 +380,7 @@ const konsep: Konsep = {
     Visual: VisualBongkar,
     params: [
       { key: 'a', label: 'Banyak kotak x', min: 1, max: 4, step: 1, awal: 2, bulat: true },
-      { key: 'b', label: 'Bola tambahan di kiri', min: 0, max: 6, step: 1, awal: 3, bulat: true },
+      { key: 'b', label: 'Bola tambahan di kiri', min: 1, max: 6, step: 1, awal: 3, bulat: true },
       { key: 'x', label: 'Isi tiap kotak', min: 1, max: 6, step: 1, awal: 4, bulat: true },
     ],
     roles: { a: 'a', x: 'a', b: 'b', c: 'c', nol: 'hi' },
@@ -370,47 +394,70 @@ const konsep: Konsep = {
       {
         id: 's0',
         judul: 'Timbangan yang setimbang',
-        narasi:
-          'Di kiri ada beberapa kotak berisi x dan beberapa bola. Di kanan hanya bola. Timbangan datar, artinya kedua sisi bernilai sama.',
-        rumus: '[a:2][x:x] + [b:3] = [c:11]',
+        narasi: (p) => {
+          const { a, b, c } = nilaiBongkar(p)
+          const kiri =
+            a === 1
+              ? `1 kotak berisi x dan ${fmt(b)} bola lepas`
+              : `${fmt(a)} kotak yang isinya sama-sama x, ditambah ${fmt(b)} bola lepas`
+          return `Di kiri ada ${kiri}. Di kanan ada ${fmt(c)} bola, dan timbangannya datar — artinya kedua sisi memang bernilai sama.`
+        },
+        rumus: '[a:a][x:x] + [b:b] = [c:c]',
         durasi: 1800,
       },
       {
         id: 's1',
         judul: 'Coba buang bola dari satu sisi saja',
-        narasi:
-          'Bola di kiri diambil, kanan dibiarkan. Timbangan langsung miring. Persamaannya rusak — sisi kiri tidak lagi bernilai sama dengan sisi kanan.',
+        narasi: (p) => {
+          const { b, c } = nilaiBongkar(p)
+          return `Kamu ambil ${fmt(b)} bola dari kiri saja, sedangkan ${fmt(c)} bola di kanan dibiarkan utuh. Timbangan langsung miring ke kanan — sisi kiri tidak lagi bernilai sama dengan sisi kanan, jadi persamaannya rusak.`
+        },
         durasi: 2400,
       },
       {
         id: 's2',
         judul: 'Sekarang buang dari kedua sisi',
-        narasi:
-          'Ambil tiga bola dari kiri DAN tiga bola dari kanan. Timbangan tetap datar. Inilah alasan kenapa yang boleh dilakukan harus dikenakan pada kedua ruas.',
-        rumus: '[a:2][x:x] = [c:8]',
+        narasi: (p) => {
+          const { b } = nilaiBongkar(p)
+          return `Sekarang ambil ${fmt(b)} bola dari kiri DAN ${fmt(b)} bola dari kanan, sehingga kedua sisi kehilangan hal yang sama. Timbangan tetap datar — inilah alasan kenapa setiap tindakan harus dikenakan pada kedua ruas.`
+        },
+        rumus: '[a:a][x:x] = [c:c] − [b:b]',
         durasi: 2400,
       },
       {
         id: 's3',
-        judul: 'Bagi kedua sisi sama rata',
-        narasi:
-          'Sisi kiri berisi dua kotak yang isinya sama. Sisi kanan bisa dibagi menjadi dua kelompok yang sama banyak juga.',
+        judul: (p) =>
+          nilaiBongkar(p).a === 1 ? 'Tidak ada yang perlu dibagi' : 'Bagi kedua sisi sama rata',
+        narasi: (p) => {
+          const { a, sisaKanan } = nilaiBongkar(p)
+          return a === 1
+            ? `Di kiri tinggal satu kotak saja, jadi tidak ada yang perlu dibagi. Kotak itu sudah berhadapan langsung dengan ${fmt(sisaKanan)} bola di kanan.`
+            : `Sisi kiri kini berisi ${fmt(a)} kotak yang isinya sama persis. Karena itu ${fmt(sisaKanan)} bola di kanan boleh kamu bagi menjadi ${fmt(a)} kelompok yang sama banyak.`
+        },
         durasi: 2000,
       },
       {
         id: 's4',
-        judul: 'Ambil satu kelompok dari tiap sisi',
-        narasi:
-          'Kalau dua benda yang sama berat dibagi dua sama rata, separuhnya juga sama berat. Tinggal satu kotak berhadapan dengan satu kelompok bola.',
-        rumus: '[x:x] = [c:4]',
+        judul: (p) =>
+          nilaiBongkar(p).a === 1
+            ? 'Isi kotaknya langsung terlihat'
+            : 'Sisakan satu kelompok di tiap sisi',
+        narasi: (p) => {
+          const { a, x } = nilaiBongkar(p)
+          // "ambil" di langkah sebelumnya berarti membuang; di sini yang dibuang a − 1 kelompok, jadi pakai "sisakan".
+          return a === 1
+            ? `Karena kotaknya cuma satu, ${fmt(x)} bola di kanan itu persis isi kotak tersebut. Jadi x = ${fmt(x)}.`
+            : `Kalau dua sisi yang sama berat sama-sama dibagi menjadi ${fmt(a)} kelompok yang sama, satu kelompok dari kiri pasti sama berat dengan satu kelompok dari kanan. Sisakan satu kelompok saja: 1 kotak berhadapan dengan ${fmt(x)} bola, jadi x = ${fmt(x)}.`
+        },
+        rumus: '[x:x] = ([c:c] − [b:b]) ÷ [a:a]',
         durasi: 2200,
       },
       {
         id: 's5',
         judul: 'Periksa kembali',
-        narasi:
-          'Kembalikan semuanya, lalu isi setiap kotak dengan angka yang ditemukan. Timbangan kembali datar — jawabannya benar.',
-        rumus: '[a:2] × [x:4] + [b:3] = [c:11]',
+        narasi: (p) =>
+          `Kembalikan semuanya, lalu isi ${nilaiBongkar(p).a === 1 ? 'kotaknya' : 'setiap kotak'} dengan angka yang ditemukan. Timbangan kembali datar — jawabannya benar.`,
+        rumus: '[a:a] × [x:x] + [b:b] = [c:c]',
         durasi: 2200,
       },
     ],
@@ -432,11 +479,13 @@ const konsep: Konsep = {
       const c = Math.max(0, Math.round(p.c ?? 11))
       const x = (c - b) / a
       const bulat = Number.isInteger(x)
+      // a ≤ 4 sehingga pecahan berpenyebut 2 atau 4 punya bentuk desimal tepat: tulis "=", bukan "≈".
+      const desimalTepat = Number.isInteger(x * 1000)
       return (
         <p>
           Persamaannya {a === 1 ? '' : fmt(a)}x {b === 0 ? '' : `+ ${fmt(b)} `}= {fmt(c)}, jadi{' '}
           <strong>x = {pecahanTeks(c - b, a)}</strong>
-          {bulat ? '' : ` ≈ ${fmt(x, 3)}`}.{' '}
+          {bulat ? '' : desimalTepat ? ` = ${fmt(x)}` : ` ≈ ${fmt(x, 3)}`}.{' '}
           {x < 0
             ? 'Nilai x keluar negatif. Timbangan tidak bisa menampilkannya — dan itu justru menunjukkan batas metafora ini: bilangan negatif tetap sah dalam aljabar, meski tidak ada "berat negatif".'
             : bulat
@@ -488,9 +537,11 @@ const konsep: Konsep = {
         </p>
         <h4>Kenapa pembagi tidak boleh nol</h4>
         <p>
-          Membagi kedua ruas dengan nol tidak menghasilkan persamaan yang setara — ia menghancurkan
-          informasi. Dari 5 = 5, mengalikan kedua ruas dengan 0 memberi 0 = 0 yang benar tetapi tidak
-          berguna; sedangkan dari 0·x = 0 kita tidak bisa menyimpulkan x = 1.
+          Membagi dengan nol sama sekali tidak terdefinisi, jadi langkah itu memang tidak ada.
+          Pasangannya, mengalikan kedua ruas dengan nol, bisa dilakukan tetapi menghancurkan
+          informasi: dari x = 3 diperoleh 0 = 0, yang dipenuhi oleh semua bilangan, sehingga
+          penyelesaiannya berubah. Kebalikannya juga menjebak: 0·x = 0·1 benar untuk setiap x, jadi
+          "mencoret" 0 di kedua ruas (membagi dengan 0) untuk menyimpulkan x = 1 tidak sah.
         </p>
         <h4>Batas metafora timbangan</h4>
         <p>
@@ -504,16 +555,18 @@ const konsep: Konsep = {
       <>
         <p>
           Secara formal, dua persamaan disebut <strong>ekuivalen</strong> jika himpunan
-          penyelesaiannya sama. Operasi yang menjaga keekuivalenan adalah penerapan fungsi{' '}
-          <em>injektif</em> pada kedua ruas. Fungsi f(t) = t − k dan f(t) = t/m (dengan m ≠ 0)
-          bersifat injektif, sehingga aman.
+          penyelesaiannya sama. Cara yang pasti menjaga keekuivalenan adalah menerapkan fungsi{' '}
+          <em>injektif</em> yang sama pada kedua ruas, asalkan fungsi itu terdefinisi untuk setiap
+          nilai yang bisa diambil kedua ruas. Fungsi f(t) = t − k dan f(t) = t/m (dengan m ≠ 0)
+          injektif dan terdefinisi untuk semua bilangan real, sehingga aman.
         </p>
         <p>
           Sebaliknya, mengkuadratkan kedua ruas memakai f(t) = t² yang tidak injektif pada bilangan
           real, sehingga bisa memunculkan <em>akar palsu</em>: dari x = −2 diperoleh x² = 4, yang
           juga dipenuhi x = 2. Karena itulah setiap penyelesaian persamaan yang melibatkan
-          pengkuadratan wajib diperiksa kembali — sesuatu yang tidak pernah diperlukan untuk
-          persamaan linear.
+          pengkuadratan wajib diperiksa kembali. Pada persamaan linear yang diselesaikan hanya
+          dengan operasi setara, pemeriksaan untuk menyaring akar palsu tidak diperlukan — meskipun
+          tetap berguna untuk menangkap salah hitung.
         </p>
         <p>
           Persamaan linear ax + b = c dengan a ≠ 0 selalu punya tepat satu penyelesaian,
@@ -529,7 +582,7 @@ const konsep: Konsep = {
     roles: { a: 'a', x: 'a', b: 'b', c: 'c' },
     arti: {
       x: 'Bilangan yang belum diketahui — isi setiap kotak pada timbangan.',
-      a: 'Banyaknya kotak. Karena semua kotak isinya sama, kedua ruas boleh dibagi a.',
+      a: 'Banyaknya kotak, jadi a bukan nol — itulah yang membuat kedua ruas boleh dibagi a. Karena semua kotak isinya sama, hasil baginya di kiri tepat satu kotak.',
       b: 'Tambahan di ruas kiri. Dihilangkan dengan menguranginya dari KEDUA ruas.',
       c: 'Nilai ruas kanan.',
     },
@@ -543,7 +596,7 @@ const konsep: Konsep = {
       return {
         id: 'tim-1',
         tipe: 'angka',
-        topicId: 'smp7-persamaan-linear',
+        topicId: 'smp7-persamaan-linear-satu-variabel',
         kelas: 7,
         tingkat: 'mudah',
         konsep: 'timbangan-persamaan',
@@ -561,11 +614,11 @@ const konsep: Konsep = {
     {
       id: 'tim-2',
       tipe: 'pilihan',
-      topicId: 'smp7-persamaan-linear',
+      topicId: 'smp7-persamaan-linear-satu-variabel',
       kelas: 7,
       tingkat: 'sedang',
       konsep: 'timbangan-persamaan',
-      pertanyaan: 'Dari 5x − 7 = 18, langkah pertama yang tepat adalah...',
+      pertanyaan: 'Dari 5x − 7 = 18, langkah pertama yang paling praktis adalah...',
       pilihan: [
         { id: 'a', label: 'Tambahkan 7 pada kedua ruas', benar: true },
         {
@@ -597,7 +650,7 @@ const konsep: Konsep = {
     {
       id: 'tim-3',
       tipe: 'urutkan',
-      topicId: 'smp7-persamaan-linear',
+      topicId: 'smp7-persamaan-linear-satu-variabel',
       kelas: 7,
       tingkat: 'sedang',
       konsep: 'timbangan-persamaan',
@@ -619,7 +672,7 @@ const konsep: Konsep = {
     {
       id: 'tim-4',
       tipe: 'benar-salah',
-      topicId: 'smp7-persamaan-linear',
+      topicId: 'smp7-persamaan-linear-satu-variabel',
       kelas: 8,
       tingkat: 'sulit',
       konsep: 'timbangan-persamaan',
@@ -640,24 +693,30 @@ const konsep: Konsep = {
       const a = 2 + Math.floor(rnd() * 3)
       const x = 3 + Math.floor(rnd() * 6)
       const b = 1 + Math.floor(rnd() * 5)
-      const d = 1 + Math.floor(rnd() * 3)
+      // d < a supaya koefisien sisa (a − d) positif dan tidak nol:
+      // bila d = a persamaannya jadi identitas yang dipenuhi semua x.
+      const d = 1 + Math.floor(rnd() * (a - 1))
+      const k = a - d
       const e = a * x + b - d * x
+      const suku = (n: number) => (n === 1 ? 'x' : `${n}x`)
       return {
         id: 'tim-5',
         tipe: 'angka',
-        topicId: 'smp7-persamaan-linear',
+        topicId: 'smp7-persamaan-linear-satu-variabel',
         kelas: 8,
         tingkat: 'sulit',
         konsep: 'timbangan-persamaan',
-        pertanyaan: `Tentukan nilai x dari ${a}x + ${b} = ${d}x + ${e}.`,
+        pertanyaan: `Tentukan nilai x dari ${a}x + ${b} = ${suku(d)} + ${e}.`,
         jawaban: x,
         toleransi: 1e-9,
         hint: [
           'Sekarang kotak berisi x ada di kedua sisi timbangan. Kumpulkan dulu di satu sisi.',
-          `Kurangi ${d}x dari kedua ruas sehingga tersisa ${a - d}x + ${b} = ${e}.`,
-          `Lalu kurangi ${b} dari kedua ruas, dan bagi dengan ${a - d}.`,
+          `Kurangi ${suku(d)} dari kedua ruas sehingga tersisa ${suku(k)} + ${b} = ${e}.`,
+          k === 1
+            ? `Lalu kurangi ${b} dari kedua ruas; nilai x langsung terlihat.`
+            : `Lalu kurangi ${b} dari kedua ruas, dan bagi dengan ${k}.`,
         ],
-        pembahasan: `${a}x + ${b} = ${d}x + ${e} → ${a - d}x = ${e - b} → x = ${x}. Mengurangi ${d}x dari kedua ruas sama sahnya dengan mengurangi bilangan biasa: yang penting kedua sisi diperlakukan sama.`,
+        pembahasan: `${a}x + ${b} = ${suku(d)} + ${e} → ${suku(k)} = ${e - b}${k === 1 ? '' : ` → x = ${x}`}. Periksa: ${a} × ${x} + ${b} = ${a * x + b} dan ${d} × ${x} + ${e} = ${d * x + e}. Mengurangi ${suku(d)} dari kedua ruas sama sahnya dengan mengurangi bilangan biasa: yang penting kedua sisi diperlakukan sama.`,
       }
     },
   ],

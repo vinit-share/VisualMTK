@@ -134,6 +134,8 @@ export interface Timeline {
   pause: () => void
   toggle: () => void
   ke: (step: number, langsungSelesai?: boolean) => void
+  /** lompat ke sebuah langkah lalu langsung memutarnya dari awal. */
+  mainDari: (step: number) => void
   maju: () => void
   mundur: () => void
   ulang: () => void
@@ -200,6 +202,19 @@ export function useTimeline({ durasi, awal = 0, otomatis = true }: TimelineOpts)
 
   const pause = useCallback(() => setMain(false), [])
 
+  const mainDari = useCallback(
+    (s: number) => {
+      const ns = clamp(s, 0, jumlah - 1)
+      waktu.current = 0
+      setStep(ns)
+      setT(0)
+      // Dengan gerak berkurang, tidak ada yang perlu diputar — tampilkan
+      // langsung keadaan akhir langkah itu.
+      setMain(!kurangi)
+    },
+    [jumlah, kurangi],
+  )
+
   return {
     step,
     t: kurangi ? 1 : t,
@@ -208,6 +223,7 @@ export function useTimeline({ durasi, awal = 0, otomatis = true }: TimelineOpts)
     pause,
     toggle: () => (main ? setMain(false) : play()),
     ke,
+    mainDari,
     maju: () => ke(step + 1),
     mundur: () => ke(step - 1),
     ulang: () => {

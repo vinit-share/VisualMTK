@@ -4,7 +4,7 @@
 
    Gagasan: pada lingkaran berjari-jari 1, sisi miring segitiga
    selalu bernilai 1. Akibatnya sin θ = depan/miring = tinggi titik
-   itu sendiri, dan cos θ = jaraknya ke kiri-kanan.
+   itu sendiri, dan cos θ = posisi mendatarnya (kiri-kanan).
 
    Ketika titik berputar, tingginya naik-turun berulang. Merekam
    tinggi itu terhadap sudut menghasilkan grafik sinus. Gelombang
@@ -33,6 +33,48 @@ const titik = (deg: number) => ({
   y: CY - R * Math.sin(rad(deg)),
 })
 
+/** Buang sisa galat mengambang: Math.sin(π) memberi 1,2·10⁻¹⁶, padahal sin 180° tepat 0. */
+const nol = (v: number) => (Math.abs(v) < 1e-9 ? 0 : v)
+
+/** Bilangan bertanda; negatifnya memakai '−' (U+2212), bukan tanda hubung. */
+const bil = (n: number, desimal?: number) =>
+  n < 0 ? `−${fmt(-n, desimal)}` : fmt(n, desimal)
+
+/**
+ * Nilainya tepat pada tiga desimal? Untuk sudut bulat hanya 0, ±½, ±1 (dan
+ * kuadratnya ¼, ½, ¾) — selebihnya irasional, jadi hanya bisa dibulatkan.
+ */
+const tepat = (v: number) => Math.abs(v * 1000 - Math.round(v * 1000)) < 1e-6
+
+/** Tanda hubung nilai: "=" hanya untuk nilai tepat, "≈" untuk nilai yang dibulatkan. */
+const sama = (v: number) => (tepat(v) ? '=' : '≈')
+
+/** Angka bertanda: nilai tepat tanpa nol berlebih ("0,5"), selain itu dibulatkan. */
+const angka = (v: number, desimal = 3) => bil(v, tepat(v) ? undefined : desimal)
+
+/** Panjang (tanpa tanda) dalam kalimat: "0,5" atau "sekitar 0,643". */
+const panjang = (v: number) => (tepat(v) ? fmt(Math.abs(v)) : `sekitar ${fmt(Math.abs(v), 3)}`)
+
+/**
+ * Satu-satunya tempat nilai penggeser bongkar diturunkan. Gambar DAN teks
+ * langkah sama-sama memakai fungsi ini, supaya angka di narasi tidak pernah
+ * berbeda dari angka yang tergambar.
+ */
+function nilaiBongkar(p: Record<string, number>) {
+  const theta = clamp(Math.round(p.theta ?? 40), 0, 360)
+  const s = nol(Math.sin(rad(theta)))
+  const c = nol(Math.cos(rad(theta)))
+  return {
+    theta,
+    s,
+    c,
+    /** sudut lancip — hanya di sini perbandingan sisi segitiga benar-benar berlaku. */
+    lancip: theta > 0 && theta < 90,
+    /** titik tepat di sumbu: salah satu sisi habis, segitiganya gepeng. */
+    gepeng: s === 0 || c === 0,
+  }
+}
+
 function Lingkaran({
   theta,
   tampilSegitiga,
@@ -49,6 +91,12 @@ function Lingkaran({
   const P = titik(theta)
   const s = Math.sin(rad(theta))
   const c = Math.cos(rad(theta))
+  // Di sumbu, segitiganya gepeng: tidak ada sudut siku-siku yang perlu ditandai.
+  const gepeng = Math.abs(s) < 1e-9 || Math.abs(c) < 1e-9
+  // Label "1" diletakkan di sisi luar jari-jari (bukan di bawah sisi mendatar,
+  // yang panjangnya cos θ), agar jelas yang bernilai 1 adalah sisi miringnya.
+  const k = s * c >= 0 ? 1 : -1
+  const label1 = { x: CX + 0.8 * R * c - 16 * k * s, y: CY - (0.8 * R * s + 16 * k * c) }
 
   return (
     <g>
@@ -66,16 +114,18 @@ function Lingkaran({
             stroke="var(--m-ab)"
             strokeWidth={1.6}
           />
-          <SikuSiku
-            x={P.x}
-            y={CY}
-            ux={c >= 0 ? -1 : 1}
-            uy={0}
-            vx={0}
-            vy={s >= 0 ? -1 : 1}
-            s={11}
-            warna="var(--m-ab)"
-          />
+          {!gepeng && (
+            <SikuSiku
+              x={P.x}
+              y={CY}
+              ux={c >= 0 ? -1 : 1}
+              uy={0}
+              vx={0}
+              vy={s >= 0 ? -1 : 1}
+              s={11}
+              warna="var(--m-ab)"
+            />
+          )}
         </g>
       )}
 
@@ -111,7 +161,7 @@ function Lingkaran({
       <Tag x={CX + 40} y={CY - 14} warna="var(--ink-2)" size={13} latar={null}>
         {`θ = ${fmt(Math.round(theta))}°`}
       </Tag>
-      <Tag x={CX + (c >= 0 ? 40 : -40)} y={CY + 26} warna="var(--ink-3)" size={12}>
+      <Tag x={label1.x} y={label1.y} warna="var(--ink-3)" size={12}>
         1
       </Tag>
     </g>
@@ -124,20 +174,24 @@ function Gelombang({
   tampilCos,
   nyalaSin,
   nyalaCos,
+  rekam,
 }: {
   theta: number
   maksDeg: number
   tampilCos: number
   nyalaSin: boolean
   nyalaCos: boolean
+  /** Sudut terjauh yang sudah terekam di grafik; bawaannya sampai θ. */
+  rekam?: number
 }) {
   const kx = (deg: number) => WX0 + (deg / maksDeg) * (WX1 - WX0)
   const ky = (v: number) => CY - v * WSKALA
 
   const langkah = 2
+  const ujung = Math.max(theta, rekam ?? theta)
   const jalur = (f: (d: number) => number) => {
     const p: string[] = []
-    for (let d = 0; d <= theta + 0.001; d += langkah) {
+    for (let d = 0; d <= ujung + 0.001; d += langkah) {
       p.push(`${p.length === 0 ? 'M' : 'L'} ${kx(d).toFixed(1)} ${ky(f(d)).toFixed(1)}`)
     }
     return p.join(' ')
@@ -228,7 +282,7 @@ function Gelombang({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const dasar = clamp(Math.round(p.theta ?? 40), 0, 360)
+  const dasar = nilaiBongkar(p).theta
 
   const putarPenuh = step === 2 ? 360 * seg(t, 0.02, 0.98) : 0
   const putarDua = step === 5 ? 720 * seg(t, 0.02, 0.98) : 0
@@ -236,6 +290,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
     step === 2 ? putarPenuh : step === 5 ? putarDua : step === 4 ? 40 + 140 * seg(t, 0.1, 0.9) : dasar
 
   const maksDeg = step >= 5 ? 720 : 360
+  // Putaran penuh sudah direkam pada langkah 2 (dan 5), jadi di langkah 3 dan 6
+  // rekaman itu tetap tampil utuh — agar pergeseran seperempat putaran antara
+  // grafik sinus dan kosinus benar-benar terlihat, bukan hanya sampai θ.
+  const rekam = step === 3 ? 360 : step >= 6 ? 720 : undefined
   const tampilSegitiga = fase(step, t, 0)
   const tampilCos = fase(step, t, 3)
   const identitas = step >= 6
@@ -243,8 +301,8 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaSin = sorot === 'sin' || sorot === 'y'
   const nyalaCos = sorot === 'cos' || sorot === 'x'
 
-  const s = Math.sin(rad(theta))
-  const c = Math.cos(rad(theta))
+  const s = nol(Math.sin(rad(theta)))
+  const c = nol(Math.cos(rad(theta)))
 
   return (
     <Svg w={W} h={H} maxH={440} label="Lingkaran satuan dan grafik sinus yang terbentuk dari perputaran titik">
@@ -261,11 +319,12 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         tampilCos={tampilCos}
         nyalaSin={nyalaSin}
         nyalaCos={nyalaCos}
+        rekam={rekam}
       />
 
       {step <= 1 && (
         <Tag x={W / 2} y={40} warna="var(--m-a)" size={16}>
-          {`sin ${fmt(Math.round(theta))}° = ${fmt(s, 3)} — dan itu persis tinggi titiknya`}
+          {`sin ${fmt(Math.round(theta))}° ${sama(s)} ${angka(s)} — itulah tinggi titiknya`}
         </Tag>
       )}
       {step === 2 && (
@@ -275,7 +334,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 3 && (
         <Tag x={W / 2} y={40} warna="var(--m-b)" size={16}>
-          {`cos ${fmt(Math.round(theta))}° = ${fmt(c, 3)} — jarak mendatarnya`}
+          {`cos ${fmt(Math.round(theta))}° ${sama(c)} ${angka(c)} — posisi mendatarnya`}
         </Tag>
       )}
       {step === 4 && (
@@ -290,7 +349,9 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {identitas && (
         <Tag x={W / 2} y={40} warna="var(--m-ab)" size={16}>
-          {`${fmt(s * s, 3)} + ${fmt(c * c, 3)} = 1 — Pythagoras pada segitiga itu`}
+          {`${angka(s * s)} + ${angka(c * c)} = 1 — ${
+            s === 0 || c === 0 ? 'tetap berlaku walau segitiganya gepeng' : 'Pythagoras pada segitiga itu'
+          }`}
         </Tag>
       )}
     </Svg>
@@ -301,8 +362,8 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
   const theta = clamp(Math.round(p.theta ?? 40), 0, 720)
-  const s = Math.sin(rad(theta))
-  const c = Math.cos(rad(theta))
+  const s = nol(Math.sin(rad(theta)))
+  const c = nol(Math.cos(rad(theta)))
 
   return (
     <Svg w={W} h={H} maxH={440} label="Lingkaran satuan dengan sudut yang bisa diputar bebas">
@@ -321,10 +382,10 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         nyalaCos={sorot === 'cos' || sorot === 'x'}
       />
       <Tag x={W / 2} y={36} warna="var(--m-a)" size={16}>
-        {`sin ${fmt(theta)}° = ${fmt(s, 4)}`}
+        {`sin ${fmt(theta)}° ${sama(s)} ${angka(s, 4)}`}
       </Tag>
       <Tag x={W / 2} y={68} warna="var(--m-b)" size={16}>
-        {`cos ${fmt(theta)}° = ${fmt(c, 4)}`}
+        {`cos ${fmt(theta)}° ${sama(c)} ${angka(c, 4)}`}
       </Tag>
       <Tag x={W / 2} y={H - 18} warna="var(--m-ab)" size={15}>
         {`sin² + cos² = ${fmt(s * s + c * c, 4)}`}
@@ -378,8 +439,8 @@ const konsep: Konsep = {
     params: [{ key: 'theta', label: 'Sudut θ', min: 0, max: 360, step: 1, awal: 40, satuan: '°' }],
     roles: { sin: 'a', cos: 'b', y: 'a', x: 'b', satu: 'hi' },
     arti: {
-      sin: 'Sinus — tinggi titik pada lingkaran satuan.',
-      cos: 'Kosinus — jarak mendatar titik itu dari pusat.',
+      sin: 'Sinus — tinggi titik pada lingkaran satuan (bertanda: negatif bila titiknya di bawah sumbu mendatar).',
+      cos: 'Kosinus — posisi mendatar titik itu terhadap pusat (bertanda: negatif bila titiknya di kiri pusat).',
       y: 'Koordinat tegak titik.',
       x: 'Koordinat mendatar titik.',
       satu: 'Jari-jari lingkaran satuan, selalu bernilai 1. Inilah yang menyederhanakan semuanya.',
@@ -387,17 +448,41 @@ const konsep: Konsep = {
     steps: [
       {
         id: 's0',
-        judul: 'Segitiga siku-siku di dalam lingkaran',
-        narasi:
-          'Tarik jari-jari ke sebuah titik, lalu turunkan garis tegak lurus ke sumbu mendatar. Terbentuk segitiga siku-siku dengan sisi miring sepanjang jari-jari.',
+        judul: (p) =>
+          nilaiBongkar(p).gepeng
+            ? 'Di sumbu, segitiganya gepeng'
+            : 'Segitiga siku-siku di dalam lingkaran',
+        narasi: (p) => {
+          const { theta, s, c } = nilaiBongkar(p)
+          if (s === 0) {
+            return `Di ${fmt(theta)}° titiknya duduk tepat pada sumbu mendatar, jadi garis tegaknya habis dan tidak ada segitiga yang terbentuk. Geser θ sedikit saja, dan segitiga siku-sikunya langsung muncul.`
+          }
+          if (c === 0) {
+            return `Di ${fmt(theta)}° titiknya tepat ${s > 0 ? 'di atas' : 'di bawah'} pusat, jadi jari-jarinya berimpit dengan garis tegak dan segitiganya gepeng. Geser θ sedikit saja, dan segitiga siku-sikunya langsung muncul.`
+          }
+          // Titik di bawah sumbu: garis tegaknya naik ke sumbu, bukan "diturunkan".
+          return `Tarik jari-jari ke titik di sudut ${fmt(theta)}°, lalu buat garis tegak lurus dari titik itu ${s > 0 ? 'turun' : 'naik'} ke sumbu mendatar. Terbentuk segitiga siku-siku yang sisi miringnya jari-jari itu sendiri.`
+        },
         durasi: 2000,
       },
       {
         id: 's1',
         judul: 'Jari-jarinya 1, jadi semuanya lebih sederhana',
-        narasi:
-          'Sinus adalah sisi depan dibagi sisi miring. Karena sisi miringnya 1, pembagian itu tidak mengubah apa pun — sin θ langsung sama dengan tinggi titiknya.',
-        rumus: '[sin:sin θ] = depan / miring = [y:y] / [satu:1] = [y:y]',
+        narasi: (p) => {
+          const { theta, s, gepeng } = nilaiBongkar(p)
+          // Di sumbu tidak ada segitiga (langkah 0), jadi yang disebut jari-jarinya.
+          const awal = gepeng
+            ? 'Karena jari-jarinya 1, membagi dengan jari-jari tidak mengubah apa pun — sin θ langsung sama dengan tinggi titiknya.'
+            : 'Karena sisi miringnya 1, membagi dengan sisi miring tidak mengubah apa pun — sin θ langsung sama dengan tinggi titiknya.'
+          if (s === 0) {
+            return `${awal} Titik di ${fmt(theta)}° duduk tepat pada sumbu mendatar, jadi tingginya nol dan sin ${fmt(theta)}° = 0.`
+          }
+          return `${awal} Titik di ${fmt(theta)}° berada ${panjang(s)} ${s < 0 ? 'di bawah' : 'di atas'} sumbu mendatar, jadi sin ${fmt(theta)}° ${sama(s)} ${angka(s)}.`
+        },
+        rumus: (p) =>
+          nilaiBongkar(p).lancip
+            ? '[sin:sin θ] = depan / miring = [y:y] / [satu:1] = [y:y]'
+            : '[sin:sin θ] = [y:y] / [satu:1] = [y:y]',
         durasi: 2600,
       },
       {
@@ -409,10 +494,20 @@ const konsep: Konsep = {
       },
       {
         id: 's3',
-        judul: 'Kosinus adalah jarak mendatarnya',
-        narasi:
-          'Dengan alasan yang sama, cos θ sama dengan koordinat mendatar titik itu. Grafiknya berbentuk sama, hanya bergeser seperempat putaran.',
-        rumus: '[cos:cos θ] = samping / miring = [x:x]',
+        judul: 'Kosinus adalah posisi mendatarnya',
+        narasi: (p) => {
+          const { theta, c } = nilaiBongkar(p)
+          const akhir =
+            'Grafik kosinus berbentuk sama dengan grafik sinus, hanya bergeser seperempat putaran.'
+          if (c === 0) {
+            return `Titik di ${fmt(theta)}° tidak berada di kiri maupun di kanan pusat, jadi cos ${fmt(theta)}° = 0. ${akhir}`
+          }
+          return `Titik di ${fmt(theta)}° berada ${panjang(c)} ${c < 0 ? 'di kiri' : 'di kanan'} pusat, jadi cos ${fmt(theta)}° ${sama(c)} ${angka(c)}. ${akhir}`
+        },
+        rumus: (p) =>
+          nilaiBongkar(p).lancip
+            ? '[cos:cos θ] = samping / miring = [x:x]'
+            : '[cos:cos θ] = [x:x]',
         durasi: 2400,
       },
       {
@@ -432,8 +527,16 @@ const konsep: Konsep = {
       {
         id: 's6',
         judul: 'Dan Pythagoras masih berlaku',
-        narasi:
-          'Segitiga tadi punya sisi tegak sin θ, sisi mendatar cos θ, dan sisi miring 1. Teorema Pythagoras langsung memberi identitas paling terkenal dalam trigonometri.',
+        narasi: (p) => {
+          const { theta, s, c, gepeng } = nilaiBongkar(p)
+          // Angka sama persis dengan label gambar langkah ini. Kuadrat yang dibulatkan
+          // ke tiga desimal tetap berjumlah tepat 1 untuk setiap sudut bulat 0°–360°.
+          const hitung = `${angka(s * s)} + ${angka(c * c)} = 1`
+          if (gepeng) {
+            return `Di ${fmt(theta)}° segitiganya gepeng: satu sisinya habis, sisi lainnya sepanjang 1. Jumlah kuadratnya tetap ${hitung}, jadi identitas ini pun tetap berlaku.`
+          }
+          return `Sisi tegak segitiga ini ${panjang(s)}, sisi mendatarnya ${panjang(c)}, dan sisi miringnya 1, jadi sin² θ + cos² θ ${sama(s * s)} ${hitung}. Ini berlaku di kuadran mana pun, karena tanda negatif hilang begitu dikuadratkan.`
+        },
         rumus: '[sin:sin^2 θ] + [cos:cos^2 θ] = [satu:1]',
         durasi: 2600,
       },
@@ -448,19 +551,35 @@ const konsep: Konsep = {
     Visual: VisualEksperimen,
     temuan: (p) => {
       const theta = clamp(Math.round(p.theta ?? 40), 0, 720)
-      const s = Math.sin(rad(theta))
-      const c = Math.cos(rad(theta))
+      const s = nol(Math.sin(rad(theta)))
+      const c = nol(Math.cos(rad(theta)))
       const kuadran = Math.floor((theta % 360) / 90) + 1
+      // Pasangan satu putaran yang masih terjangkau penggeser (0°–720°).
+      const pasangan = theta + 360 <= 720 ? theta + 360 : theta - 360
+      const letak =
+        s === 0 || c === 0
+          ? 'tepat di sumbu, bukan di kuadran mana pun'
+          : `di kuadran ${kuadran}`
       return (
         <p>
-          Pada θ = {fmt(theta)}°, titiknya berada di kuadran {kuadran}:{' '}
+          Pada θ = {fmt(theta)}°, titiknya berada {letak}:{' '}
           <strong>
-            sin = {fmt(s, 3)}, cos = {fmt(c, 3)}
+            sin {sama(s)} {angka(s)}, cos {sama(c)} {angka(c)}
           </strong>
-          . {s >= 0 ? 'Titiknya di atas sumbu, jadi sinusnya positif.' : 'Titiknya di bawah sumbu, jadi sinusnya negatif.'}{' '}
-          {c >= 0 ? 'Ia juga di kanan pusat, jadi kosinusnya positif.' : 'Ia di kiri pusat, jadi kosinusnya negatif.'}{' '}
+          .{' '}
+          {s > 0
+            ? 'Titiknya di atas sumbu mendatar, jadi sinusnya positif.'
+            : s < 0
+              ? 'Titiknya di bawah sumbu mendatar, jadi sinusnya negatif.'
+              : 'Titiknya tepat pada sumbu mendatar, jadi sinusnya 0.'}{' '}
+          {c > 0
+            ? 'Ia di kanan pusat, jadi kosinusnya positif.'
+            : c < 0
+              ? 'Ia di kiri pusat, jadi kosinusnya negatif.'
+              : 'Ia tepat pada sumbu tegak, tidak di kiri maupun di kanan pusat, jadi kosinusnya 0.'}{' '}
           Perhatikan sin² + cos² selalu bernilai 1 berapa pun sudutnya — itu Pythagoras, bukan
-          kebetulan. Coba juga bandingkan θ dan θ + 360°: hasilnya sama persis.
+          kebetulan. Coba juga bandingkan {fmt(theta)}° dengan {fmt(pasangan)}°, yang terpaut
+          satu putaran penuh: hasilnya sama persis.
         </p>
       )
     },
@@ -497,16 +616,20 @@ const konsep: Konsep = {
         <h4>Sifat yang langsung terbaca dari gambar</h4>
         <ul>
           <li>Periodisitas: sin(θ + 360°) = sin θ, karena titiknya kembali ke tempat yang sama.</li>
-          <li>Identitas Pythagoras: sin²θ + cos²θ = 1, langsung dari segitiga bersisi miring 1.</li>
+          <li>
+            Identitas Pythagoras: sin²θ + cos²θ = 1, langsung dari segitiga bersisi miring 1. Di
+            kuadran mana pun berlaku, karena tanda negatif hilang saat dikuadratkan.
+          </li>
           <li>Sudut berelasi: sin(180° − θ) = sin θ, karena kedua titik punya ketinggian sama.</li>
           <li>Kesetaraan bentuk: cos θ = sin(θ + 90°), yaitu grafik yang sama tetapi bergeser.</li>
         </ul>
         <h4>Kenapa gelombang muncul di mana-mana</h4>
         <p>
           Setiap gerak melingkar beraturan yang diproyeksikan ke satu arah menghasilkan gerak
-          harmonik sederhana. Karena itu bunyi, cahaya, arus listrik bolak-balik, dan ayunan bandul
-          semuanya dimodelkan dengan sinus — bukan karena benda-benda itu berputar, melainkan karena
-          persamaan geraknya berbentuk sama.
+          harmonik sederhana, yang grafiknya sinus. Getaran bunyi, gelombang cahaya, arus listrik
+          bolak-balik, dan ayunan bandul juga dimodelkan dengan sinus — bukan karena benda-benda itu
+          berputar, melainkan karena persamaan yang mengaturnya berbentuk sama. Untuk bandul,
+          kesamaan itu hanya berlaku mendekati, yaitu bila simpangannya kecil.
         </p>
         <p>
           Perlu diingat, satuan derajat hanyalah kesepakatan. Dalam kalkulus dipakai radian, karena
@@ -520,8 +643,8 @@ const konsep: Konsep = {
     src: '[sin:sin θ] = [y:y],  [cos:cos θ] = [x:x],  [sin:sin^2 θ] + [cos:cos^2 θ] = [satu:1]',
     roles: { sin: 'a', cos: 'b', y: 'a', x: 'b', satu: 'hi' },
     arti: {
-      sin: 'Tinggi titik pada lingkaran satuan.',
-      cos: 'Jarak mendatar titik dari pusat.',
+      sin: 'Tinggi titik pada lingkaran satuan (negatif bila di bawah sumbu mendatar).',
+      cos: 'Posisi mendatar titik terhadap pusat (negatif bila di kiri pusat).',
       y: 'Ordinat titik — nilainya persis sama dengan sinus.',
       x: 'Absis titik — nilainya persis sama dengan kosinus.',
       satu: 'Jari-jari lingkaran satuan. Karena bernilai 1, identitas Pythagoras berbentuk sesederhana ini.',
@@ -610,7 +733,7 @@ const konsep: Konsep = {
         'Pada 270°, titiknya berada di titik terendah.',
       ],
       pembahasan:
-        'Semua nilai ini bisa dibaca langsung dari letak titik pada lingkaran satuan, tanpa menghafal tabel: 0° dan 180° di sumbu mendatar (tinggi 0), 90° di puncak (1), 270° di dasar (−1).',
+        'Empat nilai bisa dibaca langsung dari letak titik pada lingkaran satuan: 0° dan 180° di sumbu mendatar (tinggi 0), 90° di puncak (1), 270° di dasar (−1). Untuk 30° perlu satu langkah lagi: titik di 30°, pasangannya di −30°, dan pusat membentuk segitiga sama sisi (sudut di pusat 60°, dua sisinya jari-jari 1). Jadi jarak tegak kedua titik itu 1, dan tinggi titik di 30° tepat setengahnya, 0,5.',
     },
     {
       id: 'sin-5',

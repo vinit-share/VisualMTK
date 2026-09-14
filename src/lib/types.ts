@@ -95,13 +95,20 @@ export interface DeriveState {
   sorot: string | null
 }
 
+/**
+ * Teks langkah bongkar. Bila penggeser (`params`) mengubah gambar, tulis
+ * sebagai fungsi dari nilai penggeser supaya angka di narasi selalu sama
+ * dengan angka di gambar.
+ */
+export type TeksLangkah = string | ((p: Record<string, number>) => string)
+
 export interface DeriveStep {
   id: string
-  judul: string
+  judul: TeksLangkah
   /** narasi yang muncul di bawah panggung, bahasa anak. */
-  narasi: string
+  narasi: TeksLangkah
   /** rumus yang ditampilkan pada langkah ini (markup FormulaProps). */
-  rumus?: string
+  rumus?: TeksLangkah
   /** durasi animasi langkah ini dalam ms. */
   durasi?: number
 }

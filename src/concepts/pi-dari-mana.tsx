@@ -214,8 +214,9 @@ function BandingUkuran({
   R: number
   sorot: string | null
 }) {
-  // Dibatasi agar jejak lingkaran terbesar tetap muat di panggung.
-  const dasar = clamp(R, 30, 62)
+  // Rentang penggeser (jari-jari 1,2–3) dipetakan utuh ke 30–62 piksel, agar
+  // setiap geseran tetap mengubah gambar dan jejak terbesar tetap muat di panggung.
+  const dasar = 30 + clamp((R / SKALA - 1.2) / 1.8, 0, 1) * 32
   const daftar = [
     { nama: 'kecil', R: dasar * 0.5 },
     { nama: 'sedang', R: dasar * 0.85 },
@@ -233,7 +234,7 @@ function BandingUkuran({
       w={W}
       h={H}
       maxH={430}
-      label="Tiga lingkaran berbeda ukuran, jejaknya sama-sama muat tiga diameter lebih sedikit sisa"
+      label="Tiga lingkaran berbeda ukuran, jejaknya sama-sama memuat tiga diameter ditambah sedikit sisa"
     >
       <Tag x={W / 2} y={44} warna="var(--ink-2)" size={17}>
         {step >= 6 ? 'polanya sama untuk lingkaran mana pun' : 'ganti ukurannya, lihat polanya'}
@@ -274,7 +275,7 @@ function BandingUkuran({
               tebal={18}
             />
             <Tag x={50} y={y - 26} anchor="start" warna="var(--ink-2)" size={14}>
-              {`${lk.nama} · d = ${fmt(2 * rSat, 1)} · K = ${fmt(TAU * rSat, 1)}`}
+              {`${lk.nama} · d = ${fmt(2 * rSat, 2)} · K = ${fmt(TAU * rSat, 2)}`}
             </Tag>
             <Tag
               x={50 + panjang}
@@ -595,7 +596,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         fontWeight={700}
         fill="var(--ink-2)"
       >
-        {`3 diameter penuh, sisa ${fmt(sisa, 2)} cm = 0,14159… × d`}
+        {`3 diameter penuh, sisa = 0,14159… × d ≈ ${fmt(sisa, 2)} cm`}
       </text>
       {S < 29.9 && (
         <text x={W - 30} y={40} textAnchor="end" fontSize={13} fill="var(--ink-2)">
@@ -683,7 +684,7 @@ const konsep: Konsep = {
         id: 's2',
         judul: 'Jejaknya adalah kelilingnya',
         narasi:
-          'Setiap bagian tepi lingkaran menyentuh garis tepat sekali. Jadi panjang jejak dari titik berangkat sampai titik mendarat sama dengan panjang tepinya sendiri.',
+          'Karena tidak selip, setiap potongan kecil tepi lingkaran menempel pada potongan garis yang sama panjang, dan dalam satu putaran setiap potongan tepi menempel satu kali. Jadi panjang jejak dari titik berangkat sampai titik mendarat sama dengan panjang tepinya sendiri.',
         rumus: 'panjang jejak = [keliling:K]',
         durasi: 1800,
       },
@@ -691,7 +692,7 @@ const konsep: Konsep = {
         id: 's3',
         judul: 'Ukur jejak itu memakai diameter',
         narasi:
-          'Sekarang diameter dijadikan penggaris. Salinannya dijejerkan di sepanjang jejak. Muat tiga kali penuh — dan ini terjadi pada lingkaran mana pun.',
+          'Sekarang diameter dijadikan penggaris, dan salinannya dijejerkan di sepanjang jejak. Muat tiga kali penuh — dan ini terjadi pada lingkaran mana pun.',
         rumus: '[keliling:K] = 3 × [diameter:d] + sisa',
         durasi: 2200,
       },
@@ -707,7 +708,7 @@ const konsep: Konsep = {
         id: 's5',
         judul: 'Ganti ukuran lingkarannya',
         narasi:
-          'Lingkaran kecil, sedang, besar. Panjang jejaknya berbeda, panjang diameternya juga berbeda. Tapi polanya sama persis: tiga diameter lebih sedikit sisa.',
+          'Lingkaran kecil, sedang, dan besar punya jejak dan diameter yang berbeda panjang, tetapi polanya sama persis: tiga diameter ditambah sepotong kecil sisa. Ini bukan kebetulan, sebab lingkaran besar hanyalah lingkaran kecil yang diperbesar, jadi keliling dan diameternya dikali angka yang sama.',
         rumus: '[keliling:K] : [diameter:d] = 3,14159…',
         durasi: 2400,
       },
@@ -738,7 +739,7 @@ const konsep: Konsep = {
         <p>
           Jari-jari sekarang {fmt(r, 1)} cm, jadi diameternya {fmt(d, 1)} cm dan kelilingnya{' '}
           {fmt(K, 2)} cm. Jejak sepanjang itu memuat <strong>3 diameter penuh</strong>, tersisa{' '}
-          {fmt(sisa, 2)} cm — dan sisa itu tepat {fmt(sisa / d, 5)} kali diameter.{' '}
+          {fmt(sisa, 2)} cm — dan sisa itu {fmt(sisa / d, 5)}… kali diameter.{' '}
           <strong>Hasil bagi K : d = {fmt(K / d, 5)}…</strong> Geser sejauh apa pun, angka itu tidak
           bergerak: keliling dan diameter selalu membesar bersama dengan perbandingan yang sama.
         </p>
@@ -751,17 +752,18 @@ const konsep: Konsep = {
       <>
         <p>
           Bayangkan kamu memberi tanda cat pada ban sepeda, lalu mendorongnya lurus sampai tanda itu
-          kembali menyentuh tanah. Jarak yang dilewatinya sama dengan panjang keliling ban — karena
-          seluruh tepi ban sudah menyentuh tanah tepat sekali.
+          kembali menyentuh tanah. Asal bannya tidak tergelincir, jarak yang dilewatinya sama dengan
+          panjang keliling ban — karena seluruh tepi ban sudah menempel ke tanah tepat satu kali.
         </p>
         <p>
-          Sekarang ukur jarak tadi memakai <strong>lebar ban</strong> (diameternya) sebagai
-          penggaris. Lebar ban itu muat <strong>tiga kali</strong>, lalu masih ada sisa sedikit,
-          kira-kira sepertujuh lebar ban.
+          Sekarang ukur jarak tadi memakai <strong>garis tengah ban</strong> (diameternya: jarak
+          dari tepi ke tepi lewat pusat roda, bukan tebal karetnya) sebagai penggaris. Garis tengah
+          itu muat <strong>tiga kali</strong>, lalu masih ada sisa sedikit, kira-kira sepertujuh
+          garis tengah ban.
         </p>
         <p>
           Coba pakai ban sepeda anak, lalu ban truk. Jaraknya jelas beda jauh, tapi hasilnya tetap:
-          tiga kali lebar ban lebih sedikit. Angka "tiga koma sekian" itulah yang dinamai{' '}
+          sedikit lebih dari tiga kali garis tengah ban. Angka "tiga koma sekian" itulah yang dinamai{' '}
           <strong>π</strong> (dibaca "pi").
         </p>
         <p>
@@ -772,8 +774,9 @@ const konsep: Konsep = {
         <p>
           <strong>Batas percobaan ini:</strong> menggelindingkan ban atau melingkarkan tali tidak
           akan pernah membuktikan angka π. Penggaris dan tali selalu punya sedikit galat. Percobaan
-          ini menunjukkan <em>bahwa</em> angkanya selalu sama; nilai persisnya dicari dengan hitungan,
-          bukan dengan mengukur.
+          ini membuat kita <em>melihat</em> bahwa angkanya selalu sama. Alasan pastinya: lingkaran
+          ban besar hanyalah lingkaran ban kecil yang diperbesar, jadi keliling dan garis tengahnya
+          ikut membesar bersama. Angka-angka π di belakang koma dicari dengan hitungan, bukan dengan mengukur.
         </p>
       </>
     ),
@@ -782,7 +785,8 @@ const konsep: Konsep = {
         <p>
           Kunci soalnya bukan pengukuran, melainkan <strong>kesebangunan</strong>. Semua lingkaran
           sebangun: lingkaran mana pun dapat diperoleh dari lingkaran lain dengan perbesaran
-          (dilatasi) berfaktor <em>k</em>.
+          (dilatasi) berfaktor <em>k</em>, lalu digeser bila perlu (menggeser tidak mengubah
+          panjang apa pun).
         </p>
         <p>
           Perbesaran mengalikan <em>setiap</em> panjang dengan <em>k</em>. Jadi kalau lingkaran
@@ -812,14 +816,18 @@ const konsep: Konsep = {
       <>
         <p>
           Secara formal, keliling lingkaran didefinisikan sebagai <strong>limit</strong> keliling
-          segi-n beraturan yang terdaftar di dalamnya. Segi-n beraturan pada lingkaran berjari-jari{' '}
-          <em>r</em> memiliki keliling
+          segi-n beraturan yang semua titik sudutnya terletak pada lingkaran itu. Segi-n seperti itu
+          pada lingkaran berjari-jari <em>r</em> memiliki keliling
         </p>
-        <p style={{ textAlign: 'center' }}>P(n) = 2nr·sin(π/n)</p>
+        <p style={{ textAlign: 'center' }}>P(n) = 2nr·sin(180°/n)</p>
         <p>
-          dan karena sin x / x → 1 saat x → 0, diperoleh P(n) → 2πr. Barisan ini naik dan terbatas di
-          atas oleh keliling segi-n yang melingkupi, sehingga limitnya ada — inilah yang menjamin
-          "panjang jejak" pada animasi tadi benar-benar terdefinisi, bukan sekadar hasil pengukuran.
+          Perhatikan: P(n)/d = n·sin(180°/n) sama sekali tidak memuat <em>r</em> — bukti lain bahwa
+          K/d sama untuk semua lingkaran. Barisan ini naik dan terbatas di atas oleh keliling segi-n
+          beraturan yang melingkupi lingkaran, sehingga limitnya ada; nilai limit P(n)/d itulah π
+          (untuk n = 96 sudah diperoleh 3,14103…). Inilah yang menjamin "panjang jejak" pada animasi
+          tadi benar-benar terdefinisi, bukan sekadar hasil pengukuran. Dengan sudut dalam radian
+          (180° = π), pernyataan P(n) → 2πr setara dengan limit sin x / x → 1 saat x → 0; keduanya
+          bersandar pada definisi yang sama, jadi limit itu bukan bukti terpisah tentang nilai π.
         </p>
         <p>
           Animasi menggelinding sendiri adalah pernyataan bahwa <strong>panjang busur</strong>{' '}
@@ -831,15 +839,16 @@ const konsep: Konsep = {
           Sifat bilangan π: <strong>irasional</strong> (dibuktikan Lambert, 1761) — karenanya tidak
           ada pecahan <em>p</em>/<em>q</em> yang tepat sama dengan π, termasuk 22/7 dan 355/113.
           Lebih kuat lagi, π bersifat <strong>transenden</strong> (Lindemann, 1882): ia bukan akar
-          polinomial berkoefisien bilangan bulat mana pun. Dari sinilah masalah kuno "mengkuadratkan
+          polinomial tak nol berkoefisien bilangan bulat mana pun. Dari sinilah masalah kuno "mengkuadratkan
           lingkaran" dengan jangka dan penggaris terbukti mustahil.
         </p>
         <p>
           <strong>Batas gagasannya:</strong> ketetapan K/d = π hanya berlaku pada geometri Euklides
-          (bidang datar). Pada permukaan bola, lingkaran berjari-jari geodesik <em>ρ</em> memiliki
-          keliling 2π·R·sin(ρ/R), sehingga K/d &lt; π dan nilainya bergantung pada ukuran lingkaran.
-          Jadi π bukan sekadar fakta tentang lingkaran — ia sekaligus fakta tentang kedataran ruang
-          tempat lingkaran itu digambar.
+          (bidang datar). Pada permukaan bola berjari-jari <em>R</em>, lingkaran yang jari-jarinya{' '}
+          <em>ρ</em> diukur menyusuri permukaan bola (jadi d = 2ρ) memiliki keliling 2π·R·sin(ρ/R),
+          sehingga K/d = π·sin(ρ/R)/(ρ/R) &lt; π dan nilainya bergantung pada ukuran lingkaran. Jadi
+          ketetapan K/d = π bukan sekadar fakta tentang lingkaran — ia sekaligus fakta tentang
+          kedataran bidang tempat lingkaran itu digambar.
         </p>
       </>
     ),
@@ -872,7 +881,7 @@ const konsep: Konsep = {
         satuan: 'cm',
         toleransi: 1e-6,
         hint: [
-          'Ingat jejak gelindingnya: keliling selalu sekitar 3 diameter lebih sedikit. Jadi keliling = π × diameter.',
+          'Ingat jejak gelindingnya: keliling selalu sedikit lebih dari 3 diameter. Jadi keliling = π × diameter.',
           `Tulis dulu: K = 22/7 × ${d}.`,
           `Angka ${d} habis dibagi 7. Hitung ${d} : 7 = ${d / 7} lebih dulu, baru kalikan 22.`,
         ],
@@ -960,7 +969,7 @@ const konsep: Konsep = {
           `Susun ulang menjadi d = K : π, jadi d = ${fmt(K)} : 3,14.`,
           'Kalau bingung membagi dengan koma, kalikan dua-duanya dengan 100 dulu: hasilnya tidak berubah.',
         ],
-        pembahasan: `d = K : π = ${fmt(K)} : 3,14 = ${fmt(d)} cm. Periksa balik: 3,14 × ${fmt(d)} = ${fmt(K)} cm. Karena 3,14 hanya hampiran, diameter aslinya sedikit berbeda dari angka bulat ini.`,
+        pembahasan: `d = K : π ≈ ${fmt(K)} : 3,14 = ${fmt(d)} cm. Periksa balik: 3,14 × ${fmt(d)} = ${fmt(K)} cm. Karena 3,14 sedikit lebih kecil dari π, diameter aslinya sedikit lebih kecil dari angka bulat ini.`,
       }
     },
     {
@@ -975,7 +984,7 @@ const konsep: Konsep = {
         'Tandai diameter lingkaran, lalu berdirikan di atas garis',
         'Gelindingkan lingkaran satu putaran penuh tanpa selip',
         'Panjang jejaknya sama dengan panjang tepi lingkaran, yaitu kelilingnya',
-        'Ukur jejak itu memakai diameter: muat 3 kali penuh, tersisa 0,14 diameter',
+        'Ukur jejak itu memakai diameter: muat 3 kali penuh, tersisa sekitar 0,14 diameter',
         'Ganti-ganti ukuran lingkarannya, hasil bagi K : d tetap sama',
         'Angka tetap itu diberi nama π, sehingga K = π × d',
       ],
@@ -985,7 +994,7 @@ const konsep: Konsep = {
         'Memberi nama pada sebuah angka selalu jadi langkah terakhir, setelah terbukti angkanya tidak berubah.',
       ],
       pembahasan:
-        'Urutannya: tandai diameter → gelindingkan satu putaran → jejak = keliling → ukur pakai diameter (3 kali lebih sedikit) → ganti ukuran, hasil baginya tetap → beri nama π.',
+        'Urutannya: tandai diameter → gelindingkan satu putaran → jejak = keliling → ukur pakai diameter (muat 3 kali, masih ada sedikit sisa) → ganti ukuran, hasil baginya tetap → beri nama π.',
     },
     {
       id: 'pi-6',

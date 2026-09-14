@@ -13,7 +13,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTimeline } from '../lib/anim'
-import type { DeriveScene } from '../lib/types'
+import type { DeriveScene, TeksLangkah } from '../lib/types'
 import { Formula, SorotProvider, useSorot } from './Formula'
 import { Params, paramAwal } from './Slider'
 import { Stage } from './Stage'
@@ -43,6 +43,7 @@ export function Bongkar({
 
   const langkah = scene.steps[tl.step]
   const total = scene.steps.length
+  const rumusLangkah = langkah.rumus ? teks(langkah.rumus, p) : ''
   const persen = ((tl.step + tl.t) / total) * 100
 
   const tombolPapanKetik = (e: React.KeyboardEvent) => {
@@ -86,13 +87,13 @@ export function Bongkar({
         <Panggung scene={scene} step={tl.step} t={tl.t} p={p} />
 
         <div className="bongkar-narasi" aria-live="polite">
-          <h4 className="bongkar-judul">{langkah.judul}</h4>
-          <p className="muted">{langkah.narasi}</p>
+          <h4 className="bongkar-judul">{teks(langkah.judul, p)}</h4>
+          <p className="muted">{teks(langkah.narasi, p)}</p>
         </div>
 
-        {langkah.rumus && (
+        {rumusLangkah && (
           <div className="bongkar-rumus" key={langkah.id}>
-            <Formula src={langkah.rumus} roles={scene.roles} arti={scene.arti} size="lg" />
+            <Formula src={rumusLangkah} roles={scene.roles} arti={scene.arti} size="lg" />
           </div>
         )}
 
@@ -141,11 +142,12 @@ export function Bongkar({
               <button
                 className="rel-item"
                 data-state={i < tl.step ? 'lewat' : i === tl.step ? 'aktif' : 'nanti'}
-                onClick={() => tl.ke(i, i < tl.step)}
+                onClick={() => tl.mainDari(i)}
                 aria-current={i === tl.step ? 'step' : undefined}
+                title={`Putar langkah ${i + 1}: ${teks(s.judul, p)}`}
               >
                 <span className="rel-no">{i + 1}</span>
-                <span className="rel-judul">{s.judul}</span>
+                <span className="rel-judul">{teks(s.judul, p)}</span>
               </button>
             </li>
           ))}
@@ -153,6 +155,11 @@ export function Bongkar({
       </div>
     </SorotProvider>
   )
+}
+
+/** Teks langkah bisa tetap atau dihitung dari nilai penggeser. */
+function teks(x: TeksLangkah, p: Record<string, number>): string {
+  return typeof x === 'function' ? x(p) : x
 }
 
 /** Dipisah agar bisa membaca sorotan dari konteks di dalam provider. */

@@ -527,3 +527,6 @@
   opacity: 0.9;
 }
 .kartu-konsep-wrap { position: relative; padding-left: var(--s-5); }
+
+/* Rangka pemuatan untuk daftar topik kelas */
+.rangka-topik { height: 8.5rem; }

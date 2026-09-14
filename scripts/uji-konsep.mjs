@@ -199,6 +199,36 @@ function periksaRender(id, nama, komponen, keadaan) {
   return maksElemen
 }
 
+/**
+ * Seluruh kombinasi nilai penggeser (dijarangkan bila terlalu banyak).
+ * Dipakai untuk menguji teks langkah, yang murah dihitung — beda dengan
+ * render SVG yang memakai nilaiUji.
+ */
+function semuaNilai(params = [], batas = 8000) {
+  if (params.length === 0) return [{}]
+  const pilihan = params.map((s) => {
+    const nilai = []
+    for (let v = s.min; v <= s.max + 1e-9; v += s.step) nilai.push(Number(v.toFixed(6)))
+    if (!nilai.includes(s.awal)) nilai.push(s.awal)
+    return nilai
+  })
+  const jarang = pilihan.map((v) => v.slice())
+  const hitung = () => jarang.reduce((a, v) => a * v.length, 1)
+  while (hitung() > batas) {
+    let i = 0
+    for (let k = 1; k < jarang.length; k++) if (jarang[k].length > jarang[i].length) i = k
+    if (jarang[i].length <= 3) break
+    jarang[i] = jarang[i].filter((_, k) => k % 2 === 0 || k === jarang[i].length - 1)
+  }
+  const hasil = []
+  const rekursi = (i, akum) => {
+    if (i === params.length) return hasil.push({ ...akum })
+    for (const v of jarang[i]) rekursi(i + 1, { ...akum, [params[i].key]: v })
+  }
+  rekursi(0, {})
+  return hasil
+}
+
 /** Nilai uji untuk tiap parameter: minimum, tengah, maksimum. */
 function nilaiUji(params = []) {
   if (params.length === 0) return [{}]
@@ -238,6 +268,15 @@ const server = await createServer({
   logLevel: 'error',
 })
 
+// Katalog dibaca lewat Vite juga agar impor TypeScript-nya ikut terselesaikan.
+const KATALOG = new Map()
+try {
+  const modKatalog = await server.ssrLoadModule('/src/data/katalog.ts')
+  for (const m of modKatalog.KATALOG ?? []) KATALOG.set(m.id, m)
+} catch (e) {
+  console.warn('Tidak bisa memuat katalog:', e.message)
+}
+
 const berkas = fs
   .readdirSync(DIR)
   .filter((f) => f.endsWith('.tsx'))
@@ -275,11 +314,56 @@ for (const f of berkas) {
   if (!k.pertanyaan?.trim()) catat(id, 'serius', 'tidak ada pertanyaan pemancing')
   if (!k.tagline?.trim()) catat(id, 'ringan', 'tidak ada tagline')
 
+  /* --- modul harus sepakat dengan katalog ---
+     Galeri memakai teks dari katalog, halaman konsep memakai teks dari modul.
+     Kalau keduanya berbeda, pengguna melihat dua judul untuk hal yang sama. */
+  const meta = KATALOG.get(id)
+  if (!meta) {
+    catat(id, 'serius', 'tidak terdaftar di src/data/katalog.ts, jadi tidak muncul di galeri')
+  } else {
+    for (const bidang of ['judul', 'pertanyaan', 'tagline', 'domain']) {
+      if (meta[bidang] !== k[bidang]) {
+        catat(
+          id,
+          'serius',
+          `"${bidang}" berbeda antara katalog dan modul:\n         katalog: ${meta[bidang]}\n         modul  : ${k[bidang]}`,
+        )
+      }
+    }
+    // topicId harus menunjuk topik yang benar-benar ada di peta kurikulum.
+    if (meta.topicId && k.topicId !== meta.topicId) {
+      catat(id, 'serius', `topicId modul "${k.topicId}" tidak sama dengan tautan kurikulum "${meta.topicId}"`)
+    }
+    if (meta.kelas && k.kelas !== meta.kelas) {
+      catat(id, 'ringan', `kelas modul (${k.kelas}) tidak sama dengan kelas topiknya di kurikulum (${meta.kelas})`)
+    }
+  }
+
   /* --- bongkar --- */
   const langkah = k.bongkar?.steps ?? []
   if (langkah.length < 4) catat(id, 'serius', `langkah bongkar hanya ${langkah.length} (minimal 4)`)
+  // Teks langkah boleh berupa fungsi dari penggeser: uji di setiap nilai uji.
+  const nilaiTeks = semuaNilai(k.bongkar?.params ?? [])
   for (const s of langkah) {
-    if (!s.narasi?.trim()) catat(id, 'serius', `langkah "${s.id}" tanpa narasi`)
+    for (const bidang of ['judul', 'narasi', 'rumus']) {
+      const x = s[bidang]
+      if (x === undefined && bidang === 'rumus') continue
+      const hasil = typeof x === 'function' ? nilaiTeks.map((p) => [p, x(p)]) : [[null, x]]
+      for (const [p, teks] of hasil) {
+        const di = p ? ` (penggeser ${JSON.stringify(p)})` : ''
+        if (typeof teks !== 'string' || !teks.trim()) {
+          catat(id, 'serius', `langkah "${s.id}": ${bidang} kosong${di}`)
+        } else if (/NaN|Infinity|undefined|\+ -|- -/.test(teks)) {
+          catat(id, 'serius', `langkah "${s.id}": ${bidang} memuat "${teks.match(/NaN|Infinity|undefined|\+ -|- -/)[0]}"${di}`)
+        }
+      }
+    }
+    // Narasi maksimal 2 kalimat (lihat docs/PANDUAN-KONSEP.md).
+    const contohNarasi = typeof s.narasi === 'function' ? nilaiTeks.map((p) => s.narasi(p)) : [s.narasi]
+    const terpanjang = contohNarasi
+      .filter((t) => typeof t === 'string')
+      .reduce((maks, t) => Math.max(maks, t.split(/(?<=[.!?])s+(?=[A-Z0-9"“(])/).filter((x) => x.trim()).length), 0)
+    if (terpanjang > 2) catat(id, 'ringan', `langkah "${s.id}": narasi sampai ${terpanjang} kalimat (maksimal 2)`)
     if ((s.durasi ?? 1400) < 800) catat(id, 'ringan', `langkah "${s.id}" durasinya terlalu singkat`)
   }
   const idLangkah = new Set(langkah.map((s) => s.id))
@@ -351,6 +435,14 @@ for (const f of berkas) {
   }
   for (const { soal, asal } of soalJadi) periksaSoal(id, soal, asal)
   totalSoal += soalJadi.length
+
+  // Soal harus menunjuk topik dan konsep yang sama dengan modulnya.
+  const topikLain = new Set(
+    soalJadi.map((x) => x.soal?.topicId).filter((t) => t && meta?.topicId && t !== meta.topicId),
+  )
+  if (topikLain.size) catat(id, 'serius', `soal menunjuk topik yang salah: ${[...topikLain].join(', ')}`)
+  const konsepLain = new Set(soalJadi.map((x) => x.soal?.konsep).filter((c) => c && c !== id))
+  if (konsepLain.size) catat(id, 'ringan', `soal menunjuk konsep lain: ${[...konsepLain].join(', ')}`)
 
   /* --- render visual --- */
   let maksElemen = 0

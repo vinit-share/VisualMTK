@@ -9,7 +9,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const RISET = 'docs/riset'
-const KELUARAN = 'src/data/kurikulum.generated.ts'
 
 const DOMAIN = {
   bilangan: 'bilangan',
@@ -46,7 +45,7 @@ const KONSEP_DI_TOPIK = [
   { kelas: 7, cari: ['perkalian', 'bilangan bulat'], konsep: ['negatif-kali-negatif'] },
   { kelas: 7, cari: ['persamaan linear'], konsep: ['timbangan-persamaan'] },
   { kelas: 7, cari: ['sudut', 'segitiga'], konsep: ['sudut-segitiga'] },
-  { kelas: 8, cari: ['bentuk aljabar'], konsep: ['kuadrat-jumlah'] },
+  { kelas: 8, judul: 'Identitas Aljabar dan Bentuk Kuadrat Sempurna', konsep: ['kuadrat-jumlah'] },
   { kelas: 8, cari: ['pythagoras'], konsep: ['pythagoras'] },
   { kelas: 8, cari: ['peluang'], konsep: ['peluang-simulasi'] },
   { kelas: 9, cari: ['kerucut'], konsep: ['kerucut-sepertiga'] },
@@ -55,9 +54,25 @@ const KONSEP_DI_TOPIK = [
   { kelas: 10, judul: 'Logaritma: Definisi dan Sifat-sifatnya', konsep: ['eksponen-logaritma'] },
   { kelas: 10, judul: 'Perbandingan Trigonometri Sudut Lancip (Sinus, Cosinus, Tangen)', konsep: ['sin-cos-lingkaran'] },
   { kelas: 10, judul: 'Ukuran Pemusatan Data: Mean, Median, dan Modus', konsep: ['rata-rata-menipu'] },
-  { kelas: 11, cari: ['turunan'], konsep: ['turunan-kemiringan'] },
-  { kelas: 12, cari: ['integral'], konsep: ['integral-luas'] },
+  { kelas: 11, judul: 'Definisi Turunan sebagai Limit', konsep: ['turunan-kemiringan'] },
+  { kelas: 12, judul: 'Jumlah Riemann dan Integral Tentu', konsep: ['integral-luas'] },
 ]
+
+/**
+ * Capaian Pembelajaran menetapkan Fase F sebagai satu kesatuan (kelas 11-12)
+ * tanpa memerinci kelasnya; pembagian itu keputusan ATP tiap sekolah.
+ * Aplikasi ini menampilkan materi per kelas, jadi dipakai pembagian yang
+ * paling lazim di Indonesia: limit dan turunan di kelas 11, integral di
+ * kelas 12.
+ */
+function kelasKalkulus(judul, kelasAsli) {
+  const j = judul.toLowerCase()
+  if (/integral|riemann|teorema dasar kalkulus|volume benda putar|luas daerah/.test(j)) return 12
+  if (/limit|turunan|kekontinuan|garis singgung|stasioner|optimasi|kecekungan|titik belok|laju perubahan|maksimum/.test(j)) {
+    return 11
+  }
+  return kelasAsli
+}
 
 const jenjang = (k) => (k <= 6 ? 'sd' : k <= 9 ? 'smp' : 'sma')
 
@@ -88,27 +103,49 @@ if (berkas.length === 0) {
 const topik = []
 const dipakai = new Set()
 
+/**
+ * Riset Fase F dipecah per domain (keluarannya terlalu besar untuk satu
+ * panggilan). Berkas-berkas itu digabungkan ke dalam data Fase F di sini.
+ */
+function domainTambahan(fase) {
+  if (fase !== 'F') return []
+  const dir = path.join(RISET, 'fase-f')
+  if (!fs.existsSync(dir)) return []
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .sort()
+    .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
+}
+
 for (const f of berkas) {
   const data = JSON.parse(fs.readFileSync(path.join(RISET, f), 'utf8'))
   const fase = data.fase
   const kelasFase = FASE_KELAS[fase] ?? data.kelas ?? []
+  const semuaDomain = [...(data.domains ?? []), ...domainTambahan(fase)]
 
-  for (const d of data.domains ?? []) {
+  for (const d of semuaDomain) {
     const dom = DOMAIN[bersih(d.nama).toLowerCase()]
     if (!dom) {
       console.warn('Domain tidak dikenal, dilewati:', d.nama)
       continue
     }
     for (const t of d.topics ?? []) {
-      const kelas = kelasFase.includes(t.kelas) ? t.kelas : kelasFase[0]
-      let id = `${jenjang(kelas)}${kelas}-${slug(t.judul)}`
+      let kelas = kelasFase.includes(t.kelas) ? t.kelas : kelasFase[0]
+      if (dom === 'kalkulus') kelas = kelasKalkulus(t.judul, kelas)
+      // Topik khusus mata pelajaran "Matematika Tingkat Lanjut" ditandai
+      // dengan awalan pada judulnya; awalan itu diubah menjadi bendera.
+      const lanjut = /^\s*\[tingkat lanjut\]\s*/i.test(t.judul)
+      const judul = bersih(t.judul.replace(/^\s*\[tingkat lanjut\]\s*/i, ''))
+      let id = `${jenjang(kelas)}${kelas}-${slug(judul)}`
       let n = 2
-      while (dipakai.has(id)) id = `${jenjang(kelas)}${kelas}-${slug(t.judul)}-${n++}`
+      while (dipakai.has(id)) id = `${jenjang(kelas)}${kelas}-${slug(judul)}-${n++}`
       dipakai.add(id)
 
       topik.push({
         id,
-        judul: bersih(t.judul),
+        judul,
+        ...(lanjut ? { lanjut: true } : {}),
         kelas,
         fase,
         domain: dom,
@@ -183,7 +220,13 @@ for (const t of topik) {
   delete t.prasyaratTeks
 }
 
-topik.sort((a, b) => a.kelas - b.kelas || a.domain.localeCompare(b.domain) || a.judul.localeCompare(b.judul))
+topik.sort(
+  (a, b) =>
+    a.kelas - b.kelas ||
+    Number(!!a.lanjut) - Number(!!b.lanjut) ||
+    a.domain.localeCompare(b.domain) ||
+    a.judul.localeCompare(b.judul),
+)
 
 const nPra = topik.reduce((a, t) => a + t.prasyarat.length, 0)
 console.log(`\n${topik.length} topik, ${nPra} hubungan prasyarat.`)
@@ -192,28 +235,80 @@ for (const k of Array.from({ length: 12 }, (_, i) => i + 1)) {
   console.log(`  kelas ${String(k).padStart(2)}: ${n} topik`)
 }
 
-/* ---------- tulis berkas TypeScript ---------- */
-const isi = `/* ============================================================
-   Visual MTK — Peta topik kurikulum (DIHASILKAN OTOMATIS)
+/* ---------- tulis berkas TypeScript ----------
+   Data dipecah agar halaman hanya memuat yang benar-benar dipakai:
+
+   - ringkas.generated.ts  : seluruh topik tanpa teks panjang. Dipakai
+                             halaman Belajar, Peta, dan penamaan prasyarat.
+   - kelas/kelas-N.ts      : rincian lengkap satu kelas, dimuat malas oleh
+                             halaman kelas yang sedang dibuka.
+*/
+
+const KEPALA = (judul) => `/* ============================================================
+   Visual MTK — ${judul} (DIHASILKAN OTOMATIS)
 
    Jangan sunting berkas ini dengan tangan.
-   Sumber: docs/riset/02-fase-*.json (hasil riset Capaian Pembelajaran
-   Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025).
-   Bangun ulang: node scripts/bangun-kurikulum.mjs
+   Sumber: docs/riset/ (riset Capaian Pembelajaran Kepka BSKAP
+   Kemendikdasmen No. 046/H/KR/2025).
+   Bangun ulang: npm run bangun:kurikulum
    ============================================================ */
-
-import type { Topic } from '../lib/types'
-
-export interface TopikKurikulum extends Topic {
-  /** pertanyaan "kenapa" yang layak divisualkan untuk topik ini. */
-  kenapa?: string[]
-}
-
-export const TOPIK_GENERATED: TopikKurikulum[] = ${JSON.stringify(topik, null, 2)}
 `
 
-fs.writeFileSync(KELUARAN, isi)
-console.log(`\nDitulis: ${KELUARAN} (${(isi.length / 1024).toFixed(0)} KB)`)
+const DIR_KELAS = 'src/data/kurikulum'
+fs.mkdirSync(DIR_KELAS, { recursive: true })
+
+// Ringkasan: bidang yang dipakai untuk daftar, pencarian, dan peta.
+const ringkas = topik.map((t) => ({
+  id: t.id,
+  judul: t.judul,
+  kelas: t.kelas,
+  fase: t.fase,
+  domain: t.domain,
+  prasyarat: t.prasyarat,
+  ...(t.lanjut ? { lanjut: true } : {}),
+  ...(t.konsep ? { konsep: t.konsep } : {}),
+}))
+
+const isiRingkas = `${KEPALA('Ringkasan topik kurikulum')}
+import type { Domain, Fase } from '../../lib/types'
+
+export interface TopikRingkas {
+  id: string
+  judul: string
+  kelas: number
+  fase: Fase
+  domain: Domain
+  prasyarat: string[]
+  /** hanya ada pada mata pelajaran Matematika Tingkat Lanjut. */
+  lanjut?: boolean
+  konsep?: string[]
+}
+
+export const TOPIK_RINGKAS: TopikRingkas[] = ${JSON.stringify(ringkas, null, 1)}
+`
+fs.writeFileSync(path.join(DIR_KELAS, 'ringkas.generated.ts'), isiRingkas)
+console.log(`\nDitulis: ${DIR_KELAS}/ringkas.generated.ts (${(isiRingkas.length / 1024).toFixed(0)} KB)`)
+
+let totalKelas = 0
+for (let k = 1; k <= 12; k++) {
+  const isiKelas = topik.filter((t) => t.kelas === k)
+  const teks = `${KEPALA(`Rincian topik kelas ${k}`)}
+import type { TopikKurikulum } from '../kurikulum'
+
+const topik: TopikKurikulum[] = ${JSON.stringify(isiKelas, null, 1)}
+
+export default topik
+`
+  fs.writeFileSync(path.join(DIR_KELAS, `kelas-${k}.generated.ts`), teks)
+  totalKelas += teks.length
+}
+console.log(
+  `Ditulis: ${DIR_KELAS}/kelas-1..12.generated.ts (total ${(totalKelas / 1024).toFixed(0)} KB, rata-rata ${(
+    totalKelas /
+    12 /
+    1024
+  ).toFixed(0)} KB per kelas)`,
+)
 
 /* ---------- berkas kecil: konsep -> topik ----------
    Dipisah supaya katalog konsep tidak ikut menarik seluruh data

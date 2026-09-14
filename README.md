@@ -40,10 +40,16 @@ npm run dev
 Perintah lain:
 
 ```bash
-npx tsc -b        # pemeriksaan tipe (wajib lulus)
+npm run periksa   # pemeriksaan tipe + uji seluruh modul konsep (wajib lulus)
 npm run build     # bundel produksi ke dist/
 npm run preview   # jalankan hasil build
 ```
+
+`npm run uji:konsep` memeriksa setiap modul konsep: bentuk datanya, kunci
+jawaban setiap soal (termasuk menjalankan generator parametrik dengan 12 benih
+berbeda), kelengkapan petunjuk dan diagnosa, serta merender seluruh visualnya
+pada ratusan kombinasi langkah dan nilai penggeser untuk memastikan tidak ada
+NaN yang bocor ke atribut SVG.
 
 Rutenya memakai `HashRouter`, jadi hasil `npm run build` bisa langsung
 di-hosting statis di mana saja (GitHub Pages, Netlify, Vercel, atau folder biasa
@@ -80,8 +86,10 @@ paket font. Itu saja.
 | `src/components/Stage.tsx` | `Svg`, `Tag`, `Dimensi`, `SikuSiku` |
 | `src/components/SoalView.tsx` | Penyaji soal + petunjuk bertahap |
 | `src/concepts/*.tsx` | Satu berkas per konsep, ditemukan otomatis |
-| `src/data/katalog.ts` | Metadata ringan tiap konsep |
-| `src/data/kurikulum.generated.ts` | Peta topik kelas 1–12 (dihasilkan otomatis) |
+| `src/data/katalog.ts` | Katalog konsep (metadata dibuat dari modulnya) |
+| `src/data/kurikulum.ts` | Pembagian kelas, jalur konsep, pemuat rincian |
+| `src/data/kurikulum/ringkas.generated.ts` | Seluruh topik kelas 1–12, bentuk ringkas |
+| `src/data/kurikulum/kelas-N.generated.ts` | Rincian satu kelas, dimuat malas |
 | `docs/PANDUAN-KONSEP.md` | Kontrak penulisan konsep baru |
 | `docs/riset/` | Hasil riset Capaian Pembelajaran beserta sumbernya |
 
@@ -95,11 +103,10 @@ Tingkat Lanjut). Struktur fase A–F beserta elemen Bilangan, Aljabar, Pengukura
 Geometri, Analisis Data dan Peluang, serta Kalkulus mengikuti dokumen tersebut.
 
 Hasil riset mentahnya tersimpan di `docs/riset/` lengkap dengan daftar sumber
-yang benar-benar dibaca. Berkas `src/data/kurikulum.generated.ts` dibangun
-darinya:
+yang benar-benar dibaca. Berkas di `src/data/kurikulum/` dibangun darinya:
 
 ```bash
-node scripts/bangun-kurikulum.mjs
+npm run bangun          # kurikulum + katalog
 ```
 
 Jangan menyunting berkas `*.generated.ts` dengan tangan.
@@ -111,8 +118,11 @@ Jangan menyunting berkas `*.generated.ts` dengan tangan.
 1. Baca `docs/PANDUAN-KONSEP.md` — itu kontraknya.
 2. Lihat `src/concepts/segitiga-setengah.tsx` sebagai acuan kualitas.
 3. Buat berkas `src/concepts/<id>.tsx` dengan `export default` bertipe `Konsep`.
-4. Tambahkan metadatanya di `src/data/katalog.ts`.
-5. Jalankan `npx tsc -b`.
+4. Tautkan konsepnya ke topik kurikulum pada tabel `KONSEP_DI_TOPIK` di
+   `scripts/bangun-kurikulum.mjs`, lalu jalankan `npm run bangun` — tautan
+   kurikulum dan metadata galeri dibuat ulang dari modulmu.
+5. Tambahkan label jenis visualisasinya pada peta `VISUAL` di `src/data/katalog.ts`.
+6. Jalankan `npm run periksa` — pemeriksaan tipe dan uji modul harus lolos.
 
 Tidak perlu mendaftarkan berkasnya di mana pun — `src/concepts/registry.ts`
 menemukannya sendiri lewat `import.meta.glob`, dan modulnya baru dimuat ketika

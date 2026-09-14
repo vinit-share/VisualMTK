@@ -166,14 +166,26 @@ function GrafikIrisan({ x, tampil }: { x: number; tampil: number }) {
   )
 }
 
+/* ---------------- Nilai penggeser bongkar ----------------
+   Diturunkan di satu tempat saja supaya angka pada gambar dan angka pada
+   teks langkah tidak pernah berbeda. */
+
+const jariBongkar = (p: Record<string, number>) => clamp(p.r ?? 3, 1.5, 5)
+const tinggiBongkar = (p: Record<string, number>) => clamp(p.t ?? 5, 3, 8)
+const irisanBongkar = (p: Record<string, number>) => clamp(p.irisan ?? 0.4, 0, 0.98)
+/** Volume tabung yang alas dan tingginya sama dengan kerucutnya. */
+const volTabungBongkar = (p: Record<string, number>) =>
+  Math.PI * jariBongkar(p) ** 2 * tinggiBongkar(p)
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const r = clamp(p.r ?? 3, 1.5, 5)
-  const tg = clamp(p.t ?? 5, 3, 8)
-  const irisan = clamp(p.irisan ?? 0.4, 0, 0.98)
+  const r = jariBongkar(p)
+  const tg = tinggiBongkar(p)
+  const irisan = irisanBongkar(p)
 
-  const R = r * 20
+  // Skala mendatar 18 agar pada r = 5 kerucut dan tabung tidak saling menimpa.
+  const R = r * 18
   const T = tg * 30
   const ALAS = 350
 
@@ -194,33 +206,37 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
   const yIris = ALAS - T * x
 
+  // Posisi mendatar kerucut (KX) dan tabung (TX); bergeser ke kiri saat grafik tampil.
+  const KX = grafik > 0.3 ? 115 : 180
+  const TX = grafik > 0.3 ? 305 : 380
+
   return (
     <Svg w={W} h={H} maxH={450} label="Kerucut dan tabung beralas sama, beserta perbandingan luas irisannya">
-      {/* kerucut kiri */}
+      {/* kerucut kiri: penuh di awal tiap tuangan, lalu kosong setelah isinya pindah ke tabung */}
       <Kerucut
-        cx={grafik > 0.3 ? 140 : 180}
+        cx={KX}
         alas={ALAS}
         r={R}
         tinggi={T}
-        isi={step === 0 || irisMode ? 1 : 1 - tuang * 3 > 0 ? 1 : 0}
+        isi={step >= 1 && step <= 3 ? 1 - seg(t, 0.1, 0.9) : 1}
       />
       {/* tabung kanan */}
-      <Tabung cx={grafik > 0.3 ? 300 : 380} alas={ALAS} r={R} tinggi={T} isi={tuang} />
+      <Tabung cx={TX} alas={ALAS} r={R} tinggi={T} isi={tuang} />
 
       {/* garis irisan */}
       {irisMode && (
         <g>
           <line
-            x1={60}
+            x1={KX - R - 10}
             y1={yIris}
-            x2={grafik > 0.3 ? 380 : 470}
+            x2={TX + R + 10}
             y2={yIris}
             stroke="var(--m-hi)"
             strokeWidth={2}
             strokeDasharray="7 5"
           />
           <ellipse
-            cx={grafik > 0.3 ? 140 : 180}
+            cx={KX}
             cy={yIris}
             rx={R * (1 - x)}
             ry={RY * (1 - x)}
@@ -230,7 +246,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             strokeWidth={2}
           />
           <ellipse
-            cx={grafik > 0.3 ? 300 : 380}
+            cx={TX}
             cy={yIris}
             rx={R}
             ry={RY}
@@ -245,10 +261,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {grafik > 0.05 && <GrafikIrisan x={x} tampil={grafik} />}
 
       {/* ukuran */}
-      <Tag x={(grafik > 0.3 ? 140 : 180)} y={ALAS + 38} warna={nyalaR ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
+      <Tag x={KX} y={ALAS + 38} warna={nyalaR ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
         {`r = ${fmt(r)}`}
       </Tag>
-      <Tag x={(grafik > 0.3 ? 300 : 380)} y={ALAS + 38} warna={nyalaT ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
+      <Tag x={TX} y={ALAS + 38} warna={nyalaT ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
         {`t = ${fmt(tg)}`}
       </Tag>
 
@@ -275,7 +291,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {selesai && (
         <Tag x={W / 2} y={44} warna={nyalaTiga ? 'var(--m-hi)' : 'var(--m-ab)'} size={17}>
-          {`V kerucut = ⅓ × π × ${fmt(r)}² × ${fmt(tg)} = ${fmt((Math.PI * r * r * tg) / 3, 2)}`}
+          {`V kerucut = ⅓ × π × ${fmt(r)}² × ${fmt(tg)} = ${fmt(volTabungBongkar(p) / 3, 2)}`}
         </Tag>
       )}
     </Svg>
@@ -288,18 +304,29 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const r = clamp(p.r ?? 3, 1, 5)
   const tg = clamp(p.t ?? 5, 2, 8)
   const x = clamp(p.irisan ?? 0.4, 0, 0.98)
-  const R = r * 20
+  // Skala sama dengan VisualBongkar; pada r = 5 kedua bangun tetap tidak saling menimpa.
+  const R = r * 18
   const T = tg * 30
   const ALAS = 350
   const yIris = ALAS - T * x
+  const KX = 115
+  const TX = 305
 
   return (
     <Svg w={W} h={H} maxH={450} label="Kerucut dan tabung yang ukurannya bisa diubah, dengan irisan mendatar">
-      <Kerucut cx={140} alas={ALAS} r={R} tinggi={T} />
-      <Tabung cx={300} alas={ALAS} r={R} tinggi={T} isi={1 / 3} />
-      <line x1={60} y1={yIris} x2={380} y2={yIris} stroke="var(--m-hi)" strokeWidth={2} strokeDasharray="7 5" />
+      <Kerucut cx={KX} alas={ALAS} r={R} tinggi={T} />
+      <Tabung cx={TX} alas={ALAS} r={R} tinggi={T} isi={1 / 3} />
+      <line
+        x1={KX - R - 10}
+        y1={yIris}
+        x2={TX + R + 10}
+        y2={yIris}
+        stroke="var(--m-hi)"
+        strokeWidth={2}
+        strokeDasharray="7 5"
+      />
       <ellipse
-        cx={140}
+        cx={KX}
         cy={yIris}
         rx={R * (1 - x)}
         ry={RY * (1 - x)}
@@ -308,13 +335,13 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         stroke="var(--m-a)"
         strokeWidth={2}
       />
-      <ellipse cx={300} cy={yIris} rx={R} ry={RY} fill="var(--m-c)" fillOpacity={0.45} stroke="var(--m-c)" strokeWidth={2} />
+      <ellipse cx={TX} cy={yIris} rx={R} ry={RY} fill="var(--m-c)" fillOpacity={0.45} stroke="var(--m-c)" strokeWidth={2} />
       <GrafikIrisan x={x} tampil={1} />
 
-      <Tag x={220} y={ALAS + 44} warna={sorot === 'r' ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
+      <Tag x={(KX + TX) / 2} y={ALAS + 44} warna={sorot === 'r' ? 'var(--m-hi)' : 'var(--ink-2)'} size={14}>
         {`r = ${fmt(r)} · t = ${fmt(tg)}`}
       </Tag>
-      <Tag x={220} y={44} warna="var(--m-ab)" size={16}>
+      <Tag x={(KX + TX) / 2} y={44} warna="var(--m-ab)" size={16}>
         {`V tabung ${fmt(Math.PI * r * r * tg, 1)} · V kerucut ${fmt((Math.PI * r * r * tg) / 3, 1)}`}
       </Tag>
     </Svg>
@@ -354,7 +381,7 @@ const konsep: Konsep = {
         id: 'c',
         label: '4 kali',
         balasan:
-          'Terlalu banyak. Kalau empat, berarti irisan kerucut rata-rata hanya seperempat irisan tabung — padahal di dekat alas keduanya sama besar.',
+          'Terlalu banyak. Empat kali tuangan berarti luas irisan kerucut rata-rata hanya seperempat luas irisan tabung. Nanti kita lihat bahwa rata-ratanya ternyata tepat sepertiga, bukan seperempat.',
       },
     ],
     penutup:
@@ -379,8 +406,8 @@ const konsep: Konsep = {
       {
         id: 's0',
         judul: 'Dua bangun, alas dan tinggi sama',
-        narasi:
-          'Kerucut dan tabung ini beralas lingkaran yang sama besar dan sama tingginya. Yang berbeda hanya bentuk sisinya.',
+        narasi: (p) =>
+          `Kerucut dan tabung ini sama-sama berjari-jari ${fmt(jariBongkar(p))} dan sama-sama setinggi ${fmt(tinggiBongkar(p))}. Yang berbeda hanya bentuk sisinya.`,
         rumus: 'V tabung = π[r:r]^2[t:t]',
         durasi: 2200,
       },
@@ -408,22 +435,31 @@ const konsep: Konsep = {
         id: 's4',
         judul: 'Iris keduanya mendatar',
         narasi:
-          'Pada ketinggian mana pun, irisan tabung selalu lingkaran penuh. Irisan kerucut mengecil: kalau sudah naik x bagian, jari-jarinya tinggal (1 − x) kali.',
+          'Pada ketinggian mana pun, irisan tabung selalu lingkaran yang sama besar dengan alasnya. Irisan kerucut mengecil: kalau sudah naik x bagian dari tingginya, jari-jarinya tinggal (1 − x) kali.',
         rumus: '[luas:luas irisan kerucut] = (1 − x)^2 × π[r:r]^2',
         durasi: 2800,
       },
       {
         id: 's5',
         judul: 'Kumpulkan seluruh irisan',
-        narasi:
-          'Perbandingan luas irisan mengikuti kurva (1 − x)². Di alas nilainya 1, di puncak nilainya 0, dan turun secara melengkung — bukan lurus.',
+        narasi: (p) => {
+          const x = irisanBongkar(p)
+          if (x < 0.005) {
+            return 'Irisannya masih tepat di alas, dan di situ irisan kerucut sama besar dengan irisan tabung. Naikkan "ketinggian irisan": titik pada grafik menuruni kurva (1 − x)² yang melengkung, bukan lurus.'
+          }
+          return `Pada ketinggian ${fmt(x * 100)}% dari alas, luas irisan kerucut tinggal ${fmt((1 - x) ** 2 * 100)}% dari luas irisan tabung. Kurvanya turun melengkung — bukan lurus — dari 1 di alas sampai 0 di puncak.`
+        },
         durasi: 2800,
       },
       {
         id: 's6',
         judul: 'Rata-ratanya tepat sepertiga',
-        narasi:
-          'Volume adalah jumlah seluruh irisan. Karena rata-rata (1 − x)² dari alas ke puncak bernilai 1/3, volume kerucut juga sepertiga volume tabung.',
+        narasi: (p) => {
+          const v = volTabungBongkar(p)
+          // Kedua angka dibulatkan, jadi keduanya ditulis "sekitar": 3 × hasil bulat
+          // kerucut tidak selalu sama dengan hasil bulat tabung (mis. 8,25 × 3 ≠ 24,74).
+          return `Volume adalah jumlah seluruh irisan, dan rata-rata (1 − x)² dari alas ke puncak bernilai 1/3. Jadi volume kerucut ini tepat sepertiga volume tabungnya: tabung sekitar ${fmt(v, 2)} satuan kubik, kerucut sekitar ${fmt(v / 3, 2)} satuan kubik.`
+        },
         rumus: 'V kerucut = [tiga:⅓] × π[r:r]^2[t:t]',
         durasi: 2800,
       },
@@ -433,7 +469,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Geser ketinggian irisannya',
     ajakan:
-      'Perhatikan lingkaran ungu (irisan kerucut) menyusut jauh lebih cepat daripada lingkaran biru (irisan tabung).',
+      'Naikkan ketinggian irisannya. Lingkaran ungu (irisan kerucut) menyusut, sedangkan lingkaran biru (irisan tabung) tetap sama besar di ketinggian mana pun.',
     params: [
       { key: 'r', label: 'Jari-jari alas', min: 1, max: 5, step: 0.5, awal: 3 },
       { key: 't', label: 'Tinggi', min: 2, max: 8, step: 0.5, awal: 5 },
@@ -447,12 +483,24 @@ const konsep: Konsep = {
       const rasio = (1 - x) ** 2
       return (
         <p>
-          Pada ketinggian {fmt(x * 100, 0)}% dari alas, jari-jari kerucut tinggal{' '}
-          {fmt((1 - x) * 100, 0)}% — tetapi luas irisannya hanya{' '}
-          <strong>{fmt(rasio * 100, 1)}%</strong> dari irisan tabung, karena jari-jari muncul dua
-          kali pada rumus luas. Di pertengahan tinggi (50%), irisannya sudah menyusut menjadi
-          seperempat. Itulah kenapa rata-ratanya jatuh ke 1/3, bukan 1/2. Volume kerucut ini{' '}
-          {fmt((Math.PI * r * r * tg) / 3, 2)} satuan kubik.
+          {x < 0.005 ? (
+            <>
+              Tepat di alas (0%), irisan kerucut masih <strong>sama besar</strong> dengan irisan
+              tabung. Naikkan irisannya: jari-jari kerucut mulai menyusut, dan luas irisannya
+              menyusut lebih jauh lagi, karena jari-jari muncul dua kali pada rumus luas.
+            </>
+          ) : (
+            <>
+              Pada ketinggian {fmt(x * 100, 0)}% dari alas, jari-jari kerucut tinggal{' '}
+              {fmt((1 - x) * 100, 0)}% — tetapi luas irisannya hanya{' '}
+              <strong>{fmt(rasio * 100, 1)}%</strong> dari irisan tabung, karena jari-jari muncul
+              dua kali pada rumus luas.
+            </>
+          )}{' '}
+          Di pertengahan tinggi (50%), irisannya sudah menyusut menjadi
+          seperempat — padahal kalau penyusutannya lurus, di titik itu ia masih setengah. Karena
+          penyusutan luasnya melengkung seperti itulah rata-rata seluruh irisan turun ke 1/3, bukan
+          1/2. Volume kerucut ini {fmt((Math.PI * r * r * tg) / 3, 2)} satuan kubik.
         </p>
       )
     },
@@ -473,15 +521,16 @@ const konsep: Konsep = {
           Irisan kerucut berbeda. Di alas ia sama besar dengan irisan tabung, tetapi makin ke atas
           makin kecil, sampai menjadi titik di puncak.
         </p>
-        <h4>Kuncinya: luas menyusut dua kali lebih cepat</h4>
+        <h4>Kuncinya: luas menyusut mengikuti kuadrat</h4>
         <p>
           Di tengah-tengah tinggi, jari-jari kerucut tinggal <strong>setengahnya</strong>. Tetapi
           luas lingkaran memakai r², sehingga luasnya tinggal{' '}
           <strong>seperempat</strong> — bukan setengah.
         </p>
         <p>
-          Karena itu, rata-rata seluruh irisan kerucut jauh lebih kecil dari separuh irisan tabung.
-          Perhitungannya memberi angka tepat 1/3.
+          Karena itu, rata-rata seluruh irisan kerucut lebih kecil daripada separuh irisan tabung —
+          separuh baru berlaku kalau luas irisannya menyusut lurus. Perhitungan lengkapnya memberi
+          angka tepat 1/3.
         </p>
         <h4>Berlaku juga untuk limas</h4>
         <p>
@@ -510,14 +559,22 @@ const konsep: Konsep = {
         </p>
         <h4>Tanpa integral: prinsip Cavalieri</h4>
         <p>
-          Sebuah kubus dapat dipotong menjadi <strong>tiga</strong> limas kongruen yang alasnya
-          adalah tiga sisi kubus dan puncaknya di titik sudut yang berseberangan. Ini memperlihatkan
-          langsung bahwa limas bernilai sepertiga prisma, tanpa perhitungan apa pun.
+          Sebuah kubus dapat dipotong menjadi <strong>tiga</strong> limas kongruen: alasnya tiga
+          sisi kubus yang bertemu di satu titik sudut, dan puncak ketiganya di titik sudut yang
+          berseberangan. Karena ketiganya kongruen, masing-masing bernilai sepertiga kubus — tanpa
+          perhitungan apa pun. Perhatikan limas ini miring: puncaknya tepat di atas salah satu sudut
+          alas, bukan di atas titik tengahnya.
         </p>
         <p>
-          Prinsip Cavalieri kemudian memperluasnya: dua benda yang setiap irisan mendatarnya sama
-          luas pasti punya volume yang sama. Karena itu hasil untuk limas persegi langsung berlaku
-          untuk kerucut.
+          Prinsip Cavalieri kemudian memperluasnya: dua benda yang sama tinggi dan setiap irisan
+          mendatarnya pada ketinggian yang sama selalu sama luas pasti punya volume yang sama.
+          Menggeser puncak limas miring tadi ke atas titik tengah alas tidak mengubah luas satu pun
+          irisannya, jadi limas tegak juga sepertiga prisma. Limas dari kubus tingginya sama dengan
+          sisi alasnya; limas yang lebih tinggi atau lebih pendek didapat dengan meregangkannya ke
+          arah tegak, dan peregangan itu mengalikan volume limas dan prisma dengan faktor yang sama,
+          sehingga perbandingan sepertiganya tetap. Terakhir, karena irisan limas maupun kerucut
+          sama-sama menyusut menjadi (1 − x)² kali luas alas, hasil itu berlaku juga untuk kerucut
+          yang luas alas dan tingginya sama dengan limas tersebut.
         </p>
         <h4>Catatan tentang percobaan menuang</h4>
         <p>

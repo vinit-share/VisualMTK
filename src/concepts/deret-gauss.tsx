@@ -26,6 +26,51 @@ function tata(n: number) {
   return { u, lebar, tinggi, X0, Y0, cx: X0 + lebar / 2, cy: Y0 + tinggi / 2 }
 }
 
+/** Teks deret 1 + 2 + … + k. Semua suku ditulis bila k ≤ penuh + 1 (supaya "…" selalu mewakili
+ *  paling sedikit dua suku); selain itu suku terakhir tetap tampak. */
+function deretTeks(k: number, penuh: number): string {
+  if (k <= penuh + 1) return Array.from({ length: k }, (_, i) => fmt(i + 1)).join(' + ')
+  return `1 + 2 + 3 + … + ${fmt(k)}`
+}
+
+/** Daftar bilangan 1, 2, …, k untuk kalimat ("1 dan 2", "1, 2, dan 3", "1, 2, 3, …, 8").
+ *  Aturan "…"-nya sama dengan deretTeks. */
+function daftarTeks(k: number, penuh: number): string {
+  if (k > penuh + 1) return `1, 2, 3, …, ${fmt(k)}`
+  const suku = Array.from({ length: k }, (_, i) => fmt(i + 1))
+  if (k === 2) return `${suku[0]} dan ${suku[1]}`
+  return `${suku.slice(0, -1).join(', ')}, dan ${suku[k - 1]}`
+}
+
+/** Deret 1 + 2 + … + n untuk markup rumus: suku terakhir tetap token [n:n] yang bisa disorot.
+ *  "…" hanya dipakai bila mewakili paling sedikit dua suku. */
+function deretRumus(n: number): string {
+  const sebelum = n - 1
+  const awal =
+    sebelum >= 5 ? '1 + 2 + 3 + …' : Array.from({ length: sebelum }, (_, i) => fmt(i + 1)).join(' + ')
+  return `${awal} + [n:n]`
+}
+
+/** Isi tiap kolom dari kiri: balok tangga asli + balok salinan ("1 + 6, 2 + 5, dan seterusnya
+ *  sampai 6 + 1"). Semua kolom ditulis bila n ≤ 5, supaya "seterusnya" mewakili paling sedikit dua kolom. */
+function pasanganKolom(n: number): string {
+  const kolom = Array.from({ length: n }, (_, j) => `${fmt(j + 1)} + ${fmt(n - j)}`)
+  if (n >= 6) return `${kolom[0]}, ${kolom[1]}, dan seterusnya sampai ${kolom[n - 1]}`
+  if (n === 2) return `${kolom[0]} dan ${kolom[1]}`
+  return `${kolom.slice(0, -1).join(', ')}, dan ${kolom[n - 1]}`
+}
+
+/** Banyaknya kotak pada persegi panjang n × (n+1) — dua tangga. */
+const luasKotak = (n: number) => n * (n + 1)
+
+/** Jumlah 1 + 2 + … + n — separuh persegi panjangnya. */
+const jumlahSampai = (n: number) => luasKotak(n) / 2
+
+/** Nilai n pada animasi bongkar — dipakai bersama oleh gambar dan teks langkah. */
+function nBongkar(p: Record<string, number>): number {
+  return clamp(Math.round(Number.isFinite(p.n) ? p.n : 6), 2, 12)
+}
+
 /** Tangga 1, 2, 3, …, n yang berdiri di dasar persegi panjang. */
 function Tangga({
   n,
@@ -69,9 +114,9 @@ function Tangga({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const n = clamp(Math.round(p.n ?? 6), 2, 12)
+  const n = nBongkar(p)
   const g = tata(n)
-  const jumlah = (n * (n + 1)) / 2
+  const jumlah = jumlahSampai(n)
 
   const bangun = step === 0 ? n * seg(t, 0.05, 0.95) : n
   const salinan = fase(step, t, 2)
@@ -84,7 +129,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaJumlah = sorot === 'S'
 
   const terhitung = Math.min(n, Math.floor(bangun))
-  const totalSampai = (terhitung * (terhitung + 1)) / 2
+  const totalSampai = jumlahSampai(terhitung)
 
   return (
     <Svg w={W} h={H} maxH={450} label="Tangga balok yang digandakan dan diputar menjadi persegi panjang">
@@ -140,9 +185,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {step === 0 && (
         <Tag x={W / 2} y={52} warna="var(--m-a)" size={17}>
           {terhitung > 0
-            ? `${Array.from({ length: Math.min(terhitung, 6) }, (_, i) => fmt(i + 1)).join(' + ')}${
-                terhitung > 6 ? ' + …' : ''
-              } = ${fmt(totalSampai)}`
+            ? `${deretTeks(terhitung, 6)} = ${fmt(totalSampai)}`
             : 'jumlahkan satu per satu'}
         </Tag>
       )}
@@ -163,7 +206,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 4 && (
         <Tag x={W / 2} y={52} warna="var(--m-hi)" size={16}>
-          {`pas menjadi persegi panjang ${fmt(n)} × ${fmt(n + 1)} = ${fmt(n * (n + 1))} kotak`}
+          {`pas menjadi persegi panjang ${fmt(n)} × ${fmt(n + 1)} = ${fmt(luasKotak(n))} balok`}
         </Tag>
       )}
       {selesai && (
@@ -173,7 +216,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           warna={nyalaJumlah ? 'var(--m-hi)' : 'var(--m-ab)'}
           size={18}
         >
-          {`satu tangga = ${fmt(n * (n + 1))} ÷ 2 = ${fmt(jumlah)}`}
+          {`satu tangga = ${fmt(luasKotak(n))} ÷ 2 = ${fmt(jumlah)}`}
         </Tag>
       )}
     </Svg>
@@ -185,7 +228,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
   const n = clamp(Math.round(p.n ?? 8), 2, 14)
   const g = tata(n)
-  const jumlah = (n * (n + 1)) / 2
+  const jumlah = jumlahSampai(n)
 
   return (
     <Svg w={W} h={H} maxH={450} label="Dua tangga balok yang bersama-sama membentuk persegi panjang">
@@ -220,7 +263,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         warna={sorot === 'n1' ? 'var(--m-hi)' : 'var(--m-b)'}
       />
       <Tag x={W / 2} y={52} warna="var(--m-ab)" size={19}>
-        {`1 + 2 + … + ${fmt(n)} = ${fmt(n)} × ${fmt(n + 1)} ÷ 2 = ${fmt(jumlah)}`}
+        {`${deretTeks(n, 4)} = ${fmt(n)} × ${fmt(n + 1)} ÷ 2 = ${fmt(jumlah)}`}
       </Tag>
     </Svg>
   )
@@ -271,16 +314,16 @@ const konsep: Konsep = {
     roles: { n: 'a', n1: 'b', S: 'ab' },
     arti: {
       n: 'Bilangan terakhir yang dijumlahkan — sekaligus lebar persegi panjangnya.',
-      n1: 'Tinggi persegi panjang, yaitu n + 1. Angka ini muncul karena tangga dan salinannya bertumpuk satu tingkat.',
+      n1: 'Tinggi persegi panjang, yaitu n + 1. Kolom tertinggi tangga asli (n balok) selalu bertemu kolom terpendek salinan (1 balok), dan begitu pula sebaliknya.',
       S: 'Jumlah seluruh bilangan — separuh dari luas persegi panjang.',
     },
     steps: [
       {
         id: 's0',
         judul: 'Susun sebagai tangga',
-        narasi:
-          'Bilangan 1, 2, 3, … digambar sebagai kolom balok. Jumlah seluruh bilangan sama dengan banyaknya balok pada tangga ini.',
-        rumus: '[S:S] = 1 + 2 + 3 + … + [n:n]',
+        narasi: (p) =>
+          `Bilangan ${daftarTeks(nBongkar(p), 4)} digambar sebagai kolom balok. Jumlah seluruh bilangan sama dengan banyaknya balok pada tangga ini.`,
+        rumus: (p) => `[S:S] = ${deretRumus(nBongkar(p))}`,
         durasi: 2600,
       },
       {
@@ -307,16 +350,20 @@ const konsep: Konsep = {
       {
         id: 's4',
         judul: 'Keduanya membentuk persegi panjang',
-        narasi:
-          'Tangga yang naik dan tangga yang turun saling mengisi tanpa celah. Setiap kolom kini setinggi n + 1 balok, dan ada n kolom.',
+        narasi: (p) => {
+          const n = nBongkar(p)
+          return `Tangga yang naik dan tangga yang turun saling mengisi tanpa celah: dari kiri ke kanan, tiap kolom berisi balok tangga asli ditambah balok salinan, yaitu ${pasanganKolom(n)}. Jadi setiap kolom setinggi ${fmt(n + 1)} balok, dan ada ${fmt(n)} kolom.`
+        },
         rumus: '2[S:S] = [n:n] × [n1:(n+1)]',
         durasi: 2600,
       },
       {
         id: 's5',
         judul: 'Jadi satu tangga adalah separuhnya',
-        narasi:
-          'Karena dua tangga bernilai n(n+1), satu tangga bernilai separuhnya. Tidak perlu menjumlahkan apa pun.',
+        narasi: (p) => {
+          const n = nBongkar(p)
+          return `Dua tangga tadi berisi ${fmt(luasKotak(n))} balok, jadi satu tangga berisi separuhnya, yaitu ${fmt(jumlahSampai(n))} balok. Kamu tidak perlu menjumlahkan apa pun.`
+        },
         rumus: '[S:S] = [n:n] × [n1:(n+1)] ÷ 2',
         durasi: 2400,
       },
@@ -339,16 +386,41 @@ const konsep: Konsep = {
     Visual: VisualEksperimen,
     temuan: (p) => {
       const n = clamp(Math.round(p.n ?? 8), 2, 14)
-      const S = (n * (n + 1)) / 2
+      const S = jumlahSampai(n)
+      const genap = n % 2 === 0
+      // n = 2 dan n = 3 hanya punya satu pasangan: hindari "setiap pasangan … ada 1 pasangan".
+      const satuPasangan = Math.floor(n / 2) === 1
+      // "dan seterusnya" hanya bila memang masih ada pasangan ketiga (n ≥ 6).
+      const contohPasangan =
+        n >= 6
+          ? `1 + ${fmt(n)}, 2 + ${fmt(n - 1)}, dan seterusnya`
+          : n >= 4
+            ? `1 + ${fmt(n)} dan 2 + ${fmt(n - 1)}`
+            : `1 + ${fmt(n)}`
       return (
         <p>
           <strong>
-            1 + 2 + … + {fmt(n)} = {fmt(S)}
+            {deretTeks(n, 4)} = {fmt(S)}
           </strong>
-          . Perhatikan persegi panjangnya selalu berukuran {fmt(n)} × {fmt(n + 1)} — satu sisinya
-          selalu satu lebih besar. Coba pasangkan suku-sukunya dari kedua ujung: 1 + {fmt(n)},
-          2 + {fmt(n - 1)}, dan seterusnya. Setiap pasangan berjumlah {fmt(n + 1)}, dan ada{' '}
-          {fmt(n / 2)} pasangan. Itu cara lain membaca gambar yang sama.
+          . Perhatikan persegi panjangnya berukuran {fmt(n)} × {fmt(n + 1)} — satu sisinya selalu
+          satu lebih besar daripada sisi lainnya. Coba pasangkan suku-sukunya dari kedua ujung:{' '}
+          {contohPasangan}. {satuPasangan ? 'Pasangan itu' : 'Setiap pasangan'} berjumlah{' '}
+          {fmt(n + 1)}
+          {genap ? (
+            <>
+              , dan {satuPasangan ? 'hanya ada satu pasangan' : `ada ${fmt(n / 2)} pasangan`}, jadi
+              jumlahnya {fmt(n / 2)} × {fmt(n + 1)} = {fmt(S)}.
+            </>
+          ) : (
+            <>
+              . Karena {fmt(n)} ganjil, {satuPasangan ? 'hanya ada satu' : `ada ${fmt((n - 1) / 2)}`}{' '}
+              pasangan dan satu suku tengah,{' '}
+              {fmt((n + 1) / 2)}, yang tidak punya pasangan — nilainya tepat separuh dari{' '}
+              {fmt(n + 1)}. Jadi jumlahnya {fmt((n - 1) / 2)} × {fmt(n + 1)} + {fmt((n + 1) / 2)} ={' '}
+              {fmt(S)}.
+            </>
+          )}{' '}
+          Itu cara lain membaca gambar yang sama.
         </p>
       )
     },
@@ -380,8 +452,9 @@ const konsep: Konsep = {
         </p>
         <h4>Bentuk umum deret aritmetika</h4>
         <p>
-          Untuk deret aritmetika mana pun dengan suku pertama a dan suku terakhir U<sub>n</sub>,
-          alasan yang sama memberi
+          Untuk deret aritmetika mana pun dengan n suku, suku pertama a, beda b, dan suku terakhir
+          U<sub>n</sub> = a + (n−1)b, alasan yang sama memberi (setiap pasangan suku dari kedua ujung
+          berjumlah a + U<sub>n</sub>)
         </p>
         <p style={{ textAlign: 'center' }}>
           S<sub>n</sub> = n(a + U<sub>n</sub>)/2 = n[2a + (n−1)b]/2
@@ -424,7 +497,7 @@ const konsep: Konsep = {
     arti: {
       S: 'Jumlah 1 + 2 + 3 + … + n.',
       n: 'Bilangan terakhir yang dijumlahkan — lebar persegi panjangnya.',
-      n1: 'Tinggi persegi panjang. Selalu satu lebih besar daripada n, karena dua tangga bertumpuk menyisakan satu tingkat tambahan.',
+      n1: 'Tinggi persegi panjang. Selalu satu lebih besar daripada n, karena di setiap kolom, k balok dari tangga pertama bertemu n + 1 − k balok dari tangga kedua.',
     },
   },
 
@@ -446,7 +519,7 @@ const konsep: Konsep = {
           `S = n(n+1)/2 dengan n = ${n}.`,
           `Hitung ${n} × ${n + 1} lebih dulu, baru bagi 2.`,
         ],
-        pembahasan: `S = ${n} × ${n + 1} ÷ 2 = ${n * (n + 1)} ÷ 2 = ${(n * (n + 1)) / 2}.`,
+        pembahasan: `S = ${n} × ${n + 1} ÷ 2 = ${fmt(n * (n + 1))} ÷ 2 = ${fmt((n * (n + 1)) / 2)}.`,
       }
     },
     {
@@ -521,7 +594,7 @@ const konsep: Konsep = {
           `U${n} = ${a} + ${n - 1} × ${b} = ${Un}.`,
           `Lalu Sₙ = n × (a + Uₙ)/2 = ${n} × (${a} + ${Un})/2.`,
         ],
-        pembahasan: `U${n} = ${Un}, sehingga S${n} = ${n} × (${a} + ${Un}) ÷ 2 = ${(n * (a + Un)) / 2}. Rumus ini adalah "banyaknya suku dikali rata-rata suku pertama dan terakhir".`,
+        pembahasan: `U${n} = ${Un}, sehingga S${n} = ${n} × (${a} + ${Un}) ÷ 2 = ${fmt((n * (a + Un)) / 2)}. Rumus ini adalah "banyaknya suku dikali rata-rata suku pertama dan terakhir".`,
       }
     },
     {
@@ -531,7 +604,8 @@ const konsep: Konsep = {
       kelas: 10,
       tingkat: 'sulit',
       konsep: 'deret-gauss',
-      pertanyaan: 'Hasil n(n+1)/2 bisa saja berupa pecahan, karena ada pembagian dengan 2.',
+      pertanyaan:
+        'Untuk n bilangan asli, hasil n(n+1)/2 bisa saja berupa pecahan, karena ada pembagian dengan 2.',
       jawaban: false,
       diagnosa:
         'Di antara dua bilangan berurutan n dan n+1, salah satunya pasti genap. Jadi hasil kalinya selalu habis dibagi 2.',

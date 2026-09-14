@@ -37,13 +37,46 @@ function median(d: number[]) {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2
 }
 
+/** Semua modus data. Bisa lebih dari satu (data bimodal), misalnya bila data ke-10 bernilai 4. */
 function modus(d: number[]) {
   const hitung = new Map<number, number>()
   for (const v of d) hitung.set(v, (hitung.get(v) ?? 0) + 1)
-  let terbaik = d[0]
-  let maks = 0
-  for (const [v, n] of hitung) if (n > maks) { maks = n; terbaik = v }
-  return terbaik
+  const maks = Math.max(...hitung.values())
+  return [...hitung]
+    .filter(([, n]) => n === maks)
+    .map(([v]) => v)
+    .sort((a, b) => a - b)
+}
+
+/* ---------------- Turunan yang dipakai bersama gambar dan teks ---------------- */
+
+/** Nilai data ke-10 pada panggung bongkar — persis nilai yang digambar. */
+const pencilanBongkar = (p: Record<string, number>) => clamp(Math.round(p.pencilan ?? 35), 8, 40)
+
+/**
+ * Batas pencilan untuk sembilan data dasar: Q3 + 1,5 × (Q3 − Q1) = 6 + 1,5 × 2 = 9.
+ * Di atas angka ini data ke-10 memang pantas disebut ekstrem; tepat di 8 atau 9
+ * ia hanya data terbesar biasa, jadi kata-katanya pun harus ikut berubah.
+ */
+const PAGAR_PENCILAN = 9
+
+/** Semua angka yang dipakai judul dan narasi langkah bongkar. */
+function angkaBongkar(p: Record<string, number>) {
+  const x = pencilanBongkar(p)
+  const meanDasar = rerata(DASAR)
+  const meanPenuh = rerata([...DASAR, x])
+  return {
+    x,
+    meanDasar,
+    meanPenuh,
+    /** geseran titik tumpu: tepat sepersepuluh jarak data ke-10 ke rata-rata lama. */
+    geser: meanPenuh - meanDasar,
+    /** median data lengkap — tetap, karena data ke-10 selalu jatuh di kanan. */
+    med: median([...DASAR, x]),
+    /** banyaknya data dasar yang nilainya di bawah rata-rata baru. */
+    dibawah: DASAR.filter((v) => v < meanPenuh).length,
+    ekstrem: x > PAGAR_PENCILAN,
+  }
 }
 
 function TitikData({
@@ -84,12 +117,15 @@ function Jungkat({
   mean,
   miring,
   tampilLengan,
+  nyalaLengan = false,
 }: {
   data: number[]
   mean: number
   /** kemiringan papan, 0 = seimbang. */
   miring: number
   tampilLengan: number
+  /** nyalakan lengan simpangan saat bagian rumus "jarak" disorot. */
+  nyalaLengan?: boolean
 }) {
   const fx = kx(mean)
   return (
@@ -103,9 +139,9 @@ function Jungkat({
             y1={BEAM_Y + 6}
             x2={fx}
             y2={BEAM_Y + 6}
-            stroke={v > mean ? 'var(--m-b)' : 'var(--m-c)'}
-            strokeWidth={1.4}
-            opacity={0.35 * tampilLengan}
+            stroke={nyalaLengan ? 'var(--m-hi)' : v > mean ? 'var(--m-b)' : 'var(--m-c)'}
+            strokeWidth={nyalaLengan ? 3 : 1.4}
+            opacity={(nyalaLengan ? 0.9 : 0.35) * tampilLengan}
           />
         ))}
 
@@ -149,23 +185,24 @@ function GarisAngka() {
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const pencilan = clamp(Math.round(p.pencilan ?? 35), 8, 40)
+  const { x: pencilan, meanDasar, meanPenuh, ekstrem } = angkaBongkar(p)
 
   const adaPencilan = step >= 3
-  const masukPencilan = step === 3 ? seg(t, 0.2, 0.9) : adaPencilan ? 1 : 0
   const data = adaPencilan ? [...DASAR, pencilan] : DASAR
 
-  const meanDasar = rerata(DASAR)
-  const meanPenuh = rerata([...DASAR, pencilan])
-  // Rata-rata bergeser mulus saat pencilan masuk.
-  const mean = meanDasar + (meanPenuh - meanDasar) * masukPencilan
+  // Urutan fisikanya: pencilan masuk (langkah 3) → papan miring karena tumpu
+  // masih di rata-rata lama → tumpu digeser ke rata-rata baru dan papan
+  // datar lagi (langkah 4). Papan tidak boleh miring saat tumpu sudah di rata-rata.
+  const geser = step === 4 ? seg(t, 0.35, 1) : step >= 5 ? 1 : 0
+  const mean = meanDasar + (meanPenuh - meanDasar) * geser
+  // Selama tumpu belum sampai, posisinya belum rata-rata data yang sekarang.
+  const labelTumpu = adaPencilan && geser < 1 ? 'titik tumpu' : 'rata-rata'
   const med = median(data)
 
   const tampilTumpu = fase(step, t, 1)
   const tampilMedian = fase(step, t, 2)
   const tampilLengan = fase(step, t, 1)
-  // Papan sempat miring sesaat sebelum titik tumpu ikut bergeser.
-  const miring = step === 4 ? 7 * Math.sin(Math.PI * seg(t, 0, 0.7)) : 0
+  const miring = step === 4 ? 7 * (t < 0.35 ? seg(t, 0, 0.3) : 1 - seg(t, 0.35, 1)) : 0
 
   const nyalaMean = sorot === 'mean'
   const nyalaMedian = sorot === 'median'
@@ -178,7 +215,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         pencilan={adaPencilan ? pencilan : null}
       />
       {tampilTumpu > 0.05 && (
-        <Jungkat data={data} mean={mean} miring={miring} tampilLengan={tampilLengan} />
+        <Jungkat
+          data={data}
+          mean={mean}
+          miring={miring}
+          tampilLengan={tampilLengan}
+          nyalaLengan={sorot === 'jarak'}
+        />
       )}
       {tampilTumpu <= 0.05 && (
         <rect x={GX0 - 10} y={BEAM_Y - 4} width={GX1 - GX0 + 20} height={8} rx={4} fill="var(--ink-3)" />
@@ -193,7 +236,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           warna={nyalaMean ? 'var(--m-hi)' : 'var(--m-ab)'}
           size={16}
         >
-          {`rata-rata ${fmt(mean, 2)}`}
+          {`${labelTumpu} ${fmt(mean, 2)}`}
         </Tag>
       )}
 
@@ -232,17 +275,17 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 3 && (
         <Tag x={W / 2} y={44} warna="var(--m-hi)" size={16}>
-          {`masuk satu data ekstrem: ${fmt(pencilan)}`}
+          {`${ekstrem ? 'masuk satu data ekstrem' : 'masuk satu data baru'}: ${fmt(pencilan)}`}
         </Tag>
       )}
       {step === 4 && (
         <Tag x={W / 2} y={44} warna="var(--m-hi)" size={16}>
-          papan langsung miring — titik tumpu harus digeser jauh
+          papan langsung miring — titik tumpu harus digeser ke kanan
         </Tag>
       )}
       {step >= 5 && (
         <Tag x={W / 2} y={44} warna="var(--m-b)" size={16}>
-          {`rata-rata melompat ke ${fmt(meanPenuh, 2)}, median tetap ${fmt(med, 2)}`}
+          {`rata-rata pindah ke ${fmt(meanPenuh, 2)}, median tetap ${fmt(med, 2)}`}
         </Tag>
       )}
     </Svg>
@@ -281,7 +324,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         {`median ${fmt(med, 2)}`}
       </Tag>
       <Tag x={W / 2} y={44} warna="var(--ink-2)" size={15}>
-        {`modus ${fmt(mod)} · median ${fmt(med, 2)} · rata-rata ${fmt(mean, 2)}`}
+        {`modus ${mod.map((v) => fmt(v)).join(' dan ')} · median ${fmt(med, 2)} · rata-rata ${fmt(mean, 2)}`}
       </Tag>
     </Svg>
   )
@@ -301,7 +344,7 @@ const konsep: Konsep = {
 
   tebak: {
     pertanyaan:
-      'Di sebuah warung, sembilan pegawai bergaji sekitar 4–7 juta. Lalu pemiliknya, yang bergaji 35 juta, ikut dihitung. Apa yang terjadi pada rata-rata gaji?',
+      'Di sebuah warung, sembilan pegawai bergaji antara 3 dan 7 juta, rata-ratanya 5 juta. Lalu pemiliknya, yang bergaji 35 juta, ikut dihitung. Apa yang terjadi pada rata-rata gaji?',
     pilihan: [
       {
         id: 'a',
@@ -320,7 +363,7 @@ const konsep: Konsep = {
         id: 'c',
         label: 'Tidak berubah, karena hanya satu orang',
         balasan:
-          'Yang tidak berubah adalah mediannya. Rata-rata justru sangat peka terhadap satu nilai yang jauh.',
+          'Median-lah yang nyaris tidak berubah. Rata-rata justru sangat peka terhadap satu nilai yang jauh.',
       },
     ],
     penutup:
@@ -329,7 +372,7 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'pencilan', label: 'Nilai data ekstrem', min: 8, max: 40, step: 1, awal: 35, bulat: true }],
+    params: [{ key: 'pencilan', label: 'Nilai data ke-10', min: 8, max: 40, step: 1, awal: 35, bulat: true }],
     roles: { mean: 'ab', median: 'b', jarak: 'hi' },
     arti: {
       mean: 'Rata-rata — titik tumpu yang membuat data seimbang.',
@@ -361,24 +404,48 @@ const konsep: Konsep = {
       },
       {
         id: 's3',
-        judul: 'Masuk satu nilai ekstrem',
-        narasi:
-          'Sekarang tambahkan satu data yang jauh dari kelompoknya. Hanya satu data, tetapi jaraknya sangat besar.',
+        judul: (p) => {
+          const { x, ekstrem } = angkaBongkar(p)
+          return ekstrem ? `Masuk satu nilai ekstrem: ${fmt(x)}` : `Masuk satu data baru: ${fmt(x)}`
+        },
+        narasi: (p) => {
+          const { x, ekstrem } = angkaBongkar(p)
+          // Jarak ke data terbesar (x − 7) BUKAN jarak yang dihitung rata-rata; itu jarak ke
+          // titik tumpu (x − 5), yang baru dibahas di langkah berikutnya. Jangan disamakan.
+          const masuk = `Sekarang masuk data ke-10 bernilai ${fmt(x)}, ${fmt(x - 7)} satuan di atas data terbesar tadi.`
+          return ekstrem
+            ? `${masuk} Cuma satu data, tetapi letaknya jauh dari kelompoknya — dan rata-rata memperhitungkan jarak, bukan sekadar urutan.`
+            : `${masuk} Letaknya masih dekat dengan kelompoknya, tetapi rata-rata tetap memperhitungkan seberapa jauh ia berada.`
+        },
         durasi: 2400,
       },
       {
         id: 's4',
         judul: 'Papan langsung miring',
-        narasi:
-          'Beban yang jauh dari tumpu memberi pengaruh besar — persis seperti jungkat-jungkit. Supaya seimbang lagi, titik tumpunya harus digeser jauh ke kanan.',
+        narasi: (p) => {
+          const { x, meanDasar, geser } = angkaBongkar(p)
+          return (
+            `Data baru itu duduk ${fmt(x - meanDasar)} satuan dari tumpu, lebih jauh daripada data mana pun yang lain — di jungkat-jungkit, beban yang jauh menekan lebih kuat. ` +
+            `Supaya papannya datar lagi, tumpu harus digeser ${fmt(geser)} satuan ke kanan, yaitu sepersepuluh jarak tadi.`
+          )
+        },
         rumus: 'pengaruh = banyaknya × [jarak:jarak]',
         durasi: 2800,
       },
       {
         id: 's5',
         judul: 'Rata-rata pindah, median tidak',
-        narasi:
-          'Rata-rata terseret ke tempat yang bahkan tidak ditempati data mana pun. Median hanya bergeser setengah langkah, karena urutannya nyaris tidak berubah.',
+        narasi: (p) => {
+          const { meanDasar, meanPenuh, med, dibawah } = angkaBongkar(p)
+          const banding =
+            dibawah === 9
+              ? 'lebih tinggi daripada kesembilan data lainnya'
+              : `lebih tinggi daripada ${fmt(dibawah)} dari 9 data lainnya`
+          return (
+            `Rata-rata terseret dari ${fmt(meanDasar, 2)} ke ${fmt(meanPenuh, 2)} — ${banding}. ` +
+            `Median tidak bergeser sama sekali: posisi tengahnya cuma maju setengah langkah dalam urutan, dan nilainya tetap ${fmt(med, 2)}.`
+          )
+        },
         durasi: 2600,
       },
       {
@@ -395,7 +462,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Geser data ekstremnya',
     ajakan:
-      'Perhatikan titik tumpu bergerak mengikuti nilai ekstrem, sedangkan garis median hampir tidak bergeming.',
+      'Perhatikan titik tumpu bergerak mengikuti nilai ekstrem, sedangkan garis median sama sekali tidak bergeming.',
     params: [
       { key: 'pencilan', label: 'Nilai data ke-10', min: 0, max: 40, step: 1, awal: 20, bulat: true },
       { key: 'pakai', label: 'Ikutkan data ke-10', min: 0, max: 1, step: 1, awal: 1, bulat: true },
@@ -415,15 +482,17 @@ const konsep: Konsep = {
                 Rata-rata {fmt(mean, 2)}, median {fmt(med, 2)}.
               </strong>{' '}
               Menggeser satu data itu saja menggerakkan rata-rata sebesar sepersepuluh dari
-              pergeserannya, tetapi median hampir tidak berubah.{' '}
+              pergeserannya, tetapi median sama sekali tidak berubah — tetap {fmt(med, 2)}, karena
+              dua data di tengah urutan tetap bernilai sama ke mana pun data ke-10 digeser.{' '}
               {mean > 7
                 ? 'Perhatikan: rata-rata sekarang lebih besar daripada hampir semua datanya sendiri — itulah bentuk "menipu" yang dimaksud.'
                 : 'Coba geser sampai 40 dan lihat rata-rata meninggalkan kelompok datanya.'}
             </>
           ) : (
             <>
-              Tanpa data ke-10, rata-rata {fmt(mean, 2)} dan median {fmt(med, 2)} nyaris berimpit —
-              tanda bahwa datanya menyebar rapi. Aktifkan lagi data ke-10 untuk melihat bedanya.
+              Tanpa data ke-10, rata-rata {fmt(mean, 2)} dan median {fmt(med, 2)} berimpit tepat.
+              Itu wajar: datanya menyebar rapi dan simetris, sehingga titik seimbang dan nilai tengahnya
+              sama. Aktifkan lagi data ke-10 untuk melihat bedanya.
             </>
           )}
         </p>
@@ -487,8 +556,9 @@ const konsep: Konsep = {
           besar jauh lebih berpengaruh, sehingga rata-rata menjadi <em>tidak kekar</em> (not robust).
         </p>
         <p>
-          Ukuran ketahanan ini disebut <em>breakdown point</em>: median tahan sampai 50% data
-          dirusak, sedangkan rata-rata rusak hanya oleh satu titik yang digeser tanpa batas.
+          Ukuran ketahanan ini disebut <em>breakdown point</em>: median tetap terkendali selama
+          kurang dari separuh data yang dirusak (breakdown point 50%), sedangkan rata-rata sudah
+          rusak oleh satu titik saja yang digeser tanpa batas.
         </p>
         <h4>Menceng ke arah mana</h4>
         <p>

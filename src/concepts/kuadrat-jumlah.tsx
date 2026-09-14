@@ -19,6 +19,12 @@ import type { DeriveState, Konsep } from '../lib/types'
 const W = 660
 const H = 440
 
+/** Nilai a dan b yang benar-benar digambar: penggeser dibulatkan ke bilangan bulat.
+    Dipakai bersama oleh gambar dan teks langkah agar keduanya tidak pernah berbeda. */
+function nilaiAB(p: Record<string, number>) {
+  return { a: Math.round(p.a ?? 3), b: Math.round(p.b ?? 2) }
+}
+
 /** Susun letak keempat daerah untuk nilai a dan b tertentu. */
 function tata(a: number, b: number) {
   const u = Math.min(48, 320 / (a + b))
@@ -110,8 +116,7 @@ function Daerah({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const a = Math.round(p.a ?? 3)
-  const b = Math.round(p.b ?? 2)
+  const { a, b } = nilaiAB(p)
   const g = tata(a, b)
 
   const persegi = fase(step, t, 0)
@@ -274,8 +279,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const a = Math.round(p.a ?? 3)
-  const b = Math.round(p.b ?? 2)
+  const { a, b } = nilaiAB(p)
   const g = tata(a, b)
   const nyalaA = sorot === 'a' || sorot === 'a2'
   const nyalaB = sorot === 'b' || sorot === 'b2'
@@ -326,7 +330,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'kuadrat-jumlah',
-  topicId: 'smp8-aljabar-bentuk',
+  topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
   judul: 'Identitas (a+b)²',
   pertanyaan: 'Kok bisa (a+b)² = a² + 2ab + b²?',
   tagline: 'Dua cara menghitung luas persegi yang sama. Hasilnya wajib sama.',
@@ -371,15 +375,17 @@ const konsep: Konsep = {
       b: 'Panjang bagian kedua pada sisi persegi.',
       a2: 'Daerah persegi berukuran a × a di pojok kiri atas.',
       b2: 'Daerah persegi berukuran b × b di pojok kanan bawah.',
-      ab: 'Daerah persegi panjang a × b. Ada DUA daerah seperti ini.',
+      ab: 'Daerah berukuran a × b. Ada DUA daerah seperti ini.',
       'dua-ab': 'Dua daerah a × b sekaligus — inilah bagian yang paling sering terlupakan.',
     },
     steps: [
       {
         id: 's0',
         judul: 'Satu persegi, sisinya a + b',
-        narasi:
-          'Sisi persegi ini terdiri atas dua potong: sepanjang a lalu sepanjang b. Luas persegi selalu sisi kali sisi.',
+        narasi: (p) => {
+          const { a, b } = nilaiAB(p)
+          return `Sisi persegi ini terdiri atas dua potong: sepanjang ${fmt(a)} lalu sepanjang ${fmt(b)}, jadi seluruh sisinya ${fmt(a + b)}. Luas persegi selalu sisi kali sisi.`
+        },
         rumus: 'luas = ([a:a] + [b:b])^2',
         durasi: 1600,
       },
@@ -387,14 +393,19 @@ const konsep: Konsep = {
         id: 's1',
         judul: 'Tandai batas antara a dan b',
         narasi:
-          'Tarik garis dari titik batas itu, mendatar dan tegak. Persegi tadi kini terbagi menjadi empat daerah.',
+          'Tandai titik batas itu pada sisi bawah dan sisi kiri, lalu tarik garis tegak dari sisi bawah dan garis mendatar dari sisi kiri. Persegi tadi kini terbagi menjadi empat daerah.',
         durasi: 1500,
       },
       {
         id: 's2',
         judul: 'Kenali keempat daerahnya',
-        narasi:
-          'Persegi a × a, dua persegi panjang a × b, dan persegi b × b. Tidak ada bagian yang tersisa dan tidak ada yang bertumpuk.',
+        // Saat a = b, ubin a × b tergambar sebagai persegi, bukan persegi panjang.
+        narasi: (p) => {
+          const { a, b } = nilaiAB(p)
+          return a === b
+            ? `Karena a dan b sama-sama ${fmt(a)}, keempat daerahnya persegi yang sama besar: ${fmt(a)} × ${fmt(a)} semuanya. Tidak ada bagian yang tersisa dan tidak ada yang bertumpuk.`
+            : `Ada persegi ${fmt(a)} × ${fmt(a)}, dua persegi panjang ${fmt(a)} × ${fmt(b)}, dan persegi ${fmt(b)} × ${fmt(b)}. Tidak ada bagian yang tersisa dan tidak ada yang bertumpuk.`
+        },
         durasi: 2600,
       },
       {
@@ -408,8 +419,12 @@ const konsep: Konsep = {
       {
         id: 's4',
         judul: 'Dua ubin yang sama digabung',
-        narasi:
-          'Kedua persegi panjang a × b ukurannya persis sama. Dua benda yang sama bisa ditulis sebagai 2ab.',
+        narasi: (p) => {
+          const { a, b } = nilaiAB(p)
+          return a === b
+            ? `Karena a dan b sama-sama ${fmt(a)}, kedua ubin a × b malah berbentuk persegi — tetap sama besar, luasnya masing-masing ${fmt(a * b)}. Dua ubin yang sama bisa kamu tulis sekali saja: 2ab = ${fmt(2 * a * b)}.`
+            : `Kedua ubin ${fmt(a)} × ${fmt(b)} ukurannya persis sama, luasnya masing-masing ${fmt(a * b)}. Dua ubin yang sama bisa kamu tulis sekali saja: 2ab = ${fmt(2 * a * b)}.`
+        },
         rumus: '[ab:ab] + [ab:ab] = [dua-ab:2ab]',
         durasi: 1800,
       },
@@ -424,8 +439,14 @@ const konsep: Konsep = {
       {
         id: 's6',
         judul: 'Kenapa bukan a² + b²?',
-        narasi:
-          'Kalau kamu hanya menulis a² + b², dua ubin ab itu hilang begitu saja — padahal keduanya nyata menempati ruang di dalam persegi.',
+        // Saat a = b, a² + b² tepat separuh luas persegi — sebut itu supaya dua
+        // angka yang kebetulan sama tidak terbaca seperti salah hitung.
+        narasi: (p) => {
+          const { a, b } = nilaiAB(p)
+          return a === b
+            ? `Kalau kamu hanya menulis a² + b², hasilnya ${fmt(a * a + b * b)} — persis separuh dari luas persegi ini, ${fmt((a + b) ** 2)}. Separuh sisanya, seluas ${fmt(2 * a * b)}, adalah dua ubin ab yang kamu lewatkan.`
+            : `Kalau kamu hanya menulis a² + b², hasilnya ${fmt(a * a + b * b)} — dua ubin ab yang luas totalnya ${fmt(2 * a * b)} hilang begitu saja. Padahal keduanya nyata menempati ruang di dalam persegi yang luasnya ${fmt((a + b) ** 2)}.`
+        },
         durasi: 2400,
       },
     ],
@@ -434,15 +455,14 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ubah a dan b, perhatikan bagian mana yang paling cepat membesar',
     ajakan:
-      'Perhatikan ubin ab. Saat a dan b sama-sama diperbesar, dua ubin itu justru sering menjadi bagian terbesar.',
+      'Perhatikan ubin ab. Kalau a dan b sama-sama dinaikkan dengan besar yang sama, luas dua ubin itu bertambah paling cepat. Selama yang satu kurang dari dua kali yang lain, dua ubin itu bersama-sama menjadi bagian terbesar. Tepat dua kali? Luasnya sama dengan persegi yang lebih besar.',
     params: [
       { key: 'a', label: 'Nilai a', min: 1, max: 7, step: 1, awal: 3, bulat: true },
       { key: 'b', label: 'Nilai b', min: 1, max: 7, step: 1, awal: 2, bulat: true },
     ],
     Visual: VisualEksperimen,
     temuan: (p) => {
-      const a = Math.round(p.a ?? 3)
-      const b = Math.round(p.b ?? 2)
+      const { a, b } = nilaiAB(p)
       const kiri = (a + b) ** 2
       const salah = a * a + b * b
       return (
@@ -451,8 +471,10 @@ const konsep: Konsep = {
             ({fmt(a)} + {fmt(b)})² = {fmt(kiri)}
           </strong>
           , sedangkan a² + b² hanya {fmt(salah)}. Selisihnya {fmt(kiri - salah)} — persis luas dua
-          ubin ab ({fmt(a)} × {fmt(b)} × 2). Coba buat a dan b sama besar: dua ubin ab akan
-          menempati setengah dari seluruh persegi.
+          ubin ab ({fmt(a)} × {fmt(b)} × 2).{' '}
+          {a === b
+            ? `Sekarang a dan b sama besar, jadi dua ubin ab itu menempati tepat setengah dari seluruh persegi.`
+            : `Coba buat a dan b sama besar: dua ubin ab akan menempati setengah dari seluruh persegi.`}
         </p>
       )
     },
@@ -499,11 +521,12 @@ const konsep: Konsep = {
           <strong>b</strong> langkah.
         </p>
         <p>
-          Kalau kamu tarik garis lurus dari titik pembagi itu — sekali mendatar, sekali tegak —
-          kebunmu terbagi menjadi empat petak.
+          Bagi juga sisi di sebelahnya dengan cara yang sama. Dari titik pembagi di sisi bawah
+          tarik garis lurus tegak, dari titik pembagi di sisi samping tarik garis lurus mendatar.
+          Kebunmu terbagi menjadi empat petak.
         </p>
         <p>
-          Ada petak besar a × a, petak kecil b × b, dan <strong>dua</strong> petak panjang a × b.
+          Ada petak persegi a × a, petak persegi b × b, dan <strong>dua</strong> petak panjang a × b.
           Luas seluruh kebun tentu sama dengan jumlah luas keempat petak itu.
         </p>
       </>
@@ -538,7 +561,7 @@ const konsep: Konsep = {
       a: 'Bagian pertama dari sisi persegi.',
       b: 'Bagian kedua dari sisi persegi.',
       a2: 'Persegi a × a — pojok kiri atas.',
-      'dua-ab': 'Dua persegi panjang a × b. Inilah bagian yang hilang kalau kamu menulis a² + b².',
+      'dua-ab': 'Dua daerah berukuran a × b. Inilah bagian yang hilang kalau kamu menulis a² + b².',
       b2: 'Persegi b × b — pojok kanan bawah.',
     },
   },
@@ -547,7 +570,7 @@ const konsep: Konsep = {
     {
       id: 'kj-1',
       tipe: 'pilihan',
-      topicId: 'smp8-aljabar-bentuk',
+      topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
       kelas: 8,
       tingkat: 'mudah',
       konsep: 'kuadrat-jumlah',
@@ -571,7 +594,7 @@ const konsep: Konsep = {
       return {
         id: 'kj-2',
         tipe: 'angka',
-        topicId: 'smp8-aljabar-bentuk',
+        topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
         kelas: 8,
         tingkat: 'sedang',
         konsep: 'kuadrat-jumlah',
@@ -589,7 +612,7 @@ const konsep: Konsep = {
     {
       id: 'kj-3',
       tipe: 'benar-salah',
-      topicId: 'smp8-aljabar-bentuk',
+      topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
       kelas: 8,
       tingkat: 'sedang',
       konsep: 'kuadrat-jumlah',
@@ -608,7 +631,7 @@ const konsep: Konsep = {
     {
       id: 'kj-4',
       tipe: 'cocokkan',
-      topicId: 'smp8-aljabar-bentuk',
+      topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
       kelas: 9,
       tingkat: 'sulit',
       konsep: 'kuadrat-jumlah',
@@ -620,7 +643,7 @@ const konsep: Konsep = {
         { kiri: '(a + b)³', kanan: 'a³ + 3a²b + 3ab² + b³' },
       ],
       hint: [
-        'Bentuk yang memuat tanda kurang di dalam kurung akan memiliki suku tengah negatif.',
+        'Kuadrat dari selisih, (a − b)², memiliki suku tengah negatif: −2ab.',
         'Perkalian jumlah dengan selisih membuat suku tengahnya saling meniadakan.',
         'Untuk pangkat tiga, koefisiennya mengikuti baris keempat segitiga Pascal: 1, 3, 3, 1.',
       ],
@@ -630,7 +653,7 @@ const konsep: Konsep = {
     {
       id: 'kj-5',
       tipe: 'angka',
-      topicId: 'smp8-aljabar-bentuk',
+      topicId: 'smp8-identitas-aljabar-dan-bentuk-kuadrat',
       kelas: 9,
       tingkat: 'sulit',
       konsep: 'kuadrat-jumlah',
@@ -644,7 +667,7 @@ const konsep: Konsep = {
         'Jumlahkan: 10.000 + 400 + 4.',
       ],
       pembahasan:
-        '102² = (100 + 2)² = 10.000 + 400 + 4 = 10.404. Identitas ini memang lahir sebagai alat hitung cepat, jauh sebelum ada kalkulator.',
+        '102² = (100 + 2)² = 10.000 + 400 + 4 = 10.404. Identitas ini sudah dikenal lebih dari dua ribu tahun lalu: Euklides menuliskannya sebagai dalil tentang persegi yang sisinya dipotong menjadi dua bagian sembarang, persis seperti gambar tadi.',
     },
   ],
 

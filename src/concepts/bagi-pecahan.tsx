@@ -31,8 +31,30 @@ function bacaParam(p: Record<string, number>) {
   const p2 = clamp(Math.round(p.p2 ?? 1), 1, q2)
   const nilai1 = p1 / q1
   const nilai2 = p2 / q2
-  const hasil = nilai1 / nilai2
-  return { p1, q1, p2, q2, nilai1, nilai2, hasil }
+  // dihitung dari bilangan bulat agar hasil bulat tetap tepat
+  // (5/6 ÷ 1/6 lewat desimal menjadi 5,000…01 dan menambah bingkai hantu)
+  const atas = p1 * q2
+  const bawah = q1 * p2
+  const hasil = atas / bawah
+  // gambar hanya memuat satu utuh: pembilang yang melebihi penyebut dipangkas
+  const dipangkas = Math.round(p.p1 ?? 3) > q1 || Math.round(p.p2 ?? 1) > q2
+  // teks bersama untuk gambar dan narasi, supaya keduanya selalu cocok
+  const teksA = `${fmt(p1)}/${fmt(q1)}`
+  const teksB = `${fmt(p2)}/${fmt(q2)}`
+  const teksHasil = pecahanTeks(atas, bawah, true)
+  const teksBalik = pecahanTeks(q2, p2)
+  // "memuat 1 potongan" terasa janggal; untuk satu potongan ditulis dengan kata
+  const teksIsiUtuh = teksBalik === '1' ? 'tepat satu' : teksBalik
+  return { p1, q1, p2, q2, nilai1, nilai2, atas, bawah, hasil, dipangkas, teksA, teksB, teksHasil, teksBalik, teksIsiUtuh }
+}
+
+/** Catatan kecil bila penggeser pembilang melebihi penyebut dan dipangkas. */
+function CatatanPangkas({ y }: { y: number }) {
+  return (
+    <Tag x={W / 2} y={y} warna="var(--ink-3)" size={13} tebal={600}>
+      catatan: pembilang dibatasi agar tidak melebihi penyebut
+    </Tag>
+  )
 }
 
 /** Batang utuh dengan bagian terwarnai, plus penanda potongan pembagi. */
@@ -77,15 +99,18 @@ function Batang({
         potongTampak > 0 &&
         Array.from({ length: Math.ceil(potongTampak) }, (_, k) => {
           const mulai = k * potong * BW
-          const lebar = Math.min(potong * BW, BW - mulai)
-          if (lebar <= 0) return null
+          const sisa = BW - mulai
+          if (sisa <= 0) return null
           const penuh = clamp(potongTampak - k, 0, 1)
+          // panjang bingkai = bagian potongan yang sudah terhitung,
+          // tidak boleh melewati ujung batang
+          const lebar = Math.min(potong * BW * penuh, sisa)
           return (
             <rect
               key={`p${k}`}
               x={BX + mulai}
               y={y - 5}
-              width={lebar * penuh}
+              width={lebar}
               height={BH + 10}
               rx={6}
               fill="none"
@@ -117,7 +142,7 @@ function Batang({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const { p1, q1, p2, q2, nilai1, nilai2, hasil } = bacaParam(p)
+  const { p1, q1, p2, q2, nilai2, hasil, dipangkas, teksA, teksB, teksHasil, teksIsiUtuh } = bacaParam(p)
 
   const bilanganBulat = step === 0
   const gambarBatang = fase(step, t, 1)
@@ -133,8 +158,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const y2 = 262
 
   // Berapa potongan pembagi yang muat di dalam bagian terwarnai.
-  const muat = nilai1 / nilai2
-  const tampakPotong = tandaiPotong * muat
+  const tampakPotong = tandaiPotong * hasil
 
   if (bilanganBulat) {
     // Langkah 0: pembagian bilangan bulat sebagai "muat berapa kali".
@@ -144,6 +168,18 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
     return (
       <Svg w={W} h={H} maxH={450} label="Pembagian bilangan bulat digambarkan sebagai muat berapa kali">
         <rect x={BX} y={y1} width={BW} height={BH} fill="var(--m-a)" fillOpacity={0.4} stroke="var(--ink-2)" strokeWidth={2} />
+        {/* enam satuan, supaya "6" dan "2" benar-benar kelihatan */}
+        {Array.from({ length: 5 }, (_, i) => (
+          <line
+            key={`s${i}`}
+            x1={BX + (i + 1) * lebarPotong}
+            y1={y1}
+            x2={BX + (i + 1) * lebarPotong}
+            y2={y1 + BH}
+            stroke="var(--ink-3)"
+            strokeWidth={0.8}
+          />
+        ))}
         {Array.from({ length: Math.ceil(berjalan) }, (_, k) => (
           <rect
             key={k}
@@ -174,7 +210,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         bagian={q1}
         terisi={p1 * gambarBatang}
         warna="var(--m-a)"
-        label={`${fmt(p1)}/${fmt(q1)}`}
+        label={teksA}
         potong={nilai2}
         potongTampak={tampakPotong}
         nyala={nyalaA}
@@ -183,37 +219,43 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* batang pembanding: satu utuh dengan potongan pembagi */}
       {alasan > 0.05 && (
         <g opacity={alasan}>
-          <Batang y={y2} bagian={q2 / p2 >= 2 ? Math.round(1 / nilai2) : q2} terisi={0} warna="var(--m-b)" label="1" nyala={nyalaB} />
+          <Batang
+            y={y2}
+            bagian={q2}
+            terisi={0}
+            warna="var(--m-b)"
+            label="1"
+            potong={nilai2}
+            potongTampak={(q2 / p2) * alasan}
+            nyala={nyalaB}
+          />
           <Tag x={W / 2} y={y2 + BH + 32} warna="var(--m-b)" size={16}>
-            {`satu utuh memuat ${pecahanTeks(q2, p2)} potongan sebesar ${fmt(p2)}/${fmt(q2)}`}
+            {`satu utuh memuat ${teksIsiUtuh} potongan sebesar ${teksB}`}
           </Tag>
         </g>
       )}
 
       {step === 1 && (
         <Tag x={W / 2} y={64} warna="var(--ink-2)" size={17}>
-          {`${fmt(p1)}/${fmt(q1)} ÷ ${fmt(p2)}/${fmt(q2)} — pertanyaannya tetap sama`}
+          {`${teksA} ÷ ${teksB} — pertanyaannya tetap sama`}
         </Tag>
       )}
       {step === 2 && (
         <Tag x={W / 2} y={64} warna="var(--m-hi)" size={17}>
-          {`potongan sebesar ${fmt(p2)}/${fmt(q2)} muat berapa kali?`}
+          {`potongan sebesar ${teksB} muat berapa kali?`}
         </Tag>
       )}
       {hitung > 0.4 && !selesai && (
         <Tag x={W / 2} y={y1 + BH + 40} warna="var(--m-hi)" size={18}>
-          {`terhitung ${Number.isInteger(hasil) ? fmt(hasil) : fmt(hasil, 3)} kali`}
+          {`terhitung ${teksHasil} kali`}
         </Tag>
       )}
       {selesai && (
         <Tag x={W / 2} y={64} warna="var(--m-ab)" size={18}>
-          {`${fmt(p1)}/${fmt(q1)} ÷ ${fmt(p2)}/${fmt(q2)} = ${fmt(p1)}/${fmt(q1)} × ${fmt(q2)}/${fmt(p2)} = ${pecahanTeks(
-            p1 * q2,
-            q1 * p2,
-            true,
-          )}`}
+          {`${teksA} ÷ ${teksB} = ${teksA} × ${fmt(q2)}/${fmt(p2)} = ${teksHasil}`}
         </Tag>
       )}
+      {dipangkas && <CatatanPangkas y={H - 18} />}
     </Svg>
   )
 }
@@ -221,7 +263,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const { p1, q1, p2, q2, nilai2, hasil } = bacaParam(p)
+  const { p1, q1, p2, q2, nilai2, hasil, dipangkas, teksA, teksB, teksHasil } = bacaParam(p)
   const y1 = 140
   const y2 = 256
 
@@ -232,7 +274,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         bagian={q1}
         terisi={p1}
         warna="var(--m-a)"
-        label={`${fmt(p1)}/${fmt(q1)}`}
+        label={teksA}
         potong={nilai2}
         potongTampak={hasil}
         nyala={sorot === 'a'}
@@ -242,19 +284,77 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         bagian={q2}
         terisi={p2}
         warna="var(--m-b)"
-        label={`${fmt(p2)}/${fmt(q2)}`}
+        label={teksB}
         nyala={sorot === 'b' || sorot === 'balik'}
       />
       <Tag x={W / 2} y={62} warna="var(--m-ab)" size={19}>
-        {`${fmt(p1)}/${fmt(q1)} ÷ ${fmt(p2)}/${fmt(q2)} = ${pecahanTeks(p1 * q2, q1 * p2, true)}`}
+        {`${teksA} ÷ ${teksB} = ${teksHasil}`}
       </Tag>
       <Tag x={W / 2} y={y1 + BH + 30} warna="var(--m-hi)" size={15}>
-        {`potongan ${fmt(p2)}/${fmt(q2)} muat ${
-          Number.isInteger(hasil) ? fmt(hasil) : fmt(hasil, 3)
-        } kali di dalam ${fmt(p1)}/${fmt(q1)}`}
+        {`potongan ${teksB} muat ${teksHasil} kali di dalam ${teksA}`}
       </Tag>
+      {dipangkas && <CatatanPangkas y={H - 30} />}
     </Svg>
   )
+}
+
+/* ---------------- Teks langkah yang mengikuti penggeser ---------------- */
+
+/** Langkah 2: menandai bagian berwarna dengan potongan pembagi. */
+function narasiTandai(p: Record<string, number>) {
+  const { atas, bawah, teksA, teksB } = bacaParam(p)
+  if (atas < bawah)
+    return `Bagian berwarna, yaitu ${teksA}, kita coba tandai dengan potongan sebesar ${teksB}. Potongan itu lebih besar dari bagian berwarna, jadi satu potongan pun tidak muat penuh.`
+  if (atas === bawah)
+    return `Bagian berwarna, yaitu ${teksA}, kita tandai dengan potongan sebesar ${teksB}. Ternyata satu potongan saja sudah pas menutupinya.`
+  // bingkai terakhir digambar pendek bila potongannya tidak habis membagi
+  if (atas % bawah === 0)
+    return `Bagian berwarna, yaitu ${teksA}, kita tandai dengan potongan sebesar ${teksB}, satu per satu, sampai habis.`
+  return `Bagian berwarna, yaitu ${teksA}, kita tandai dengan potongan sebesar ${teksB}, satu per satu. Potongan terakhir tidak muat penuh, jadi bingkai terakhirnya berhenti lebih pendek.`
+}
+
+/** Langkah 3: hasil hitungan dan perbandingannya dengan bilangan yang dibagi. */
+function narasiHitung(p: Record<string, number>) {
+  const { p2, q2, atas, bawah, teksA, teksB, teksHasil } = bacaParam(p)
+  const [hp, hq] = simplify(atas, bawah)
+  // angka 1 ditulis sebagai kata agar tidak janggal ("1 potongan penuh")
+  const kataBanyak = (n: number) => (n === 1 ? 'satu' : fmt(n))
+  const hitung =
+    hq === 1
+      ? `Potongan ${teksB} muat tepat ${kataBanyak(hp)} kali di dalam ${teksA}.`
+      : hp > hq
+        ? `Potongan ${teksB} muat ${teksHasil} kali di dalam ${teksA}: ${kataBanyak(Math.floor(hp / hq))} potongan penuh, lalu potongan terakhir hanya muat ${fmt(hp % hq)}/${fmt(hq)} bagiannya.`
+        : `Potongan ${teksB} lebih besar dari ${teksA}, sehingga hanya muat ${teksHasil} kali, belum sekali pun penuh.`
+  // pembagi tepat 1: hasilnya senilai dengan yang dibagi, walau tulisannya
+  // bisa berbeda karena hasil selalu disederhanakan (2/4 ÷ 2/2 = 1/2)
+  const banding =
+    p2 < q2
+      ? `lebih besar dari ${teksA}, karena potongannya lebih kecil dari satu utuh.`
+      : teksHasil === teksA
+        ? 'tetap sama dengan yang dibagi, karena potongannya tepat satu utuh.'
+        : `nilainya tetap sama dengan ${teksA}, karena potongannya tepat satu utuh.`
+  return `${hitung} Jadi ${teksA} ÷ ${teksB} = ${teksHasil}, ${banding}`
+}
+
+/** Langkah 4: satu utuh memuat berapa potongan, lalu ambil bagiannya. */
+function narasiAlasan(p: Record<string, number>) {
+  const { p1, q1, teksA, teksB, teksHasil, teksBalik, teksIsiUtuh } = bacaParam(p)
+  const bawah = `Batang bawah menunjukkan satu utuh memuat ${teksIsiUtuh} potongan sebesar ${teksB}.`
+  if (p1 === q1)
+    return `${bawah} Yang kita punya ${teksA}, tepat satu utuh, jadi potongannya juga ${teksBalik}${
+      teksBalik === teksHasil ? '' : `, yaitu ${teksHasil}`
+    }.`
+  return `${bawah} Yang kita punya hanya ${teksA} utuh, jadi potongannya ${teksA} dari ${teksBalik}, yaitu ${teksHasil}.`
+}
+
+/** Langkah 5: dari isi satu utuh ke kebalikan pembagi. */
+function narasiKebalikan(p: Record<string, number>) {
+  const { p2, q2, teksB, teksBalik } = bacaParam(p)
+  if (p2 === 1)
+    return `Satu utuh berisi ${fmt(q2)} potongan ${teksB}, jadi membagi dengan ${teksB} sama saja dengan mengalikan ${fmt(q2)}. Untuk pembagi c/d mana pun, satu utuh memuat pembagi itu d/c kali, jadi pengalinya adalah kebalikan pembagi.`
+  const balikMentah = `${fmt(q2)}/${fmt(p2)}`
+  const kali = teksBalik === balikMentah ? balikMentah : `${balikMentah} = ${teksBalik}`
+  return `Satu utuh berisi ${fmt(q2)} potongan 1/${fmt(q2)}, sedangkan pembagi ${teksB} berisi ${fmt(p2)} potongan 1/${fmt(q2)}, jadi satu utuh memuat pembagi itu ${kali} kali. Begitu juga untuk pembagi c/d mana pun: pengalinya d/c, yaitu kebalikan pembagi.`
 }
 
 /* ---------------- Modul konsep ---------------- */
@@ -276,7 +376,7 @@ const konsep: Konsep = {
         id: 'a',
         label: 'Lebih kecil dari 3/4',
         balasan:
-          'Wajar mengira begitu, karena "membagi" biasanya membuat kecil. Tetapi itu hanya benar kalau pembaginya lebih besar dari 1.',
+          'Wajar mengira begitu, karena "membagi" biasanya membuat kecil. Tetapi untuk bilangan positif, itu hanya benar kalau pembaginya lebih besar dari 1.',
       },
       {
         id: 'b',
@@ -293,7 +393,7 @@ const konsep: Konsep = {
       },
     ],
     penutup:
-      'Membagi tidak selalu memperkecil. Kalau pembaginya lebih kecil dari 1, hasilnya justru membesar.',
+      'Membagi tidak selalu memperkecil. Kalau bilangan positif dibagi dengan pembagi di antara 0 dan 1, hasilnya justru membesar.',
   },
 
   bongkar: {
@@ -323,38 +423,42 @@ const konsep: Konsep = {
       {
         id: 's1',
         judul: 'Pertanyaannya tetap sama untuk pecahan',
-        narasi:
-          'Sekarang yang dibagi adalah tiga perempat, dan pembaginya seperdelapan. Pertanyaannya tidak berubah sama sekali.',
-        rumus: '[a:3/4] ÷ [b:1/8] = ?',
+        narasi: (p) => {
+          const { teksA, teksB } = bacaParam(p)
+          return `Sekarang yang dibagi adalah pecahan: ${teksA} dibagi ${teksB}. Pertanyaannya tidak berubah sama sekali: potongan ${teksB} muat berapa kali di dalam ${teksA}?`
+        },
+        rumus: (p) => {
+          const { teksA, teksB } = bacaParam(p)
+          return `[a:${teksA}] ÷ [b:${teksB}] = ?`
+        },
         durasi: 2200,
       },
       {
         id: 's2',
         judul: 'Tandai potongan sebesar pembagi',
-        narasi:
-          'Bagian yang berwarna kita tandai dengan potongan sebesar seperdelapan, satu per satu, sampai habis.',
+        narasi: narasiTandai,
         durasi: 2600,
       },
       {
         id: 's3',
         judul: 'Hitung potongannya',
-        narasi:
-          'Ternyata muat enam kali. Jadi hasil bagi itu 6 — jauh lebih besar dari 3/4, dan itu wajar karena potongannya sangat kecil.',
+        narasi: narasiHitung,
         durasi: 2200,
       },
       {
         id: 's4',
-        judul: 'Kenapa hasilnya 6?',
-        narasi:
-          'Satu utuh memuat delapan potongan seperdelapan. Karena yang kita punya hanya tiga perempat utuh, potongannya tiga perempat dari delapan.',
-        rumus: '[a:3/4] × [balik:8] = 6',
+        judul: (p) => `Kenapa hasilnya ${bacaParam(p).teksHasil}?`,
+        narasi: narasiAlasan,
+        rumus: (p) => {
+          const { teksA, teksBalik, teksHasil } = bacaParam(p)
+          return `[a:${teksA}] × [balik:${teksBalik}] = [hasil:${teksHasil}]`
+        },
         durasi: 2800,
       },
       {
         id: 's5',
         judul: 'Di situlah kebalikan muncul',
-        narasi:
-          'Membagi dengan 1/8 sama saja dengan mengalikan 8, karena satu utuh memuat 8 potongan. Untuk pembagi c/d, satu utuh memuat d/c kali — jadi pengalinya kebalikan pembagi.',
+        narasi: narasiKebalikan,
         rumus: '[a:a/b] ÷ [b:c/d] = [a:a/b] × [balik:d/c]',
         durasi: 2800,
       },
@@ -364,7 +468,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ganti kedua pecahannya',
     ajakan:
-      'Bingkai merah muda menandai potongan sebesar pembagi. Perhatikan kapan hasilnya lebih besar dan kapan lebih kecil daripada bilangan yang dibagi.',
+      'Bingkai merah muda menandai potongan sebesar pembagi. Di sini pembaginya paling besar 1. Perhatikan kapan potongannya muat lebih dari sekali, kapan kurang dari sekali, dan bandingkan hasilnya dengan bilangan yang dibagi.',
     params: [
       { key: 'p1', label: 'Pembilang yang dibagi', min: 1, max: 10, step: 1, awal: 3, bulat: true },
       { key: 'q1', label: 'Penyebut yang dibagi', min: 2, max: 12, step: 1, awal: 4, bulat: true },
@@ -386,8 +490,8 @@ const konsep: Konsep = {
             : nilai2 > 1
               ? 'Karena pembaginya lebih besar dari 1, hasilnya lebih kecil daripada bilangan yang dibagi.'
               : 'Pembaginya tepat 1, jadi hasilnya sama dengan bilangan yang dibagi.'}{' '}
-          Coba buat pembaginya 1/2, lalu 1/4, lalu 1/8: hasilnya menggandakan setiap kali potongannya
-          diperkecil separuh.
+          Coba buat pembaginya 1/2, lalu 1/4, lalu 1/8: hasilnya menjadi dua kali lipat setiap kali
+          potongannya diperkecil separuh.
         </p>
       )
     },
@@ -418,15 +522,21 @@ const konsep: Konsep = {
     SMP: (
       <>
         <p>
-          Bagi sembarang pembagi c/d, satu utuh memuat <strong>d/c</strong> potongan sebesar c/d.
-          Karena itu, "berapa potongan c/d yang muat dalam a/b" sama dengan mengambil a/b bagian dari
-          d/c:
+          Bagi sembarang pembagi positif c/d, satu utuh memuat <strong>d/c</strong> potongan sebesar
+          c/d — sebab satu utuh berisi d potongan 1/d, sedangkan satu potongan c/d berisi c potongan
+          1/d. Karena itu, "berapa potongan c/d yang muat dalam a/b" sama dengan mengambil a/b bagian
+          dari d/c:
         </p>
         <p style={{ textAlign: 'center' }}>a/b ÷ c/d = a/b × d/c</p>
+        <p>
+          Gambaran "muat berapa kali" hanya masuk akal untuk pecahan positif. Bila hasilnya bukan
+          bilangan bulat, artinya potongan terakhir hanya muat sebagian. Alasan aljabar di bawah ini
+          berlaku lebih umum, termasuk untuk pecahan negatif, asalkan c ≠ 0.
+        </p>
         <h4>Alasan aljabar</h4>
         <p>
-          Pembagian didefinisikan sebagai kebalikan perkalian: a/b ÷ c/d adalah bilangan x sehingga
-          x × c/d = a/b. Kalikan kedua ruas dengan d/c:
+          Pembagian didefinisikan sebagai kebalikan perkalian: a/b ÷ c/d (dengan c ≠ 0) adalah
+          bilangan x sehingga x × c/d = a/b. Kalikan kedua ruas dengan d/c:
         </p>
         <p style={{ textAlign: 'center' }}>
           x × (c/d) × (d/c) = (a/b) × (d/c) ⟹ x × 1 = (a/b) × (d/c)
@@ -437,11 +547,11 @@ const konsep: Konsep = {
         </p>
         <h4>Kenapa hasilnya bisa membesar</h4>
         <p>
-          Banyak orang mengira membagi selalu memperkecil. Itu hanya benar kalau pembaginya lebih
-          besar dari 1. Kalau pembaginya lebih kecil dari 1, potongannya kecil sehingga muatnya
-          banyak — hasilnya membesar.
+          Banyak orang mengira membagi selalu memperkecil. Untuk bilangan positif, itu hanya benar
+          kalau pembaginya lebih besar dari 1. Kalau pembaginya di antara 0 dan 1, potongannya kecil
+          sehingga muatnya banyak — hasilnya membesar.
         </p>
-        <h4>Kenapa tidak boleh membagi nol</h4>
+        <h4>Kenapa tidak boleh membagi dengan nol</h4>
         <p>
           Nol tidak punya kebalikan: tidak ada bilangan yang bila dikalikan 0 menghasilkan 1.
           Pertanyaan "berapa kali 0 muat dalam 5" juga tidak punya jawaban — berapa pun banyaknya
@@ -480,7 +590,7 @@ const konsep: Konsep = {
           `Kalau ada ${p1} utuh, potongannya ${p1} kali lipat.`,
           `Jadi ${p1} × ${q}.`,
         ],
-        pembahasan: `${p1} ÷ 1/${q} = ${p1} × ${q} = ${p1 * q}. Membagi dengan pecahan yang lebih kecil dari 1 membuat hasilnya membesar.`,
+        pembahasan: `${p1} ÷ 1/${q} = ${p1} × ${q} = ${p1 * q}. Membagi bilangan positif dengan pecahan di antara 0 dan 1 membuat hasilnya membesar.`,
       }
     },
     {
@@ -490,7 +600,7 @@ const konsep: Konsep = {
       kelas: 6,
       tingkat: 'sedang',
       konsep: 'bagi-pecahan',
-      pertanyaan: 'Hasil dari 2/3 ÷ 4/9 adalah...',
+      pertanyaan: 'Hasil dari 2/3 ÷ 4/9 dalam bentuk paling sederhana adalah...',
       pilihan: [
         { id: 'a', label: '3/2', benar: true },
         {
@@ -506,13 +616,13 @@ const konsep: Konsep = {
         {
           id: 'd',
           label: '6/4',
-          diagnosa: 'Perhitungannya sudah benar, tetapi jawabannya belum disederhanakan menjadi 3/2.',
+          diagnosa: 'Nilainya sudah benar (6/4 = 3/2), tetapi belum disederhanakan sepenuhnya: 6 dan 4 masih sama-sama habis dibagi 2.',
         },
       ],
       hint: [
         'Balik dulu pecahan pembaginya, lalu ganti tanda bagi menjadi kali.',
         '2/3 ÷ 4/9 = 2/3 × 9/4.',
-        'Sederhanakan sebelum mengalikan: 9 dan 3 sama-sama habis dibagi 3.',
+        'Sederhanakan sebelum mengalikan: 9 dan 3 sama-sama habis dibagi 3, begitu juga 2 dan 4 sama-sama habis dibagi 2.',
       ],
       pembahasan:
         '2/3 ÷ 4/9 = 2/3 × 9/4 = 18/12 = 3/2. Periksa kewajarannya: pembaginya lebih kecil dari 1, jadi hasilnya memang harus lebih besar dari 2/3.',
@@ -527,14 +637,14 @@ const konsep: Konsep = {
       pertanyaan: 'Membagi sebuah bilangan selalu menghasilkan bilangan yang lebih kecil.',
       jawaban: false,
       diagnosa:
-        'Itu hanya benar kalau pembaginya lebih besar dari 1. Membagi dengan 1/2 justru menggandakan, karena potongan setengahan muat dua kali dalam setiap utuh.',
+        'Untuk bilangan positif, itu hanya benar kalau pembaginya lebih besar dari 1. Membagi dengan 1/2 justru menggandakan, karena potongan setengahan muat dua kali dalam setiap utuh.',
       hint: [
         'Coba hitung 5 ÷ 1/2 dengan pertanyaan "muat berapa kali".',
         'Berapa banyak potongan setengahan dalam 5 utuh?',
         'Bandingkan hasilnya dengan 5.',
       ],
       pembahasan:
-        'Salah. 5 ÷ 1/2 = 10, lebih besar daripada 5. Membagi memperkecil hanya bila pembaginya lebih besar dari 1.',
+        'Salah. 5 ÷ 1/2 = 10, lebih besar daripada 5. Untuk bilangan positif, membagi memperkecil hanya bila pembaginya lebih besar dari 1.',
     },
     {
       id: 'bag-4',
@@ -578,8 +688,14 @@ const konsep: Konsep = {
           `${p1}/${q1} ÷ ${p2}/${q2} = ${p1}/${q1} × ${q2}/${p2}.`,
           'Kalikan pembilang dengan pembilang dan penyebut dengan penyebut, lalu sederhanakan.',
         ],
-        pembahasan: `${p1}/${q1} × ${q2}/${p2} = ${p1 * q2}/${q1 * p2} = ${hp}/${hq}. Periksa kewajarannya: ${
-          p2 / q2 < 1 ? 'karena pembaginya kurang dari 1, hasilnya lebih besar dari pecahan pertama.' : 'karena pembaginya lebih dari 1, hasilnya lebih kecil dari pecahan pertama.'
+        pembahasan: `${p1}/${q1} × ${q2}/${p2} = ${p1 * q2}/${q1 * p2}${
+          hq === 1 ? ` = ${hp}` : hp === p1 * q2 ? '' : ` = ${hp}/${hq}`
+        }. Periksa kewajarannya: ${
+          p2 === q2
+            ? 'pembaginya tepat 1, jadi hasilnya sama dengan pecahan pertama.'
+            : p2 < q2
+              ? 'karena pembaginya kurang dari 1, hasilnya lebih besar dari pecahan pertama.'
+              : 'karena pembaginya lebih dari 1, hasilnya lebih kecil dari pecahan pertama.'
         }`,
       }
     },

@@ -32,8 +32,9 @@ Jangan menambah dependensi npm tanpa alasan kuat.
 | `src/components/Stage.tsx` | `Svg`, `Tag`, `Dimensi`, `SikuSiku` |
 | `src/components/SoalView.tsx` | Penyaji soal + petunjuk bertahap |
 | `src/concepts/*.tsx` | Satu berkas per konsep, ditemukan otomatis |
-| `src/data/katalog.ts` | Metadata ringan tiap konsep |
-| `src/data/kurikulum.ts` | Peta topik kelas 1–12 dan jalur konsep |
+| `src/data/katalog.ts` | Katalog konsep; judul/pertanyaan/tagline dibuat dari modulnya |
+| `src/data/kurikulum.ts` | Pembagian kelas, jalur konsep, `muatKelas()` |
+| `src/data/kurikulum/*.generated.ts` | Data topik hasil riset (jangan disunting tangan) |
 
 ## Menambah konsep
 
@@ -48,7 +49,8 @@ ditulis dalam bahasa Indonesia.
 ## Perintah
 
 ```bash
-npm run dev      # server pengembangan
-npx tsc -b       # pemeriksaan tipe (wajib lulus)
-npm run build    # bundel produksi
+npm run dev       # server pengembangan
+npm run periksa   # pemeriksaan tipe + uji modul konsep (wajib lulus)
+npm run bangun    # bangun ulang data kurikulum dan katalog
+npm run build     # bundel produksi
 ```

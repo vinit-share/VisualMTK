@@ -20,6 +20,34 @@ import type { DeriveState, Konsep } from '../lib/types'
 const W = 680
 const H = 440
 
+/** Garis/bingkai kelompok hanya digambar bila banyak kelompoknya paling banyak ini. */
+const MAKS_KELOMPOK_DIGAMBAR = 10
+
+/** Nilai turunan penggeser bongkar — dipakai bersama oleh gambar dan teks langkah. */
+function nilaiBongkar(p: Record<string, number>) {
+  const persen = clamp(Math.round((p.persen ?? 20) / 5) * 5, 5, 95)
+  const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
+  const [pp, qq] = simplify(persen, 100)
+  const hasil = (persen / 100) * total
+  const perBaris = total > 100 ? 20 : 10
+  return { persen, total, pp, qq, hasil, perBaris, isi: total / qq }
+}
+
+/** Bingkai kelompok benda tergambar bila tiap kelompok pas mengisi baris penuh. */
+function bingkaiKelompokTergambar(total: number, kelompok: number, perBaris: number) {
+  return kelompok <= MAKS_KELOMPOK_DIGAMBAR && (total / kelompok) % perBaris === 0
+}
+
+const KATA = ['nol', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas']
+
+/** Bilangan cacah kecil sebagai kata ("lima", "dua belas"); selebihnya angka. */
+function kata(n: number): string {
+  if (Number.isInteger(n) && n >= 0 && n <= 11) return KATA[n]
+  if (Number.isInteger(n) && n >= 12 && n <= 19) return `${KATA[n - 10]} belas`
+  if (n === 20) return 'dua puluh'
+  return fmt(n)
+}
+
 /* ---------------- Kisi seratus ---------------- */
 
 function KisiSeratus({
@@ -65,17 +93,26 @@ function KisiSeratus({
       {kotak}
       {kelompok && opacityKelompok > 0.01 && kelompok <= 10
         ? Array.from({ length: kelompok - 1 }, (_, k) => {
-            const batas = ((k + 1) * 100) / kelompok
-            const baris = batas / 10
+            // Batas antara kotak ke-(batas−1) dan ke-batas menurut urutan
+            // pengisian baris demi baris. Bila batasnya jatuh di tengah
+            // baris (mis. 25 kotak), garisnya berundak agar tiap kelompok
+            // benar-benar berisi kotak yang sama dengan yang tersorot.
+            const batas = Math.round(((k + 1) * 100) / kelompok)
+            const r = Math.floor(batas / 10)
+            const c = batas % 10
+            const yA = y + r * sel - 0.75
+            const d =
+              c === 0
+                ? `M ${x} ${yA} H ${x + 10 * sel}`
+                : `M ${x} ${yA + sel} H ${x + c * sel - 0.75} V ${yA} H ${x + 10 * sel}`
             return (
-              <line
+              <path
                 key={`g${k}`}
-                x1={x}
-                y1={y + baris * sel - 0.75}
-                x2={x + 10 * sel}
-                y2={y + baris * sel - 0.75}
+                d={d}
+                fill="none"
                 stroke="var(--m-hi)"
                 strokeWidth={2.5}
+                strokeLinejoin="round"
                 opacity={opacityKelompok}
               />
             )
@@ -118,11 +155,16 @@ function Benda({
   nyala?: boolean
 }) {
   const n = Math.min(total, 200)
+  // Bulatkan sisa galat pembulatan (mis. 0,29 × 100 = 28,999…).
+  const ts = Math.round(tersorot * 1e6) / 1e6
   const kotak = []
   for (let i = 0; i < n; i++) {
     const r = Math.floor(i / perBaris)
     const c = i % perBaris
-    const aktif = i < tersorot
+    const aktif = i + 1 <= ts
+    // Hasil pecahan (mis. 25% dari 10 = 2,5) diwarnai sebagian kotak,
+    // bukan dibulatkan ke atas menjadi satu kotak utuh.
+    const sebagian = !aktif && i < ts ? ts - i : 0
     kotak.push(
       <rect
         key={i}
@@ -133,10 +175,23 @@ function Benda({
         rx={2.5}
         fill={aktif ? 'var(--m-ab)' : 'var(--surface-3)'}
         fillOpacity={aktif ? (nyala ? 0.9 : 0.72) : 1}
-        stroke={aktif ? 'var(--m-ab)' : 'var(--ink-3)'}
+        stroke={aktif || sebagian > 0 ? 'var(--m-ab)' : 'var(--ink-3)'}
         strokeWidth={0.8}
       />,
     )
+    if (sebagian > 0.001) {
+      kotak.push(
+        <rect
+          key={`s${i}`}
+          x={x + c * sel}
+          y={y + r * sel}
+          width={(sel - 2) * sebagian}
+          height={sel - 2}
+          fill="var(--m-ab)"
+          fillOpacity={nyala ? 0.9 : 0.72}
+        />,
+      )
+    }
   }
   return (
     <g>
@@ -173,10 +228,7 @@ function Benda({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const persen = clamp(Math.round((p.persen ?? 20) / 5) * 5, 5, 95)
-  const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
-  const [pp, qq] = simplify(persen, 100)
-  const hasil = (persen / 100) * total
+  const { persen, total, pp, qq, hasil, perBaris } = nilaiBongkar(p)
 
   const sorotKisi = step === 1 ? seg(t, 0.1, 0.9) : step >= 1 ? 1 : 0
   const kelompokKisi = fase(step, t, 2)
@@ -193,9 +245,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const kisiX = munculBenda > 0.5 ? 56 : W / 2 - (10 * sel) / 2
   const kisiY = 110
 
-  const perBaris = total > 100 ? 20 : 10
   const selB = total > 100 ? 17 : 22
-  const bendaX = 400
+  // 20 kolom × 17 = 340 satuan: mulai di 320 agar kolom terakhir tidak
+  // terpotong di tepi kanan (W = 680).
+  const bendaX = total > 100 ? 320 : 400
   const bendaY = 110
 
   return (
@@ -280,7 +333,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const kisiY = 120
   const perBaris = total > 100 ? 20 : 10
   const selB = total > 100 ? 17 : 22
-  const bendaX = 400
+  // 20 kolom × 17 = 340 satuan: mulai di 320 agar kolom terakhir tidak
+  // terpotong di tepi kanan (W = 680).
+  const bendaX = total > 100 ? 320 : 400
   const bendaY = 120
 
   return (
@@ -374,46 +429,75 @@ const konsep: Konsep = {
       {
         id: 's1',
         judul: 'Sorot sebanyak persennya',
-        narasi:
-          'Dua puluh persen berarti dua puluh kotak dari seratus kotak itu. Belum ada perhitungan apa pun di sini — hanya menghitung kotak.',
-        rumus: '[persen:20]% = [persen:20]/[seratus:100]',
+        narasi: (p) => {
+          const { persen } = nilaiBongkar(p)
+          return `Persen dibaca begini: ${fmt(persen)}% berarti ${fmt(persen)} kotak dari seratus kotak itu. Belum ada perhitungan apa pun di sini — kamu hanya menghitung kotak.`
+        },
+        rumus: (p) => {
+          const { persen } = nilaiBongkar(p)
+          return `[persen:${fmt(persen)}]% = [persen:${fmt(persen)}]/[seratus:100]`
+        },
         durasi: 2000,
       },
       {
         id: 's2',
         judul: 'Sederhanakan pecahannya',
-        narasi:
-          'Dua puluh dari seratus sama saja dengan satu dari lima. Perhatikan kisinya terbagi menjadi lima jalur sama besar, dan yang tersorot tepat satu jalur.',
-        rumus: '[persen:20]/[seratus:100] = 1/5',
+        narasi: (p) => {
+          const { persen, pp, qq } = nilaiBongkar(p)
+          const jalur = pp === 1 ? 'tepat satu jalur' : `${kata(pp)} jalur`
+          const ekor =
+            qq > MAKS_KELOMPOK_DIGAMBAR
+              ? `Kisinya bisa dibagi menjadi ${kata(qq)} jalur sama besar dan yang tersorot ${jalur}, tetapi garis pembaginya terlalu banyak untuk digambar.`
+              : `Kisinya terbagi menjadi ${kata(qq)} jalur sama besar, dan yang tersorot ${jalur}.`
+          return `${fmt(persen)} dari seratus sama saja dengan ${fmt(pp)} dari ${fmt(qq)}. ${ekor}`
+        },
+        rumus: (p) => {
+          const { persen, pp, qq } = nilaiBongkar(p)
+          return `[persen:${fmt(persen)}]/[seratus:100] = ${fmt(pp)}/${fmt(qq)}`
+        },
         durasi: 2200,
       },
       {
         id: 's3',
         judul: 'Ganti keseluruhannya',
-        narasi:
-          'Sekarang yang kita punya bukan seratus benda, melainkan lima puluh. Persennya tetap sama, tetapi acuannya berbeda.',
-        rumus: 'keseluruhan = [total:50]',
+        narasi: (p) => {
+          const { persen, total } = nilaiBongkar(p)
+          if (total === 100)
+            return `Sekarang acuannya bukan lagi seratus kotak, melainkan 100 benda — kebetulan sama banyak. Persennya tetap ${fmt(persen)}%; geser keseluruhannya ke angka selain 100 agar acuannya benar-benar berbeda.`
+          return `Sekarang acuannya bukan lagi seratus kotak, melainkan ${fmt(total)} benda. Persennya tetap ${fmt(persen)}%, tetapi keseluruhannya berbeda.`
+        },
+        rumus: (p) => `keseluruhan = [total:${fmt(nilaiBongkar(p).total)}]`,
         durasi: 2000,
       },
       {
         id: 's4',
         judul: 'Bagi menjadi kelompok sama besar',
-        narasi:
-          'Karena persennya berarti "satu dari lima", benda-benda itu dibagi menjadi lima kelompok yang sama banyak.',
+        narasi: (p) => {
+          const { persen, total, pp, qq, perBaris, isi } = nilaiBongkar(p)
+          const ekor = bingkaiKelompokTergambar(total, qq, perBaris)
+            ? `berisi ${fmt(isi)} benda.`
+            : Number.isInteger(isi)
+              ? `berisi ${fmt(isi)} benda, walau bingkai kelompoknya tidak digambar.`
+              : `berisi ${fmt(isi)} benda — potongan benda boleh, karena yang dijaga perbandingannya.`
+          return `${fmt(persen)}% berarti "${fmt(pp)} dari ${fmt(qq)}", jadi ${fmt(total)} benda dibagi menjadi ${kata(qq)} kelompok sama besar. Tiap kelompok ${ekor}`
+        },
         durasi: 2200,
       },
       {
         id: 's5',
         judul: 'Ambil bagiannya',
-        narasi:
-          'Satu kelompok berisi sepuluh benda. Itulah dua puluh persen dari lima puluh.',
+        narasi: (p) => {
+          const { persen, total, pp, hasil } = nilaiBongkar(p)
+          const isi = pp === 1 ? 'Isinya' : 'Isi seluruhnya'
+          return `Ambil kelompok sebanyak pembilangnya, yaitu ${kata(pp)} kelompok. ${isi} ${fmt(hasil)} benda — itulah ${fmt(persen)}% dari ${fmt(total)}.`
+        },
         durasi: 2200,
       },
       {
         id: 's6',
         judul: 'Bentuk rumusnya',
         narasi:
-          'Menghitung persen selalu sama: ubah persen menjadi pecahan per seratus, lalu kalikan dengan keseluruhannya.',
+          'Menghitung p% dari n selalu sama: ubah persen menjadi pecahan per seratus, lalu kalikan dengan keseluruhannya.',
         rumus: '[hasil:hasil] = [persen:p]/[seratus:100] × [total:n]',
         durasi: 2200,
       },
@@ -444,7 +528,7 @@ const konsep: Konsep = {
             : persen === 100
               ? 'Seratus persen berarti mengambil seluruhnya — itulah kenapa 100% selalu sama dengan keseluruhan itu sendiri.'
               : `Sebagai pecahan, ${fmt(persen)}% sama dengan ${fmt(pp)}/${fmt(qq)}.`}{' '}
-          Coba tahan persennya lalu gandakan keseluruhannya: hasilnya ikut menggandakan. Persen
+          Coba tahan persennya lalu gandakan keseluruhannya: hasilnya ikut berlipat dua. Persen
           bukan jumlah tetap, melainkan <em>perbandingan</em>.
         </p>
       )
@@ -505,8 +589,10 @@ const konsep: Konsep = {
         </p>
         <p>
           Bentuk itu adalah identitas (1 + x)(1 − x) = 1 − x², sehingga kerugiannya selalu sebesar
-          x² bagian — dan karena x² selalu positif, urutan naik-turun apa pun berakhir di bawah nilai
-          semula.
+          x² dari nilai semula. Karena x² &gt; 0 untuk setiap x ≠ 0, naik lalu turun dengan persen
+          yang <em>sama</em> — dalam urutan mana pun — selalu berakhir di bawah nilai semula. (Bila
+          persennya berbeda, hasilnya bisa di atas atau di bawah: naik 50% lalu turun 10% memberi
+          1,5 × 0,9 = 1,35.)
         </p>
         <p>
           Cara pandang faktor pengali ini yang membuat bunga majemuk menjadi mudah: nilai setelah n
@@ -573,7 +659,7 @@ const konsep: Konsep = {
         },
         {
           id: 'd',
-          label: 'Rp199.750',
+          label: 'Rp199.975',
           diagnosa: 'Persennya diperlakukan seperti potongan 25 rupiah, bukan 25 per seratus.',
         },
       ],
@@ -623,7 +709,7 @@ const konsep: Konsep = {
         'Kalikan dengan 100 untuk mengubahnya menjadi persen.',
       ],
       pembahasan:
-        '15/40 = 0,375, dan 0,375 × 100% = 37,5%. Artinya kalau ada 100 siswa dengan perbandingan yang sama, 37 sampai 38 di antaranya membawa bekal.',
+        '15/40 = 0,375, dan 0,375 × 100% = 37,5%. Artinya perbandingannya setara dengan 37,5 dari setiap 100 — misalnya 75 dari 200 siswa.',
     },
     {
       id: 'per-5',

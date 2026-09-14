@@ -4,10 +4,11 @@
    topik mana yang sudah punya penjelasan visual interaktif.
    ============================================================ */
 
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Ikon } from '../components/Ikon'
 import { StatusLencana } from '../components/StatusLencana'
-import { KELAS, cariTopik, topikKelas } from '../data/kurikulum'
+import { KELAS, cariTopik, muatKelas, topikKelas, type TopikKurikulum } from '../data/kurikulum'
 import { cariKonsepMeta, LABEL_DOMAIN } from '../data/katalog'
 import { adaKonsep } from '../concepts/registry'
 import { statusKonsep, useSimpanan } from '../lib/store'
@@ -17,7 +18,23 @@ export default function KelasPage() {
   const no = Number(kelas)
   const info = KELAS.find((k) => k.no === no)
   const simpanan = useSimpanan()
-  const topik = topikKelas(no)
+
+  // Rincian kelas dimuat terpisah agar membuka satu kelas tidak menarik
+  // data sebelas kelas lainnya.
+  const [topik, setTopik] = useState<TopikKurikulum[] | null>(null)
+  useEffect(() => {
+    let batal = false
+    setTopik(null)
+    muatKelas(no).then((t) => {
+      if (!batal) setTopik(t)
+    })
+    return () => {
+      batal = true
+    }
+  }, [no])
+
+  // Sebelum rinciannya tiba, jumlah topiknya sudah diketahui dari ringkasan.
+  const jumlahTopik = topikKelas(no).length
 
   if (!info) {
     return (
@@ -47,19 +64,27 @@ export default function KelasPage() {
           Kelas {info.no} — {info.julukan}
         </h1>
         <p className="lead">
-          {topik.length} topik pada kelas ini. Topik bertanda ungu sudah punya penjelasan visual
+          {jumlahTopik} topik pada kelas ini. Topik bertanda ungu sudah punya penjelasan visual
           yang bisa dimainkan.
         </p>
       </header>
 
       <div className="page stack stack-3">
-        {topik.length === 0 && (
+        {topik === null && (
+          <div className="stack stack-3" aria-busy="true">
+            {Array.from({ length: Math.min(4, Math.max(1, jumlahTopik)) }, (_, i) => (
+              <div key={i} className="rangka rangka-topik" />
+            ))}
+          </div>
+        )}
+
+        {topik !== null && topik.length === 0 && (
           <div className="kosong">
             <p>Peta topik untuk kelas ini sedang disusun.</p>
           </div>
         )}
 
-        {topik.map((t) => {
+        {(topik ?? []).map((t) => {
           const konsepIds = (t.konsep ?? []).filter(adaKonsep)
           return (
             <article key={t.id} className="topik-item" data-punya={konsepIds.length > 0}>
@@ -69,7 +94,17 @@ export default function KelasPage() {
               <div className="grow stack stack-2">
                 <div className="row row-between">
                   <h3 style={{ fontSize: 'var(--t-md)' }}>{t.judul}</h3>
-                  <span className="chip">{LABEL_DOMAIN[t.domain]}</span>
+                  <span className="row row-tight">
+                    {t.lanjut && (
+                      <span
+                        className="chip chip-pink"
+                        title="Hanya ada pada mata pelajaran Matematika Tingkat Lanjut"
+                      >
+                        Tingkat Lanjut
+                      </span>
+                    )}
+                    <span className="chip">{LABEL_DOMAIN[t.domain]}</span>
+                  </span>
                 </div>
                 <p className="small muted">{t.ringkas}</p>
 

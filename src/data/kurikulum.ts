@@ -3,18 +3,31 @@
 
    Daftar topiknya dihasilkan dari riset Capaian Pembelajaran resmi
    (Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025) dan tersimpan di
-   kurikulum.generated.ts. Berkas ini hanya menambahkan struktur
-   yang dipakai aplikasi: pembagian kelas, jalur konsep, dan
-   pembantu pencarian.
+   src/data/kurikulum/.
+
+   Datanya sengaja dipecah dua:
+   - RINGKASAN (berkas ini, dimuat langsung) berisi seluruh topik
+     tanpa teks panjang — cukup untuk daftar kelas, peta pengetahuan,
+     dan penamaan prasyarat.
+   - RINCIAN per kelas dimuat malas lewat muatKelas(), sehingga
+     membuka satu kelas tidak menarik data sebelas kelas lainnya.
 
    Struktur fase: A (kelas 1-2), B (3-4), C (5-6), D (7-9),
    E (10), F (11-12).
    ============================================================ */
 
-import type { Jenjang, Fase } from '../lib/types'
-import { TOPIK_GENERATED, type TopikKurikulum } from './kurikulum.generated'
+import type { Fase, Jenjang, Topic } from '../lib/types'
+import { TOPIK_RINGKAS, type TopikRingkas } from './kurikulum/ringkas.generated'
 
-export type { TopikKurikulum }
+export type { TopikRingkas }
+
+/** Rincian lengkap sebuah topik, tersedia setelah kelasnya dimuat. */
+export interface TopikKurikulum extends Topic {
+  /** pertanyaan "kenapa" yang layak divisualkan untuk topik ini. */
+  kenapa?: string[]
+  /** hanya ada pada mata pelajaran Matematika Tingkat Lanjut (Fase F). */
+  lanjut?: boolean
+}
 
 export interface Kelas {
   no: number
@@ -38,18 +51,45 @@ export const KELAS: Kelas[] = [
   { no: 12, jenjang: 'SMA', fase: 'F', julukan: 'Integral dan statistika' },
 ]
 
-export const TOPIK = TOPIK_GENERATED
+/** Seluruh topik dalam bentuk ringkas (tanpa teks panjang). */
+export const TOPIK = TOPIK_RINGKAS
 
 export const petaTopik = new Map(TOPIK.map((t) => [t.id, t]))
 export const cariTopik = (id: string) => petaTopik.get(id)
 export const topikKelas = (n: number) => TOPIK.filter((t) => t.kelas === n)
 export const faseKelas = (n: number) => KELAS.find((k) => k.no === n)?.fase ?? 'A'
 export const jenjangKelas = (n: number) => KELAS.find((k) => k.no === n)?.jenjang ?? 'SD'
-export const topikJenjang = (j: Jenjang) =>
-  TOPIK.filter((t) => jenjangKelas(t.kelas) === j)
+export const topikJenjang = (j: Jenjang) => TOPIK.filter((t) => jenjangKelas(t.kelas) === j)
 
 /** Topik yang punya modul konsep interaktif. */
 export const topikBerkonsep = () => TOPIK.filter((t) => (t.konsep ?? []).length > 0)
+
+/* ------------------------------------------------------------
+   Rincian per kelas, dimuat saat dibutuhkan.
+   ------------------------------------------------------------ */
+
+const berkasKelas = import.meta.glob<{ default: TopikKurikulum[] }>(
+  './kurikulum/kelas-*.generated.ts',
+)
+
+const singgahan = new Map<number, TopikKurikulum[]>()
+
+/** Muat rincian lengkap seluruh topik pada satu kelas. */
+export async function muatKelas(n: number): Promise<TopikKurikulum[]> {
+  const sudah = singgahan.get(n)
+  if (sudah) return sudah
+  const muat = berkasKelas[`./kurikulum/kelas-${n}.generated.ts`]
+  if (!muat) return []
+  try {
+    const mod = await muat()
+    const isi = mod.default ?? []
+    singgahan.set(n, isi)
+    return isi
+  } catch (e) {
+    console.error(`Gagal memuat rincian kelas ${n}`, e)
+    return []
+  }
+}
 
 /**
  * Cari id topik dari kelas dan potongan judulnya.
@@ -110,6 +150,7 @@ export const JALUR: Jalur[] = [
       [6, 'rasio'],
       [8, 'peluang'],
       [10, 'peluang'],
+      [12, 'peluang'],
     ),
   },
   {
@@ -124,6 +165,7 @@ export const JALUR: Jalur[] = [
       [7, 'bentuk aljabar'],
       [7, 'persamaan linear'],
       [9, 'fungsi kuadrat'],
+      [11, 'fungsi'],
       [11, 'turunan'],
     ),
   },
@@ -138,7 +180,7 @@ export const JALUR: Jalur[] = [
       [5, 'sudut dan pengukurannya'],
       [8, 'pythagoras'],
       [10, 'perbandingan trigonometri sudut lancip'],
-      [11, 'trigonometri'],
+      [11, 'identitas trigonometri'],
     ),
   },
   {
@@ -153,6 +195,7 @@ export const JALUR: Jalur[] = [
       [10, 'bilangan berpangkat'],
       [10, 'sifat-sifat operasi eksponen'],
       [10, 'logaritma'],
+      [11, 'fungsi eksponensial'],
     ),
   },
   {
@@ -183,6 +226,7 @@ export const JALUR: Jalur[] = [
       [8, 'statistika'],
       [10, 'ukuran pemusatan'],
       [10, 'box plot'],
+      [12, 'distribusi normal'],
     ),
   },
   {

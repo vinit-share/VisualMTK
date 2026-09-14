@@ -6,8 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "uji:konsep": "node scripts/uji-konsep.mjs",
+    "bangun:kurikulum": "node scripts/bangun-kurikulum.mjs",
+    "periksa": "tsc -b && node scripts/uji-konsep.mjs",
+    "bangun:katalog": "node scripts/bangun-katalog.mjs",
+    "bangun": "node scripts/bangun-kurikulum.mjs && node scripts/bangun-katalog.mjs"
   },
   "dependencies": {
     "@fontsource-variable/newsreader": "^5.3.0",

@@ -133,10 +133,22 @@ function Kotak({
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const a = Math.round(p.a ?? 3)
-  const b = Math.round(p.b ?? 4)
+/** Sisi a dan b bongkar, dibulatkan — dipakai bersama oleh gambar dan teks langkah. */
+function sisiBongkar(p: Record<string, number>) {
+  return { a: Math.round(p.a ?? 3), b: Math.round(p.b ?? 4) }
+}
+
+/**
+ * Label sisi miring, dipakai bersama oleh gambar dan narasi supaya
+ * keduanya menulis angka yang sama persis: tepat bila bulat, selain itu ≈.
+ */
+function miringLabel(a: number, b: number) {
   const c = Math.sqrt(a * a + b * b)
+  return Math.abs(c - Math.round(c)) < 1e-9 ? `c = ${fmt(c)}` : `c ≈ ${fmt(c, 2)}`
+}
+
+function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const { a, b } = sisiBongkar(p)
 
   const u = Math.min(30, 210 / (a + b))
   const Y = 108
@@ -156,9 +168,15 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
   const segitigaOpacity = 1 - buang
 
+  // Luas c² baru boleh ditulis sebagai angka setelah terbukti (langkah terakhir);
+  // sebelum itu angkanya hanya bisa didapat dari teorema yang sedang dibuktikan.
+  // Syarat ukuran sama dengan angka pada Kotak a² dan b².
+  const angkaC = selesai && Math.sqrt(a * a + b * b) * u > 48
+
   /* --- Langkah 0: satu segitiga siku-siku saja --- */
   if (step === 0) {
-    const su = Math.min(58, 260 / Math.max(a, b))
+    // 230 menjaga puncak segitiga (y ≥ 70) tetap di bawah keterangan di y = 44.
+    const su = Math.min(58, 230 / Math.max(a, b))
     const x0 = W / 2 - (b * su) / 2
     const y0 = 300
     const A: Titik = [x0, y0]
@@ -183,7 +201,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           {`a = ${fmt(a)}`}
         </Tag>
         <Tag x={(B[0] + C[0]) / 2 + 26} y={(B[1] + C[1]) / 2 - 14} warna="var(--m-c)" size={17}>
-          {`c = ${fmt(c, 2)}`}
+          {miringLabel(a, b)}
         </Tag>
         <Tag x={W / 2} y={44} warna="var(--ink-2)" size={16}>
           sudutnya siku-siku — syarat yang tidak boleh dilanggar
@@ -253,7 +271,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         />
         <text
           x={g2.P(0, 0)[0] + g2.s / 2}
-          y={Y + g2.s / 2 - 7}
+          y={Y + g2.s / 2 - (angkaC ? 7 : 0)}
           textAnchor="middle"
           dominantBaseline="middle"
           fontSize={22}
@@ -263,18 +281,20 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         >
           c²
         </text>
-        <text
-          x={g2.P(0, 0)[0] + g2.s / 2}
-          y={Y + g2.s / 2 + 13}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize={12.5}
-          fontWeight={700}
-          fill="var(--ink-2)"
-          style={{ pointerEvents: 'none' }}
-        >
-          {fmt(a * a + b * b)}
-        </text>
+        {angkaC && (
+          <text
+            x={g2.P(0, 0)[0] + g2.s / 2}
+            y={Y + g2.s / 2 + 13}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={12.5}
+            fontWeight={700}
+            fill="var(--ink-2)"
+            style={{ pointerEvents: 'none' }}
+          >
+            {fmt(a * a + b * b)}
+          </text>
+        )}
         {segitigaOpacity > 0.01 && (
           <>
             <Segitiga t={g2.segi2a} opacity={segitigaOpacity} />
@@ -289,7 +309,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       </g>
 
       {/* ---------- Keterangan ---------- */}
-      {samaBesar > 0.3 && !selesai && (
+      {step === 3 && samaBesar > 0.3 && (
         <Tag x={W / 2} y={46} warna="var(--m-c)" size={16}>
           {`kedua persegi sama-sama bersisi ${fmt(a + b)}, dan berisi 4 segitiga yang sama`}
         </Tag>
@@ -319,7 +339,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const a = p.a ?? 3
   const b = p.b ?? 4
   const c = Math.sqrt(a * a + b * b)
-  const u = Math.min(34, 150 / Math.max(a, b, c))
+  // Skala 130 menjaga puncak persegi sisi miring (yang menjorok ke kanan atas, setinggi (a+b)·u)
+  // tidak menabrak label rumus di y = 36; titik tertingginya y ≈ 66 untuk a = b = 6.
+  const u = Math.min(34, 130 / Math.max(a, b, c))
 
   // Segitiga dengan sudut siku-siku di titik asal.
   const cx = W / 2 - 30
@@ -331,11 +353,12 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   // Persegi pada sisi a (kiri), sisi b (bawah), sisi c (miring).
   const kotakA: Titik[] = [A, C, [C[0] - a * u, C[1]], [A[0] - a * u, A[1]]]
   const kotakB: Titik[] = [A, B, [B[0], B[1] + b * u], [A[0], A[1] + b * u]]
-  // Persegi di sisi miring: putar vektor BC sejauh 90 derajat ke luar.
+  // Persegi di sisi miring: putar vektor BC sejauh 90 derajat ke luar,
+  // yaitu menjauhi titik siku-siku A (ke kanan atas pada koordinat SVG).
   const dx = C[0] - B[0]
   const dy = C[1] - B[1]
-  const nx = dy
-  const ny = -dx
+  const nx = -dy
+  const ny = dx
   const kotakC: Titik[] = [B, C, [C[0] + nx, C[1] + ny], [B[0] + nx, B[1] + ny]]
 
   const nyalaA = sorot === 'a2' || sorot === 'a'
@@ -343,6 +366,8 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const nyalaC = sorot === 'c2' || sorot === 'c'
 
   const bulat = Math.abs(c - Math.round(c)) < 1e-9
+  // c bisa tepat tetapi tidak bulat (mis. 1,5-2-2,5); tanda ≈ hanya untuk nilai yang dibulatkan.
+  const tepat = Math.abs(c * 1000 - Math.round(c * 1000)) < 1e-6
 
   return (
     <Svg w={W} h={H} maxH={440} label="Segitiga siku-siku dengan persegi terbangun pada ketiga sisinya">
@@ -397,7 +422,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
       <Tag x={W / 2} y={H - 20} warna={bulat ? 'var(--m-ab)' : 'var(--ink-2)'} size={15}>
         {bulat
           ? `c = ${fmt(c)} — kebetulan bulat, ini tripel Pythagoras`
-          : `c = √${fmt(a * a + b * b, 2)} ≈ ${fmt(c, 3)}`}
+          : tepat
+            ? `c = √${fmt(a * a + b * b, 2)} = ${fmt(c)}`
+            : `c = √${fmt(a * a + b * b, 2)} ≈ ${fmt(c, 3)}`}
       </Tag>
     </Svg>
   )
@@ -407,7 +434,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'pythagoras',
-  topicId: 'smp8-pythagoras',
+  topicId: 'smp8-teorema-pythagoras',
   judul: 'Teorema Pythagoras',
   pertanyaan: 'Kenapa a² + b² = c² selalu benar?',
   tagline: 'Bukan soal panjang sisi. Ini soal luas — dan buktinya bisa kamu lihat bergerak.',
@@ -423,7 +450,7 @@ const konsep: Konsep = {
         id: 'a',
         label: 'Panjang sisinya',
         balasan:
-          'Kalau yang dijumlahkan panjang, maka 3 + 4 seharusnya 5 — kebetulan cocok untuk segitiga ini, tapi coba sisi 1 dan 1: hasilnya bukan 2.',
+          'Kalau yang dijumlahkan panjang, segitiga 3-4-5 harus memenuhi 3 + 4 = 5 — padahal 3 + 4 = 7. Yang cocok justru luasnya: 9 + 16 = 25. Coba juga sisi 1 dan 1: sisi miringnya √2 ≈ 1,41, bukan 2.',
       },
       {
         id: 'b',
@@ -461,32 +488,48 @@ const konsep: Konsep = {
       {
         id: 's0',
         judul: 'Sebuah segitiga siku-siku',
-        narasi:
-          'Dua sisi tegak lurus kita sebut a dan b, sisi miringnya c. Syarat siku-siku ini penting: tanpa itu, seluruh cerita berikutnya gugur.',
+        narasi: (p) => {
+          const { a, b } = sisiBongkar(p)
+          return `Dua sisi tegak lurusnya kamu atur sendiri: a = ${fmt(a)} dan b = ${fmt(b)}, sisi miringnya ${miringLabel(a, b)}. Syarat siku-siku ini penting: tanpa itu, seluruh cerita berikutnya gugur.`
+        },
         rumus: 'sisi tegak [a:a] dan [b:b], sisi miring [c:c]',
         durasi: 1800,
       },
       {
         id: 's1',
         judul: 'Susunan pertama',
-        narasi:
-          'Buat persegi besar bersisi a + b. Letakkan empat salinan segitiga tadi. Ruang yang tersisa berupa dua persegi: satu bersisi a, satu bersisi b.',
+        narasi: (p) => {
+          const { a, b } = sisiBongkar(p)
+          const sisa =
+            a === b
+              ? `dua persegi kembar bersisi ${fmt(a)}, masing-masing seluas ${fmt(a * a)}`
+              : `dua persegi: yang bersisi ${fmt(a)} seluas ${fmt(a * a)}, yang bersisi ${fmt(b)} seluas ${fmt(b * b)}`
+          return `Persegi besar ini bersisi ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)}, lalu kamu isi dengan empat salinan segitiga tadi. Ruang yang tersisa berupa ${sisa}.`
+        },
         rumus: 'sisa = [a2:a^2] + [b2:b^2]',
         durasi: 2200,
       },
       {
         id: 's2',
         judul: 'Susunan kedua',
-        narasi:
-          'Persegi besar kedua ukurannya persis sama. Empat segitiga yang sama diletakkan di keempat pojok, masing-masing diputar seperempat putaran.',
+        narasi: (p) => {
+          const { a, b } = sisiBongkar(p)
+          // Bila a = b kedua sudut lancipnya sama-sama 45°, jadi tidak boleh disebut "berbeda".
+          const sudutLancip =
+            a === b ? 'dua sudut lancip yang sama-sama 45°' : 'sudut lancip yang besar dan yang kecil'
+          return `Persegi besar kedua ukurannya persis sama, tetapi keempat segitiga kini ditaruh di pojok-pojoknya sehingga ruang di tengah dikelilingi empat sisi miring c. Ruang tengah itu persegi: di tiap titik sudutnya (yang terletak pada sisi persegi besar), ${sudutLancip} (jumlahnya 90°) ditambah sudut ruang tengah membentuk garis lurus 180°, jadi sudut ruang tengah 180° − 90° = 90°.`
+        },
         rumus: 'sisa = [c2:c^2]',
         durasi: 2400,
       },
       {
         id: 's3',
         judul: 'Perhatikan: keduanya sama besar',
-        narasi:
-          'Sisi kedua persegi besar sama-sama a + b, jadi luasnya sama. Isinya pun sama: empat segitiga yang identik.',
+        narasi: (p) => {
+          const { a, b } = sisiBongkar(p)
+          const s = a + b
+          return `Kedua persegi besar sama-sama bersisi ${fmt(s)}, jadi luasnya sama-sama ${fmt(s * s)}. Isinya pun sama: empat segitiga yang identik.`
+        },
         durasi: 2000,
       },
       {
@@ -499,8 +542,11 @@ const konsep: Konsep = {
       {
         id: 's5',
         judul: 'Yang tersisa itulah teoremanya',
-        narasi:
-          'Di kiri tersisa a² + b². Di kanan tersisa c². Keduanya adalah sisa dari luas yang sama dikurangi hal yang sama.',
+        narasi: (p) => {
+          const { a, b } = sisiBongkar(p)
+          const jumlah = a * a + b * b
+          return `Di kiri tersisa dua persegi, ${fmt(a * a)} + ${fmt(b * b)} = ${fmt(jumlah)}; di kanan tersisa satu persegi miring yang luasnya juga ${fmt(jumlah)}. Keduanya sisa dari luas yang sama dikurangi hal yang sama, jadi mereka wajib sama besar.`
+        },
         rumus: '[a2:a^2] + [b2:b^2] = [c2:c^2]',
         durasi: 2200,
       },
@@ -521,12 +567,13 @@ const konsep: Konsep = {
       const b = p.b ?? 4
       const c = Math.sqrt(a * a + b * b)
       const bulat = Math.abs(c - Math.round(c)) < 1e-9
+      const tepat = Math.abs(c * 1000 - Math.round(c * 1000)) < 1e-6
       return (
         <p>
           <strong>
             {fmt(a * a, 2)} + {fmt(b * b, 2)} = {fmt(c * c, 2)}.
           </strong>{' '}
-          Sisi miringnya c = {fmt(c, 3)}
+          Sisi miringnya c {tepat ? `= ${fmt(c)}` : `≈ ${fmt(c, 3)}`}
           {bulat
             ? ' — kebetulan bulat. Pasangan seperti ini disebut tripel Pythagoras; contoh lain 6-8-10 dan 5-12-13.'
             : ' — tidak bulat, dan itu justru yang paling sering terjadi. Sisi bulat adalah pengecualian, bukan aturan.'}{' '}
@@ -554,8 +601,9 @@ const konsep: Konsep = {
         <h4>Kenapa ruang tengah susunan kedua benar-benar persegi</h4>
         <p>
           Keempat sisinya sama panjang (masing-masing c) karena semuanya sisi miring dari segitiga
-          yang sama. Sudutnya juga siku-siku: pada tiap titik, dua sudut lancip segitiga bertemu, dan
-          jumlah keduanya 90° (karena jumlah sudut segitiga 180° dan satu sudutnya sudah 90°).
+          yang sama. Sudutnya juga siku-siku: pada tiap titik, bertemu kedua sudut lancip segitiga
+          yang <em>berbeda</em> (satu dari tiap segitiga yang bertetangga), dan jumlah keduanya 90°
+          (karena jumlah sudut segitiga 180° dan satu sudutnya sudah 90°).
           Sudut lurus 180° dikurangi 90° menyisakan 90°.
         </p>
         <h4>Yang paling sering keliru</h4>
@@ -571,14 +619,16 @@ const konsep: Konsep = {
       <>
         <p>
           Bayangkan dua kotak kue berbentuk persegi yang ukurannya persis sama. Ke dalam masing-masing
-          kotak kamu masukkan empat potong kue segitiga yang bentuknya sama persis.
+          kotak kamu masukkan empat potong kue segitiga yang bentuknya sama persis. Syaratnya, tiap
+          potong kue punya satu sudut siku-siku, seperti pojok buku. Kalau tidak, susunannya tidak
+          akan pas dan cerita ini tidak berlaku.
         </p>
         <p>
           Bedanya cuma cara menatanya. Di kotak pertama, ruang kosongnya berbentuk dua persegi. Di
           kotak kedua, ruang kosongnya berbentuk satu persegi miring.
         </p>
         <p>
-          Karena kotaknya sama besar dan kuenya sama banyak, ruang kosongnya pasti sama luas juga.
+          Karena kotaknya sama besar dan kuenya sama persis (empat potong yang sama), ruang kosongnya pasti sama luas juga.
           Jadi dua persegi kecil itu, kalau digabung, sama luasnya dengan satu persegi miring tadi.
         </p>
       </>
@@ -629,7 +679,7 @@ const konsep: Konsep = {
     {
       id: 'pyt-1',
       tipe: 'angka',
-      topicId: 'smp8-pythagoras',
+      topicId: 'smp8-teorema-pythagoras',
       kelas: 8,
       tingkat: 'mudah',
       konsep: 'pythagoras',
@@ -648,7 +698,7 @@ const konsep: Konsep = {
     {
       id: 'pyt-2',
       tipe: 'pilihan',
-      topicId: 'smp8-pythagoras',
+      topicId: 'smp8-teorema-pythagoras',
       kelas: 8,
       tingkat: 'sedang',
       konsep: 'pythagoras',
@@ -660,7 +710,7 @@ const konsep: Konsep = {
           id: 'b',
           label: '√194 cm',
           diagnosa:
-            'Kamu menjumlahkan 13² + 5². Padahal 13 adalah sisi MIRING, jadi ia berperan sebagai c dan harus dikurangi, bukan ditambah.',
+            'Kamu menjumlahkan 13² + 5². Padahal 13 adalah sisi MIRING, jadi ia berperan sebagai c: 5² harus dikurangkan dari 13², bukan ditambahkan.',
         },
         { id: 'c', label: '8 cm', diagnosa: 'Sepertinya kamu mengurangkan panjang sisinya (13 − 5) tanpa mengkuadratkan.' },
         { id: 'd', label: '18 cm', diagnosa: 'Ini hasil 13 + 5. Sisi miring selalu terpanjang, jadi jawaban 18 mustahil.' },
@@ -671,12 +721,12 @@ const konsep: Konsep = {
         'a² = 169 − 25 = 144.',
       ],
       pembahasan:
-        'a² = 13² − 5² = 169 − 25 = 144, jadi a = 12 cm. Kalau yang dicari sisi tegak, luas persegi besarnya dikurangi, bukan ditambah.',
+        'a² = 13² − 5² = 169 − 25 = 144, jadi a = 12 cm. Kalau yang dicari sisi tegak, luas persegi pada sisi miring (c²) dikurangi luas persegi pada sisi tegak yang diketahui, bukan ditambah.',
     },
     {
       id: 'pyt-3',
       tipe: 'benar-salah',
-      topicId: 'smp8-pythagoras',
+      topicId: 'smp8-teorema-pythagoras',
       kelas: 8,
       tingkat: 'sedang',
       konsep: 'pythagoras',
@@ -690,7 +740,7 @@ const konsep: Konsep = {
         'Bandingkan 4² + 5² dengan 6².',
       ],
       pembahasan:
-        'Salah. 16 + 25 = 41, sedangkan 36. Karena a² + b² > c², segitiga ini justru lancip. Kalau a² + b² < c², segitiga itu tumpul.',
+        'Salah. 4² + 5² = 16 + 25 = 41, sedangkan 6² = 36. Karena a² + b² > c², segitiga ini justru lancip. Kalau a² + b² < c², segitiga itu tumpul.',
     },
     (rnd) => {
       const tripel = [
@@ -704,7 +754,7 @@ const konsep: Konsep = {
       return {
         id: 'pyt-4',
         tipe: 'angka',
-        topicId: 'smp8-pythagoras',
+        topicId: 'smp8-teorema-pythagoras',
         kelas: 8,
         tingkat: 'sedang',
         konsep: 'pythagoras',
@@ -723,7 +773,7 @@ const konsep: Konsep = {
     {
       id: 'pyt-5',
       tipe: 'urutkan',
-      topicId: 'smp8-pythagoras',
+      topicId: 'smp8-teorema-pythagoras',
       kelas: 9,
       tingkat: 'sulit',
       konsep: 'pythagoras',

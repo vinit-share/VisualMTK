@@ -18,9 +18,10 @@ konsep baru. Ikuti persis. Acuan kualitas: `src/concepts/segitiga-setengah.tsx`.
 5. **Angka ditulis gaya Indonesia**: gunakan `fmt()` dari `src/lib/num.ts`
    (3,14 bukan 3.14).
 6. **Satu berkas per konsep**: `src/concepts/<id>.tsx`, `export default` bertipe
-   `Konsep`. Tidak perlu mendaftarkannya di mana pun — `registry.ts` menemukan
-   sendiri lewat `import.meta.glob`. `id` harus sama persis dengan `id` di
-   `src/data/katalog.ts`.
+   `Konsep`, dengan `id` sama persis dengan nama berkasnya. `registry.ts`
+   menemukannya sendiri lewat `import.meta.glob`.
+   Judul, pertanyaan, tagline, domain, dan tag yang tampil di galeri diambil
+   dari modulmu lewat `npm run bangun:katalog` — jangan menulisnya dua kali.
 7. **Jangan menambah dependensi npm.** Tidak ada pustaka animasi, tidak ada
    pustaka grafik. Semua digambar dengan SVG + hook di `src/lib/anim.ts`.
 8. **Jangan menyunting berkas milik konsep lain** dan jangan menyunting
@@ -107,7 +108,7 @@ Bagian dalam kurung siku menjadi token yang bisa disorot.
 |---|---|
 | `tebak` | 3–4 pilihan. Setiap pilihan salah wajib punya `balasan` yang menjelaskan **kenapa pilihan itu menggoda**, bukan sekadar "salah". |
 | `bongkar.steps` | 5–8 langkah. `narasi` maksimal 2 kalimat, bahasa anak. `durasi` 1200–2400 ms. |
-| `bongkar.params` | 0–3 penggeser. Batasi rentangnya agar konstruksinya tetap sahih. |
+| `bongkar.params` | 0–3 penggeser. Batasi rentangnya agar konstruksinya tetap sahih. Penggeser tampil di **semua** langkah, jadi bila narasi, judul, atau rumus menyebut angka yang ikut berubah, tulis sebagai fungsi: `narasi: (p) => \`Alasnya ${fmt(p.a)}…\``. Jangan menulis angka tetap yang bisa bertentangan dengan gambar. |
 | `eksperimen` | Wajib ada `temuan(p)` yang **berubah mengikuti nilai** — inilah yang membuat anak menemukan pola sendiri. |
 | `penjelasan` | Ketiga level (`SD`, `SMP`, `SMA`) diisi bila masuk akal; minimal dua. SD: analogi konkret. SMP: alasan matematis. SMA: formal (koordinat, determinan, limit, dsb). |
 | `soal` | 4–6 butir, minimal 3 tipe berbeda, minimal satu generator parametrik. |
@@ -122,6 +123,10 @@ Bagian dalam kurung siku menjadi token yang bisa disorot.
   memakai sisi miring sebagai tinggi").
 - `pembahasan` menyebut angkanya, bukan hanya rumusnya.
 - Isi `konsep: '<id konsep ini>'` agar tombol "Lihat kenapa" muncul.
+- Isi `topicId` (pada modul dan setiap soal) dengan id topik kurikulum
+  tempat konsep ini ditautkan. Tautannya ditulis di tabel `KONSEP_DI_TOPIK`
+  pada `scripts/bangun-kurikulum.mjs`; setelah `npm run bangun`, id-nya bisa
+  dilihat di `src/data/tautan.generated.ts`.
 - Generator parametrik menerima `rnd: () => number` dan harus selalu
   menghasilkan angka "cantik" (hasil bulat, tidak negatif untuk SD).
 
@@ -140,11 +145,34 @@ Bagian dalam kurung siku menjadi token yang bisa disorot.
 ## Uji sebelum selesai
 
 ```bash
-npx tsc -b
+npm run periksa
 ```
 
-Wajib lulus tanpa galat. Pastikan juga:
-- tidak ada `console.log` yang tertinggal,
-- tidak ada nilai `NaN` yang bocor ke atribut SVG (cek pembagian nol),
-- gambar tetap terbaca di lebar 360 px (koordinat SVG diskalakan, jadi cukup
-  pastikan tidak ada teks yang tumpang tindih pada rasio itu).
+Perintah ini menjalankan pemeriksaan tipe **dan** `scripts/uji-konsep.mjs`.
+Uji itu otomatis memeriksa modulmu:
+
+- bentuk datanya (jumlah langkah, level penjelasan, keberadaan eksperimen);
+- `topicId` dan `kelas` modul — juga `topicId` setiap soal — sama dengan
+  topik yang ditautkan ke konsep ini di peta kurikulum;
+- **kunci jawaban setiap soal** — setiap generator parametrik dijalankan dengan
+  12 benih berbeda, lalu jawabannya dinilai ulang memakai penilai yang sama
+  dengan yang dipakai aplikasi;
+- kelengkapan pedagogis: minimal 2 petunjuk, ada pembahasan, dan setiap
+  pengecoh pilihan ganda punya `diagnosa`;
+- toleransi soal angka cukup untuk pembulatan yang diminta soalnya;
+- judul, narasi, dan rumus setiap langkah bongkar — termasuk yang berupa fungsi
+  dari penggeser — dijalankan di seluruh kombinasi nilai penggeser: tidak boleh
+  kosong, memuat `NaN`/`undefined`/`+ -`, atau narasinya lebih dari 2 kalimat;
+- `temuan()` benar-benar berubah saat penggeser digeser dari minimum ke maksimum;
+- **render seluruh visual** pada ratusan kombinasi `(step, t, parameter, sorot)`,
+  lalu memindai keluarannya dari `NaN` dan `Infinity` yang bocor ke atribut SVG;
+- jumlah elemen SVG tetap di bawah 400;
+- tidak ada warna heksadesimal mentah, `console.log`, atau `setInterval`.
+
+Wajib nol temuan **fatal**. Temuan **serius** harus diperbaiki kecuali ada
+alasan kuat yang kamu tuliskan sebagai komentar di berkasnya.
+
+Yang tidak bisa diperiksa mesin dan tetap menjadi tanggung jawabmu:
+- kebenaran isi penjelasan dan narasi,
+- apakah animasinya benar-benar menggambarkan langkah yang diklaim,
+- apakah gambarnya masih terbaca di lebar 360 px.

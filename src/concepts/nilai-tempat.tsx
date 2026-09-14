@@ -94,11 +94,44 @@ function posisiAcak(i: number) {
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+/** Nilai penggeser bongkar yang sudah dibulatkan — dipakai gambar DAN teks langkah. */
+function bacaBongkar(p: Record<string, number>) {
   const puluhan = clamp(Math.round(p.puluhan ?? 2), 0, 9)
   const satuan = clamp(Math.round(p.satuan ?? 5), 0, 9)
-  const bilangan = puluhan * 10 + satuan
-  const kebalikan = satuan * 10 + puluhan
+  return { puluhan, satuan, bilangan: puluhan * 10 + satuan, kebalikan: satuan * 10 + puluhan }
+}
+
+/** Cara menulis bilangan dua angka; bila diawali 0 (mis. 05), sebut juga nilainya. */
+function tulisan(depan: number, belakang: number) {
+  return depan === 0 ? `0${fmt(belakang)} (yaitu ${fmt(belakang)})` : fmt(depan * 10 + belakang)
+}
+
+/**
+ * Bagian "ditulis …" pada rumus langkah 3. Gambar selalu menulis DUA angka
+ * (tanpa batang pun tertulis "05"), jadi rumusnya ikut menulis "05" lalu
+ * menyebut nilainya, sama seperti `tulisan()`.
+ */
+function ditulis(puluhan: number, satuan: number) {
+  return puluhan === 0
+    ? `[bilangan:0${fmt(satuan)}] (yaitu ${fmt(satuan)})`
+    : `[bilangan:${fmt(puluhan)}${fmt(satuan)}]`
+}
+
+/**
+ * Bentuk panjang bilangan — dipakai label pada gambar DAN rumus langkah,
+ * supaya keduanya tidak pernah berbeda. `tok` membungkus tiap angka menjadi
+ * bagian rumus yang bisa disorot; untuk label gambar, teksnya dibiarkan polos.
+ */
+function bentukPanjang(p: Record<string, number>, tok: (id: string, teks: string) => string) {
+  const { puluhan, satuan, bilangan } = bacaBongkar(p)
+  return `${tok('bilangan', fmt(bilangan))} = ${tok('puluhan', fmt(puluhan))} × 10 + ${tok('satuan', fmt(satuan))} × 1`
+}
+
+const polos = (_id: string, teks: string) => teks
+const token = (id: string, teks: string) => `[${id}:${teks}]`
+
+function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const { puluhan, satuan, bilangan, kebalikan } = bacaBongkar(p)
 
   const berserak = step === 0 ? 1 : step === 1 ? 1 - seg(t, 0.1, 0.9) : 0
   const menyatu = step >= 2 ? (step === 2 ? seg(t, 0.15, 0.9) : 1) : 0
@@ -125,6 +158,18 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       y: dasar - Math.floor(sisaIdx / 5) * (KUBUS + SELA),
     }
   }
+
+  // Label kelompok. Bila batangnya sedikit (mis. 1 batang dan 3 kubus), kedua
+  // label berdempetan dan latar label satuan menutupi ujung "= 10" pada label
+  // puluhan. Dalam keadaan itu label satuan diturunkan satu baris.
+  const labelPuluhan = `${fmt(puluhan)} batang puluhan = ${fmt(puluhan * 10)}`
+  const labelSatuan = `${fmt(satuan)} satuan`
+  const lebarLabel = (s: string) => s.length * 16 * 0.58 + 14 // perkiraan yang sama dengan Tag
+  const xPuluhan = Math.max(kiri + (puluhan * (KUBUS + 14)) / 2 - 7, lebarLabel(labelPuluhan) / 2 + 2)
+  const xSatuan = kiri + puluhan * (KUBUS + 14) + 46 + (Math.min(satuan, 5) * (KUBUS + SELA)) / 2
+  const labelBerdempet =
+    puluhan > 0 && xSatuan - lebarLabel(labelSatuan) / 2 < xPuluhan + lebarLabel(labelPuluhan) / 2 + 2
+  const ySatuan = labelBerdempet ? dasar + 52 : dasar + 28
 
   return (
     <Svg w={W} h={H} maxH={440} label="Kubus satuan yang dikelompokkan menjadi batang puluhan">
@@ -170,23 +215,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {menyatu > 0.6 && (
         <>
           {puluhan > 0 && (
-            <Tag
-              x={kiri + (puluhan * (KUBUS + 14)) / 2 - 7}
-              y={dasar + 28}
-              warna="var(--m-a)"
-              size={16}
-            >
-              {`${fmt(puluhan)} batang puluhan = ${fmt(puluhan * 10)}`}
+            <Tag x={xPuluhan} y={dasar + 28} warna="var(--m-a)" size={16}>
+              {labelPuluhan}
             </Tag>
           )}
           {satuan > 0 && (
-            <Tag
-              x={kiri + puluhan * (KUBUS + 14) + 46 + Math.min(satuan, 5) * (KUBUS + SELA) / 2}
-              y={dasar + 28}
-              warna="var(--m-b)"
-              size={16}
-            >
-              {`${fmt(satuan)} satuan`}
+            <Tag x={xSatuan} y={ySatuan} warna="var(--m-b)" size={16}>
+              {labelSatuan}
             </Tag>
           )}
         </>
@@ -220,14 +255,16 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {banding > 0.2 && (
         <g opacity={banding}>
           <Tag x={W / 2} y={44} warna="var(--m-hi)" size={17}>
-            {`angka yang sama, tetapi ${fmt(bilangan)} ≠ ${fmt(kebalikan)}`}
+            {bilangan === kebalikan
+              ? `kedua angkanya kembar: ditukar pun tetap ${fmt(bilangan)}`
+              : `angka yang sama, tetapi ${fmt(bilangan)} ≠ ${fmt(kebalikan)}`}
           </Tag>
         </g>
       )}
 
       {rumus && (
         <Tag x={W / 2} y={H - 22} warna="var(--m-ab)" size={18}>
-          {`${fmt(bilangan)} = ${fmt(puluhan)} × 10 + ${fmt(satuan)} × 1`}
+          {bentukPanjang(p, polos)}
         </Tag>
       )}
     </Svg>
@@ -246,8 +283,24 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   const nyalaPuluhan = sorot === 'puluhan'
   const nyalaSatuan = sorot === 'satuan'
 
+  const kiriX = 60
+  const kananX = W / 2 + 30
+  // Lebar satu tumpukan: batang berjajar, lalu kubus lima per baris.
+  const lebar = (pul: number, sat: number) =>
+    sat > 0
+      ? pul * (KUBUS + 8) + 26 + (Math.min(sat, 5) - 1) * (KUBUS + SELA) + KUBUS
+      : Math.max(pul * (KUBUS + 8) - 8, 0)
+  // Tumpukan besar (mis. 99) tidak muat di separuh panggung: kubusnya akan
+  // terpotong atau menyeberang ke sisi lain. Keduanya diperkecil dengan skala
+  // yang SAMA agar batang kiri dan kanan tetap sebanding ukurannya.
+  const skala = Math.min(
+    1,
+    (W / 2 - 10 - kiriX) / Math.max(lebar(puluhan, satuan), 1),
+    (W - 2 - kananX) / Math.max(lebar(satuan, puluhan), 1),
+  )
+
   const gambar = (px: number, pul: number, sat: number, warnaKuat: boolean) => (
-    <g>
+    <g transform={`translate(${px} ${dasar}) scale(${skala}) translate(${-px} ${-dasar})`}>
       {Array.from({ length: pul }, (_, k) => (
         <Batang key={k} x={px + k * (KUBUS + 8)} y={dasar} nyala={warnaKuat && nyalaPuluhan} />
       ))}
@@ -264,8 +317,8 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
   return (
     <Svg w={W} h={H} maxH={440} label="Perbandingan tumpukan balok untuk dua bilangan dengan angka yang sama">
-      {gambar(60, puluhan, satuan, true)}
-      {gambar(W / 2 + 30, satuan, puluhan, false)}
+      {gambar(kiriX, puluhan, satuan, true)}
+      {gambar(kananX, satuan, puluhan, false)}
 
       <line x1={W / 2} y1={70} x2={W / 2} y2={dasar + 40} stroke="var(--line)" strokeWidth={1.5} />
 
@@ -338,38 +391,86 @@ const konsep: Konsep = {
     steps: [
       {
         id: 's0',
-        judul: 'Kubus yang berserakan',
-        narasi:
-          'Ada banyak kubus kecil di sini, satu kubus bernilai satu. Menghitungnya satu per satu melelahkan dan gampang keliru.',
+        judul: (p) => {
+          const { bilangan } = bacaBongkar(p)
+          if (bilangan === 0) return 'Belum ada kubus'
+          return bilangan === 1 ? 'Baru satu kubus' : 'Kubus yang berserakan'
+        },
+        narasi: (p) => {
+          const { bilangan } = bacaBongkar(p)
+          if (bilangan === 0) {
+            return 'Kedua angkanya 0, jadi belum ada satu kubus pun di sini. Geser salah satu angka supaya kubus kecil bermunculan — satu kubus bernilai satu.'
+          }
+          if (bilangan < 10) {
+            return `Ada ${fmt(bilangan)} kubus kecil di sini, satu kubus bernilai satu. Sedikit begini masih mudah dihitung, tetapi kalau kubusnya puluhan, menghitung satu per satu melelahkan dan gampang keliru.`
+          }
+          return 'Ada banyak kubus kecil di sini, satu kubus bernilai satu. Menghitungnya satu per satu melelahkan dan gampang keliru.'
+        },
         durasi: 1800,
       },
       {
         id: 's1',
         judul: 'Kelompokkan sepuluh-sepuluh',
-        narasi:
-          'Kubus dikumpulkan sepuluh demi sepuluh. Sisa yang tidak cukup sepuluh dibiarkan berdiri sendiri.',
+        narasi: (p) => {
+          const { puluhan, satuan } = bacaBongkar(p)
+          if (puluhan === 0) {
+            return satuan === 0
+              ? 'Belum ada kubus yang bisa dikelompokkan. Nanti kubus dikumpulkan sepuluh demi sepuluh, dan sisa yang tidak cukup sepuluh dibiarkan berdiri sendiri.'
+              : satuan === 1
+                ? 'Kubusnya cuma 1, belum cukup untuk satu kelompok sepuluh. Jadi kubus itu dibiarkan berdiri sendiri sebagai sisa.'
+                : `Kubusnya cuma ${fmt(satuan)}, belum cukup untuk satu kelompok sepuluh. Jadi semuanya dibiarkan berdiri sendiri sebagai sisa.`
+          }
+          const sisa =
+            satuan === 0
+              ? 'Semuanya pas, tidak ada kubus yang tersisa.'
+              : `Sisa ${fmt(satuan)} kubus yang tidak cukup sepuluh dibiarkan berdiri sendiri.`
+          return `Kubus dikumpulkan sepuluh demi sepuluh, dan terbentuk ${fmt(puluhan)} kelompok. ${sisa}`
+        },
         durasi: 2400,
       },
       {
         id: 's2',
         judul: 'Setiap sepuluh menyatu jadi satu batang',
-        narasi:
-          'Sepuluh kubus menjadi satu batang. Batangnya satu benda, tetapi isinya tetap sepuluh.',
+        narasi: (p) => {
+          const { puluhan, satuan } = bacaBongkar(p)
+          if (puluhan === 0) {
+            return satuan === 0
+              ? 'Belum ada kubus, jadi tidak ada batang yang terbentuk. Begitu ada sepuluh kubus, kesepuluhnya menyatu menjadi satu batang yang isinya tetap sepuluh.'
+              : 'Kubusnya belum sampai sepuluh, jadi tidak ada batang yang terbentuk. Begitu genap sepuluh, kubus-kubus itu menyatu menjadi satu batang yang isinya tetap sepuluh.'
+          }
+          if (puluhan === 1) {
+            return 'Sepuluh kubus tadi menyatu menjadi satu batang. Batangnya satu benda, tetapi isinya tetap sepuluh.'
+          }
+          return `Sepuluh kubus menjadi satu batang, jadi ${fmt(puluhan * 10)} kubus tadi kini menjadi ${fmt(puluhan)} batang. Batangnya satu benda, tetapi isinya tetap sepuluh.`
+        },
         durasi: 2200,
       },
       {
         id: 's3',
         judul: 'Tulis berapa batang dan berapa kubus',
         narasi:
-          'Angka pertama menghitung batang, angka kedua menghitung kubus. Karena itulah menulis bilangan cukup dengan dua angka.',
-        rumus: '[puluhan:2] batang · [satuan:5] kubus → [bilangan:25]',
+          'Angka pertama menghitung batang, angka kedua menghitung kubus sisa. Sisa kubus selalu kurang dari sepuluh, dan sepuluh batang pun akan menyatu lagi menjadi satu ratusan — jadi tiap tempat cukup diisi satu angka, 0 sampai 9.',
+        rumus: (p) => {
+          const { puluhan, satuan } = bacaBongkar(p)
+          return `[puluhan:${fmt(puluhan)}] batang · [satuan:${fmt(satuan)}] kubus → ditulis ${ditulis(puluhan, satuan)}`
+        },
         durasi: 2200,
       },
       {
         id: 's4',
-        judul: 'Tukar tempatnya, hasilnya berbeda',
-        narasi:
-          'Kalau kedua angka bertukar tempat, tumpukan baloknya ikut berubah total. Angkanya sama, tapi bilangannya lain.',
+        judul: (p) => {
+          const { puluhan, satuan } = bacaBongkar(p)
+          return puluhan === satuan
+            ? 'Tukar tempatnya — angka kembar tidak berubah'
+            : 'Tukar tempatnya, hasilnya berbeda'
+        },
+        narasi: (p) => {
+          const { puluhan, satuan, bilangan, kebalikan } = bacaBongkar(p)
+          if (puluhan === satuan) {
+            return `Kedua angkanya kembar, jadi ditukar pun tetap ${fmt(bilangan)}. Hanya angka kembar yang begini; kalau angkanya berbeda, menukar tempat pasti menghasilkan bilangan lain.`
+          }
+          return `Kalau kedua angkanya bertukar tempat, ${tulisan(puluhan, satuan)} menjadi ${tulisan(satuan, puluhan)}, sebab banyak batangnya berubah dari ${fmt(puluhan)} menjadi ${fmt(satuan)}. Angkanya sama, tapi bilangannya lain — selisihnya ${fmt(Math.abs(bilangan - kebalikan))}.`
+        },
         durasi: 2400,
       },
       {
@@ -377,7 +478,7 @@ const konsep: Konsep = {
         judul: 'Itulah arti nilai tempat',
         narasi:
           'Angka di tempat puluhan bernilai sepuluh kali lipat dibanding angka yang sama di tempat satuan.',
-        rumus: '[bilangan:25] = [puluhan:2] × 10 + [satuan:5] × 1',
+        rumus: (p) => bentukPanjang(p, token),
         durasi: 2200,
       },
     ],
@@ -403,8 +504,10 @@ const konsep: Konsep = {
           <strong>{fmt(n)}</strong> tersusun dari {fmt(pul)} batang dan {fmt(sat)} kubus.{' '}
           {pul === sat
             ? 'Karena kedua angkanya sama, menukar tempat tidak mengubah apa pun — inilah satu-satunya keadaan ketika hal itu terjadi.'
-            : `Bilangan kebalikannya ${fmt(k)}, berselisih ${fmt(beda)}. Selisih itu selalu 9 dikali beda kedua angkanya: 9 × ${fmt(Math.abs(pul - sat))} = ${fmt(beda)}.`}{' '}
-          Coba buat angka satuannya 0: bilangannya menjadi kelipatan sepuluh yang bulat.
+            : `Kalau kedua angkanya ditukar tempat, bilangannya menjadi ${fmt(k)}, berselisih ${fmt(beda)}. Selisih itu selalu 9 dikali beda kedua angkanya: 9 × ${fmt(Math.abs(pul - sat))} = ${fmt(beda)}.`}{' '}
+          {sat === 0
+            ? 'Angka satuannya 0, jadi tidak ada kubus lepas: bilangannya kelipatan sepuluh.'
+            : 'Coba buat angka satuannya 0: bilangannya menjadi kelipatan sepuluh.'}
         </p>
       )
     },
@@ -479,7 +582,7 @@ const konsep: Konsep = {
         kelas: 2,
         tingkat: 'mudah',
         konsep: 'nilai-tempat',
-        pertanyaan: `Pada bilangan ${pul * 10 + sat}, berapa nilai angka ${pul}?`,
+        pertanyaan: `Pada bilangan ${pul * 10 + sat}, berapa nilai angka ${pul}${pul === sat ? ' yang paling kiri' : ''}?`,
         jawaban: pul * 10,
         toleransi: 1e-9,
         hint: [
@@ -487,7 +590,7 @@ const konsep: Konsep = {
           'Angka di tempat puluhan menghitung batang, dan satu batang isinya sepuluh.',
           `Jadi nilainya ${pul} × 10.`,
         ],
-        pembahasan: `Angka ${pul} berada di tempat puluhan, jadi nilainya ${pul} × 10 = ${pul * 10}, bukan ${pul}.`,
+        pembahasan: `Angka ${pul}${pul === sat ? ' yang paling kiri' : ''} berada di tempat puluhan, jadi nilainya ${pul} × 10 = ${pul * 10}, bukan ${pul}.`,
       }
     },
     {
@@ -566,7 +669,10 @@ const konsep: Konsep = {
     },
     (rnd) => {
       const pul = 1 + Math.floor(rnd() * 9)
-      const sat = Math.floor(rnd() * 10)
+      // Angka satuan dipilih dari 0–9 selain `pul`: angka kembar (33) membuat
+      // "ditukar menjadi 33" dan selisih 0, sehingga pola 9 × beda tidak terlihat.
+      const acak = Math.floor(rnd() * 9)
+      const sat = acak >= pul ? acak + 1 : acak
       const n = pul * 10 + sat
       const k = sat * 10 + pul
       return {
@@ -576,7 +682,7 @@ const konsep: Konsep = {
         kelas: 4,
         tingkat: 'sulit',
         konsep: 'nilai-tempat',
-        pertanyaan: `Bilangan ${n} ditukar posisi angkanya menjadi ${k}. Berapa selisih kedua bilangan itu?`,
+        pertanyaan: `Bilangan ${n} ditukar posisi angkanya menjadi ${sat === 0 ? `0${pul}, yaitu ${k}` : k}. Berapa selisih kedua bilangan itu?`,
         jawaban: Math.abs(n - k),
         toleransi: 1e-9,
         hint: [
@@ -584,7 +690,7 @@ const konsep: Konsep = {
           `${n} = ${pul} × 10 + ${sat}, dan ${k} = ${sat} × 10 + ${pul}.`,
           'Selisihnya selalu 9 dikali beda kedua angkanya.',
         ],
-        pembahasan: `Selisihnya |${n} − ${k}| = ${Math.abs(n - k)} = 9 × ${Math.abs(pul - sat)}. Pola ini berlaku untuk semua bilangan dua angka.`,
+        pembahasan: `Selisihnya ${Math.max(n, k)} − ${Math.min(n, k)} = ${Math.abs(n - k)} = 9 × ${Math.abs(pul - sat)}. Pola ini berlaku untuk semua bilangan dua angka.`,
       }
     },
   ],

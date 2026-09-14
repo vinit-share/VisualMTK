@@ -401,15 +401,23 @@ function IsianCocokkan({
   kunci: boolean
   onKirim: (v: unknown) => void
 }) {
-  const kanan = useMemo(() => {
+  // Sebuah jawaban di kanan boleh menjadi pasangan lebih dari satu pernyataan
+  // di kiri (mis. "Median" cocok untuk dua keadaan). Karena itu daftar kanan
+  // dibuat tanpa pengulangan, dan pemakaiannya tidak dibatasi satu kali —
+  // kecuali bila semua jawabannya memang berbeda.
+  const { kanan, satuLawanSatu } = useMemo(() => {
+    const semua = soal.pasangan.map((p) => p.kanan)
+    const unik = Array.from(new Set(semua))
     const rnd = seededRandom(soal.id.length * 104729 + 13)
-    return shuffle(
-      rnd,
-      soal.pasangan.map((p) => p.kanan),
-    )
+    return { kanan: shuffle(rnd, unik), satuLawanSatu: unik.length === semua.length }
   }, [soal])
   const [aktif, setAktif] = useState<string | null>(null)
   const [pasang, setPasang] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    setAktif(null)
+    setPasang({})
+  }, [soal.id])
 
   const pilihKiri = (k: string) => {
     if (pasang[k]) {
@@ -424,8 +432,12 @@ function IsianCocokkan({
   const pilihKanan = (v: string) => {
     if (!aktif) return
     setPasang((s) => {
-      const bersih = Object.fromEntries(Object.entries(s).filter(([, val]) => val !== v))
-      return { ...bersih, [aktif]: v }
+      // Bila semua jawaban berbeda, memilih jawaban yang sudah terpakai
+      // memindahkannya — bukan menduplikasi.
+      const dasar = satuLawanSatu
+        ? Object.fromEntries(Object.entries(s).filter(([, val]) => val !== v))
+        : s
+      return { ...dasar, [aktif]: v }
     })
     setAktif(null)
   }
@@ -453,7 +465,7 @@ function IsianCocokkan({
         </div>
         <div className="stack stack-2">
           {kanan.map((v) => {
-            const dipakai = Object.values(pasang).includes(v)
+            const dipakai = satuLawanSatu && Object.values(pasang).includes(v)
             return (
               <button
                 key={v}

@@ -46,7 +46,9 @@ function Batang({
   x?: number
 }) {
   const w = lebar / bagian
-  const potong = Math.min(bagian, 40)
+  // Semua potongan harus digambar: kalau dibatasi, bagian berwarna tampak
+  // lebih pendek daripada nilainya (mis. 7/9 dengan penyebut sekutu 90).
+  const potong = bagian
   return (
     <g>
       {Array.from({ length: potong }, (_, i) => (
@@ -118,13 +120,25 @@ function bacaParam(p: Record<string, number>) {
   const L = lcm(q1, q2)
   const a = (p1 * L) / q1
   const b = (p2 * L) / q2
-  return { p1, q1, p2, q2, L, a, b, total: a + b }
+  const total = a + b
+  const [hp, hq] = simplify(total, L)
+  // Bentuk akhir hasil (disederhanakan atau pecahan campuran), hanya bila
+  // berbeda dari total/L.
+  const bentukAkhir = pecahanTeks(total, L, true)
+  const ringkas = bentukAkhir !== `${total}/${L}` ? bentukAkhir : null
+  // Batang mana yang harus dipotong ulang supaya keduanya berisi L bagian.
+  const dipotong: 'keduanya' | 'atas' | 'bawah' | 'tidak ada' =
+    q1 !== L && q2 !== L ? 'keduanya' : q1 !== L ? 'atas' : q2 !== L ? 'bawah' : 'tidak ada'
+  return { p1, q1, p2, q2, L, a, b, total, hp, hq, ringkas, dipotong }
 }
+
+/** Tulis pecahan dengan angka gaya Indonesia, mis. "3/4". */
+const pec = (x: number, y: number) => `${fmt(x)}/${fmt(y)}`
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const { p1, q1, p2, q2, L, a, b, total } = bacaParam(p)
+  const { p1, q1, p2, q2, L, a, b, total, ringkas, dipotong } = bacaParam(p)
 
   const salahGabung = step === 1 ? seg(t, 0.2, 0.8) : 0
   const potongUlang = step >= 2 ? (step === 2 ? seg(t, 0.15, 0.85) : 1) : 0
@@ -134,6 +148,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const y1 = 118
   const y2 = 196
   const yh = 300
+  const yhLebih = 290 // baris pertama hasil bila jumlahnya lebih dari satu utuh
 
   const nyala1 = sorot === 'a' || sorot === 'q'
   const nyala2 = sorot === 'b' || sorot === 'q'
@@ -144,8 +159,6 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const bagian2 = potongUlang > 0.55 ? L : q2
   const isi1 = potongUlang > 0.55 ? a : p1
   const isi2 = potongUlang > 0.55 ? b : p2
-
-  const [hp, hq] = simplify(total, L)
 
   return (
     <Svg w={W} h={H} maxH={450} label="Dua batang pecahan yang dipotong ulang agar potongannya sama besar">
@@ -176,7 +189,9 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           <rect x={BX} y={y1 - 8} width={(p1 / q1) * BW} height={BH + 16} rx={8} fill="none" stroke="var(--m-hi)" strokeWidth={2} strokeDasharray="6 5" />
           <rect x={BX} y={y2 - 8} width={(p2 / q2) * BW} height={BH + 16} rx={8} fill="none" stroke="var(--m-hi)" strokeWidth={2} strokeDasharray="6 5" />
           <Tag x={W / 2} y={262} warna="var(--m-hi)" size={16}>
-            {`${fmt(p1)} potong + ${fmt(p2)} potong = ${fmt(p1 + p2)} potong… tapi potong yang mana?`}
+            {q1 === q2
+              ? `${fmt(p1)} potong + ${fmt(p2)} potong = ${fmt(p1 + p2)} potong — potongannya sejenis`
+              : `${fmt(p1)} potong + ${fmt(p2)} potong = ${fmt(p1 + p2)} potong… tapi potong yang mana?`}
           </Tag>
         </g>
       )}
@@ -195,22 +210,21 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             />
           ) : (
             <>
-              <Batang y={yh} bagian={L} terisi={L} warna="var(--m-ab)" label="1" nyala={nyalaHasil} lebar={BW / 2} />
+              {/* Lebih dari satu utuh: dua baris dengan skala yang SAMA seperti
+                  batang di atas, supaya hasil tidak tampak lebih pendek. */}
+              <Batang y={yhLebih} bagian={L} terisi={L} warna="var(--m-ab)" label="1" nyala={nyalaHasil} />
               <Batang
-                y={yh}
+                y={yhLebih + BH + 8}
                 bagian={L}
                 terisi={total - L}
                 warna="var(--m-ab)"
-                lebar={BW / 2}
-                x={BX + BW / 2 + 14}
+                label={`${fmt(total - L)}/${fmt(L)}`}
                 nyala={nyalaHasil}
               />
             </>
           )}
-          <Tag x={W / 2} y={yh + BH + 30} warna="var(--m-ab)" size={18}>
-            {`${fmt(a)}/${fmt(L)} + ${fmt(b)}/${fmt(L)} = ${fmt(total)}/${fmt(L)}${
-              hq !== L || hp !== total ? ` = ${pecahanTeks(total, L, true)}` : ''
-            }`}
+          <Tag x={W / 2} y={total <= L ? yh + BH + 30 : yhLebih + 2 * BH + 8 + 24} warna="var(--m-ab)" size={18}>
+            {`${fmt(a)}/${fmt(L)} + ${fmt(b)}/${fmt(L)} = ${fmt(total)}/${fmt(L)}${ringkas ? ` = ${ringkas}` : ''}`}
           </Tag>
         </g>
       )}
@@ -218,17 +232,25 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* keterangan */}
       {step === 2 && (
         <Tag x={W / 2} y={68} warna="var(--m-hi)" size={16}>
-          {`kedua batang dipotong ulang menjadi ${fmt(L)} bagian`}
+          {dipotong === 'keduanya'
+            ? `kedua batang dipotong ulang menjadi ${fmt(L)} bagian`
+            : dipotong === 'atas'
+              ? `batang atas dipotong ulang menjadi ${fmt(L)} bagian`
+              : dipotong === 'bawah'
+                ? `batang bawah dipotong ulang menjadi ${fmt(L)} bagian`
+                : 'penyebutnya sudah sama, tidak ada yang perlu dipotong ulang'}
         </Tag>
       )}
       {sejenis > 0.4 && jumlah < 0.05 && (
         <Tag x={W / 2} y={68} warna="var(--m-ab)" size={16}>
-          sekarang semua potongan sama besar
+          {dipotong === 'tidak ada' ? 'semua potongan memang sudah sama besar' : 'sekarang semua potongan sama besar'}
         </Tag>
       )}
       {step === 0 && (
         <Tag x={W / 2} y={68} warna="var(--ink-2)" size={16}>
-          panjang seluruh batang sama, tetapi ukuran potongannya berbeda
+          {q1 === q2
+            ? 'panjang seluruh batang sama, dan ukuran potongannya pun sudah sama'
+            : 'panjang seluruh batang sama, tetapi ukuran potongannya berbeda'}
         </Tag>
       )}
     </Svg>
@@ -310,46 +332,103 @@ const konsep: Konsep = {
     arti: {
       a: 'Pecahan pertama.',
       b: 'Pecahan kedua.',
-      q: 'Penyebut sekutu — ukuran potongan baru yang dipakai kedua batang.',
+      q: 'Penyebut sekutu — ukuran potongan baru yang dipakai kedua batang. Rumus umum memakai b×d, yang selalu bisa; gambar memakai KPK-nya, yang tidak pernah lebih besar dan sering lebih kecil.',
       hasil: 'Jumlahnya, dihitung setelah potongannya sejenis.',
     },
     steps: [
       {
         id: 's0',
-        judul: 'Dua batang, dua ukuran potongan',
-        narasi:
-          'Panjang seluruh batang sama — keduanya mewakili satu utuh. Yang berbeda cuma cara memotongnya: satu dibagi dua, satu dibagi empat.',
-        rumus: '[a:½] + [b:¼] = ?',
+        judul: (p) => {
+          const { q1, q2 } = bacaParam(p)
+          return q1 === q2 ? 'Dua batang, ukuran potongan sama' : 'Dua batang, dua ukuran potongan'
+        },
+        narasi: (p) => {
+          const { q1, q2 } = bacaParam(p)
+          return q1 === q2
+            ? `Panjang seluruh batang sama — keduanya mewakili satu utuh. Cara memotongnya pun sama: keduanya dipotong menjadi ${fmt(q1)} bagian, jadi ukuran potongannya sudah sama besar.`
+            : `Panjang seluruh batang sama — keduanya mewakili satu utuh. Yang berbeda cuma cara memotongnya: batang atas dipotong menjadi ${fmt(q1)} bagian, batang bawah menjadi ${fmt(q2)} bagian.`
+        },
+        rumus: (p) => {
+          const { p1, q1, p2, q2 } = bacaParam(p)
+          return `[a:${pec(p1, q1)}] + [b:${pec(p2, q2)}] = ?`
+        },
         durasi: 1800,
       },
       {
         id: 's1',
-        judul: 'Coba gabungkan begitu saja',
-        narasi:
-          'Kalau langsung dihitung "satu potong tambah satu potong sama dengan dua potong", pertanyaannya: dua potong berukuran apa? Keduanya tidak sejenis, jadi tidak bisa dihitung bersama.',
+        judul: (p) => {
+          const { q1, q2 } = bacaParam(p)
+          return q1 === q2 ? 'Gabungkan begitu saja — kali ini boleh' : 'Coba gabungkan begitu saja'
+        },
+        narasi: (p) => {
+          const { p1, q1, p2, q2 } = bacaParam(p)
+          const n = fmt(p1 + p2)
+          return q1 === q2
+            ? `Kalau langsung dihitung, ${fmt(p1)} potong tambah ${fmt(p2)} potong sama dengan ${n} potong — dan kali ini itu benar. Kedua batang dipotong menjadi ${fmt(q1)} bagian, jadi potongannya sejenis dan boleh langsung dihitung bersama.`
+            : `Kalau langsung dihitung "${fmt(p1)} potong tambah ${fmt(p2)} potong sama dengan ${n} potong", pertanyaannya: ${n} potong berukuran apa? Potongannya tidak sejenis, jadi tidak bisa dihitung bersama.`
+        },
         durasi: 2400,
       },
       {
         id: 's2',
-        judul: 'Potong ulang supaya sejenis',
-        narasi:
-          'Batang atas dipotong lagi menjadi empat. Bagian berwarnanya tidak bertambah maupun berkurang — panjangnya persis sama seperti tadi.',
+        judul: (p) =>
+          bacaParam(p).dipotong === 'tidak ada' ? 'Tidak ada yang perlu dipotong ulang' : 'Potong ulang supaya sejenis',
+        narasi: (p) => {
+          const { q1, q2, L, dipotong } = bacaParam(p)
+          const tetap = 'Bagian berwarnanya tidak bertambah maupun berkurang — panjangnya persis sama seperti tadi.'
+          if (dipotong === 'keduanya')
+            return `Kedua batang dipotong lagi menjadi ${fmt(L)} bagian: tiap potongan atas terbelah jadi ${fmt(L / q1)}, tiap potongan bawah jadi ${fmt(L / q2)}. ${tetap}`
+          if (dipotong === 'atas')
+            return `Batang atas dipotong lagi menjadi ${fmt(L)} bagian: tiap potongan lamanya terbelah jadi ${fmt(L / q1)}. ${tetap}`
+          if (dipotong === 'bawah')
+            return `Batang bawah dipotong lagi menjadi ${fmt(L)} bagian: tiap potongan lamanya terbelah jadi ${fmt(L / q2)}. ${tetap}`
+          return `Kedua penyebutnya sudah ${fmt(L)}, jadi tidak ada batang yang perlu dipotong ulang. Bagian berwarnanya tetap persis seperti tadi.`
+        },
         durasi: 2400,
       },
       {
         id: 's3',
-        judul: 'Sekarang potongannya sama besar',
-        narasi:
-          'Batang pertama kini terbaca 2/4, batang kedua 1/4. Nilainya sama sekali tidak berubah, hanya namanya yang berganti.',
-        rumus: '[a:½] = [a:2/4]',
+        judul: (p) =>
+          bacaParam(p).dipotong === 'tidak ada'
+            ? 'Potongannya memang sudah sama besar'
+            : 'Sekarang potongannya sama besar',
+        narasi: (p) => {
+          const { p1, q1, p2, q2, L, a, b, dipotong } = bacaParam(p)
+          if (dipotong === 'tidak ada')
+            return `Kedua batang tetap terbaca ${pec(p1, q1)} dan ${pec(p2, q2)}, karena potongannya memang sudah sama besar sejak awal. Tidak ada nama yang perlu diganti.`
+          const atas = dipotong === 'bawah' ? `tetap terbaca ${pec(a, L)}` : `kini terbaca ${pec(a, L)}`
+          const bawah = dipotong === 'atas' ? `tetap terbaca ${pec(b, L)}` : `kini terbaca ${pec(b, L)}`
+          return `Batang pertama ${atas}, batang kedua ${bawah}. Nilainya sama sekali tidak berubah, hanya namanya yang berganti.`
+        },
+        rumus: (p) => {
+          const { p1, q1, p2, q2, L, a, b, dipotong } = bacaParam(p)
+          const asal = `[a:${pec(p1, q1)}] + [b:${pec(p2, q2)}]`
+          return dipotong === 'tidak ada' ? asal : `${asal} = [a:${pec(a, L)}] + [b:${pec(b, L)}]`
+        },
         durasi: 2000,
       },
       {
         id: 's4',
-        judul: 'Baru boleh dijumlahkan',
-        narasi:
-          'Dua potong ditambah satu potong sama dengan tiga potong. Dan karena satu utuh berisi empat potong, hasilnya tiga per empat.',
-        rumus: '[a:2/4] + [b:1/4] = [hasil:3/4]',
+        judul: (p) =>
+          bacaParam(p).dipotong === 'tidak ada' ? 'Tinggal dijumlahkan' : 'Baru boleh dijumlahkan',
+        narasi: (p) => {
+          const { L, a, b, total, hp, hq, ringkas } = bacaParam(p)
+          const ekor =
+            total === L
+              ? ', yaitu tepat 1 utuh'
+              : total > L
+                ? hq === 1
+                  ? `, yaitu tepat ${fmt(hp)} utuh`
+                  : ` — lebih dari satu utuh, yaitu ${pecahanTeks(total, L, true)}`
+                : ringkas
+                  ? `, atau ${ringkas} setelah disederhanakan`
+                  : ''
+          return `${fmt(a)} potong ditambah ${fmt(b)} potong sama dengan ${fmt(total)} potong. Karena satu utuh berisi ${fmt(L)} potong, hasilnya ${pec(total, L)}${ekor}.`
+        },
+        rumus: (p) => {
+          const { L, a, b, total, ringkas } = bacaParam(p)
+          return `[a:${pec(a, L)}] + [b:${pec(b, L)}] = [hasil:${pec(total, L)}]${ringkas ? ` = [hasil:${ringkas}]` : ''}`
+        },
         durasi: 2200,
       },
       {
@@ -366,7 +445,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ganti kedua pecahannya',
     ajakan:
-      'Dua batang atas adalah pecahan aslinya, dua batang bawah adalah bentuk senilainya setelah dipotong ulang. Perhatikan panjang warnanya tidak pernah berubah.',
+      'Dua batang atas adalah pecahan aslinya, dua batang bawah adalah bentuk senilainya setelah dipotong ulang. Perhatikan: panjang bagian berwarna tiap batang bawah selalu sama dengan pasangannya di atas.',
     params: [
       { key: 'p1', label: 'Pembilang pertama', min: 1, max: 7, step: 1, awal: 1, bulat: true },
       { key: 'q1', label: 'Penyebut pertama', min: 2, max: 10, step: 1, awal: 2, bulat: true },
@@ -386,7 +465,7 @@ const konsep: Konsep = {
           {fmt(a)}/{fmt(L)} dan {fmt(b)}/{fmt(L)}.{' '}
           {sama
             ? 'Karena penyebutnya sudah sama, tidak ada yang perlu dipotong ulang — tinggal dijumlahkan.'
-            : 'Coba buat kedua penyebutnya sama: batang bawah akan berhenti berubah, karena tidak ada yang perlu dipotong lagi.'}{' '}
+            : 'Coba buat kedua penyebutnya sama: setiap batang bawah akan tampak persis sama dengan pasangannya di atas, karena tidak ada yang perlu dipotong ulang.'}{' '}
           Perhatikan juga: hasilnya selalu lebih besar daripada kedua pecahan asalnya.
         </p>
       )
@@ -424,15 +503,16 @@ const konsep: Konsep = {
         </p>
         <p>
           Mengubah 1/2 menjadi 2/4 memakai sifat pecahan senilai: mengalikan pembilang dan penyebut
-          dengan bilangan yang sama sama saja dengan mengalikan dengan 1, sehingga nilainya tidak
-          berubah.
+          dengan bilangan yang sama (asal bukan nol) sama saja dengan mengalikan dengan 1, sehingga
+          nilainya tidak berubah.
         </p>
         <p style={{ textAlign: 'center' }}>
-          a/b = (a×k)/(b×k), karena (a/b) × (k/k) = (a/b) × 1
+          a/b = (a×k)/(b×k) untuk k ≠ 0, karena (a/b) × (k/k) = (a/b) × 1
         </p>
         <p>
           Secara umum: a/b + c/d = (a·d + c·b)/(b·d). Memakai KPK dari b dan d menghasilkan angka
-          yang lebih kecil, tetapi hasil akhirnya tetap sama setelah disederhanakan.
+          yang tidak pernah lebih besar — sering lebih kecil, dan sama dengan b·d bila b dan d tidak
+          punya faktor sekutu selain 1 (misalnya 4 dan 5). Hasil akhirnya tetap sama setelah disederhanakan.
         </p>
         <h4>Kenapa pada perkalian tidak perlu disamakan?</h4>
         <p>
@@ -453,22 +533,24 @@ const konsep: Konsep = {
       <>
         <p>
           Penjumlahan pecahan didefinisikan lewat gagasan penyebut bersama karena bilangan rasional
-          dibangun sebagai kelas ekuivalensi pasangan bilangan bulat: (a, b) ~ (c, d) bila ad = bc.
-          Operasi
+          dibangun sebagai kelas ekuivalensi pasangan bilangan bulat dengan komponen kedua bukan nol:
+          (a, b) ~ (c, d) bila ad = bc. Operasi
         </p>
         <p style={{ textAlign: 'center' }}>a/b + c/d := (ad + cb)/(bd)</p>
         <p>
-          dipilih karena inilah satu-satunya definisi yang membuat ℚ menjadi lapangan (field) yang
-          memuat ℤ dan mempertahankan sifat distributif. Definisi "naif" (a + c)/(b + d) bahkan tidak
-          terdefinisi dengan baik: 1/2 dan 2/4 mewakili bilangan yang sama, tetapi
-          (1+1)/(2+4) = 2/6 sedangkan (2+1)/(4+4) = 3/8 — hasilnya bergantung pada penulisan, bukan
-          pada nilainya.
+          sebenarnya tidak punya pilihan lain: bila a/b dimaknai sebagai a × b⁻¹ di dalam lapangan
+          (field) yang memuat ℤ, sifat distributif memaksa a × b⁻¹ + c × d⁻¹ = (ad + cb) × (bd)⁻¹.
+          Definisi "naif" (a + c)/(b + d) bahkan tidak terdefinisi dengan baik: 1/2 dan 2/4 mewakili
+          bilangan yang sama, tetapi 1/2 + 1/4 secara naif menjadi (1+1)/(2+4) = 2/6 = 1/3, sedangkan
+          2/4 + 1/4 menjadi (2+1)/(4+4) = 3/8 — hasilnya bergantung pada penulisan, bukan pada
+          nilainya.
         </p>
         <p>
           Menariknya, operasi naif itu tetap punya makna di tempat lain: (a+c)/(b+d) disebut{' '}
           <em>mediant</em>, muncul pada barisan Farey dan pohon Stern–Brocot. Ia bukan penjumlahan,
-          melainkan operasi lain yang selalu menghasilkan nilai di antara kedua pecahan asal — dan
-          itu persis mengapa "2/6" terasa terlalu kecil.
+          melainkan operasi lain pada pasangan (pembilang, penyebut) yang — asalkan penyebutnya
+          positif — selalu menghasilkan nilai di antara kedua pecahan asal. Itu persis mengapa "2/6"
+          terasa terlalu kecil: ia terletak di antara 1/4 dan 1/2.
         </p>
       </>
     ),
@@ -480,7 +562,7 @@ const konsep: Konsep = {
     arti: {
       a: 'Pecahan pertama: a potong berukuran 1/b.',
       b: 'Pecahan kedua: c potong berukuran 1/d.',
-      q: 'Penyebut bersama — ukuran potongan baru yang dipakai keduanya. Boleh b×d, tetapi KPK-nya membuat angkanya lebih kecil.',
+      q: 'Penyebut bersama — ukuran potongan baru yang dipakai keduanya. Boleh b×d; KPK-nya tidak pernah lebih besar dan sering lebih kecil, sehingga angkanya lebih ringan.',
     },
   },
 
@@ -500,7 +582,7 @@ const konsep: Konsep = {
         kelas: 5,
         tingkat: 'mudah',
         konsep: 'pecahan-penyebut',
-        pertanyaan: `Hitunglah 1/2 + ${p2}/${q}. Tulis jawabanmu dalam bentuk pecahan paling sederhana, contoh penulisan: 3/4`,
+        pertanyaan: `Hitunglah 1/2 + ${p2}/${q}. Tulis jawabanmu dalam bentuk pecahan paling sederhana, contoh penulisan: 2/5`,
         jawaban: [`${hp}/${hq}`, hq === 1 ? `${hp}` : `${hp}/${hq}`],
         hint: [
           'Ukuran potongan kedua pecahan masih berbeda. Cari ukuran potongan yang bisa dipakai keduanya.',
@@ -585,7 +667,7 @@ const konsep: Konsep = {
         'Setelah penyebutnya sama, yang dijumlahkan hanya pembilangnya.',
       ],
       pembahasan:
-        '3/4 = 15/20 dan 2/5 = 8/20, jadi jumlahnya 23/20 = 1 3/20. Hasilnya lebih dari satu utuh — masuk akal, karena 3/4 saja sudah hampir satu.',
+        '3/4 = 15/20 dan 2/5 = 8/20, jadi jumlahnya 23/20 = 1 3/20. Hasilnya lebih dari satu utuh — masuk akal, karena 3/4 hanya kurang 1/4 untuk menjadi satu, sedangkan yang ditambahkan (2/5) lebih besar daripada 1/4.',
     },
     {
       id: 'pec-5',
@@ -597,7 +679,8 @@ const konsep: Konsep = {
       pertanyaan:
         'Ibu memakai 1/3 kg gula untuk kue dan 1/4 kg untuk minuman. Berapa kg gula yang dipakai seluruhnya? Tulis jawabanmu sebagai desimal, bulatkan sampai tiga angka di belakang koma.',
       jawaban: 7 / 12,
-      toleransi: 0.001,
+      // 0,0005: menerima 0,583 (pembulatan yang benar), menolak 0,584.
+      toleransi: 0.0005,
       satuan: 'kg',
       hint: [
         'Samakan dulu penyebut 3 dan 4. Berapa KPK-nya?',

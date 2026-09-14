@@ -10,7 +10,7 @@
        sehingga (−1)(−2) harus 2 agar jumlahnya nol.
 
    Pola saja belum membuktikan apa pun; itu dinyatakan
-   terang-terangan pada langkah kelima.
+   terang-terangan pada langkah keenam (s5).
    ============================================================ */
 
 import { Svg, Tag } from '../components/Stage'
@@ -24,14 +24,25 @@ const H = 440
 /** Pengali pada tiap baris tabel, dari 3 turun sampai −2. */
 const BARIS = [3, 2, 1, 0, -1, -2]
 
-const tanda = (n: number) => (n < 0 ? `(${fmt(n)})` : fmt(n))
+/** Bilangan bertanda; negatifnya memakai '−' (U+2212), bukan tanda hubung.
+ *  Dipakai gambar DAN teks langkah supaya angkanya tertulis sama persis. */
+const bil = (n: number) => (n < 0 ? `−${fmt(-n)}` : fmt(n))
+
+/** Bilangan negatif diberi kurung agar '3 × (−2)' terbaca jelas. */
+const tanda = (n: number) => (n < 0 ? `(${bil(n)})` : bil(n))
+
+/** Nilai b pada tabel bongkar (dikali dengan −b). Dipakai gambar DAN teks langkah. */
+const nilaiB = (p: Record<string, number>) =>
+  Math.max(2, Math.round(Number.isFinite(p.b) ? p.b : 2))
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const b = Math.max(2, Math.round(p.b ?? 2)) // dikali dengan (−b)
+  const b = nilaiB(p) // dikali dengan (−b)
 
-  const geser = -150 * fase(step, t, 5)
+  // Tabel cukup digeser sedikit agar panel kanan muat. Geseran yang lebih jauh
+  // mendorong kolom "a × (−b)" ke luar gambar di layar sempit.
+  const geser = -40 * fase(step, t, 5)
   const y0 = 96
   const dy = 46
   const xKiri = 150
@@ -59,7 +70,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         {BARIS.map((m, i) => {
           const o = tampak(i)
           if (o <= 0.01) return null
-          const hasil = m * -b
+          const hasil = m * -b + 0 // "+ 0" mengubah −0 menjadi 0 agar tidak tampil "-0"
           const y = y0 + i * dy
           const negatifKeduanya = m < 0
           const warna = negatifKeduanya ? 'var(--m-hi)' : 'var(--ink)'
@@ -109,7 +120,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
                 fill={hasil > 0 ? 'var(--m-ab)' : hasil < 0 ? 'var(--m-b)' : 'var(--ink-2)'}
                 fontFamily="var(--font-math)"
               >
-                {fmt(hasil)}
+                {bil(hasil)}
               </text>
             </g>
           )
@@ -229,9 +240,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const a = Math.round(clamp(p.a ?? -3, -6, 6))
-  const b = Math.round(clamp(p.b ?? -4, -6, 6))
-  const hasil = a * b
+  // "+ 0" mengubah −0 menjadi 0 agar tidak tampil "-0".
+  const a = Math.round(clamp(p.a ?? -3, -6, 6)) + 0
+  const b = Math.round(clamp(p.b ?? -4, -6, 6)) + 0
+  const hasil = a * b + 0
 
   // Garis bilangan dari −36 sampai 36.
   const min = -36
@@ -262,7 +274,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
             fontWeight={700}
             fill="var(--ink-soft)"
           >
-            {fmt(v)}
+            {bil(v)}
           </text>
         </g>
       ))}
@@ -299,12 +311,12 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         warna={hasil >= 0 ? 'var(--m-ab)' : 'var(--m-b)'}
         size={18}
       >
-        {fmt(hasil)}
+        {bil(hasil)}
       </Tag>
 
       {/* pernyataan perkalian */}
       <Tag x={W / 2} y={80} warna="var(--ink)" size={24}>
-        {`${tanda(a)} × ${tanda(b)} = ${fmt(hasil)}`}
+        {`${tanda(a)} × ${tanda(b)} = ${bil(hasil)}`}
       </Tag>
       <Tag
         x={W / 2}
@@ -334,7 +346,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'negatif-kali-negatif',
-  topicId: 'smp7-bilangan-bulat',
+  topicId: 'smp7-operasi-hitung-bilangan-bulat',
   judul: 'Negatif kali negatif',
   pertanyaan: 'Kenapa negatif × negatif hasilnya positif?',
   tagline: 'Bukan aturan yang dibuat-buat. Ini satu-satunya jawaban yang menjaga aritmetika tetap utuh.',
@@ -371,7 +383,9 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'b', label: 'Dikalikan dengan', min: 2, max: 5, step: 1, awal: 2, bulat: true }],
+    // Penggeser menyimpan b (positif), tetapi tabel mengalikan dengan (−b); labelnya
+    // harus menyebut "negatif" supaya terbaca "Dikalikan dengan negatif 3", bukan "3".
+    params: [{ key: 'b', label: 'Dikalikan dengan negatif', min: 2, max: 5, step: 1, awal: 2, bulat: true }],
     roles: { 'neg-a': 'a', 'neg-b': 'b', hasil: 'ab', nol: 'hi' },
     arti: {
       'neg-a': 'Bilangan pertama yang negatif.',
@@ -390,8 +404,10 @@ const konsep: Konsep = {
       {
         id: 's1',
         judul: 'Ada pola yang rapi',
-        narasi:
-          'Perhatikan kolom hasilnya. Setiap kali pengali di kiri berkurang satu, hasilnya justru bertambah. Bertambahnya selalu sebesar angka yang sama.',
+        narasi: (p) => {
+          const b = nilaiB(p)
+          return `Perhatikan kolom hasilnya: setiap kali pengali di kiri berkurang satu, hasilnya justru naik ${fmt(b)}. Dari ${bil(-3 * b)} ke ${bil(-2 * b)} lalu ke ${bil(-b)}, naiknya selalu ${fmt(b)}.`
+        },
         durasi: 2000,
       },
       {
@@ -404,15 +420,19 @@ const konsep: Konsep = {
       {
         id: 's3',
         judul: 'Teruskan polanya satu baris lagi',
-        narasi:
-          'Kalau polanya diteruskan, hasil berikutnya harus lebih besar daripada nol. Artinya negatif dikali negatif memberi hasil positif.',
+        narasi: (p) => {
+          const b = nilaiB(p)
+          return `Kalau polanya diteruskan, hasil berikutnya harus naik ${fmt(b)} lagi dari nol, jadi (−1) × (${bil(-b)}) = ${fmt(b)}. Artinya negatif dikali negatif memberi hasil positif.`
+        },
         durasi: 2200,
       },
       {
         id: 's4',
         judul: 'Dan sekali lagi',
-        narasi:
-          'Polanya tetap konsisten. Menghentikan pola di sini justru akan membuat tabel ini tampak ganjil.',
+        narasi: (p) => {
+          const b = nilaiB(p)
+          return `Polanya tetap konsisten: (−2) × (${bil(-b)}) = ${fmt(2 * b)}, naik ${fmt(b)} lagi. Menghentikan pola di sini justru akan membuat tabel ini tampak ganjil.`
+        },
         durasi: 1800,
       },
       {
@@ -420,14 +440,19 @@ const konsep: Konsep = {
         judul: 'Tapi pola belum membuktikan',
         narasi:
           'Pola bisa saja kebetulan. Alasan yang benar-benar mengunci datang dari sifat distributif — sifat yang sudah kamu pakai sejak SD.',
-        rumus: '(−1)(−b) + (−1)(b) = (−1)([nol:−b + b]) = (−1)(0) = 0',
+        rumus: (p) => {
+          const b = nilaiB(p)
+          return `(−1)(${bil(-b)}) + (−1)(${fmt(b)}) = (−1)([nol:${bil(-b)} + ${fmt(b)}]) = (−1)(0) = 0`
+        },
         durasi: 2600,
       },
       {
         id: 's6',
         judul: 'Aturan tandanya',
-        narasi:
-          'Karena (−1)(b) bernilai −b, satu-satunya nilai yang membuat jumlahnya nol adalah (−1)(−b) = +b. Tidak ada pilihan lain.',
+        narasi: (p) => {
+          const b = nilaiB(p)
+          return `Karena (−1)(${fmt(b)}) = ${bil(-b)}, satu-satunya nilai yang membuat jumlahnya nol adalah (−1)(${bil(-b)}) = +${fmt(b)}. Argumen yang sama persis berlaku untuk bilangan negatif mana pun, sehingga (−a)(−b) = +ab.`
+        },
         rumus: '[neg-a:(−a)] × [neg-b:(−b)] = [hasil:+ab]',
         durasi: 2400,
       },
@@ -444,13 +469,13 @@ const konsep: Konsep = {
     ],
     Visual: VisualEksperimen,
     temuan: (p) => {
-      const a = Math.round(p.a ?? -3)
-      const b = Math.round(p.b ?? -4)
-      const h = a * b
+      const a = Math.round(p.a ?? -3) + 0
+      const b = Math.round(p.b ?? -4) + 0
+      const h = a * b + 0
       return (
         <p>
           <strong>
-            {tanda(a)} × {tanda(b)} = {fmt(h)}.
+            {tanda(a)} × {tanda(b)} = {bil(h)}.
           </strong>{' '}
           {a === 0 || b === 0
             ? 'Nol menghapus segalanya — dan justru baris nol inilah yang memaksa aturan tanda menjadi seperti sekarang.'
@@ -478,8 +503,9 @@ const konsep: Konsep = {
           (−a)(−b) + (−a)(b) = (−a)(−b + b) = (−a)(0) = 0
         </p>
         <p>
-          Kita sudah tahu (−a)(b) = −ab, karena itu hanya berarti "mengambil sebanyak a kali dengan
-          arah terbalik". Jadi persamaan di atas menjadi (−a)(−b) + (−ab) = 0, dan satu-satunya
+          Kita sudah tahu (−a)(b) = −ab: urutan perkalian boleh ditukar, jadi (−a)(b) = b × (−a),
+          dan bilangan positif dikali bilangan negatif hasilnya negatif — persis seperti baris-baris
+          awal tabel tadi. Jadi persamaan di atas menjadi (−a)(−b) + (−ab) = 0, dan satu-satunya
           bilangan yang bila dijumlahkan dengan −ab menghasilkan nol adalah <strong>+ab</strong>.
         </p>
         <p>
@@ -520,14 +546,16 @@ const konsep: Konsep = {
         </p>
         <p>
           Langkah (−a)·0 = 0 sendiri juga teorema: dari a·0 = a(0 + 0) = a·0 + a·0, kurangkan a·0
-          dari kedua ruas.
+          dari kedua ruas. Begitu pula (−a)b = −(ab), dengan cara yang sama: ab + (−a)b = (a + (−a))b
+          = 0·b = 0.
         </p>
         <h4>Kenapa ini penting</h4>
         <p>
-          Kalau seseorang mendefinisikan (−1)(−1) = −1, struktur yang dihasilkan bukan lagi
-          gelanggang: distributivitas gugur, dan bersamanya gugur pula pemfaktoran, penyelesaian
-          persamaan, serta hampir semua aljabar. Jadi "negatif kali negatif positif" bukan pilihan
-          selera — ia harga yang harus dibayar agar sistem bilangannya konsisten.
+          Kalau seseorang mendefinisikan (−1)(−1) = −1 pada bilangan bulat, struktur yang dihasilkan
+          bukan lagi gelanggang: distributivitas gugur, dan bersamanya gugur pula pemfaktoran,
+          penyelesaian persamaan, serta hampir semua aljabar. Jadi "negatif kali negatif positif"
+          bukan pilihan selera — ia akibat yang tak terelakkan bila hukum distributif ingin tetap
+          berlaku.
         </p>
       </>
     ),
@@ -551,25 +579,25 @@ const konsep: Konsep = {
       return {
         id: 'neg-1',
         tipe: 'angka',
-        topicId: 'smp7-bilangan-bulat',
+        topicId: 'smp7-operasi-hitung-bilangan-bulat',
         kelas: 7,
         tingkat: 'mudah',
         konsep: 'negatif-kali-negatif',
-        pertanyaan: `Hitunglah (${a}) × (${b}).`,
+        pertanyaan: `Hitunglah ${tanda(a)} × ${tanda(b)}.`,
         jawaban: a * b,
         toleransi: 1e-9,
         hint: [
           'Tentukan dulu tandanya sebelum menghitung angkanya.',
           'Kedua bilangan bertanda sama, jadi hasilnya positif.',
-          `Sekarang kalikan angkanya: ${Math.abs(a)} × ${Math.abs(b)}.`,
+          `Sekarang kalikan angkanya: ${fmt(Math.abs(a))} × ${fmt(Math.abs(b))}.`,
         ],
-        pembahasan: `(${a}) × (${b}) = +${Math.abs(a) * Math.abs(b)} = ${a * b}. Tanda sama menghasilkan positif.`,
+        pembahasan: `${tanda(a)} × ${tanda(b)} = +${fmt(a * b)}. Tanda sama menghasilkan positif.`,
       }
     },
     {
       id: 'neg-2',
       tipe: 'pilihan',
-      topicId: 'smp7-bilangan-bulat',
+      topicId: 'smp7-operasi-hitung-bilangan-bulat',
       kelas: 7,
       tingkat: 'sedang',
       konsep: 'negatif-kali-negatif',
@@ -596,7 +624,7 @@ const konsep: Konsep = {
     {
       id: 'neg-3',
       tipe: 'benar-salah',
-      topicId: 'smp7-bilangan-bulat',
+      topicId: 'smp7-operasi-hitung-bilangan-bulat',
       kelas: 7,
       tingkat: 'sedang',
       konsep: 'negatif-kali-negatif',
@@ -615,7 +643,7 @@ const konsep: Konsep = {
     {
       id: 'neg-4',
       tipe: 'urutkan',
-      topicId: 'smp7-bilangan-bulat',
+      topicId: 'smp7-operasi-hitung-bilangan-bulat',
       kelas: 8,
       tingkat: 'sulit',
       konsep: 'negatif-kali-negatif',
@@ -623,8 +651,8 @@ const konsep: Konsep = {
       langkah: [
         'Mulai dari −2 + 2 = 0',
         'Kalikan kedua ruas dengan (−1): (−1)(−2 + 2) = (−1) × 0',
-        'Ruas kanan bernilai 0',
-        'Jabarkan ruas kiri: (−1)(−2) + (−1)(2)',
+        'Jabarkan ruas kiri dengan sifat distributif: (−1)(−2) + (−1)(2) = (−1) × 0',
+        'Ruas kanan bernilai 0, jadi (−1)(−2) + (−1)(2) = 0',
         'Karena (−1)(2) = −2, maka (−1)(−2) harus +2 agar jumlahnya 0',
       ],
       hint: [
@@ -642,19 +670,19 @@ const konsep: Konsep = {
       return {
         id: 'neg-5',
         tipe: 'angka',
-        topicId: 'smp7-bilangan-bulat',
+        topicId: 'smp7-operasi-hitung-bilangan-bulat',
         kelas: 8,
         tingkat: 'sulit',
         konsep: 'negatif-kali-negatif',
-        pertanyaan: `Hitunglah (${a}) × (${b}) − (${a}) × (${c}).`,
+        pertanyaan: `Hitunglah ${tanda(a)} × ${tanda(b)} − ${tanda(a)} × ${tanda(c)}.`,
         jawaban: a * b - a * c,
         toleransi: 1e-9,
         hint: [
           'Kerjakan kedua perkalian lebih dulu, baru kurangkan.',
-          `(${a}) × (${b}) = ${a * b}, dan (${a}) × (${c}) = ${a * c}.`,
-          `Sekarang hitung ${a * b} − (${a * c}). Mengurangi bilangan negatif sama dengan menambah.`,
+          `${tanda(a)} × ${tanda(b)} = ${bil(a * b)}, dan ${tanda(a)} × ${tanda(c)} = ${bil(a * c)}.`,
+          `Sekarang hitung ${bil(a * b)} − ${bil(a * c)}. Hati-hati: ${tanda(a)} × ${tanda(c)} positif karena kedua tandanya negatif, jadi yang dikurangkan adalah bilangan positif.`,
         ],
-        pembahasan: `(${a})(${b}) = ${a * b} dan (${a})(${c}) = ${a * c}, jadi ${a * b} − (${a * c}) = ${a * b - a * c}. Cara lain: keluarkan faktor bersama, (${a}) × (${b} − ${c}) = (${a}) × (${b - c}) = ${a * b - a * c}.`,
+        pembahasan: `${tanda(a)} × ${tanda(b)} = ${bil(a * b)} dan ${tanda(a)} × ${tanda(c)} = ${bil(a * c)}, jadi ${bil(a * b)} − ${bil(a * c)} = ${bil(a * b - a * c)}. Cara lain: keluarkan faktor bersama, ${tanda(a)} × (${bil(b)} − ${tanda(c)}) = ${tanda(a)} × ${bil(b - c)} = ${bil(a * b - a * c)}.`,
       }
     },
   ],

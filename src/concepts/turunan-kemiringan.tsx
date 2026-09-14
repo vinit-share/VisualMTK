@@ -159,13 +159,34 @@ function Panel({
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const x = clamp(p.x ?? 1.5, 0.3, 3)
+/** h terkecil yang masih dipakai gambar — sengaja bukan nol. */
+const H_AKHIR = 0.02
 
-  // h menyusut pada langkah 3, lalu tetap kecil.
-  const hAwal = 1.4
+/**
+ * Nilai yang diturunkan dari penggeser bongkar. Dipakai bersama oleh gambar
+ * dan oleh teks langkah supaya angka di narasi tidak pernah berbeda dari
+ * angka yang terlihat.
+ */
+function nilaiBongkar(p: Record<string, number>) {
+  const x = clamp(p.x ?? 1.5, 0.3, 3)
+  // Untuk x besar, h awal diperpendek supaya titik kedua (x + h, (x + h)²)
+  // tetap berada di dalam gambar. Dibulatkan ke bawah ke persepuluhan agar
+  // panel (3 desimal), label segitiga, dan narasi (2 desimal) menampilkan
+  // angka yang sama.
+  const hAwal = Math.min(1.4, Math.floor((Math.sqrt(YMAX) - x) * 10) / 10)
+  return { x, hAwal, turunan: 2 * x }
+}
+
+function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const { x, hAwal, turunan } = nilaiBongkar(p)
+
+  // h menyusut pada langkah 3 (tanpa lompatan dari hAwal), lalu tetap kecil.
   const h =
-    step <= 2 ? hAwal : step === 3 ? hAwal * (1 - seg(t, 0.05, 0.95)) + 0.02 : 0.02
+    step <= 2
+      ? hAwal
+      : step === 3
+        ? H_AKHIR + (hAwal - H_AKHIR) * (1 - seg(t, 0.05, 0.95))
+        : H_AKHIR
 
   const linear = step === 0
   const f = linear ? garis : kuadrat
@@ -185,9 +206,18 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       ]
     : [
         { teks: `x = ${fmt(x, 2)}` },
-        { teks: `h = ${fmt(h, 3)}`, warna: nyalaH ? 'var(--m-hi)' : 'var(--m-b)' },
-        { teks: `Δy/h = ${fmt(m, 3)}`, warna: 'var(--m-ab)', besar: true },
-        { teks: `2x = ${fmt(2 * x, 2)}`, warna: nyalaTurunan ? 'var(--m-hi)' : 'var(--m-a)' },
+        // h dan Δy/h baru muncul saat titik kedua diambil (langkah 2);
+        // 2x baru muncul setelah dihitung dengan aljabar (langkah 4),
+        // supaya hasil akhirnya tidak terlihat lebih dulu.
+        ...(step >= 2
+          ? [
+              { teks: `h = ${fmt(h, 3)}`, warna: nyalaH ? 'var(--m-hi)' : 'var(--m-b)' },
+              { teks: `Δy/h = ${fmt(m, 3)}`, warna: 'var(--m-ab)', besar: true },
+            ]
+          : []),
+        ...(step >= 4
+          ? [{ teks: `2x = ${fmt(turunan, 2)}`, warna: nyalaTurunan ? 'var(--m-hi)' : 'var(--m-a)' }]
+          : []),
       ]
 
   return (
@@ -197,7 +227,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {(linear || tampilPotong > 0.02) && (
         <GarisPotong
           x={x}
-          h={linear ? 1 : h}
+          h={linear ? Math.min(1, XMAX - x) : h}
           f={f}
           warna={linear ? 'var(--m-c)' : step >= 4 ? 'var(--m-hi)' : 'var(--m-b)'}
           tampilSegitiga={fase(step, t, 2)}
@@ -229,7 +259,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step >= 4 && (
         <Tag x={(GX0 + GX1) / 2} y={36} warna="var(--m-hi)" size={16}>
-          {`garisnya kini menyinggung, kemiringannya ${fmt(2 * x, 2)}`}
+          {`garisnya nyaris menyinggung, kemiringannya mendekati ${fmt(turunan, 2)}`}
         </Tag>
       )}
     </Svg>
@@ -274,7 +304,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'turunan-kemiringan',
-  topicId: 'sma11-turunan',
+  topicId: 'sma11-definisi-turunan-sebagai-limit',
   judul: 'Turunan',
   pertanyaan: 'Kenapa turunan disebut kemiringan?',
   tagline: 'Dekatkan dua titik pada kurva sampai hampir berimpit. Lihat apa yang tersisa.',
@@ -303,7 +333,7 @@ const konsep: Konsep = {
         id: 'c',
         label: 'Tak terhingga',
         balasan:
-          'Kalau pembilangnya tetap sedangkan penyebutnya menuju nol, hasilnya memang meledak. Tetapi di sini pembilangnya ikut menyusut.',
+          'Kalau pembilangnya tetap (dan bukan nol) sedangkan penyebutnya menuju nol, hasilnya memang meledak. Tetapi di sini pembilangnya ikut menyusut.',
       },
     ],
     penutup:
@@ -339,8 +369,10 @@ const konsep: Konsep = {
       {
         id: 's2',
         judul: 'Ambil dua titik dulu',
-        narasi:
-          'Kita belum bisa menghitung kemiringan di satu titik saja. Jadi ambil titik kedua yang berjarak h, lalu hitung naik dibagi maju seperti biasa.',
+        narasi: (p) => {
+          const { x, hAwal } = nilaiBongkar(p)
+          return `Kamu belum bisa menghitung kemiringan hanya dari satu titik. Jadi ambil titik kedua sejauh h = ${fmt(hAwal, 2)} di sebelah kanan titik x = ${fmt(x, 2)}, lalu hitung naik dibagi maju seperti biasa.`
+        },
         rumus: 'kemiringan potong = [dy:Δy] / [h:h]',
         durasi: 2600,
       },
@@ -348,22 +380,26 @@ const konsep: Konsep = {
         id: 's3',
         judul: 'Dekatkan titik keduanya',
         narasi:
-          'Perkecil h. Garis potongnya berputar perlahan, makin menempel pada kurva, sampai akhirnya hanya menyentuh di satu titik.',
+          'Perkecil h: garis potongnya berputar mengelilingi titik pertama sampai kedua titiknya nyaris berimpit, dan kemiringannya makin dekat ke satu angka. Garis melalui titik pertama yang kemiringannya tepat sebesar angka itu disebut garis singgung — bukan sekadar garis yang "menyentuh kurva di satu titik".',
         durasi: 3000,
       },
       {
         id: 's4',
         judul: 'Sekarang hitung dengan aljabar',
-        narasi:
-          'Untuk f(x) = x², selisihnya (x+h)² − x² = 2xh + h². Dibagi h menjadi 2x + h. Angka h masih ada di situ, tetapi ia sedang menuju nol.',
+        narasi: (p) => {
+          const { x, turunan } = nilaiBongkar(p)
+          return `Untuk f(x) = x², selisih (x+h)² − x² = 2xh + h², dan setelah dibagi h tersisa 2x + h. Di titik x = ${fmt(x, 2)}, hasil bagi itu menjadi ${fmt(turunan, 2)} + h — angka h masih ada di situ, tetapi ia sedang menuju nol.`
+        },
         rumus: '((x+h)^2 − x^2) ÷ [h:h] = 2x + [h:h]',
         durasi: 3000,
       },
       {
         id: 's5',
         judul: 'Yang tersisa saat h lenyap',
-        narasi:
-          'Ketika h mendekati nol, suku h pada 2x + h ikut lenyap. Yang tersisa adalah 2x — dan angka itulah kemiringan kurva tepat di titik x.',
+        narasi: (p) => {
+          const { x, turunan } = nilaiBongkar(p)
+          return `Ketika h mendekati nol, suku h pada 2x + h ikut lenyap dan yang tersisa hanya 2x. Di titik x = ${fmt(x, 2)}, kemiringan kurvanya ${fmt(turunan, 2)} — itulah angka yang didekati kemiringan garis di layar.`
+        },
         rumus: "f'(x) = [dua-x:2x]",
         durasi: 2600,
       },
@@ -371,8 +407,8 @@ const konsep: Konsep = {
         id: 's6',
         judul: 'Itulah definisi turunan',
         narasi:
-          'Turunan bukan aturan baru, melainkan kemiringan biasa yang dihitung pada dua titik yang jaraknya menuju nol.',
-        rumus: "[turunan:f'(x)] = lim ([dy:f(x+h) − f(x)]) ÷ [h:h]",
+          'Turunan bukan aturan baru, melainkan angka yang didekati kemiringan biasa antara dua titik ketika jarak keduanya menuju nol.',
+        rumus: "[turunan:f'(x)] = lim(h→0) ([dy:f(x+h) − f(x)]) ÷ [h:h]",
         durasi: 2600,
       },
     ],
@@ -408,7 +444,7 @@ const konsep: Konsep = {
       <>
         <p>
           Kemiringan mengukur <strong>seberapa cepat sesuatu berubah</strong>. Untuk garis lurus,
-          jawabannya satu angka. Untuk kurva, jawabannya berbeda-beda di setiap titik — dan turunan
+          jawabannya satu angka. Untuk kurva, jawabannya bisa berbeda dari titik ke titik — dan turunan
           adalah cara menyebut angka tersebut di satu titik tertentu.
         </p>
         <p>
@@ -430,8 +466,8 @@ const konsep: Konsep = {
         </p>
         <h4>Kenapa 0/0 bukan berarti nol</h4>
         <p>
-          Pembilang dan penyebut memang sama-sama menuju nol, tetapi <em>kecepatan</em> keduanya
-          berbeda, dan perbandingan itulah yang punya nilai. Bentuk 0/0 disebut bentuk taktentu
+          Pembilang dan penyebut memang sama-sama menuju nol, tetapi yang menentukan adalah
+          perbandingan <em>kecepatan</em> menyusutnya, dan perbandingan itulah yang punya nilai. Bentuk 0/0 disebut bentuk taktentu
           justru karena hasilnya bisa apa saja, bergantung fungsinya.
         </p>
         <h4>Membaca turunan</h4>
@@ -481,7 +517,7 @@ const konsep: Konsep = {
       return {
         id: 'tur-1',
         tipe: 'angka',
-        topicId: 'sma11-turunan',
+        topicId: 'sma11-definisi-turunan-sebagai-limit',
         kelas: 11,
         tingkat: 'mudah',
         konsep: 'turunan-kemiringan',
@@ -493,13 +529,13 @@ const konsep: Konsep = {
           "f'(x) = 2x.",
           `Masukkan x = ${x}.`,
         ],
-        pembahasan: `f'(x) = 2x, jadi f'(${x}) = ${2 * x}. Artinya di titik itu, maju satu satuan ke kanan membuat kurva naik kira-kira ${2 * x} satuan.`,
+        pembahasan: `f'(x) = 2x, jadi f'(${x}) = ${2 * x}. Artinya tepat di titik itu kurva naik dengan laju ${2 * x} satuan per satuan mendatar: kalau maju sejauh h yang kecil, kenaikannya kira-kira ${2 * x} × h. (Untuk langkah selebar satu satuan penuh kenaikannya bukan ${2 * x}, melainkan ${2 * x + 1}, karena kemiringan garis potongnya 2x + h.)`,
       }
     },
     {
       id: 'tur-2',
       tipe: 'pilihan',
-      topicId: 'sma11-turunan',
+      topicId: 'sma11-definisi-turunan-sebagai-limit',
       kelas: 11,
       tingkat: 'sedang',
       konsep: 'turunan-kemiringan',
@@ -530,7 +566,7 @@ const konsep: Konsep = {
     {
       id: 'tur-3',
       tipe: 'benar-salah',
-      topicId: 'sma11-turunan',
+      topicId: 'sma11-definisi-turunan-sebagai-limit',
       kelas: 11,
       tingkat: 'sedang',
       konsep: 'turunan-kemiringan',
@@ -545,7 +581,7 @@ const konsep: Konsep = {
         'Bentuk 0/0 disebut taktentu justru karena hasilnya bisa bermacam-macam.',
       ],
       pembahasan:
-        'Salah. Untuk f(x) = x², Δy/h = 2x + h yang menuju 2x, bukan nol. Bentuk 0/0 tidak menentukan hasil apa pun dengan sendirinya.',
+        'Salah. Untuk f(x) = x², Δy/h = 2x + h yang menuju 2x — misalnya 3 di x = 1,5 — dan hasilnya nol hanya bila kebetulan x = 0. Bentuk 0/0 tidak menentukan hasil apa pun dengan sendirinya.',
     },
     (rnd) => {
       const x = 1 + Math.floor(rnd() * 4)
@@ -554,7 +590,7 @@ const konsep: Konsep = {
       return {
         id: 'tur-4',
         tipe: 'angka',
-        topicId: 'sma11-turunan',
+        topicId: 'sma11-definisi-turunan-sebagai-limit',
         kelas: 11,
         tingkat: 'sulit',
         konsep: 'turunan-kemiringan',
@@ -564,7 +600,7 @@ const konsep: Konsep = {
         hint: [
           'Hitung selisih nilai fungsinya lebih dulu.',
           `f(${fmt(x + h, 2)}) − f(${x}) = ${fmt((x + h) ** 2, 4)} − ${fmt(x * x)} = ${fmt((x + h) ** 2 - x * x, 4)}.`,
-          `Bagi dengan h = ${fmt(h, 2)}. Hasilnya seharusnya mendekati 2x = ${2 * x}.`,
+          `Bagi dengan h = ${fmt(h, 2)}. Hasilnya tepat 2x + h, jadi lebih besar ${fmt(h, 2)} daripada 2x = ${2 * x} — jangan dibulatkan ke ${2 * x}.`,
         ],
         pembahasan: `Kemiringannya ${fmt(m, 4)}. Perhatikan hasilnya persis 2x + h = ${2 * x} + ${fmt(h, 2)} — makin kecil h, makin dekat ke ${2 * x}.`,
       }
@@ -572,7 +608,7 @@ const konsep: Konsep = {
     {
       id: 'tur-5',
       tipe: 'urutkan',
-      topicId: 'sma11-turunan',
+      topicId: 'sma11-definisi-turunan-sebagai-limit',
       kelas: 11,
       tingkat: 'sulit',
       konsep: 'turunan-kemiringan',

@@ -1,13 +1,15 @@
 /* ============================================================
    KONSEP — Kenapa luas segitiga dibagi 2?
-   Kelas 4 · Pengukuran
+   Kelas 5 · Pengukuran
 
    Gagasan pembuktian (jujur secara matematis, bukan analogi):
    sebuah segitiga digandakan, lalu salinannya diputar setengah
-   putaran mengelilingi TITIK TENGAH salah satu sisinya. Kedua
-   segitiga itu pasti membentuk jajar genjang — dan jajar genjang
-   bisa dipotong-geser menjadi persegi panjang beralas a dan
-   bertinggi t. Jadi dua segitiga = a × t, satu segitiga = ½ a t.
+   putaran mengelilingi TITIK TENGAH salah satu sisi selain alas.
+   Kedua segitiga itu pasti membentuk jajar genjang beralas a —
+   dan jajar genjang bisa dipotong-geser menjadi persegi panjang
+   beralas a dan bertinggi t (satu potongan cukup bila kaki garis
+   tinggi jatuh pada alas; bila sangat miring, perlu beberapa
+   potongan). Jadi dua segitiga = a × t, satu segitiga = ½ a t.
    ============================================================ */
 
 import { Svg, Tag, Dimensi, SikuSiku } from '../components/Stage'
@@ -33,13 +35,19 @@ interface Bentuk {
   px: number
 }
 
-function bentuk(alas: number, tinggi: number, puncak: number): Bentuk {
-  const b = alas * SKALA
-  const h = tinggi * SKALA
+function bentuk(
+  alas: number,
+  tinggi: number,
+  puncak: number,
+  skala = SKALA,
+  kiri = KIRI_X,
+): Bentuk {
+  const b = alas * skala
+  const h = tinggi * skala
   const px = puncak * b
-  const A: [number, number] = [KIRI_X, DASAR_Y]
-  const B: [number, number] = [KIRI_X + b, DASAR_Y]
-  const P: [number, number] = [KIRI_X + px, DASAR_Y - h]
+  const A: [number, number] = [kiri, DASAR_Y]
+  const B: [number, number] = [kiri + b, DASAR_Y]
+  const P: [number, number] = [kiri + px, DASAR_Y - h]
   // Titik tengah sisi PB — pusat perputaran salinan.
   const M: [number, number] = [(B[0] + P[0]) / 2, (B[1] + P[1]) / 2]
   return { A, B, P, M, b, h, px }
@@ -67,13 +75,17 @@ function GarisTinggi({
   tinggi,
   nyala,
   opacity = 1,
+  sisi = 'kiri',
 }: {
   bt: Bentuk
   tinggi: number
   nyala: boolean
   opacity?: number
+  /** letak label t terhadap garis tinggi. */
+  sisi?: 'kiri' | 'kanan'
 }) {
   const kaki: [number, number] = [bt.P[0], DASAR_Y]
+  const kanan = sisi === 'kanan'
   return (
     <g opacity={opacity}>
       <line
@@ -88,9 +100,9 @@ function GarisTinggi({
       />
       <SikuSiku x={kaki[0]} y={kaki[1]} ux={0} uy={-1} vx={1} vy={0} s={12} warna="var(--m-b)" />
       <Tag
-        x={bt.P[0] - 16}
+        x={bt.P[0] + (kanan ? 16 : -16)}
         y={(bt.P[1] + DASAR_Y) / 2}
-        anchor="end"
+        anchor={kanan ? 'start' : 'end'}
         warna="var(--m-b)"
         size={nyala ? 19 : 16}
       >
@@ -120,13 +132,53 @@ function GarisAlas({ bt, alas, nyala }: { bt: Bentuk; alas: number; nyala: boole
   )
 }
 
+/* ---------------- Nilai penggeser bongkar ---------------- */
+
+/** Setengah langkah penggeser puncak: di bawah ini puncak dianggap tepat di ujung. */
+const DEKAT_UJUNG = 0.005
+
+/**
+ * Satu-satunya tempat nilai penggeser bongkar diturunkan. Gambar DAN teks
+ * langkah sama-sama memakai fungsi ini, supaya angka di narasi tidak pernah
+ * berbeda dari angka yang tergambar.
+ */
+function nilaiBongkar(p: Record<string, number>) {
+  const alas = p.alas ?? 6
+  const tinggi = p.tinggi ?? 4
+  // Puncak dijepit 0..1 supaya kaki garis tinggi selalu jatuh pada alas.
+  const puncak = clamp(p.puncak ?? 0.35, 0, 1)
+  return {
+    alas,
+    tinggi,
+    puncak,
+    luas: (alas * tinggi) / 2,
+    /** puncak tepat di atas ujung kiri alas: gabungannya berdiri tegak. */
+    tegak: puncak < DEKAT_UJUNG,
+    /** puncak tepat di atas ujung kanan alas: potongan kirinya tepat separuh. */
+    miringPenuh: puncak > 1 - DEKAT_UJUNG,
+  }
+}
+
+/** Bangun bersudut siku-siku a × t: persegi bila alas sama dengan tinggi. */
+const namaPersegi = (alas: number, tinggi: number) =>
+  alas === tinggi ? 'persegi' : 'persegi panjang'
+
+/** Nama bangun hasil gabungan dua segitiga, mengikuti posisi puncak. */
+function namaGabungan(p: Record<string, number>): string {
+  const { alas, tinggi, tegak } = nilaiBongkar(p)
+  if (!tegak) return 'jajar genjang'
+  // Puncak di ujung kiri membuat semua sudutnya siku-siku.
+  return namaPersegi(alas, tinggi)
+}
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const alas = p.alas ?? 6
-  const tinggi = p.tinggi ?? 4
-  const puncak = clamp(p.puncak ?? 0.35, 0, 1)
-  const bt = bentuk(alas, tinggi, puncak)
+  const { alas, tinggi, puncak, luas, tegak } = nilaiBongkar(p)
+  // Jajar genjang selebar a·(1 + puncak) ≤ 2a harus muat di kanvas. Skala hanya
+  // bergantung pada alas, supaya menggeser puncak tidak mengubah tinggi yang tergambar.
+  const skala = Math.min(SKALA, 250 / alas)
+  const bt = bentuk(alas, tinggi, puncak, skala)
   const { A, B, P, M, b } = bt
 
   /* --- kemajuan tiap tahap --- */
@@ -137,6 +189,9 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   // Potong bagian kiri jajar genjang lalu geser ke kanan sejauh a.
   const geser =
     step === 4 ? seg(t, 0.12, 0.92) : step === 5 ? 1 - seg(t, 0, 0.55) : step > 5 ? 0 : 0
+  // Potongan hanya tampak selama dipotong-geser. Begitu kembali ke bentuk semula
+  // (tahap 5), yang tampak lagi adalah DUA segitiga kembar, sesuai narasinya.
+  const tampakPotongan = step === 4 || (step === 5 && geser > 0)
   const sorotSetengah = step >= 6 ? seg(t, 0, 0.5) : 0
 
   /* --- titik salinan setelah diputar --- */
@@ -179,14 +234,17 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             stroke="var(--m-ab)"
             strokeWidth={2.5}
           />
-          <polygon
-            points={poly(
-              ...(potKiri.map(([x, y]) => [x + geserX, y]) as [number, number][]),
-            )}
-            fill="var(--m-b-soft)"
-            stroke="var(--m-b)"
-            strokeWidth={2.5}
-          />
+          {/* Bila tegak, potongan kiri hanyalah garis tanpa luas: tidak ada yang dipotong. */}
+          {!tegak && (
+            <polygon
+              points={poly(
+                ...(potKiri.map(([x, y]) => [x + geserX, y]) as [number, number][]),
+              )}
+              fill="var(--m-b-soft)"
+              stroke="var(--m-b)"
+              strokeWidth={2.5}
+            />
+          )}
           {geser > 0.9 && (
             <Tag x={KIRI_X + bt.px + b / 2} y={DASAR_Y - bt.h / 2} warna="var(--m-ab)" size={18}>
               {`a × t = ${fmt(alas * tinggi)}`}
@@ -196,7 +254,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
 
       {/* --- jajar genjang utuh (tahap 3 dan 6) --- */}
-      {tampakJajar && (step < 4 || step > 5) && (
+      {tampakJajar && !tampakPotongan && (
         <polygon
           points={poly(A, B, [B[0] + bt.px, P[1]], P)}
           fill="var(--m-ghost)"
@@ -207,7 +265,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
 
       {/* --- salinan segitiga --- */}
-      {salinanMuncul > 0 && (step < 4 || step > 5) && (
+      {salinanMuncul > 0 && !tampakPotongan && (
         <polygon
           points={poly(A2, B2, P2)}
           fill="var(--m-b)"
@@ -219,7 +277,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
 
       {/* --- segitiga asli --- */}
-      {(step < 4 || step > 5) && (
+      {!tampakPotongan && (
         <polygon
           points={poly(A, B, P)}
           fill="var(--m-a)"
@@ -255,12 +313,12 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
       {step === 3 && (
         <Tag x={W / 2} y={70} warna="var(--ink-2)" size={17}>
-          dua segitiga = satu jajar genjang
+          {`dua segitiga = satu ${namaGabungan(p)}`}
         </Tag>
       )}
       {step >= 6 && (
         <Tag x={W / 2} y={70} warna="var(--m-a)" size={18}>
-          {`satu segitiga = ${fmt((alas * tinggi) / 2)} = separuh dari ${fmt(alas * tinggi)}`}
+          {`satu segitiga = ${fmt(luas)} = separuh dari ${fmt(alas * tinggi)}`}
         </Tag>
       )}
 
@@ -291,11 +349,19 @@ function VisualEksperimen({
   const alas = p.alas ?? 6
   const tinggi = p.tinggi ?? 4
   const puncak = p.puncak ?? 0.35
-  const bt = bentuk(alas, tinggi, puncak)
+  // Skala tetap (tidak bergantung penggeser) dan titik kiri yang digeser, supaya
+  // puncak selalu tampak di atas garis putus-putus untuk seluruh rentang penggeser:
+  // posisi puncak −0,4 … 1,4 kali alas, alas sampai 10 → puncak di x = 60 … 600.
+  const skala = 30
+  const kiri = 180
+  const bt = bentuk(alas, tinggi, puncak, skala, kiri)
   const luas = (alas * tinggi) / 2
+  // Label t pindah ke kanan garis tinggi bila di kiri tidak muat di kanvas.
+  const lebarLabelT = `t = ${fmt(tinggi)}`.length * 19 * 0.58 + 14
+  const sisiLabelT = bt.P[0] - 16 - lebarLabelT < 4 ? 'kanan' : 'kiri'
 
   // Bayangan posisi puncak lain, memperlihatkan luas tak berubah.
-  const bayang = [0, 0.5, 1].map((f) => bentuk(alas, tinggi, f))
+  const bayang = [0, 0.5, 1].map((f) => bentuk(alas, tinggi, f, skala, kiri))
 
   return (
     <Svg w={W} h={H} maxH={430} label="Segitiga yang bisa diubah alas, tinggi, dan posisi puncaknya">
@@ -334,7 +400,7 @@ function VisualEksperimen({
       />
 
       <GarisAlas bt={bt} alas={alas} nyala={sorot === 'alas'} />
-      <GarisTinggi bt={bt} tinggi={tinggi} nyala={sorot === 'tinggi'} />
+      <GarisTinggi bt={bt} tinggi={tinggi} nyala={sorot === 'tinggi'} sisi={sisiLabelT} />
 
       <circle cx={bt.P[0]} cy={bt.P[1]} r={7} fill="var(--m-b)" />
 
@@ -349,12 +415,12 @@ function VisualEksperimen({
 
 const konsep: Konsep = {
   id: 'segitiga-setengah',
-  topicId: 'sd4-luas-segitiga',
+  topicId: 'sd5-luas-persegi-persegi-panjang-dan',
   judul: 'Luas segitiga',
   pertanyaan: 'Kenapa luas segitiga harus dibagi 2?',
   tagline:
     'Karena setiap segitiga sebenarnya separuh dari sebuah bangun yang jauh lebih mudah dihitung.',
-  kelas: 4,
+  kelas: 5,
   domain: 'pengukuran',
   tags: ['segitiga', 'luas', 'alas', 'tinggi'],
 
@@ -367,7 +433,7 @@ const konsep: Konsep = {
         id: 'b',
         label: 'Yang miring',
         balasan:
-          'Yang miring terlihat lebih panjang karena sisi mirimgnya memanjang. Tapi sisi miring bukan tinggi.',
+          'Yang miring terlihat lebih panjang karena sisi miringnya memanjang. Tapi sisi miring bukan tinggi.',
       },
       {
         id: 'c',
@@ -392,15 +458,17 @@ const konsep: Konsep = {
     roles: { alas: 'a', tinggi: 'b', setengah: 'hi', luas: 'ab' },
     arti: {
       alas: 'Sisi yang kita jadikan alas — boleh sisi mana saja.',
-      tinggi: 'Jarak tegak lurus dari puncak ke alas. Bukan panjang sisi miring.',
+      tinggi: 'Jarak tegak lurus dari puncak ke garis alas. Bukan panjang sisi miring.',
       setengah: 'Karena segitiganya tepat separuh dari jajar genjang yang tadi terbentuk.',
     },
     steps: [
       {
         id: 's0',
         judul: 'Mulai dari satu segitiga',
-        narasi:
-          'Ini segitiga biasa. Yang kita catat hanya dua hal: alasnya, dan tingginya — jarak tegak lurus dari puncak ke alas.',
+        narasi: (p) => {
+          const { alas, tinggi } = nilaiBongkar(p)
+          return `Ini segitiga biasa: alasnya ${fmt(alas)} dan tingginya ${fmt(tinggi)}. Cuma dua angka itu yang perlu kamu catat — tinggi berarti jarak tegak lurus dari puncak ke alas, bukan panjang sisi miringnya.`
+        },
         rumus: 'alas = [alas:a] · tinggi = [tinggi:t]',
         durasi: 1500,
       },
@@ -415,37 +483,66 @@ const konsep: Konsep = {
         id: 's2',
         judul: 'Putar salinannya setengah putaran',
         narasi:
-          'Salinan diputar 180° mengelilingi titik tengah salah satu sisinya. Perputaran tidak mengubah luas — bentuknya hanya berpindah tempat.',
+          'Salinan diputar 180° mengelilingi titik tengah salah satu sisi selain alas. Perputaran tidak mengubah luas — bentuknya hanya berpindah tempat.',
         durasi: 2200,
       },
       {
         id: 's3',
-        judul: 'Selalu terbentuk jajar genjang',
-        narasi:
-          'Kedua segitiga itu pas bertemu tanpa celah dan tanpa tumpang tindih. Hasilnya jajar genjang dengan alas a dan tinggi t.',
+        judul: (p) =>
+          nilaiBongkar(p).tegak
+            ? `Kali ini gabungannya ${namaGabungan(p)}`
+            : 'Selalu terbentuk jajar genjang',
+        narasi: (p) => {
+          const { alas, tinggi, tegak } = nilaiBongkar(p)
+          const ukuran = `beralas ${fmt(alas)} dan bertinggi ${fmt(tinggi)}`
+          const awal = 'Kedua segitiga itu pas bertemu tanpa celah dan tanpa tumpang tindih.'
+          return tegak
+            ? `${awal} Karena puncaknya tepat di atas ujung kiri alas, gabungannya berdiri tegak: ${namaGabungan(p)} ${ukuran}.`
+            : `${awal} Hasilnya jajar genjang ${ukuran}.`
+        },
         durasi: 1600,
       },
       {
         id: 's4',
-        judul: 'Jajar genjang itu sebenarnya persegi panjang',
-        narasi:
-          'Potong ujung kirinya, geser ke kanan. Tidak ada bagian yang hilang atau bertambah — sekarang bentuknya persegi panjang beralas a dan bertinggi t.',
-        rumus: 'luas jajar genjang = [alas:a] × [tinggi:t]',
+        judul: (p) => {
+          const { alas, tinggi, tegak } = nilaiBongkar(p)
+          return tegak
+            ? `Bentuknya sudah ${namaGabungan(p)}`
+            : `Jajar genjang itu bisa disusun ulang jadi ${namaPersegi(alas, tinggi)}`
+        },
+        narasi: (p) => {
+          const { alas, tinggi, tegak, miringPenuh } = nilaiBongkar(p)
+          const hasil = `${fmt(alas)} × ${fmt(tinggi)} = ${fmt(alas * tinggi)}`
+          if (tegak) {
+            return `Kali ini tidak ada yang perlu dipotong: keempat sudutnya sudah siku-siku. Luasnya langsung terbaca ${hasil}.`
+          }
+          const potong = miringPenuh
+            ? `Potong separuh kirinya — potongan itu pas satu segitiga utuh — lalu geser ke kanan sejauh ${fmt(alas)}.`
+            : `Potong ujung kirinya, lalu geser ke kanan sejauh ${fmt(alas)}.`
+          return `${potong} Tidak ada bagian yang hilang atau bertambah, dan sekarang bentuknya ${namaPersegi(alas, tinggi)} dengan luas ${hasil}.`
+        },
+        rumus: (p) => `luas ${namaGabungan(p)} = [alas:a] × [tinggi:t]`,
         durasi: 2400,
       },
       {
         id: 's5',
-        judul: 'Kembalikan ke bentuk semula',
-        narasi:
-          'Luasnya tetap a × t. Dan bangun seluas itu diisi tepat oleh DUA segitiga yang sama besar.',
+        // Bila tegak tidak ada yang dipotong, jadi tidak ada yang perlu dikembalikan.
+        judul: (p) =>
+          nilaiBongkar(p).tegak ? 'Lihat lagi kedua segitiganya' : 'Kembalikan ke bentuk semula',
+        narasi: (p) => {
+          const { alas, tinggi } = nilaiBongkar(p)
+          return `Luasnya tetap ${fmt(alas)} × ${fmt(tinggi)} = ${fmt(alas * tinggi)}. Dan bangun seluas itu diisi tepat oleh DUA segitiga yang sama besar.`
+        },
         rumus: '2 × [luas:L] = [alas:a] × [tinggi:t]',
         durasi: 1800,
       },
       {
         id: 's6',
         judul: 'Jadi satu segitiga adalah separuhnya',
-        narasi:
-          'Kalau dua segitiga bernilai a × t, maka satu segitiga bernilai separuhnya. Di situlah angka ½ berasal — bukan aturan hafalan, melainkan akibat.',
+        narasi: (p) => {
+          const { alas, tinggi, luas } = nilaiBongkar(p)
+          return `Kalau luas dua segitiga itu ${fmt(alas)} × ${fmt(tinggi)} = ${fmt(alas * tinggi)}, maka luas satu segitiga adalah separuhnya: ${fmt(luas)}. Di situlah angka ½ berasal — bukan aturan hafalan, melainkan akibat.`
+        },
         rumus: '[luas:L] = [setengah:½] × [alas:a] × [tinggi:t]',
         durasi: 2000,
       },
@@ -470,8 +567,9 @@ const konsep: Konsep = {
         <p>
           <strong>Coba geser "posisi puncak" saja.</strong> Bentuknya berubah drastis, tetapi
           luasnya diam di angka {fmt((alas * tinggi) / 2)}. Yang menentukan luas cuma dua: alas{' '}
-          {fmt(alas)} dan tinggi {fmt(tinggi)}. Sekarang gandakan tingginya — luasnya ikut
-          menggandak, karena tinggi muncul satu kali dalam rumus.
+          {fmt(alas)} dan tinggi {fmt(tinggi)}. Sekarang gandakan tingginya (misalnya dari 2
+          menjadi 4) — luasnya ikut menjadi dua kali lipat, karena dalam rumus tinggi hanya
+          dikalikan, tidak dikuadratkan.
         </p>
       )
     },
@@ -481,13 +579,14 @@ const konsep: Konsep = {
     SD: (
       <>
         <p>
-          Bayangkan kamu punya dua segitiga kembar dari kertas. Kalau yang satu kamu putar lalu
-          tempelkan ke yang lain, keduanya <strong>selalu</strong> membentuk satu bangun yang rapi —
-          jajar genjang.
+          Bayangkan kamu punya dua segitiga kembar dari kertas. Kalau yang satu kamu putar setengah
+          putaran lalu tempelkan pada sisi kembarannya, keduanya <strong>selalu</strong> membentuk
+          satu bangun yang rapi — jajar genjang.
         </p>
         <p>
-          Jajar genjang itu tinggal digunting sedikit di ujungnya dan digeser, langsung jadi persegi
-          panjang. Nah, luas persegi panjang gampang: <strong>alas × tinggi</strong>.
+          Jajar genjang itu tinggal digunting di ujungnya dan potongannya digeser, jadi persegi
+          panjang. (Kalau jajar genjangnya miring sekali, guntingnya perlu lebih dari sekali, tetapi
+          hasilnya tetap sama.) Nah, luas persegi panjang gampang: <strong>alas × tinggi</strong>.
         </p>
         <p>
           Karena bangun tadi berisi <strong>dua</strong> segitiga yang sama besar, satu segitiga
@@ -510,8 +609,11 @@ const konsep: Konsep = {
         </p>
         <p>
           Luas jajar genjang sendiri diperoleh dengan memotong segitiga di salah satu ujung dan
-          menggesernya ke ujung lain, menghasilkan persegi panjang <em>a</em> × <em>t</em>. Jadi:
-          2·L = a·t, sehingga L = ½·a·t.
+          menggesernya ke ujung lain, menghasilkan persegi panjang <em>a</em> × <em>t</em>. Satu
+          potongan tegak sudah cukup bila kaki garis tinggi dari <em>P</em> jatuh pada alas{' '}
+          <em>AB</em>, seperti pada animasi. Bila jajar genjangnya sangat miring sehingga satu
+          potongan tegak tidak cukup, potongan diulang beberapa kali dan hasilnya tetap{' '}
+          <em>a</em> × <em>t</em>. Jadi: 2·L = a·t, sehingga L = ½·a·t.
         </p>
         <p>
           Perhatikan bahwa <strong>tinggi</strong> selalu berarti jarak tegak lurus, bukan panjang
@@ -522,8 +624,8 @@ const konsep: Konsep = {
     SMA: (
       <>
         <p>
-          Argumen potong-susun tadi setara dengan pernyataan bahwa luas invarian terhadap{' '}
-          <strong>pergeseran geser (shear)</strong>. Transformasi (x, y) ↦ (x + ky, y) memiliki
+          Argumen potong-susun tadi adalah kasus khusus dari fakta yang lebih umum: luas invarian
+          terhadap <strong>gusuran (shear)</strong>. Transformasi (x, y) ↦ (x + ky, y) memiliki
           determinan 1, sehingga mempertahankan luas. Menggeser puncak segitiga sejajar alas persis
           merupakan shear — karena itu luas tidak berubah, sesuai yang kamu lihat di eksperimen.
         </p>
@@ -551,7 +653,8 @@ const konsep: Konsep = {
       setengah:
         'Muncul karena dua segitiga kembar tepat memenuhi satu jajar genjang. Satu segitiga = separuhnya.',
       alas: 'Sisi yang kamu pilih sebagai alas. Sisi mana pun boleh, asal tingginya diukur ke sisi itu.',
-      tinggi: 'Jarak TEGAK LURUS dari puncak ke alas. Sering tertukar dengan panjang sisi miring.',
+      tinggi:
+        'Jarak TEGAK LURUS dari puncak ke garis alas (bila perlu, garis alasnya diperpanjang). Sering tertukar dengan panjang sisi miring.',
     },
   },
 
@@ -562,8 +665,8 @@ const konsep: Konsep = {
       return {
         id: 'seg-1',
         tipe: 'angka',
-        topicId: 'sd4-luas-segitiga',
-        kelas: 4,
+        topicId: 'sd5-luas-persegi-persegi-panjang-dan',
+        kelas: 5,
         tingkat: 'mudah',
         konsep: 'segitiga-setengah',
         pertanyaan: `Sebuah segitiga memiliki alas ${a} cm dan tinggi ${t} cm. Berapa luasnya?`,
@@ -572,16 +675,16 @@ const konsep: Konsep = {
         toleransi: 1e-6,
         hint: [
           'Mulai dari bangun yang lebih mudah: berapa luas persegi panjang dengan ukuran itu?',
-          `${a} × ${t} = ${a * t}. Tapi persegi panjang itu memuat dua segitiga.`,
+          `${a} × ${t} = ${a * t}. Tapi luas sebesar itu sama dengan luas DUA segitiga seperti ini.`,
           'Karena satu segitiga adalah separuhnya, bagi hasil tadi dengan 2.',
         ],
-        pembahasan: `L = ½ × ${a} × ${t} = ${fmt((a * t) / 2)} cm². Dua segitiga seperti ini akan tepat membentuk persegi panjang seluas ${a * t} cm².`,
+        pembahasan: `L = ½ × ${a} × ${t} = ${fmt((a * t) / 2)} cm². Dua segitiga seperti ini tepat membentuk jajar genjang seluas ${a * t} cm² — sama dengan persegi panjang ${a} × ${t}.`,
       }
     },
     {
       id: 'seg-2',
       tipe: 'pilihan',
-      topicId: 'sd4-luas-segitiga',
+      topicId: 'sd5-luas-persegi-persegi-panjang-dan',
       kelas: 5,
       tingkat: 'sedang',
       konsep: 'segitiga-setengah',
@@ -617,7 +720,7 @@ const konsep: Konsep = {
     {
       id: 'seg-3',
       tipe: 'benar-salah',
-      topicId: 'sd4-luas-segitiga',
+      topicId: 'sd5-luas-persegi-persegi-panjang-dan',
       kelas: 5,
       tingkat: 'sedang',
       konsep: 'segitiga-setengah',
@@ -640,7 +743,7 @@ const konsep: Konsep = {
       return {
         id: 'seg-4',
         tipe: 'angka',
-        topicId: 'sd4-luas-segitiga',
+        topicId: 'sd5-luas-persegi-persegi-panjang-dan',
         kelas: 5,
         tingkat: 'sulit',
         konsep: 'segitiga-setengah',
@@ -659,7 +762,7 @@ const konsep: Konsep = {
     {
       id: 'seg-5',
       tipe: 'urutkan',
-      topicId: 'sd4-luas-segitiga',
+      topicId: 'sd5-luas-persegi-persegi-panjang-dan',
       kelas: 5,
       tingkat: 'sedang',
       konsep: 'segitiga-setengah',

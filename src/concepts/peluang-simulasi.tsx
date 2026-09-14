@@ -1,5 +1,5 @@
 /* ============================================================
-   KONSEP — Kalau peluangnya ½, kenapa 10 lemparan tidak pas 5?
+   KONSEP — Kalau peluangnya ½, kenapa 10 lemparan sering tidak pas 5?
    Kelas 8 · Analisis Data dan Peluang
 
    Gagasan: peluang BUKAN janji tentang hasil beberapa percobaan.
@@ -173,8 +173,14 @@ function Koin({ x, y, gambar, r = 13 }: { x: number; y: number; gambar: boolean;
 
 const N_LANGKAH = [10, 10, 100, 1000, 10000, 10000, 10000]
 
+/** Nomor percobaan pada bongkar — dipakai gambar DAN narasi. */
+const benihBongkar = (p: Record<string, number>) => clamp(Math.round(p.benih ?? 1), 1, 20)
+
+/** Banyaknya gambar pada sepuluh lemparan pertama percobaan ini. */
+const gambarSepuluh = (benih: number) => koinAwal(10, benih).filter(Boolean).length
+
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const benih = clamp(Math.round(p.benih ?? 1), 1, 20)
+  const benih = benihBongkar(p)
   const n = N_LANGKAH[Math.min(step, N_LANGKAH.length - 1)]
 
   const sim = useMemo(() => simulasi(n, benih), [n, benih])
@@ -292,9 +298,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
 const konsep: Konsep = {
   id: 'peluang-simulasi',
-  topicId: 'smp8-peluang',
+  topicId: 'smp8-peluang-teoretis',
   judul: 'Peluang dan kenyataan',
-  pertanyaan: 'Kalau peluangnya ½, kenapa 10 lemparan tidak pernah pas 5 kali?',
+  pertanyaan: 'Kalau peluangnya ½, kenapa 10 lemparan sering tidak pas 5 kali?',
   tagline: 'Lempar 10 kali, 100 kali, 10.000 kali. Perhatikan kapan pola itu muncul.',
   kelas: 8,
   domain: 'data',
@@ -302,7 +308,7 @@ const konsep: Konsep = {
 
   tebak: {
     pertanyaan:
-      'Sebuah koin sudah dilempar 5 kali dan semuanya keluar angka. Berapa peluang lemparan keenam keluar gambar?',
+      'Sebuah koin seimbang sudah dilempar 5 kali dan semuanya keluar angka. Berapa peluang lemparan keenam keluar gambar?',
     pilihan: [
       {
         id: 'a',
@@ -321,7 +327,7 @@ const konsep: Konsep = {
         id: 'c',
         label: 'Kurang dari ½, karena koinnya sedang "condong" ke angka',
         balasan:
-          'Kalau koinnya memang timpang, itu soal lain. Untuk koin seimbang, lima angka berturut-turut hanyalah kebetulan yang wajar terjadi.',
+          'Koinnya sudah disebut seimbang, jadi tidak ada sisi yang lebih "condong". Lima angka berturut-turut peluangnya 1/32 — kecil, tetapi memang wajar sesekali terjadi.',
       },
     ],
     penutup:
@@ -336,28 +342,36 @@ const konsep: Konsep = {
       p: 'Peluang teoretis — angka yang didekati frekuensi relatif.',
       na: 'Banyaknya hasil yang kita inginkan (misalnya sisi gambar).',
       ns: 'Banyaknya seluruh hasil yang mungkin.',
-      banyak: 'Banyaknya percobaan. Makin besar, makin dekat frekuensi relatif ke peluangnya.',
+      banyak: 'Banyaknya percobaan. Makin besar, frekuensi relatif cenderung makin dekat ke peluangnya.',
     },
     steps: [
       {
         id: 's0',
         judul: 'Sepuluh lemparan',
         narasi:
-          'Koin dilempar sepuluh kali. G berarti gambar, A berarti angka. Perhatikan berapa banyak gambar yang muncul.',
+          'Koin dilempar sepuluh kali: G berarti gambar, A berarti angka. Perhatikan berapa banyak gambar yang muncul.',
         durasi: 2600,
       },
       {
         id: 's1',
-        judul: 'Jarang sekali pas separuh',
-        narasi:
-          'Kalau kamu ganti percobaannya lewat penggeser, hasilnya berubah-ubah. Mendapat tepat 5 gambar dari 10 lemparan justru hanya terjadi sekitar seperempat kali.',
+        judul: (p) => {
+          const g = gambarSepuluh(benihBongkar(p))
+          return g === 5 ? 'Kali ini kebetulan pas separuh' : `Meleset ${fmt(Math.abs(g - 5))} dari separuh`
+        },
+        narasi: (p) => {
+          const g = gambarSepuluh(benihBongkar(p))
+          if (g === 5)
+            return 'Di percobaan ini kebetulan muncul tepat 5 gambar — hasil yang memang paling mungkin, tetapi secara teori peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya bukan 5. Ganti percobaannya lewat penggeser: hasilnya berubah-ubah, kadang 3, kadang 7.'
+          const muncul = g === 0 ? 'tidak muncul gambar sama sekali' : `muncul ${fmt(g)} gambar`
+          return `Di percobaan ini ${muncul}, ${g < 5 ? 'kurang' : 'lebih'} ${fmt(Math.abs(g - 5))} dari 5 — ganti percobaannya lewat penggeser dan hasilnya terus berubah-ubah. Secara teori, tepat 5 gambar memang hasil yang paling mungkin, tetapi peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya justru bukan 5.`
+        },
         durasi: 2400,
       },
       {
         id: 's2',
         judul: 'Perbanyak jadi 100',
         narasi:
-          'Sekarang kita gambar frekuensi relatifnya sepanjang percobaan. Di awal ia melonjak-lonjak liar, karena satu lemparan masih sangat berpengaruh.',
+          'Sekarang kita buat grafik frekuensi relatif sepanjang percobaan. Di awal ia melonjak-lonjak liar, karena satu lemparan masih sangat berpengaruh.',
         durasi: 2800,
       },
       {
@@ -386,7 +400,7 @@ const konsep: Konsep = {
         judul: 'Rumus peluang teoretis',
         narasi:
           'Untuk percobaan yang setiap hasilnya berpeluang sama, peluang dihitung dengan membandingkan banyaknya hasil yang diinginkan terhadap seluruh hasil yang mungkin.',
-        rumus: 'P(A) = [na:n(A)] / [ns:n(S)]',
+        rumus: '[p:P(A)] = [na:n(A)] / [ns:n(S)]',
         durasi: 2400,
       },
     ],
@@ -395,7 +409,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Perbanyak lemparannya sendiri',
     ajakan:
-      'Geser banyaknya lemparan dan ganti percobaannya. Bandingkan dua angka di bawah judul: yang satu mengecil, yang satu justru membesar.',
+      'Geser banyaknya lemparan dan ganti percobaannya. Bandingkan dua angka di bawah judul: selisih mutlaknya cenderung membesar, sedangkan selisih relatifnya cenderung mengecil.',
     params: [
       { key: 'n', label: 'Banyak lemparan', min: 10, max: 20000, step: 10, awal: 200, bulat: true },
       { key: 'benih', label: 'Percobaan ke-', min: 1, max: 40, step: 1, awal: 1, bulat: true },
@@ -410,11 +424,20 @@ const konsep: Konsep = {
       return (
         <p>
           Dari {fmt(n)} lemparan, muncul {fmt(sim.gambar)} gambar —{' '}
-          <strong>frekuensi relatifnya {fmt(sim.frekuensi, 4)}</strong>. Selisihnya dari 0,5 hanya{' '}
-          {fmt(relatif, 4)}, tetapi selisih <em>mutlaknya</em> {fmt(mutlak)} lemparan. Coba perbesar
-          banyaknya lemparan: angka pertama terus mengecil, sedangkan angka kedua justru cenderung
-          membesar. Itulah sebabnya "hukum bilangan besar" berbicara tentang perbandingan, bukan
-          tentang selisih jumlah.
+          <strong>frekuensi relatifnya {fmt(sim.frekuensi, 4)}</strong>.{' '}
+          {mutlak === 0 ? (
+            <>Kali ini kebetulan pas separuh, jadi kedua selisihnya 0 — coba ganti percobaannya.</>
+          ) : (
+            <>
+              Selisihnya dari 0,5 {relatif < 0.05 ? 'hanya ' : ''}
+              {fmt(relatif, 4)}, sedangkan selisih <em>mutlaknya</em> {fmt(mutlak)} lemparan.
+            </>
+          )}{' '}
+          Coba perbesar
+          banyaknya lemparan: selisih dari 0,5 itu cenderung mengecil, sedangkan selisih mutlaknya
+          cenderung membesar. Keduanya hanya kecenderungan — pada satu percobaan tertentu angkanya
+          masih bisa naik-turun. Itulah sebabnya "hukum bilangan besar" berbicara tentang
+          perbandingan, bukan tentang selisih jumlah.
         </p>
       )
     },
@@ -452,7 +475,7 @@ const konsep: Konsep = {
         <h4>Yang mengecil dan yang membesar</h4>
         <p>
           Ini bagian yang paling sering mengejutkan: selisih <strong>relatif</strong> terhadap 0,5
-          mengecil, tetapi selisih <strong>mutlak</strong> (banyaknya gambar dikurangi separuh
+          cenderung mengecil, tetapi selisih <strong>mutlak</strong> (banyaknya gambar dikurangi separuh
           lemparan) justru cenderung membesar. Pada 10.000 lemparan, meleset 50 lemparan itu biasa —
           tetapi 50 dari 10.000 hanyalah 0,005.
         </p>
@@ -478,8 +501,9 @@ const konsep: Konsep = {
         <p>
           Peluang mendapat tepat 5 gambar dari 10 lemparan adalah C(10,5)/2¹⁰ = 252/1024 ≈ 0,246 —
           hasil "paling mungkin", tetapi tetap saja terjadi kurang dari seperempat kali. Jadi
-          pertanyaan pada judul konsep ini punya jawaban yang tepat: karena hasil yang paling
-          mungkin pun masih jarang.
+          pertanyaan pada judul konsep ini punya jawaban yang tepat: bahkan hasil yang paling
+          mungkin pun peluangnya hanya sekitar seperempat, sehingga sekitar tiga dari empat percobaan
+          hasilnya bukan 5.
         </p>
       </>
     ),
@@ -498,16 +522,16 @@ const konsep: Konsep = {
     {
       id: 'plg-1',
       tipe: 'pilihan',
-      topicId: 'smp8-peluang',
+      topicId: 'smp8-peluang-teoretis',
       kelas: 8,
       tingkat: 'mudah',
       konsep: 'peluang-simulasi',
       pertanyaan: 'Sebuah dadu seimbang dilempar. Berapa peluang muncul mata dadu genap?',
       pilihan: [
         { id: 'a', label: '1/2', benar: true },
-        { id: 'b', label: '1/3', diagnosa: 'Sepertinya hanya menghitung mata 2, 4, 6 sebagai 2 hasil, atau membagi dengan angka yang keliru.' },
+        { id: 'b', label: '1/3', diagnosa: '1/3 sama dengan 2/6 — berarti mata genapnya baru terhitung dua. Mata genap ada tiga: 2, 4, dan 6.' },
         { id: 'c', label: '1/6', diagnosa: 'Itu peluang munculnya SATU mata dadu tertentu, bukan tiga mata sekaligus.' },
-        { id: 'd', label: '3/2', diagnosa: 'Peluang tidak pernah lebih dari 1. Pembilang dan penyebutnya tertukar.' },
+        { id: 'd', label: '3/2', diagnosa: 'Peluang tidak pernah lebih dari 1. Sepertinya 3 mata genap dibagi 2 (genap dan ganjil), padahal penyebutnya harus banyaknya seluruh mata dadu, yaitu 6.' },
       ],
       hint: [
         'Tulis dulu semua hasil yang mungkin: 1, 2, 3, 4, 5, 6.',
@@ -519,7 +543,7 @@ const konsep: Konsep = {
     {
       id: 'plg-2',
       tipe: 'benar-salah',
-      topicId: 'smp8-peluang',
+      topicId: 'smp8-peluang-teoretis',
       kelas: 8,
       tingkat: 'sedang',
       konsep: 'peluang-simulasi',
@@ -542,11 +566,11 @@ const konsep: Konsep = {
       return {
         id: 'plg-3',
         tipe: 'angka',
-        topicId: 'smp8-peluang',
+        topicId: 'smp8-peluang-teoretis',
         kelas: 8,
         tingkat: 'sedang',
         konsep: 'peluang-simulasi',
-        pertanyaan: `Dari ${n} kali lemparan koin, muncul gambar sebanyak ${g} kali. Berapa frekuensi relatif munculnya gambar? Bulatkan sampai tiga angka di belakang koma.`,
+        pertanyaan: `Dari ${n} kali lemparan koin seimbang, muncul gambar sebanyak ${g} kali. Berapa frekuensi relatif munculnya gambar? Bulatkan sampai tiga angka di belakang koma.`,
         jawaban: Math.round((g / n) * 1000) / 1000,
         toleransi: 0.0011,
         hint: [
@@ -554,13 +578,13 @@ const konsep: Konsep = {
           `Bagi banyaknya gambar dengan banyaknya lemparan: ${g} ÷ ${n}.`,
           'Lalu bulatkan sampai tiga angka di belakang koma.',
         ],
-        pembahasan: `Frekuensi relatif = ${g}/${n} = ${fmt(Math.round((g / n) * 1000) / 1000, 3)}. Angka ini dekat dengan peluang teoretis 0,5, tetapi tidak harus sama persis.`,
+        pembahasan: `Frekuensi relatif = ${g}/${n} = ${fmt(Math.round((g / n) * 1000) / 1000, 3)}. Peluang teoretisnya 0,5, tetapi frekuensi relatif dari percobaan nyata tidak harus sama persis dengan itu.`,
       }
     },
     {
       id: 'plg-4',
       tipe: 'urutkan',
-      topicId: 'smp8-peluang',
+      topicId: 'smp8-peluang-teoretis',
       kelas: 9,
       tingkat: 'sulit',
       konsep: 'peluang-simulasi',
@@ -577,12 +601,12 @@ const konsep: Konsep = {
     {
       id: 'plg-5',
       tipe: 'pilihan',
-      topicId: 'smp8-peluang',
+      topicId: 'smp8-peluang-teoretis',
       kelas: 9,
       tingkat: 'sulit',
       konsep: 'peluang-simulasi',
       pertanyaan:
-        'Dua koin dilempar bersamaan. Berapa peluang keduanya muncul gambar?',
+        'Dua koin seimbang dilempar bersamaan. Berapa peluang keduanya muncul gambar?',
       pilihan: [
         { id: 'a', label: '1/4', benar: true },
         {
@@ -596,7 +620,7 @@ const konsep: Konsep = {
           diagnosa:
             'Kalau hasilnya dianggap hanya "dua gambar, dua angka, satu-satu", ketiganya tidak berpeluang sama — "satu-satu" bisa terjadi dengan dua cara.',
         },
-        { id: 'd', label: '2/4', diagnosa: 'Ada dua hasil yang memuat gambar, tetapi yang diminta adalah KEDUANYA gambar.' },
+        { id: 'd', label: '2/4', diagnosa: 'Ada dua hasil yang memuat tepat satu gambar (GA dan AG), tetapi yang diminta adalah KEDUANYA gambar — dan itu hanya GG, satu hasil.' },
       ],
       hint: [
         'Tulis semua kemungkinan sebagai pasangan: GG, GA, AG, AA.',

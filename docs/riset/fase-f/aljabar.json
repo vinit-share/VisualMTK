@@ -1,0 +1,1353 @@
+{
+ "nama": "Aljabar",
+ "capaian": "Fase F, elemen resmi bernama \"Aljabar dan Fungsi\", dan berbeda antara dua mata pelajaran.\n\n(1) MATEMATIKA (umum/wajib), Kepka BSKAP 046/H/KR/2025 Lampiran II butir 6.2 — kutipan persis: \"Menentukan fungsi invers, komposisi fungsi, dan transformasi fungsi untuk memodelkan situasi dunia nyata menggunakan fungsi yang sesuai (linear, kuadrat, eksponensial).\"\n\n(2) MATEMATIKA TINGKAT LANJUT (pilihan), butir 1 elemen Aljabar dan Fungsi — kutipan persis: \"Melakukan operasi aritmetika pada polinomial (suku banyak), menentukan faktor polinomial, dan menggunakan identitas polinomial untuk menyelesaikan masalah; melakukan operasi aljabar pada matriks dan menerapkannya dalam transformasi geometri; menyatakan fungsi trigonometri menggunakan lingkaran satuan, memodelkan fenomena periodik dengan fungsi trigonometri, dan membuktikan serta menerapkan identitas trigonometri dan aturan cosinus dan sinus; mengenal berbagai fungsi (termasuk fungsi rasional, fungsi akar, fungsi eksponensial, fungsi logaritma, fungsi nilai mutlak, fungsi tangga dan fungsi piecewise) dan menggunakannya untuk memodelkan berbagai fenomena.\"\n\nCatatan penting: VEKTOR secara resmi ditempatkan pada elemen GEOMETRI Matematika Tingkat Lanjut, bukan Aljabar — kutipan persis: \"Menyatakan vektor pada bidang datar, dan melakukan operasi aljabar pada vektor; melakukan pembuktian geometris menggunakan vektor; serta menyatakan sifat-sifat geometri dari persamaan lingkaran, elips dan persamaan garis singgung.\" Vektor tetap dimuat di sini sesuai instruksi tugas.",
+ "topics": [
+  {
+   "judul": "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+   "kelas": 11,
+   "subKonsep": [
+    "Fungsi sebagai mesin input-output: satu input tepat satu output",
+    "Notasi f(x), daerah asal (domain), daerah kawan (kodomain), daerah hasil (range)",
+    "Domain alami: nilai x yang membuat rumus terdefinisi (penyebut tidak nol, isi akar tidak negatif)",
+    "Uji garis vertikal untuk memutuskan apakah sebuah grafik merupakan fungsi",
+    "Fungsi injektif (satu-satu) dan uji garis horizontal",
+    "Fungsi surjektif (onto) dan fungsi bijektif",
+    "Lima representasi fungsi: konteks nyata, tabel, diagram panah, grafik, dan rumus"
+   ],
+   "rumus": [
+    "f : A → B, ditulis y = f(x)",
+    "D_f = { x | f(x) terdefinisi }",
+    "R_f = { f(x) | x ∈ D_f }",
+    "Injektif: f(a) = f(b) ⟹ a = b",
+    "Bijektif = injektif dan surjektif ⟹ R_f = kodomain"
+   ],
+   "keterampilan": [
+    "Menentukan domain alami fungsi pecahan dan fungsi akar",
+    "Membaca domain dan range langsung dari grafik",
+    "Menguji apakah suatu relasi adalah fungsi dengan uji garis vertikal",
+    "Menguji keinjektifan sebuah fungsi dengan uji garis horizontal",
+    "Mengubah satu representasi fungsi ke representasi lain (tabel ↔ grafik ↔ rumus)",
+    "Menghitung f(a) dan menyelesaikan f(x) = c"
+   ],
+   "prasyarat": [
+    "Relasi dan Fungsi (Fase D)",
+    "Fungsi Linear dan Grafiknya (Fase D)",
+    "Persamaan dan Fungsi Kuadrat (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Mengira kodomain selalu sama dengan range",
+    "Mengira semua kurva yang bisa digambar adalah fungsi, misalnya menganggap lingkaran sebagai fungsi",
+    "Membaca f(x) sebagai f dikali x",
+    "Lupa mengecualikan nilai x yang membuat penyebut nol ketika menentukan domain",
+    "Mengira sebuah fungsi wajib punya satu rumus tunggal untuk seluruh domain"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa satu input tidak boleh punya dua output, padahal satu output boleh datang dari dua input berbeda?",
+    "Kenapa menarik garis vertikal saja sudah cukup untuk memutuskan sesuatu itu fungsi atau bukan?",
+    "Kenapa domain harus dibatasi — apa yang sebenarnya rusak kalau kita paksakan x yang dilarang?",
+    "Kenapa range bisa lebih sempit dari kodomain?"
+   ]
+  },
+  {
+   "judul": "Aljabar Fungsi: Operasi pada Dua Fungsi",
+   "kelas": 11,
+   "subKonsep": [
+    "Penjumlahan dan pengurangan fungsi sebagai penjumlahan nilai titik demi titik",
+    "Perkalian dan pembagian dua fungsi",
+    "Domain hasil operasi adalah irisan domain, dengan syarat tambahan penyebut tidak nol",
+    "Membaca hasil operasi secara grafis: menumpuk ordinat dua grafik",
+    "Konteks nyata: keuntungan = pendapatan − biaya, biaya per unit = biaya total ÷ jumlah unit",
+    "Mengurai fungsi rumit menjadi operasi fungsi-fungsi sederhana"
+   ],
+   "rumus": [
+    "(f + g)(x) = f(x) + g(x)",
+    "(f − g)(x) = f(x) − g(x)",
+    "(f · g)(x) = f(x) · g(x)",
+    "(f / g)(x) = f(x) / g(x), dengan g(x) ≠ 0",
+    "D_(f±g) = D_f ∩ D_g",
+    "D_(f/g) = D_f ∩ D_g ∩ { x | g(x) ≠ 0 }"
+   ],
+   "keterampilan": [
+    "Menyusun rumus f+g, f−g, f·g, dan f/g dari dua fungsi yang diberikan",
+    "Menentukan domain hasil setiap operasi",
+    "Menghitung nilai (f+g)(a) tanpa menyusun rumus lebih dulu",
+    "Menerjemahkan situasi ekonomi sederhana ke dalam operasi fungsi",
+    "Membaca grafik hasil penjumlahan dua fungsi"
+   ],
+   "prasyarat": [
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+    "Operasi Bentuk Aljabar (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira domain hasil operasi adalah domain fungsi yang paling luas, bukan irisannya",
+    "Menyamakan (f · g)(x) dengan (f ∘ g)(x)",
+    "Menyederhanakan f/g lalu mengira titik terlarangnya ikut hilang",
+    "Mengira (f/g)(x) = f(x) ÷ g(x) selalu terdefinisi selama f(x) terdefinisi"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa domain hasil penjumlahan hanya irisan, bukan gabungan dua domain?",
+    "Kenapa setelah (x²−1)/(x−1) disederhanakan menjadi x+1, nilai x = 1 tetap dilarang?",
+    "Kenapa (f·g)(x) berbeda dengan f(g(x)), padahal keduanya sama-sama menggabungkan dua fungsi?"
+   ]
+  },
+  {
+   "judul": "Komposisi Fungsi",
+   "kelas": 11,
+   "subKonsep": [
+    "Komposisi sebagai dua mesin yang dirangkai seri: keluaran mesin pertama menjadi masukan mesin kedua",
+    "Notasi (f ∘ g)(x) = f(g(x)) dan arah bacanya dari kanan ke kiri",
+    "Komposisi tidak bersifat komutatif: f ∘ g ≠ g ∘ f",
+    "Komposisi bersifat asosiatif",
+    "Fungsi identitas I(x) = x sebagai unsur identitas komposisi",
+    "Domain komposisi: x harus ada di domain g dan g(x) harus masuk domain f",
+    "Dekomposisi: mengurai fungsi majemuk menjadi rantai fungsi sederhana"
+   ],
+   "rumus": [
+    "(f ∘ g)(x) = f(g(x))",
+    "(f ∘ g ∘ h)(x) = f(g(h(x)))",
+    "(f ∘ g) ∘ h = f ∘ (g ∘ h)",
+    "f ∘ I = I ∘ f = f",
+    "D_(f∘g) = { x ∈ D_g | g(x) ∈ D_f }"
+   ],
+   "keterampilan": [
+    "Menghitung (f ∘ g)(a) untuk sebuah nilai a",
+    "Menyusun rumus f ∘ g dan g ∘ f lalu membandingkan keduanya",
+    "Menentukan fungsi g bila diketahui f dan f ∘ g (dan sebaliknya)",
+    "Menentukan domain fungsi komposisi",
+    "Memodelkan rantai proses nyata (kurs → diskon → pajak) sebagai komposisi fungsi",
+    "Mengurai fungsi seperti h(x) = √(3x+1) menjadi f ∘ g"
+   ],
+   "prasyarat": [
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+    "Aljabar Fungsi: Operasi pada Dua Fungsi"
+   ],
+   "miskonsepsi": [
+    "Membaca f ∘ g dari kiri, yaitu mengerjakan f lebih dulu",
+    "Mengira f ∘ g = g ∘ f karena terbiasa dengan sifat komutatif perkalian",
+    "Mengira f ∘ g sama dengan f dikali g",
+    "Mengabaikan syarat bahwa g(x) harus berada di dalam domain f",
+    "Mengira domain f ∘ g cukup domain g saja, tanpa penyempitan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa urutan komposisi mengubah hasil, padahal urutan perkalian bilangan tidak?",
+    "Kenapa domain f ∘ g bisa lebih sempit daripada domain g sendiri?",
+    "Dari mana aturan f(g(x)) — kenapa yang berada di dalam kurung justru dikerjakan lebih dulu?",
+    "Kenapa komposisi tidak komutatif tetapi tetap asosiatif?"
+   ]
+  },
+  {
+   "judul": "Fungsi Invers",
+   "kelas": 11,
+   "subKonsep": [
+    "Invers sebagai membalik mesin: menukar peran input dan output",
+    "Syarat keberadaan invers: fungsi harus bijektif (satu-satu dan onto)",
+    "Grafik f⁻¹ adalah pencerminan grafik f terhadap garis y = x",
+    "Domain f⁻¹ = range f, dan range f⁻¹ = domain f",
+    "Prosedur mencari f⁻¹: tulis y = f(x), tukar x dan y, lalu selesaikan y",
+    "Membatasi domain agar fungsi kuadrat memiliki invers",
+    "Fungsi logaritma sebagai invers fungsi eksponensial"
+   ],
+   "rumus": [
+    "f⁻¹(f(x)) = x untuk semua x ∈ D_f",
+    "f(f⁻¹(x)) = x untuk semua x ∈ R_f",
+    "f(x) = ax + b ⟹ f⁻¹(x) = (x − b)/a",
+    "f(x) = (ax + b)/(cx + d) ⟹ f⁻¹(x) = (−dx + b)/(cx − a)",
+    "y = aˣ ⟺ x = ᵃlog y"
+   ],
+   "keterampilan": [
+    "Menentukan rumus f⁻¹ untuk fungsi linear, pecahan linear, kuadrat (dengan domain dibatasi), dan eksponensial",
+    "Memverifikasi invers dengan menghitung f(f⁻¹(x))",
+    "Menggambar grafik f⁻¹ dari grafik f dengan pencerminan terhadap y = x",
+    "Menentukan domain dan range fungsi invers",
+    "Menggunakan invers untuk menjawab pertanyaan terbalik pada model nyata (\"berapa input agar outputnya sekian?\")"
+   ],
+   "prasyarat": [
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+    "Komposisi Fungsi"
+   ],
+   "miskonsepsi": [
+    "Mengira f⁻¹(x) = 1/f(x) karena pangkat −1 pada bilangan berarti kebalikan",
+    "Mengira setiap fungsi punya invers, lalu menginverskan f(x) = x² tanpa membatasi domain",
+    "Lupa menukar domain dan range saat menyebut daerah asal f⁻¹",
+    "Mengira grafik invers adalah cerminan terhadap sumbu-x atau sumbu-y",
+    "Berhenti pada langkah tukar x dan y tanpa menyelesaikan y"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa fungsi harus satu-satu supaya punya invers? Apa yang kacau kalau tidak?",
+    "Kenapa grafik invers dicerminkan terhadap garis y = x, bukan terhadap sumbu lain?",
+    "Kenapa f⁻¹ tidak sama dengan 1/f, padahal notasinya mirip pangkat negatif?",
+    "Kenapa membatasi domain bisa menyelamatkan fungsi kuadrat sehingga punya invers?"
+   ]
+  },
+  {
+   "judul": "Invers dari Komposisi Fungsi",
+   "kelas": 11,
+   "subKonsep": [
+    "Membalik rantai proses berarti membalik urutan langkahnya",
+    "Rumus (f ∘ g)⁻¹ = g⁻¹ ∘ f⁻¹ dan pembuktiannya lewat identitas",
+    "Menentukan f bila diketahui f ∘ g dan g, memanfaatkan g⁻¹",
+    "Menentukan g bila diketahui f ∘ g dan f, memanfaatkan f⁻¹",
+    "Analogi kehidupan: memakai kaus kaki lalu sepatu, membukanya sepatu lalu kaus kaki",
+    "Verifikasi hasil dengan mensubstitusi kembali"
+   ],
+   "rumus": [
+    "(f ∘ g)⁻¹ = g⁻¹ ∘ f⁻¹",
+    "(f ∘ g)⁻¹(x) = g⁻¹(f⁻¹(x))",
+    "Jika h = f ∘ g maka f = h ∘ g⁻¹",
+    "Jika h = f ∘ g maka g = f⁻¹ ∘ h"
+   ],
+   "keterampilan": [
+    "Menentukan (f ∘ g)⁻¹ tanpa menyusun f ∘ g lebih dulu",
+    "Mencari fungsi yang hilang dari sebuah persamaan komposisi",
+    "Memverifikasi bahwa hasil invers komposisi benar",
+    "Menerapkan invers komposisi pada rantai proses nyata (membatalkan diskon lalu pajak)"
+   ],
+   "prasyarat": [
+    "Komposisi Fungsi",
+    "Fungsi Invers"
+   ],
+   "miskonsepsi": [
+    "Menulis (f ∘ g)⁻¹ = f⁻¹ ∘ g⁻¹ karena lupa membalik urutan",
+    "Mengira harus menyusun f ∘ g lebih dulu, padahal bisa langsung lewat rumus",
+    "Menukar posisi f dan g saat mencari fungsi yang hilang",
+    "Mengira (f ∘ g)⁻¹ berarti (1/f) ∘ (1/g)"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa urutan harus dibalik saat menginverskan sebuah komposisi?",
+    "Kenapa g⁻¹ ∘ f⁻¹ menghasilkan identitas, sedangkan f⁻¹ ∘ g⁻¹ tidak?"
+   ]
+  },
+  {
+   "judul": "Transformasi Fungsi: Translasi dan Refleksi",
+   "kelas": 11,
+   "subKonsep": [
+    "y = f(x) + b menggeser seluruh grafik secara vertikal",
+    "y = f(x + c) menggeser grafik secara horizontal, arahnya berlawanan dengan tanda c",
+    "y = −f(x) mencerminkan grafik terhadap sumbu-x",
+    "y = f(−x) mencerminkan grafik terhadap sumbu-y",
+    "Efek transformasi pada titik puncak, titik potong sumbu, dan asimtot",
+    "Menemukan aturan lewat eksplorasi grafik (Desmos/GeoGebra), bukan menghafal",
+    "Perbedaan transformasi fungsi dan transformasi geometri"
+   ],
+   "rumus": [
+    "y = f(x) + b : geser b satuan ke atas bila b > 0",
+    "y = f(x + c) : geser c satuan ke kiri bila c > 0, ke kanan bila c < 0",
+    "y = −f(x) : refleksi terhadap sumbu-x",
+    "y = f(−x) : refleksi terhadap sumbu-y",
+    "y = f(x − h) + k : translasi sejauh (h, k)"
+   ],
+   "keterampilan": [
+    "Menggambar grafik hasil transformasi dari grafik fungsi asal",
+    "Menuliskan rumus fungsi baru dari deskripsi pergeseran atau pencerminan",
+    "Menentukan bayangan titik penting (puncak, titik potong) setelah transformasi",
+    "Membaca jenis transformasi dari perbandingan dua grafik",
+    "Menyusun persamaan y = f(x−h)+k dari grafik hasil pengamatan"
+   ],
+   "prasyarat": [
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+    "Persamaan dan Fungsi Kuadrat (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Mengira f(x + 2) menggeser grafik ke kanan 2 satuan",
+    "Menganggap perubahan di dalam kurung dan di luar kurung berperilaku sama",
+    "Mengira −f(x) dan f(−x) menghasilkan grafik yang sama",
+    "Mengira translasi mengubah bentuk grafik, bukan hanya posisinya",
+    "Mencampuradukkan transformasi fungsi dengan transformasi geometri bangun datar"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa f(x + 2) menggeser grafik ke KIRI, bukan ke kanan?",
+    "Kenapa perubahan di dalam f( ) memengaruhi arah horizontal, sedangkan di luar memengaruhi arah vertikal?",
+    "Kenapa mencerminkan input (f(−x)) berbeda hasilnya dengan mencerminkan output (−f(x))?"
+   ]
+  },
+  {
+   "judul": "Transformasi Fungsi: Dilatasi dan Transformasi Gabungan",
+   "kelas": 11,
+   "subKonsep": [
+    "y = a·f(x) meregangkan grafik secara vertikal dengan faktor a",
+    "y = f(kx) meregangkan grafik secara horizontal dengan faktor 1/k",
+    "Titik tetap: dilatasi vertikal tidak mengubah titik potong sumbu-x",
+    "Urutan pengerjaan pada transformasi gabungan",
+    "Menyusun bentuk baku y = a·f(k(x − h)) + v dari grafik yang diamati",
+    "Pemodelan nyata: menggeser kurva biaya untuk biaya tetap, meregang untuk skala ekonomi"
+   ],
+   "rumus": [
+    "y = a·f(x) : regang vertikal faktor a; |a| > 1 memanjang, 0 < |a| < 1 memendek",
+    "y = f(kx) : regang horizontal faktor 1/k; |k| > 1 memampat",
+    "y = a·f(k(x − h)) + v : bentuk baku transformasi gabungan",
+    "Bayangan titik (p, q) menjadi (p/k + h, a·q + v)"
+   ],
+   "keterampilan": [
+    "Menggambar hasil dilatasi vertikal dan horizontal",
+    "Memfaktorkan k dari dalam kurung sebelum membaca translasi horizontal",
+    "Menentukan urutan transformasi yang benar untuk bentuk gabungan",
+    "Menyusun rumus fungsi dari grafik hasil beberapa transformasi berurutan",
+    "Menentukan amplitudo dan periode grafik periodik lewat a dan k"
+   ],
+   "prasyarat": [
+    "Transformasi Fungsi: Translasi dan Refleksi"
+   ],
+   "miskonsepsi": [
+    "Mengira f(2x) melebarkan grafik dua kali, padahal memampatkannya menjadi setengah",
+    "Membaca f(2x − 4) sebagai geser 4 lalu regang, tanpa memfaktorkan menjadi f(2(x − 2))",
+    "Mengira dilatasi vertikal menggeser titik potong sumbu-x",
+    "Mengira urutan transformasi tidak berpengaruh pada hasil akhir",
+    "Mengira a·f(x) dan f(a·x) memberikan grafik yang sama"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa f(2x) memampatkan grafik, bukan melebarkannya?",
+    "Kenapa urutan translasi dan dilatasi menghasilkan grafik yang berbeda?",
+    "Kenapa faktor k harus dikeluarkan dari kurung dulu sebelum kita membaca pergeserannya?"
+   ]
+  },
+  {
+   "judul": "Pemodelan Dunia Nyata dengan Fungsi Linear, Kuadrat, dan Eksponensial",
+   "kelas": 11,
+   "subKonsep": [
+    "Ciri data linear: selisih berurutan tetap",
+    "Ciri data kuadrat: selisih tingkat kedua tetap",
+    "Ciri data eksponensial: rasio berurutan tetap",
+    "Memilih model yang tepat dari tabel, grafik, atau deskripsi konteks",
+    "Menafsirkan makna setiap parameter model dalam bahasa konteks",
+    "Pertumbuhan dan peluruhan eksponensial: populasi, bunga majemuk, peluruhan radioaktif",
+    "Menggunakan fungsi invers untuk menjawab pertanyaan \"kapan tercapai?\"",
+    "Batas kewajaran model dan bahaya ekstrapolasi jauh"
+   ],
+   "rumus": [
+    "Linear: f(x) = mx + c",
+    "Kuadrat bentuk puncak: f(x) = a(x − h)² + k",
+    "Eksponensial: f(x) = A · bˣ",
+    "Pertumbuhan majemuk: f(t) = A(1 + r)ᵗ",
+    "Peluruhan waktu paruh: N(t) = N₀ · (1/2)^(t/T)"
+   ],
+   "keterampilan": [
+    "Mengidentifikasi jenis model dari tabel data lewat selisih atau rasio",
+    "Menyusun rumus model dari dua atau tiga titik data",
+    "Menafsirkan nilai A, b, r, dan T dalam konteks masalah",
+    "Menggunakan invers model untuk mencari waktu atau input yang dibutuhkan",
+    "Mengevaluasi kelayakan model dan menyebutkan batas berlakunya"
+   ],
+   "prasyarat": [
+    "Fungsi Invers",
+    "Transformasi Fungsi: Dilatasi dan Transformasi Gabungan",
+    "Fungsi Eksponensial dan Persamaan Eksponensial (Fase E)",
+    "Barisan dan Deret Aritmetika dan Geometri (Fase F, elemen Bilangan)"
+   ],
+   "miskonsepsi": [
+    "Mengira semua data yang naik terus-menerus bersifat linear",
+    "Menganggap pertumbuhan 10% per tahun selama 10 tahun sama dengan naik 100%",
+    "Menukar peran basis b dan eksponen x, misalnya menulis xᵇ",
+    "Menganggap model berlaku untuk semua nilai x tanpa batas waktu atau batas fisik",
+    "Mengira grafik kuadrat yang naik curam sama saja dengan grafik eksponensial"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa selisih tetap berarti linear, sedangkan rasio tetap berarti eksponensial?",
+    "Kenapa grafik eksponensial pada akhirnya selalu mengalahkan grafik kuadrat, seberapa pun kecil basisnya asal lebih dari 1?",
+    "Kenapa bunga majemuk tidak sama dengan bunga tunggal yang dikali lama waktu?",
+    "Kenapa waktu paruh selalu sama, tak peduli berapa banyak zat yang tersisa?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Polinomial: Bentuk, Derajat, dan Operasi Aritmetika",
+   "kelas": 11,
+   "subKonsep": [
+    "Bentuk umum polinomial derajat n dan syarat pangkat bulat non-negatif",
+    "Derajat, koefisien utama, koefisien, dan suku tetap",
+    "Ketertutupan polinomial terhadap penjumlahan, pengurangan, dan perkalian",
+    "Penjumlahan dan pengurangan dengan menggabungkan suku sejenis",
+    "Perkalian polinomial dengan sifat distributif, tabel, atau susun bawah",
+    "Menghitung nilai polinomial P(a) lewat substitusi langsung dan lewat Horner",
+    "Bentuk yang BUKAN polinomial: pangkat negatif, pangkat pecahan, variabel di penyebut"
+   ],
+   "rumus": [
+    "P(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + … + a₁x + a₀ dengan aₙ ≠ 0 dan n bilangan cacah",
+    "deg(P · Q) = deg P + deg Q",
+    "deg(P ± Q) ≤ maks(deg P, deg Q)",
+    "P(a) = nilai polinomial saat x = a"
+   ],
+   "keterampilan": [
+    "Menentukan derajat, koefisien utama, dan suku tetap sebuah polinomial",
+    "Menjumlah, mengurang, dan mengalikan dua polinomial",
+    "Membedakan bentuk aljabar yang polinomial dan yang bukan",
+    "Menghitung nilai polinomial dengan cara efisien",
+    "Menyusun polinomial dari konteks nyata (volume kotak, fungsi biaya)"
+   ],
+   "prasyarat": [
+    "Operasi Bentuk Aljabar (Fase D)",
+    "Persamaan dan Fungsi Kuadrat (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Mengira x^(1/2) atau 1/x boleh menjadi suku sebuah polinomial",
+    "Mengira derajat jumlah selalu sama dengan derajat terbesar, padahal bisa turun bila suku utama saling meniadakan",
+    "Menjumlahkan suku tidak sejenis, misalnya 3x² + 2x ditulis 5x³",
+    "Mengira polinomial juga tertutup terhadap pembagian",
+    "Mengira suku yang hilang berarti tidak ada, bukan berkoefisien nol"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa pangkat pada polinomial harus bilangan bulat tidak negatif?",
+    "Kenapa derajat hasil kali persis penjumlahan kedua derajat?",
+    "Kenapa polinomial tertutup terhadap perkalian tapi tidak terhadap pembagian?",
+    "Kenapa suku yang hilang tetap harus ditulis sebagai 0 saat dihitung?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Pembagian Polinomial dan Skema Horner",
+   "kelas": 11,
+   "subKonsep": [
+    "Algoritma pembagian: yang dibagi = pembagi × hasil bagi + sisa",
+    "Pembagian bersusun (long division) langkah demi langkah",
+    "Skema Horner sebagai bentuk padat dari pembagian bersusun",
+    "Pembagi berderajat satu bentuk (x − k)",
+    "Pembagi berderajat satu bentuk (ax − b) dan penyesuaian hasil baginya",
+    "Pembagi berderajat dua lewat Horner bertingkat atau pembagian bersusun",
+    "Derajat sisa selalu lebih kecil daripada derajat pembagi"
+   ],
+   "rumus": [
+    "P(x) = Q(x) · H(x) + S(x), dengan deg S < deg Q",
+    "Pembagi (x − k): P(x) = (x − k)·H(x) + S, S berupa konstanta",
+    "Pembagi (ax − b): P(x) = (ax − b)·[H(x)/a] + S",
+    "Pembagi kuadrat: sisa berbentuk S(x) = px + q",
+    "Horner untuk (x − k): turunkan koefisien, kali k, tambahkan ke koefisien berikutnya"
+   ],
+   "keterampilan": [
+    "Membagi polinomial dengan cara bersusun",
+    "Menggunakan skema Horner untuk pembagi linear",
+    "Menyesuaikan hasil bagi ketika pembaginya berbentuk (ax − b)",
+    "Menentukan hasil bagi dan sisa untuk pembagi berderajat dua",
+    "Menuliskan hasil pembagian dalam bentuk algoritma pembagian yang lengkap"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Polinomial: Bentuk, Derajat, dan Operasi Aritmetika"
+   ],
+   "miskonsepsi": [
+    "Menggunakan −k pada Horner padahal pembaginya (x − k) memerlukan k",
+    "Lupa menuliskan koefisien nol untuk suku yang tidak muncul",
+    "Mengira hasil bagi Horner untuk pembagi (ax − b) langsung benar tanpa dibagi a",
+    "Mengira sisa selalu berupa bilangan, bahkan ketika pembaginya berderajat dua",
+    "Menukar posisi hasil bagi dan sisa saat menuliskan kesimpulan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa skema Horner bekerja — dari mana asal langkah \"turunkan, kali, jumlahkan\" itu?",
+    "Kenapa derajat sisa harus lebih kecil daripada derajat pembagi?",
+    "Kenapa koefisien nol tidak boleh dilewati dalam skema Horner?",
+    "Kenapa hasil bagi harus dibagi a ketika pembaginya (ax − b)?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Teorema Sisa dan Teorema Faktor",
+   "kelas": 11,
+   "subKonsep": [
+    "Teorema sisa: sisa pembagian P(x) oleh (x − k) tepat sama dengan P(k)",
+    "Teorema sisa untuk pembagi (ax − b): sisanya P(b/a)",
+    "Teorema faktor: (x − k) faktor P(x) jika dan hanya jika P(k) = 0",
+    "Menentukan sisa tanpa melakukan pembagian sama sekali",
+    "Sisa pembagian oleh (x − a)(x − b) berbentuk px + q dan cara menentukannya",
+    "Menentukan koefisien yang belum diketahui dari syarat sisa atau syarat faktor",
+    "Teorema akar rasional untuk menebak calon akar secara sistematis"
+   ],
+   "rumus": [
+    "P(x) dibagi (x − k) ⟹ sisa = P(k)",
+    "P(x) dibagi (ax − b) ⟹ sisa = P(b/a)",
+    "(x − k) faktor P(x) ⟺ P(k) = 0",
+    "Sisa oleh (x−a)(x−b): S(x) = px + q dengan S(a) = P(a) dan S(b) = P(b)",
+    "Calon akar rasional p/q: p membagi a₀ dan q membagi aₙ"
+   ],
+   "keterampilan": [
+    "Menentukan sisa pembagian hanya dengan substitusi",
+    "Membuktikan atau menyangkal bahwa suatu bentuk linear adalah faktor",
+    "Menentukan nilai konstanta yang belum diketahui dari informasi sisa",
+    "Menentukan sisa berbentuk linear untuk pembagi kuadrat",
+    "Mendaftar calon akar rasional lalu mengujinya dengan Horner"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Pembagian Polinomial dan Skema Horner"
+   ],
+   "miskonsepsi": [
+    "Menghitung P(−k) untuk pembagi (x − k)",
+    "Mengira sisa nol hanya mungkin terjadi bila akarnya bilangan bulat",
+    "Mengira teorema sisa juga berlaku langsung dengan substitusi tunggal untuk pembagi kuadrat",
+    "Menebak akar secara acak, bukan dari faktor suku tetap dan koefisien utama",
+    "Mengira teorema faktor hanya berlaku satu arah"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa cukup mensubstitusi x = k untuk tahu sisanya, tanpa membagi sama sekali?",
+    "Kenapa akar rasional pasti berupa faktor suku tetap dibagi faktor koefisien utama?",
+    "Kenapa sisa sama dengan nol otomatis berarti pembaginya adalah faktor?",
+    "Kenapa sisa pembagian oleh polinomial kuadrat berbentuk garis lurus px + q?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Akar Polinomial dan Bentuk Grafiknya",
+   "kelas": 11,
+   "subKonsep": [
+    "Memfaktorkan polinomial secara lengkap dengan teorema faktor dan Horner",
+    "Hubungan akar polinomial dengan titik potong grafik terhadap sumbu-x",
+    "Multiplisitas akar: memotong sumbu (pangkat ganjil) atau menyinggung (pangkat genap)",
+    "Perilaku ujung grafik ditentukan derajat dan tanda koefisien utama",
+    "Uji tanda untuk menentukan interval P(x) > 0 dan P(x) < 0",
+    "Relasi akar dan koefisien (Vieta) untuk derajat dua dan derajat tiga",
+    "Menyusun polinomial dari akar-akar yang diketahui"
+   ],
+   "rumus": [
+    "P(x) = aₙ(x − r₁)(x − r₂) … (x − rₙ)",
+    "Derajat 2, ax² + bx + c: r₁ + r₂ = −b/a; r₁·r₂ = c/a",
+    "Derajat 3, ax³ + bx² + cx + d: r₁+r₂+r₃ = −b/a",
+    "Derajat 3: r₁r₂ + r₁r₃ + r₂r₃ = c/a",
+    "Derajat 3: r₁·r₂·r₃ = −d/a"
+   ],
+   "keterampilan": [
+    "Memfaktorkan polinomial derajat tiga dan empat secara lengkap",
+    "Menyketsa grafik polinomial dari bentuk terfaktornya",
+    "Menentukan interval kepositifan dan kenegatifan lewat uji tanda",
+    "Menggunakan relasi Vieta untuk menghitung nilai simetris akar tanpa mencari akarnya",
+    "Menyusun persamaan polinomial dari akar-akar yang diberikan"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Teorema Sisa dan Teorema Faktor"
+   ],
+   "miskonsepsi": [
+    "Mengira polinomial derajat n selalu memiliki n akar real yang berbeda",
+    "Mengira grafik selalu memotong sumbu-x di setiap akar, lupa akar rangkap",
+    "Salah tanda pada rumus Vieta, misalnya menulis r₁+r₂ = b/a",
+    "Menyimpulkan tanda P(x) dari satu titik uji saja tanpa memperhatikan semua akar",
+    "Mengira bentuk terfaktor dan bentuk terurai punya grafik berbeda"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa grafik menyinggung sumbu-x pada akar rangkap, tetapi memotongnya pada akar tunggal?",
+    "Kenapa jumlah akar sama dengan −b/a — dari mana tanda minus itu datang?",
+    "Kenapa ujung grafik derajat ganjil berlawanan arah, sedangkan derajat genap searah?",
+    "Kenapa polinomial derajat ganjil selalu punya paling sedikit satu akar real?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Identitas Polinomial dan Teorema Binomial",
+   "kelas": 11,
+   "subKonsep": [
+    "Beda persamaan (benar untuk sebagian nilai) dan identitas (benar untuk semua nilai)",
+    "Identitas dasar: kuadrat binomial dan selisih kuadrat",
+    "Identitas pangkat tiga: kubik binomial, jumlah dan selisih pangkat tiga",
+    "Metode koefisien tak tentu untuk membuktikan identitas",
+    "Menggunakan identitas untuk mempercepat perhitungan numerik",
+    "Membangkitkan tripel Pythagoras dari identitas (x²+y²)² = (x²−y²)² + (2xy)²",
+    "Teorema binomial dan koefisien dari segitiga Pascal"
+   ],
+   "rumus": [
+    "(a ± b)² = a² ± 2ab + b²",
+    "a² − b² = (a + b)(a − b)",
+    "(a + b)³ = a³ + 3a²b + 3ab² + b³",
+    "a³ + b³ = (a + b)(a² − ab + b²)",
+    "a³ − b³ = (a − b)(a² + ab + b²)",
+    "(x + y)ⁿ = Σ C(n,k)·x^(n−k)·y^k untuk k = 0 sampai n",
+    "(x² + y²)² = (x² − y²)² + (2xy)²"
+   ],
+   "keterampilan": [
+    "Membuktikan identitas polinomial dengan penjabaran atau koefisien tak tentu",
+    "Memfaktorkan bentuk jumlah dan selisih pangkat tiga",
+    "Menghitung 99² atau 101 × 99 secara cepat dengan identitas",
+    "Menjabarkan (x + y)ⁿ dengan segitiga Pascal",
+    "Menghasilkan tripel Pythagoras dari identitas polinomial"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Polinomial: Bentuk, Derajat, dan Operasi Aritmetika"
+   ],
+   "miskonsepsi": [
+    "Menulis (a + b)² = a² + b²",
+    "Mengira a³ + b³ = (a + b)³",
+    "Mengira a² + b² bisa difaktorkan atas bilangan real",
+    "Salah tanda pada faktor kuadrat: menulis a³+b³ = (a+b)(a²+ab+b²)",
+    "Mengira identitas hanya cara lain menghafal rumus, bukan pernyataan yang benar untuk semua nilai"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa (a + b)² bukan a² + b² — di mana suku 2ab bersembunyi kalau digambar sebagai luas persegi?",
+    "Dari mana koefisien 1, 3, 3, 1 pada (a+b)³ berasal, dan kenapa persis segitiga Pascal?",
+    "Kenapa a² + b² tidak bisa difaktorkan tetapi a³ + b³ bisa?",
+    "Kenapa satu identitas polinomial bisa menghasilkan tripel Pythagoras tak terhingga banyaknya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Matriks: Notasi, Jenis, dan Operasi Dasar",
+   "kelas": 11,
+   "subKonsep": [
+    "Matriks sebagai penyimpan data terstruktur berbentuk baris kali kolom",
+    "Ordo matriks, penulisan elemen aᵢⱼ, dan syarat kesamaan dua matriks",
+    "Jenis matriks: nol, identitas, diagonal, segitiga, persegi, baris, kolom",
+    "Penjumlahan dan pengurangan matriks (mensyaratkan ordo sama)",
+    "Perkalian matriks dengan skalar dan sifat-sifatnya",
+    "Transpos matriks dan sifat-sifatnya",
+    "Peran matriks nol dan matriks identitas seperti peran 0 dan 1 pada bilangan"
+   ],
+   "rumus": [
+    "A = [aᵢⱼ] berordo m × n (m baris, n kolom)",
+    "(A + B)ᵢⱼ = aᵢⱼ + bᵢⱼ",
+    "(kA)ᵢⱼ = k · aᵢⱼ",
+    "(Aᵀ)ᵢⱼ = aⱼᵢ",
+    "A + O = A dan A + (−A) = O",
+    "(A + B)ᵀ = Aᵀ + Bᵀ"
+   ],
+   "keterampilan": [
+    "Menentukan ordo dan menyebut elemen pada posisi tertentu",
+    "Menjumlah, mengurang, dan mengalikan matriks dengan skalar",
+    "Menentukan transpos sebuah matriks",
+    "Menyelesaikan persamaan matriks sederhana dari kesamaan dua matriks",
+    "Menyajikan data nyata (jadwal, stok, jarak antarkota) dalam bentuk matriks"
+   ],
+   "prasyarat": [
+    "Merepresentasikan Data dalam Bentuk Matriks (Fase E)",
+    "Operasi Bilangan Bulat (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira dua matriks dengan ordo berbeda tetap bisa dijumlahkan",
+    "Menukar urutan indeks: membaca a₂₃ sebagai kolom 2 baris 3",
+    "Mengira matriks identitas berisi angka 1 pada semua posisi",
+    "Menyamakan matriks dengan determinannya, seolah matriks adalah sebuah bilangan",
+    "Mengira matriks 1 × n dan n × 1 adalah objek yang sama"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa penjumlahan matriks mensyaratkan ordo sama, tetapi perkalian tidak?",
+    "Kenapa matriks nol dan matriks identitas berperan seperti 0 dan 1 pada bilangan biasa?",
+    "Kenapa data yang sama bisa disusun dalam matriks yang berbeda, dan apa akibatnya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Perkalian Matriks dan Sifat-sifatnya",
+   "kelas": 11,
+   "subKonsep": [
+    "Syarat ordo: (m × n) dikali (n × p) menghasilkan (m × p)",
+    "Aturan baris kali kolom dan maknanya sebagai jumlah hasil kali",
+    "Perkalian matriks tidak bersifat komutatif: AB ≠ BA",
+    "Perkalian matriks tetap asosiatif dan distributif terhadap penjumlahan",
+    "AB = O tidak menjamin A = O atau B = O",
+    "Perpangkatan matriks persegi dan pola berulangnya",
+    "Penerapan: total biaya dari matriks kuantitas dikali matriks harga"
+   ],
+   "rumus": [
+    "(AB)ᵢⱼ = Σₖ aᵢₖ · bₖⱼ",
+    "A(BC) = (AB)C",
+    "A(B + C) = AB + AC",
+    "AI = IA = A",
+    "(AB)ᵀ = Bᵀ Aᵀ",
+    "k(AB) = (kA)B = A(kB)"
+   ],
+   "keterampilan": [
+    "Memeriksa apakah dua matriks bisa dikalikan dan menentukan ordo hasilnya",
+    "Menghitung hasil kali dua matriks 2×2 dan 2×3",
+    "Menunjukkan dengan contoh bahwa AB ≠ BA",
+    "Menghitung pangkat matriks persegi dan mengenali polanya",
+    "Memodelkan perhitungan biaya multi-produk sebagai perkalian matriks"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Matriks: Notasi, Jenis, dan Operasi Dasar"
+   ],
+   "miskonsepsi": [
+    "Mengalikan elemen yang seletak, seperti pada penjumlahan",
+    "Mengira AB = BA karena kebiasaan dari perkalian bilangan",
+    "Menyimpulkan A = O atau B = O dari AB = O",
+    "Menulis (AB)ᵀ = Aᵀ Bᵀ tanpa membalik urutan",
+    "Mengira A² berarti setiap elemen A dikuadratkan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa aturannya baris kali kolom, bukan elemen kali elemen seletak?",
+    "Kenapa perkalian matriks tidak komutatif, padahal perkalian bilangan komutatif?",
+    "Kenapa AB bisa menjadi matriks nol walau A dan B keduanya bukan matriks nol?",
+    "Kenapa jumlah kolom matriks kiri harus sama dengan jumlah baris matriks kanan?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Determinan dan Invers Matriks",
+   "kelas": 11,
+   "subKonsep": [
+    "Determinan matriks 2×2 dan maknanya sebagai luas berarah jajar genjang",
+    "Determinan matriks 3×3 dengan aturan Sarrus atau ekspansi kofaktor",
+    "det = 0 berarti bidang runtuh menjadi garis atau titik, matriks menjadi singular",
+    "Minor, kofaktor, dan adjoin matriks",
+    "Invers matriks 2×2 dan syarat keberadaannya",
+    "Sifat determinan dan invers pada hasil kali matriks",
+    "Tanda determinan sebagai penanda perubahan orientasi"
+   ],
+   "rumus": [
+    "det [[a,b],[c,d]] = ad − bc",
+    "A⁻¹ = (1/det A) · [[d, −b], [−c, a]] untuk A = [[a,b],[c,d]]",
+    "A A⁻¹ = A⁻¹ A = I",
+    "A punya invers ⟺ det A ≠ 0",
+    "det(AB) = det A · det B",
+    "det(A⁻¹) = 1 / det A",
+    "(AB)⁻¹ = B⁻¹ A⁻¹"
+   ],
+   "keterampilan": [
+    "Menghitung determinan matriks 2×2 dan 3×3",
+    "Menentukan invers matriks 2×2",
+    "Memeriksa keberadaan invers lewat determinan",
+    "Menyelesaikan persamaan matriks AX = B dan XA = B",
+    "Menafsirkan nilai mutlak determinan sebagai faktor perubahan luas"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Perkalian Matriks dan Sifat-sifatnya"
+   ],
+   "miskonsepsi": [
+    "Mengira invers matriks berarti setiap elemen diganti kebalikannya (1/aᵢⱼ)",
+    "Lupa menukar posisi a dan d serta memberi tanda minus pada b dan c",
+    "Mengira semua matriks persegi pasti punya invers",
+    "Menulis (AB)⁻¹ = A⁻¹ B⁻¹ tanpa membalik urutan",
+    "Menganggap determinan bernilai negatif pasti hasil salah hitung"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa rumusnya ad − bc, bukan ad + bc — dari mana bentuk itu muncul kalau digambar sebagai luas jajar genjang?",
+    "Kenapa determinan nol membuat matriks kehilangan invers?",
+    "Apa arti determinan yang bernilai negatif secara geometris?",
+    "Kenapa membagi dengan determinan bisa mengembalikan bidang ke bentuk semula?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Matriks sebagai Transformasi Bidang",
+   "kelas": 11,
+   "subKonsep": [
+    "Titik ditulis sebagai vektor kolom; matriks 2×2 memetakan seluruh bidang, bukan sekadar satu objek",
+    "Kolom matriks transformasi adalah bayangan vektor satuan i dan j",
+    "Matriks transformasi baku: identitas, dilatasi, refleksi, rotasi",
+    "Komposisi transformasi setara dengan perkalian matriks, dibaca dari kanan",
+    "Invers matriks transformasi sebagai transformasi kebalikannya",
+    "Nilai mutlak determinan sebagai rasio luas bayangan terhadap luas asli",
+    "Translasi bukan transformasi linear sehingga tidak dapat diwakili matriks 2×2"
+   ],
+   "rumus": [
+    "Bayangan: [x'; y'] = M · [x; y]",
+    "Rotasi sejauh θ berlawanan jarum jam: [[cos θ, −sin θ], [sin θ, cos θ]]",
+    "Refleksi terhadap sumbu-x: [[1, 0], [0, −1]]",
+    "Refleksi terhadap sumbu-y: [[−1, 0], [0, 1]]",
+    "Refleksi terhadap garis y = x: [[0, 1], [1, 0]]",
+    "Dilatasi pusat O faktor k: [[k, 0], [0, k]]",
+    "Transformasi T₁ lalu T₂: M = M₂ · M₁",
+    "Luas bayangan = |det M| × luas asli"
+   ],
+   "keterampilan": [
+    "Menentukan bayangan titik dan bangun datar oleh sebuah matriks",
+    "Menyusun matriks transformasi dari deskripsi geometrisnya",
+    "Menentukan matriks tunggal yang mewakili dua transformasi berurutan",
+    "Menentukan transformasi kebalikan lewat invers matriks",
+    "Menghitung luas bayangan menggunakan determinan",
+    "Membaca jenis transformasi dari matriksnya"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Determinan dan Invers Matriks",
+    "Transformasi Geometri: Refleksi, Translasi, Rotasi, Dilatasi (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengalikan matriks dengan urutan terbalik untuk transformasi berurutan",
+    "Menulis titik sebagai vektor baris lalu mengalikannya dari kiri",
+    "Mengira rotasi 90° dan refleksi terhadap y = x menghasilkan matriks yang sama",
+    "Mengira transformasi hanya memindahkan objek, bukan meregangkan seluruh bidang",
+    "Mencoba menuliskan translasi sebagai matriks 2×2",
+    "Mengira determinan negatif berarti luasnya negatif"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kolom matriks transformasi persis sama dengan bayangan vektor satuan i dan j?",
+    "Kenapa transformasi berurutan ditulis dari kanan ke kiri pada perkalian matriks?",
+    "Kenapa translasi tidak bisa ditulis sebagai matriks 2×2, padahal refleksi dan rotasi bisa?",
+    "Kenapa nilai mutlak determinan tepat sama dengan rasio perubahan luas?",
+    "Kenapa matriks rotasi berisi sinus dan cosinus?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Sistem Persamaan Linear dengan Matriks",
+   "kelas": 11,
+   "subKonsep": [
+    "Menulis sistem persamaan linear dalam bentuk matriks AX = B",
+    "Penyelesaian dengan invers: X = A⁻¹B",
+    "Aturan Cramer menggunakan determinan",
+    "Tafsiran geometris: berpotongan satu titik, sejajar, atau berimpit",
+    "det A = 0 berarti tidak ada penyelesaian tunggal (tak hingga banyak atau tidak ada)",
+    "Perluasan ke sistem tiga variabel dengan matriks 3×3",
+    "Penerapan: perencanaan produksi, campuran bahan, keuangan multi-produk"
+   ],
+   "rumus": [
+    "AX = B ⟹ X = A⁻¹B bila det A ≠ 0",
+    "Cramer dua variabel: x = Dx/D, y = Dy/D",
+    "D = det A (matriks koefisien)",
+    "Dx = det A dengan kolom koefisien x diganti kolom B",
+    "det A = 0 dan D_x ≠ 0 ⟹ tidak ada penyelesaian"
+   ],
+   "keterampilan": [
+    "Mengubah sistem persamaan linear menjadi bentuk matriks",
+    "Menyelesaikan sistem dua dan tiga variabel dengan invers matriks",
+    "Menyelesaikan sistem dengan aturan Cramer",
+    "Menentukan jenis penyelesaian dari nilai determinan",
+    "Memodelkan masalah nyata multi-variabel sebagai sistem persamaan matriks"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Determinan dan Invers Matriks",
+    "Sistem Persamaan Linear Dua Variabel (Fase D)",
+    "Sistem Pertidaksamaan Linear Dua Variabel (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Menulis X = B A⁻¹ dengan urutan terbalik",
+    "Mengira det A = 0 selalu berarti tidak ada penyelesaian, padahal bisa tak hingga banyak",
+    "Menyusun matriks koefisien tanpa menyeragamkan urutan variabel lebih dulu",
+    "Lupa memindahkan semua konstanta ke ruas kanan sebelum menyusun matriks",
+    "Mengira aturan Cramer berlaku juga saat determinannya nol"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa penyelesaiannya X = A⁻¹B dan bukan B A⁻¹?",
+    "Kenapa determinan nol secara geometris berarti garis-garisnya sejajar atau berimpit?",
+    "Dari mana aturan Cramer — kenapa determinan bisa langsung memberikan nilai x?",
+    "Kenapa mencari penyelesaian sistem persamaan sama saja dengan membatalkan sebuah transformasi bidang?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Rasional dan Asimtotnya",
+   "kelas": 12,
+   "subKonsep": [
+    "Bentuk f(x) = P(x)/Q(x) dengan P dan Q polinomial dan Q(x) ≠ 0",
+    "Domain fungsi rasional: mengecualikan semua pembuat nol penyebut",
+    "Asimtot tegak dari akar penyebut yang tidak tercoret oleh pembilang",
+    "Asimtot datar dari perbandingan derajat pembilang dan penyebut",
+    "Asimtot miring ketika derajat pembilang satu lebih besar dari penyebut",
+    "Lubang (diskontinuitas terhapus) ketika ada faktor yang sama tercoret",
+    "Titik potong sumbu dan uji tanda untuk menyketsa grafik",
+    "Penerapan: biaya rata-rata per unit, laju kerja gabungan, efisiensi mesin"
+   ],
+   "rumus": [
+    "f(x) = P(x)/Q(x), Q(x) ≠ 0",
+    "Asimtot tegak x = a bila Q(a) = 0 dan P(a) ≠ 0",
+    "deg P < deg Q ⟹ asimtot datar y = 0",
+    "deg P = deg Q ⟹ asimtot datar y = aₙ/bₙ",
+    "deg P = deg Q + 1 ⟹ asimtot miring y = hasil bagi P oleh Q",
+    "Lubang di x = a bila (x − a) faktor bersama P dan Q"
+   ],
+   "keterampilan": [
+    "Menentukan domain fungsi rasional",
+    "Menentukan semua asimtot tegak, datar, dan miring",
+    "Membedakan asimtot tegak dari lubang",
+    "Menyketsa grafik fungsi rasional lengkap dengan asimtot dan uji tanda",
+    "Memodelkan situasi nyata dengan fungsi rasional dan menafsirkan asimtotnya"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Pembagian Polinomial dan Skema Horner",
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan"
+   ],
+   "miskonsepsi": [
+    "Mengira grafik tidak pernah boleh memotong asimtot mana pun",
+    "Mengira setiap pembuat nol penyebut pasti menghasilkan asimtot tegak, lupa kemungkinan lubang",
+    "Menganggap asimtot sebagai bagian dari grafik yang ikut digambar tebal",
+    "Menyederhanakan pecahan lalu mengira domainnya ikut berubah",
+    "Mengira asimtot datar berarti grafik akhirnya menyentuh dan berhenti di garis itu"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa grafik meledak naik-turun mendekati asimtot tegak, tetapi hanya mendekat perlahan pada asimtot datar?",
+    "Kenapa grafik boleh memotong asimtot datar tapi tidak boleh memotong asimtot tegak?",
+    "Kenapa faktor yang tercoret menghasilkan lubang, bukan asimtot?",
+    "Kenapa perbandingan derajat pembilang dan penyebut menentukan asimtot datarnya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Akar dan Domainnya",
+   "kelas": 12,
+   "subKonsep": [
+    "Bentuk f(x) = √(g(x)) dan syarat g(x) ≥ 0",
+    "Fungsi akar sebagai invers fungsi kuadrat dengan domain dibatasi",
+    "Bentuk grafik akar: setengah parabola yang direbahkan",
+    "Transformasi grafik fungsi akar (geser, cermin, regang)",
+    "Domain dan range fungsi akar pangkat genap vs pangkat ganjil",
+    "Penerapan: rumus jarak, periode bandul, simpangan baku"
+   ],
+   "rumus": [
+    "f(x) = √(g(x)) terdefinisi bila g(x) ≥ 0",
+    "f(x) = a√(x − h) + k",
+    "√(x²) = |x|, bukan x",
+    "y = √x adalah invers dari y = x² pada domain x ≥ 0",
+    "∛(x) terdefinisi untuk semua bilangan real"
+   ],
+   "keterampilan": [
+    "Menentukan domain dan range fungsi akar",
+    "Menyketsa grafik fungsi akar beserta transformasinya",
+    "Menyelesaikan persamaan yang memuat akar dan memeriksa akar palsu",
+    "Menghubungkan grafik y = √x dengan y = x² lewat pencerminan terhadap y = x",
+    "Memodelkan situasi nyata dengan fungsi akar"
+   ],
+   "prasyarat": [
+    "Fungsi Invers",
+    "Bilangan Berpangkat dan Bentuk Akar (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Menulis √(x²) = x tanpa nilai mutlak",
+    "Menulis √(a + b) = √a + √b",
+    "Mengira domain fungsi akar adalah semua bilangan real",
+    "Lupa memeriksa akar palsu setelah mengkuadratkan kedua ruas",
+    "Mengira grafik y = √x adalah setengah parabola yang berdiri tegak"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa √(x²) sama dengan |x|, bukan x?",
+    "Kenapa grafik y = √x hanya setengah parabola, ke mana setengah yang lain?",
+    "Kenapa mengkuadratkan kedua ruas bisa memunculkan penyelesaian palsu?",
+    "Kenapa akar pangkat ganjil boleh menerima bilangan negatif, sedangkan akar pangkat genap tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Nilai Mutlak, Fungsi Tangga, dan Fungsi Piecewise",
+   "kelas": 12,
+   "subKonsep": [
+    "Nilai mutlak sebagai jarak dari nol pada garis bilangan",
+    "Fungsi nilai mutlak ditulis ulang sebagai fungsi piecewise",
+    "Fungsi piecewise: beberapa aturan yang berlaku pada interval domain berbeda",
+    "Titik sambung: menentukan grafik kontinu atau terputus",
+    "Fungsi tangga (pembulatan ke bawah/atas) dan grafik bertingkatnya",
+    "Aturan pembacaan titik ujung: bulatan penuh (termasuk) vs bulatan kosong (tidak termasuk)",
+    "Penerapan: tarif parkir bertingkat, pajak progresif, tarif listrik, biaya pengiriman"
+   ],
+   "rumus": [
+    "|x| = x untuk x ≥ 0, dan |x| = −x untuk x < 0",
+    "|x − a| = jarak antara x dan a",
+    "f(x) = a₁(x) untuk x ∈ I₁; a₂(x) untuk x ∈ I₂; dan seterusnya",
+    "Fungsi tangga: f(x) = ⌊x⌋ (bilangan bulat terbesar yang ≤ x)",
+    "Kontinu di titik sambung c bila nilai kedua aturan sama di x = c"
+   ],
+   "keterampilan": [
+    "Menulis ulang fungsi nilai mutlak sebagai fungsi piecewise",
+    "Menyketsa grafik fungsi piecewise dengan tanda titik ujung yang benar",
+    "Menyelesaikan persamaan dan pertidaksamaan nilai mutlak",
+    "Membaca nilai fungsi tangga dari grafik atau tabel tarif",
+    "Memodelkan tarif bertingkat dunia nyata sebagai fungsi piecewise",
+    "Memeriksa kekontinuan di titik sambung"
+   ],
+   "prasyarat": [
+    "Fungsi: Notasi, Domain, Range, dan Sifat Pemetaan",
+    "Transformasi Fungsi: Translasi dan Refleksi"
+   ],
+   "miskonsepsi": [
+    "Mengira |x| berarti mengubah tanda minus menjadi plus tanpa memahami maknanya sebagai jarak",
+    "Menulis |a + b| = |a| + |b|",
+    "Mengira |x| = 5 hanya punya satu penyelesaian",
+    "Menyambung semua potongan grafik piecewise menjadi satu kurva mulus",
+    "Salah membaca tanda ≤ dan < sehingga titik ujung digambar terbalik",
+    "Mengira fungsi tangga membulatkan ke bilangan terdekat, bukan ke bawah"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa nilai mutlak lebih tepat dibaca sebagai jarak daripada sebagai penghapus tanda minus?",
+    "Kenapa |x| = 5 punya dua penyelesaian, tetapi |x| = −5 tidak punya sama sekali?",
+    "Kenapa grafik fungsi tangga meloncat dan bukan naik landai?",
+    "Kenapa satu titik pada batas interval hanya boleh dimiliki satu potongan aturan saja?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Eksponensial Lanjutan",
+   "kelas": 12,
+   "subKonsep": [
+    "Bentuk f(x) = a·bˣ dan syarat b > 0, b ≠ 1",
+    "Perilaku grafik untuk b > 1 (pertumbuhan) dan 0 < b < 1 (peluruhan)",
+    "Asimtot datar y = 0 dan alasannya",
+    "Domain semua bilangan real, range bilangan positif",
+    "Transformasi grafik eksponensial dan pergeseran asimtot",
+    "Basis alami e dan pertumbuhan berkelanjutan",
+    "Penerapan: pertumbuhan populasi, bunga majemuk, penyebaran virus, peluruhan radiasi"
+   ],
+   "rumus": [
+    "f(x) = a · bˣ, dengan b > 0 dan b ≠ 1",
+    "b^(m+n) = bᵐ · bⁿ",
+    "b^(m−n) = bᵐ / bⁿ",
+    "(bᵐ)ⁿ = b^(mn)",
+    "b⁰ = 1 dan b^(−n) = 1/bⁿ",
+    "f(x) = a·b^(x−h) + k dengan asimtot datar y = k",
+    "Pertumbuhan berkelanjutan: A = P·e^(rt)"
+   ],
+   "keterampilan": [
+    "Menyketsa grafik fungsi eksponensial beserta asimtotnya",
+    "Menentukan model eksponensial dari dua titik data",
+    "Menyelesaikan persamaan eksponensial dengan menyamakan basis",
+    "Menafsirkan parameter a dan b dalam konteks nyata",
+    "Membandingkan laju pertumbuhan eksponensial dengan polinomial"
+   ],
+   "prasyarat": [
+    "Pemodelan Dunia Nyata dengan Fungsi Linear, Kuadrat, dan Eksponensial",
+    "Bilangan Berpangkat (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Mengira grafik eksponensial akhirnya menyentuh sumbu-x",
+    "Menukar bˣ dengan xᵇ",
+    "Menulis b^(m) + b^(n) = b^(m+n)",
+    "Mengira basis boleh bernilai negatif",
+    "Mengira 2ˣ dan x² memberikan grafik yang mirip"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa grafik eksponensial mendekati sumbu-x tanpa pernah menyentuhnya?",
+    "Kenapa basis harus positif dan tidak boleh sama dengan 1?",
+    "Kenapa 2ˣ pada akhirnya pasti mengalahkan x¹⁰⁰, seberapa pun besar pangkatnya?",
+    "Kenapa b⁰ = 1 untuk semua basis, dan kenapa itu masuk akal dari pola perkalian?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Logaritma dan Sifat-sifatnya",
+   "kelas": 12,
+   "subKonsep": [
+    "Logaritma sebagai jawaban pertanyaan \"pangkat berapa\"",
+    "Fungsi logaritma sebagai invers fungsi eksponensial",
+    "Grafik logaritma sebagai pencerminan grafik eksponensial terhadap y = x",
+    "Asimtot tegak x = 0, domain x > 0, range semua bilangan real",
+    "Sifat logaritma: perkalian menjadi penjumlahan, pembagian menjadi pengurangan, pangkat menjadi perkalian",
+    "Pengubahan basis logaritma",
+    "Penerapan: skala Richter, pH, desibel, kompleksitas algoritma"
+   ],
+   "rumus": [
+    "ᵃlog b = c ⟺ aᶜ = b, dengan a > 0, a ≠ 1, b > 0",
+    "ᵃlog(mn) = ᵃlog m + ᵃlog n",
+    "ᵃlog(m/n) = ᵃlog m − ᵃlog n",
+    "ᵃlog(mⁿ) = n · ᵃlog m",
+    "ᵃlog b = (ᶜlog b) / (ᶜlog a)",
+    "ᵃlog a = 1 dan ᵃlog 1 = 0",
+    "a^(ᵃlog b) = b"
+   ],
+   "keterampilan": [
+    "Mengubah bentuk eksponen menjadi bentuk logaritma dan sebaliknya",
+    "Menyederhanakan bentuk logaritma dengan sifat-sifatnya",
+    "Menyketsa grafik fungsi logaritma beserta asimtot tegaknya",
+    "Menghitung logaritma dengan pengubahan basis",
+    "Menyelesaikan masalah skala logaritmik dalam konteks nyata"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Fungsi Eksponensial Lanjutan",
+    "Fungsi Invers"
+   ],
+   "miskonsepsi": [
+    "Menulis log(m + n) = log m + log n",
+    "Menulis log(m/n) = log m / log n",
+    "Mengira logaritma bilangan negatif bernilai negatif, bukan tidak terdefinisi",
+    "Mengira (log m)ⁿ sama dengan log(mⁿ)",
+    "Mengira grafik logaritma berhenti tumbuh karena kelihatannya mendatar"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa logaritma mengubah perkalian menjadi penjumlahan — apa hubungannya dengan sifat pangkat?",
+    "Kenapa logaritma bilangan nol atau negatif tidak terdefinisi?",
+    "Kenapa grafik logaritma adalah cerminan grafik eksponensial terhadap garis y = x?",
+    "Kenapa skala Richter dan desibel memakai logaritma, bukan skala biasa?",
+    "Kenapa grafik logaritma tetap naik terus meski terlihat hampir mendatar?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Persamaan dan Pertidaksamaan Eksponensial serta Logaritma",
+   "kelas": 12,
+   "subKonsep": [
+    "Menyamakan basis untuk menyelesaikan persamaan eksponensial",
+    "Memakai logaritma ketika basis tidak dapat disamakan",
+    "Persamaan eksponensial berbentuk kuadrat (permisalan)",
+    "Persamaan logaritma dan syarat numerus positif",
+    "Pertidaksamaan eksponensial: arah tanda berubah bila 0 < basis < 1",
+    "Pertidaksamaan logaritma dan pemeriksaan syarat domain",
+    "Penerapan: menghitung waktu penggandaan dan waktu paruh"
+   ],
+   "rumus": [
+    "a^(f(x)) = a^(g(x)) ⟺ f(x) = g(x), untuk a > 0 dan a ≠ 1",
+    "a^(f(x)) = b ⟺ f(x) = ᵃlog b",
+    "ᵃlog f(x) = ᵃlog g(x) ⟺ f(x) = g(x), dengan f(x) > 0 dan g(x) > 0",
+    "Untuk a > 1: a^(f(x)) > a^(g(x)) ⟺ f(x) > g(x)",
+    "Untuk 0 < a < 1: a^(f(x)) > a^(g(x)) ⟺ f(x) < g(x)",
+    "Waktu penggandaan: t = ᵇlog 2 / ᵇlog(1 + r)"
+   ],
+   "keterampilan": [
+    "Menyelesaikan persamaan eksponensial dengan menyamakan basis atau memakai logaritma",
+    "Menyelesaikan persamaan eksponensial berbentuk kuadrat lewat permisalan",
+    "Menyelesaikan persamaan logaritma dan menguji syarat numerus",
+    "Menyelesaikan pertidaksamaan eksponensial dan logaritma dengan memperhatikan basis",
+    "Menghitung waktu penggandaan dan waktu paruh dari model nyata"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Fungsi Logaritma dan Sifat-sifatnya",
+    "Persamaan Eksponensial Berbasis Sama (Fase E)"
+   ],
+   "miskonsepsi": [
+    "Tidak membalik tanda pertidaksamaan ketika basisnya antara 0 dan 1",
+    "Lupa memeriksa syarat numerus > 0 sehingga menerima penyelesaian palsu",
+    "Membagi kedua ruas dengan aˣ lalu kehilangan penyelesaian",
+    "Menulis log(x) = 0 berarti x = 0",
+    "Menyamakan basis secara paksa dengan mengubah eksponen sembarangan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa arah pertidaksamaan berbalik saat basisnya lebih kecil dari 1?",
+    "Kenapa penyelesaian persamaan logaritma harus diuji ulang ke persamaan aslinya?",
+    "Kenapa menyamakan basis boleh langsung menyamakan pangkat — sifat apa yang menjaminnya?",
+    "Kenapa waktu penggandaan tidak bergantung pada jumlah awal?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Trigonometri dan Lingkaran Satuan",
+   "kelas": 11,
+   "subKonsep": [
+    "Lingkaran satuan sebagai perluasan definisi sinus dan cosinus ke semua sudut",
+    "Sudut dalam derajat dan radian serta konversinya",
+    "Koordinat titik pada lingkaran satuan adalah (cos θ, sin θ)",
+    "Grafik y = sin x, y = cos x, y = tan x dan sifat periodiknya",
+    "Amplitudo, periode, pergeseran fase, dan pergeseran vertikal",
+    "Identitas dasar sin²θ + cos²θ = 1 dan asal-usulnya dari teorema Pythagoras",
+    "Pemodelan fenomena periodik: pasang surut, suhu harian, gelombang suara"
+   ],
+   "rumus": [
+    "x² + y² = 1 pada lingkaran satuan, dengan x = cos θ, y = sin θ",
+    "sin²θ + cos²θ = 1",
+    "tan θ = sin θ / cos θ",
+    "180° = π radian",
+    "y = A sin(k(x − c)) + d dengan amplitudo |A|, periode 2π/k",
+    "Periode sin dan cos = 2π; periode tan = π"
+   ],
+   "keterampilan": [
+    "Menentukan nilai trigonometri sudut istimewa di semua kuadran lewat lingkaran satuan",
+    "Mengubah satuan derajat ke radian dan sebaliknya",
+    "Menyketsa grafik fungsi trigonometri dengan amplitudo dan periode tertentu",
+    "Menyusun model trigonometri dari data periodik nyata",
+    "Membuktikan identitas trigonometri sederhana"
+   ],
+   "prasyarat": [
+    "Perbandingan Trigonometri Sudut Lancip (Fase E)",
+    "Teorema Pythagoras (Fase D)",
+    "Transformasi Fungsi: Dilatasi dan Transformasi Gabungan"
+   ],
+   "miskonsepsi": [
+    "Mengira sinus dan cosinus hanya berlaku untuk segitiga siku-siku",
+    "Mengira sin(a + b) = sin a + sin b",
+    "Menukar peran amplitudo dan periode dalam y = A sin(kx)",
+    "Mengira nilai sinus bisa lebih dari 1",
+    "Mengira radian adalah satuan yang berbeda jenis dari derajat, bukan cara lain mengukur sudut yang sama"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa lingkaran satuan bisa memperluas sinus dan cosinus ke sudut lebih dari 90°?",
+    "Kenapa sin²θ + cos²θ = 1 — dan kenapa itu sebenarnya teorema Pythagoras menyamar?",
+    "Kenapa periode sin x adalah 2π sedangkan periode tan x hanya π?",
+    "Kenapa mengalikan sudut dengan k justru memperpendek periodenya?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Vektor di Bidang: Representasi dan Operasi",
+   "kelas": 11,
+   "subKonsep": [
+    "Vektor sebagai besaran berarah: punya panjang dan arah, tidak punya posisi tetap",
+    "Notasi vektor: ruas garis berarah, pasangan komponen, dan vektor kolom",
+    "Vektor posisi dan vektor satuan i dan j",
+    "Panjang (besar) vektor dari komponennya",
+    "Penjumlahan vektor: aturan ujung-ke-pangkal dan aturan jajar genjang",
+    "Pengurangan vektor sebagai penjumlahan dengan invers penjumlahan",
+    "Perkalian vektor dengan skalar secara komponen dan secara grafis",
+    "Vektor sejajar dan vektor segaris (kolinear)"
+   ],
+   "rumus": [
+    "a = (a₁, a₂) atau a = a₁i + a₂j",
+    "|a| = √(a₁² + a₂²)",
+    "a + b = (a₁ + b₁, a₂ + b₂)",
+    "a − b = a + (−b)",
+    "k·a = (k·a₁, k·a₂), dengan |k·a| = |k|·|a|",
+    "Vektor satuan searah a: â = a / |a|",
+    "Vektor AB = vektor posisi B − vektor posisi A"
+   ],
+   "keterampilan": [
+    "Menuliskan vektor dalam berbagai notasi dan berpindah antar notasi",
+    "Menghitung panjang vektor dan menentukan vektor satuannya",
+    "Menjumlah dan mengurangkan vektor secara komponen maupun secara grafis",
+    "Mengalikan vektor dengan skalar dan menafsirkan arti geometrisnya",
+    "Menentukan vektor yang menghubungkan dua titik",
+    "Memodelkan masalah navigasi dan gaya dengan penjumlahan vektor"
+   ],
+   "prasyarat": [
+    "Koordinat Kartesius dan Jarak Dua Titik (Fase D)",
+    "Teorema Pythagoras (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Mengira dua vektor sama hanya bila titik pangkalnya sama",
+    "Menjumlahkan besar vektor secara langsung tanpa memperhatikan arah",
+    "Mengira |a + b| = |a| + |b| untuk semua vektor",
+    "Menukar vektor AB dengan vektor BA",
+    "Mengira mengalikan vektor dengan skalar negatif hanya memperpendek, bukan membalik arah"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua vektor dengan pangkal berbeda bisa dianggap vektor yang sama?",
+    "Kenapa penjumlahan vektor dilakukan ujung-ke-pangkal, dan kenapa aturan jajar genjang memberi hasil yang sama?",
+    "Kenapa |a + b| biasanya lebih kecil dari |a| + |b|, dan kapan keduanya sama?",
+    "Kenapa panjang vektor memakai akar jumlah kuadrat — dari mana teorema Pythagoras masuk?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Pembuktian Geometris dengan Vektor",
+   "kelas": 11,
+   "subKonsep": [
+    "Menuliskan titik-titik bangun datar sebagai vektor posisi",
+    "Menyatakan sisi dan diagonal sebagai selisih vektor posisi",
+    "Membuktikan kesejajaran: dua vektor sejajar bila salah satu kelipatan skalar yang lain",
+    "Membuktikan kolinearitas tiga titik",
+    "Rumus titik tengah dan titik pembagi ruas garis",
+    "Membuktikan sifat jajar genjang dan sifat garis tengah segitiga dengan vektor",
+    "Membandingkan bukti vektor dengan bukti geometri klasik"
+   ],
+   "rumus": [
+    "Vektor AB = b − a (dengan a, b vektor posisi A dan B)",
+    "Titik tengah M dari AB: m = (a + b)/2",
+    "Titik P membagi AB dengan rasio m : n ⟹ p = (n·a + m·b)/(m + n)",
+    "a sejajar b ⟺ a = k·b untuk suatu skalar k ≠ 0",
+    "A, B, C kolinear ⟺ vektor AB = k · vektor AC"
+   ],
+   "keterampilan": [
+    "Menyatakan unsur-unsur bangun datar dalam vektor posisi",
+    "Membuktikan dua ruas garis sejajar dan sebanding",
+    "Membuktikan tiga titik terletak segaris",
+    "Menentukan titik pembagi sebuah ruas garis",
+    "Menyusun bukti geometris ringkas menggunakan aljabar vektor"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Vektor di Bidang: Representasi dan Operasi",
+    "Kesebangunan dan Kekongruenan Segitiga (Fase D)"
+   ],
+   "miskonsepsi": [
+    "Menulis vektor AB = a − b (urutan terbalik)",
+    "Mengira vektor sejajar berarti panjangnya juga harus sama",
+    "Mengira membuktikan untuk satu contoh gambar sudah cukup sebagai bukti umum",
+    "Mencampur vektor posisi dengan vektor perpindahan tanpa menyebut titik acuannya",
+    "Mengira k pada a = k·b harus bilangan bulat"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa bukti dengan vektor bisa jauh lebih pendek daripada bukti geometri klasik?",
+    "Kenapa satu vektor merupakan kelipatan vektor lain sudah cukup membuktikan kesejajaran?",
+    "Kenapa titik tengah persis rata-rata dua vektor posisi?",
+    "Kenapa hasil bukti vektor tetap berlaku meski gambarnya digeser atau diputar?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Hasil Kali Skalar, Proyeksi, dan Vektor di Ruang (pengayaan di luar CP 2025)",
+   "kelas": 12,
+   "subKonsep": [
+    "Vektor di ruang dimensi tiga: komponen (a₁, a₂, a₃) dan vektor satuan i, j, k",
+    "Panjang vektor di ruang",
+    "Hasil kali skalar (dot product) secara komponen dan secara sudut",
+    "Menentukan sudut antara dua vektor",
+    "Syarat tegak lurus: hasil kali skalar sama dengan nol",
+    "Proyeksi skalar ortogonal dan proyeksi vektor ortogonal",
+    "Penerapan: usaha dalam fisika, komponen gaya, sudut antar rusuk bangun ruang"
+   ],
+   "rumus": [
+    "|a| = √(a₁² + a₂² + a₃²)",
+    "a · b = a₁b₁ + a₂b₂ + a₃b₃",
+    "a · b = |a||b| cos θ",
+    "cos θ = (a · b) / (|a||b|)",
+    "a ⊥ b ⟺ a · b = 0",
+    "Proyeksi skalar a pada b: (a · b)/|b|",
+    "Proyeksi vektor a pada b: [(a · b)/|b|²] · b"
+   ],
+   "keterampilan": [
+    "Menghitung hasil kali skalar dua vektor",
+    "Menentukan sudut antara dua vektor",
+    "Menguji ketegaklurusan dua vektor",
+    "Menentukan proyeksi skalar dan proyeksi vektor ortogonal",
+    "Menghitung sudut antar rusuk atau diagonal pada bangun ruang dengan vektor"
+   ],
+   "prasyarat": [
+    "[Tingkat Lanjut] Vektor di Bidang: Representasi dan Operasi",
+    "[Tingkat Lanjut] Fungsi Trigonometri dan Lingkaran Satuan"
+   ],
+   "miskonsepsi": [
+    "Mengira hasil kali skalar menghasilkan vektor, bukan bilangan",
+    "Menulis a · b = (a₁b₁, a₂b₂, a₃b₃)",
+    "Mengira a · b = 0 berarti salah satu vektor pasti nol",
+    "Menukar rumus proyeksi skalar dan proyeksi vektor",
+    "Mengira proyeksi a pada b sama dengan proyeksi b pada a"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa hasil kali dua vektor bisa menghasilkan sebuah bilangan, bukan vektor?",
+    "Kenapa a · b = 0 tepat berarti kedua vektor saling tegak lurus?",
+    "Kenapa rumus komponen a₁b₁ + a₂b₂ sama nilainya dengan |a||b| cos θ?",
+    "Kenapa proyeksi vektor harus dibagi |b|² sedangkan proyeksi skalar hanya dibagi |b|?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Induksi Matematika (pengayaan di luar CP 2025)",
+   "kelas": 11,
+   "subKonsep": [
+    "Perbedaan pola yang terlihat benar dan pernyataan yang terbukti benar",
+    "Dua langkah induksi: langkah basis dan langkah induktif",
+    "Hipotesis induksi dan cara memakainya",
+    "Analogi kartu domino dan tangga tak terhingga",
+    "Induksi untuk membuktikan rumus jumlah deret",
+    "Induksi untuk membuktikan keterbagian",
+    "Induksi untuk membuktikan pertidaksamaan"
+   ],
+   "rumus": [
+    "Langkah 1 (basis): tunjukkan P(1) benar",
+    "Langkah 2 (induktif): asumsikan P(k) benar, buktikan P(k+1) benar",
+    "Kesimpulan: P(n) benar untuk semua bilangan asli n",
+    "Contoh: 1 + 2 + … + n = n(n+1)/2",
+    "Contoh: 1² + 2² + … + n² = n(n+1)(2n+1)/6"
+   ],
+   "keterampilan": [
+    "Menuliskan pernyataan P(n) secara tepat",
+    "Memverifikasi langkah basis",
+    "Menurunkan P(k+1) dari P(k) dengan manipulasi aljabar",
+    "Membuktikan rumus deret, keterbagian, dan pertidaksamaan dengan induksi",
+    "Menemukan kesalahan pada bukti induksi yang cacat"
+   ],
+   "prasyarat": [
+    "Barisan dan Deret Aritmetika dan Geometri (Fase F, elemen Bilangan)",
+    "[Tingkat Lanjut] Polinomial: Bentuk, Derajat, dan Operasi Aritmetika"
+   ],
+   "miskonsepsi": [
+    "Mengira memeriksa beberapa nilai n sudah merupakan bukti",
+    "Mengira mengasumsikan P(k) benar sama dengan mengasumsikan yang mau dibuktikan",
+    "Melewatkan langkah basis dan langsung ke langkah induktif",
+    "Menggunakan P(k+1) di dalam pembuktian P(k+1) itu sendiri",
+    "Mengira induksi hanya bisa dimulai dari n = 1"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dua langkah saja sudah cukup membuktikan pernyataan untuk tak terhingga banyak bilangan?",
+    "Kenapa mengasumsikan P(k) benar bukan berarti berputar-putar dan curang?",
+    "Kenapa langkah basis tidak boleh dilewatkan — apa yang bisa salah tanpa itu?",
+    "Kenapa memeriksa seribu contoh tetap belum cukup untuk membuktikan sebuah rumus?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Bilangan Kompleks (pengayaan di luar CP 2025)",
+   "kelas": 12,
+   "subKonsep": [
+    "Satuan imajiner i dengan i² = −1 sebagai jawaban atas akar bilangan negatif",
+    "Bentuk kartesius a + bi: bagian real dan bagian imajiner",
+    "Operasi penjumlahan, pengurangan, dan perkalian bilangan kompleks",
+    "Konjugat dan pembagian bilangan kompleks",
+    "Bidang Argand: bilangan kompleks sebagai titik dan sebagai vektor",
+    "Modulus dan argumen; bentuk polar r(cos θ + i sin θ)",
+    "Akar imajiner persamaan kuadrat selalu berpasangan konjugat"
+   ],
+   "rumus": [
+    "i² = −1, i³ = −i, i⁴ = 1",
+    "z = a + bi, dengan Re(z) = a dan Im(z) = b",
+    "(a + bi) + (c + di) = (a + c) + (b + d)i",
+    "(a + bi)(c + di) = (ac − bd) + (ad + bc)i",
+    "konjugat z̄ = a − bi, dan z · z̄ = a² + b²",
+    "|z| = √(a² + b²)",
+    "z = r(cos θ + i sin θ) dengan r = |z| dan tan θ = b/a"
+   ],
+   "keterampilan": [
+    "Menyederhanakan pangkat i",
+    "Melakukan operasi aritmetika pada bilangan kompleks",
+    "Merasionalkan penyebut kompleks dengan konjugat",
+    "Menggambar bilangan kompleks pada bidang Argand",
+    "Mengubah bentuk kartesius ke bentuk polar dan sebaliknya",
+    "Menyelesaikan persamaan kuadrat berdiskriminan negatif"
+   ],
+   "prasyarat": [
+    "Persamaan dan Fungsi Kuadrat termasuk Akar Imajiner (Fase E)",
+    "[Tingkat Lanjut] Vektor di Bidang: Representasi dan Operasi",
+    "[Tingkat Lanjut] Fungsi Trigonometri dan Lingkaran Satuan"
+   ],
+   "miskonsepsi": [
+    "Mengira √(−4) · √(−9) = √36 = 6, padahal hasilnya −6",
+    "Mengira i adalah bilangan real yang sangat kecil atau sangat besar",
+    "Mengira bilangan kompleks bisa diurutkan besar-kecil seperti bilangan real",
+    "Menulis (a + bi)² = a² + b²i²",
+    "Mengira bagian imajiner z adalah bi, padahal hanya b"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa matematikawan perlu menciptakan i, dan masalah apa yang tidak bisa diselesaikan tanpanya?",
+    "Kenapa mengalikan dengan i sama artinya dengan memutar 90° pada bidang?",
+    "Kenapa akar imajiner persamaan kuadrat selalu muncul berpasangan konjugat?",
+    "Kenapa bilangan kompleks tidak bisa diurutkan seperti bilangan real?"
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf — Kepka BSKAP Kemendikdasmen No. 046/H/KR/2025, Lampiran II. Diunduh penuh (22,5 MB) lalu diekstraksi dengan pdftotext. Bagian yang dibaca persis: bab IV.1 CAPAIAN PEMBELAJARAN MATEMATIKA (rasional, karakteristik elemen, CP Fase D butir 4.2, Fase E butir 5.2, Fase F butir 6.1-6.4) dan bab IV.2 CAPAIAN PEMBELAJARAN MATEMATIKA TINGKAT LANJUT (deskripsi 4 elemen konten dan CP Fase F butir 1-4).",
+  "http://repositori.kemendikdasmen.go.id/33608/1/5.%20Final%20Panduan%20Mata%20Pelajaran%20Matematika_12_09_2025_Revisi%203.pdf — 'Panduan Mata Pelajaran Matematika: Fase A-F dan Fase Tingkat Lanjut', Pusat Kurikulum dan Pembelajaran, BSKAP 2025 (59 MB). Diunduh penuh lalu diekstraksi. Bagian yang dibaca persis: bab 6 Pemetaan Materi Esensial Fase F (Fungsi Invers & Komposisi, Transformasi Fungsi) dan bab 7 Fase F Matematika Tingkat Lanjut (Polinomial + Teorema Sisa/Faktor + Identitas Polinomial + Teorema Binomial, Matriks & Transformasi Geometri termasuk determinan-invers-luas, Trigonometri, Fungsi rasional/akar/eksponensial/logaritma/nilai mutlak/tangga/piecewise, Vektor, Lingkaran & Elips), serta 'Contoh Rumusan ATP dari CP Matematika Fase F' yang memetakan nomor 5-7 (komposisi, invers, transformasi fungsi) ke Kelas XI.",
+  "https://repositori.kemendikdasmen.go.id/33608 — halaman katalog resmi repositori Kemendikdasmen untuk Panduan Mata Pelajaran Matematika 2025; dipakai untuk memperoleh URL berkas PDF dan memastikan penerbit serta tahun terbitnya.",
+  "https://kepalasekolah.id/capaian-pembelajaran-cp-matematika-sd-mi-2025-terbaru-berdasarkan-keputusan-kepala-bskap-nomor-046-h-kr-2025/ — hasil pencarian, dipakai hanya untuk mengonfirmasi nomor dan judul Kepka 046/H/KR/2025 sebelum PDF resmi berhasil diunduh.",
+  "https://www.scribd.com/document/586056194/Buku-Murid-Matematika-Matematika-Tingkat-Lanjut-Untuk-SMA-Kelas-XI-Bab-1-Fase-F — cuplikan hasil pencarian saja (tidak dibuka penuh); dipakai sebagai pembanding bahwa Bilangan Kompleks pernah menjadi materi Matematika Tingkat Lanjut Kelas XI pada CP versi 033/H/KR/2022."
+ ],
+ "catatan": "30 topik. Semua kutipan CP diambil dari teks PDF resmi yang saya unduh dan ekstraksi sendiri, bukan dari ringkasan pihak ketiga.\n\nTEMUAN PENTING YANG PERLU DIKETAHUI TIM\n\n1. Nama elemen resmi adalah \"Aljabar dan Fungsi\", bukan \"Aljabar\" saja. Pada Fase F elemen ini ada di dua mata pelajaran dengan isi yang sangat berbeda.\n\n2. CP Matematika umum (wajib) Fase F untuk Aljabar SANGAT RAMPING — hanya satu kalimat: fungsi invers, komposisi fungsi, transformasi fungsi, untuk memodelkan dunia nyata dengan fungsi linear, kuadrat, eksponensial. Topik 1-8 saya turunkan dari kalimat itu. Contoh ATP resmi di Panduan menempatkan ketiganya di KELAS XI, dan seluruh porsi Aljabar kelas XII pada Matematika wajib memang KOSONG (kelas XII habis untuk Analisis Data dan Peluang). Karena itu semua topik kelas 12 di daftar ini berlabel [Tingkat Lanjut].\n\n3. Yang HILANG dibandingkan Kurikulum Merdeka versi 2022 (jangan diasumsikan masih ada):\n   - Induksi matematika: TIDAK ADA sama sekali di CP 2025 (grep \"induksi\" = 0 hasil).\n   - Bilangan kompleks: TIDAK ADA di CP Fase F 2025. Yang tersisa hanya frasa \"termasuk akar imajiner\" pada CP Fase E Matematika.\n   - Sistem persamaan linear tiga variabel: TIDAK ADA (grep \"tiga variabel\" = 0 hasil). SPLDV berhenti di Fase D, sistem pertidaksamaan linear dua variabel di Fase E.\n   - Logaritma: TIDAK ADA di Matematika wajib mana pun. Hanya muncul sebagai \"fungsi logaritma\" di Matematika Tingkat Lanjut.\n   Topik Induksi Matematika dan Bilangan Kompleks tetap saya sertakan karena diminta tugas, tetapi judulnya saya beri akhiran \"(pengayaan di luar CP 2025)\" supaya tim tidak salah mengklaim keduanya wajib.\n\n4. VEKTOR ada di elemen GEOMETRI Matematika Tingkat Lanjut, bukan Aljabar. Ada risiko tumpang tindih dengan agen domain Geometri — mohon dikoordinasikan. Selain itu, Panduan resmi menegaskan \"Materi vektor mencakup vektor dalam dua dimensi\" saja, dan operasi yang disebut hanya penjumlahan, pengurangan, dan perkalian dengan skalar. Hasil kali titik (dot product), proyeksi, dan vektor di ruang TIDAK ada di CP 2025, jadi saya jadikan satu topik pengayaan tersendiri (topik 28).\n\n5. Determinan dan invers matriks TIDAK tertulis eksplisit di kalimat CP, tetapi Panduan resmi membahasnya gamblang: \"Determinan suatu matriks persegi bukan nol jika dan hanya jika matriks tersebut memiliki invers perkalian\" dan \"menafsirkan nilai absolut determinan dalam bentuk luas\". Jadi topik 16-18 punya dasar resmi yang kuat.\n\n6. Fungsi trigonometri (topik 25) secara resmi masuk elemen Aljabar dan Fungsi MTL, tetapi identitas trigonometri serta aturan sinus-cosinus kemungkinan besar juga digarap agen Trigonometri/Geometri. Saya sertakan satu topik jembatan saja agar tidak ada lubang; silakan dipangkas bila duplikat.\n\n7. Pembagian kelas 11 vs 12 untuk Matematika Tingkat Lanjut TIDAK ditetapkan pemerintah — CP hanya menyebut \"Fase F (Pilihan untuk kelas XI dan XII)\". Pembagian saya mengikuti praktik paling lazim di Indonesia (polinomial, matriks, vektor di kelas XI; keluarga fungsi lanjutan di kelas XII), sejalan dengan urutan buku teks MTL Kelas XI terbitan Kemendikbud.\n\n8. Catatan teknis: ekstraksi pdftotext menghilangkan sebagian simbol matematika berhuruf (variabel x/y hilang pada beberapa baris rumus di Panduan). Isi naratif tetap terbaca utuh; semua rumus dalam daftar ini saya tulis ulang secara matematis, bukan hasil salin dari PDF yang rusak.\n\n9. Satu ATP resmi penerbit di static.perangkat-ajar.belajar.id gagal dibaca (PDF terenkripsi), jadi tidak saya jadikan sumber. Semua klaim di atas bersandar pada dua PDF pemerintah yang berhasil diekstraksi penuh."
+}

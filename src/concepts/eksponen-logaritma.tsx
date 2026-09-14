@@ -14,7 +14,7 @@
 
 import { Svg, Tag } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
-import { clamp, fmt } from '../lib/num'
+import { clamp, fmt, sup } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
 const W = 690
@@ -24,6 +24,8 @@ const X0 = 76
 const X1 = 640
 const Y_LINEAR = 128
 const Y_LOG = 292
+/** Letak palang langkah — cukup jauh di bawah keterangan garis langkah. */
+const Y_PALANG = Y_LOG + 88
 
 /* ---------------- Garis biasa (skala linear) ---------------- */
 
@@ -99,7 +101,7 @@ function GarisLangkah({
           </text>
         </g>
       ))}
-      <Tag x={X0 + 6} y={Y_LOG + 52} anchor="start" warna="var(--ink-soft)" size={13}>
+      <Tag x={X0 + 6} y={Y_LOG + 48} anchor="start" warna="var(--ink-soft)" size={13}>
         angka bawah = banyaknya langkah perkalian
       </Tag>
     </g>
@@ -114,6 +116,7 @@ function Palang({
   y,
   warna,
   label,
+  labelDi = 'atas',
   opacity = 1,
 }: {
   dari: number
@@ -122,31 +125,66 @@ function Palang({
   y: number
   warna: string
   label: string
+  /** palang kedua memberi label di bawah agar tidak menimpa label palang pertama. */
+  labelDi?: 'atas' | 'bawah'
   opacity?: number
 }) {
   const kx = (k: number) => X0 + (k / maks) * (X1 - X0)
   const a = kx(dari)
-  const b = kx(ke)
+  // palang yang melewati ujung garis dipotong di tepi gambar, tanpa tanda ujung
+  const terpotong = kx(ke) > W - 12
+  const b = Math.min(kx(ke), W - 12)
+  // label tetap di dalam bingkai (lebar sesuai hitungan Tag)
+  const setengahLebar = (label.length * 14 * 0.58 + 14) / 2
+  const xLabel = clamp((a + b) / 2, setengahLebar + 4, W - setengahLebar - 4)
   return (
     <g opacity={opacity}>
       <line x1={a} y1={y} x2={b} y2={y} stroke={warna} strokeWidth={4} strokeLinecap="round" />
       <line x1={a} y1={y - 7} x2={a} y2={y + 7} stroke={warna} strokeWidth={2.4} />
-      <line x1={b} y1={y - 7} x2={b} y2={y + 7} stroke={warna} strokeWidth={2.4} />
-      <Tag x={(a + b) / 2} y={y - 18} warna={warna} size={14}>
+      {!terpotong && <line x1={b} y1={y - 7} x2={b} y2={y + 7} stroke={warna} strokeWidth={2.4} />}
+      <Tag x={xLabel} y={labelDi === 'atas' ? y - 18 : y + 20} warna={warna} size={14}>
         {label}
       </Tag>
     </g>
   )
 }
 
-/* ---------------- Visual untuk animasi bongkar ---------------- */
+/* ---------------- Nilai bersama gambar dan teks langkah ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+/** Nilai penggeser yang dipakai gambar bongkar DAN teks langkahnya. */
+function nilaiBongkar(p: Record<string, number>) {
   const basis = clamp(Math.round(p.basis ?? 2), 2, 3)
   const a = clamp(Math.round(p.a ?? 3), 0, 4)
   const b = clamp(Math.round(p.b ?? 2), 0, 3)
   const maks = basis === 2 ? 7 : 5
-  const total = Math.min(a + b, maks)
+  // hasil hanya boleh ditandai di garis bila memang masih muat
+  const muat = a + b <= maks
+  return { basis, a, b, maks, muat, total: Math.min(a + b, maks) }
+}
+
+/** Empat hasil perkalian berulang pertama, mis. "2, 4, 8, 16". */
+const deretAwal = (basis: number) =>
+  Array.from({ length: 4 }, (_, k) => fmt(basis ** (k + 1))).join(', ')
+
+/**
+ * Perkalian berulang ditulis panjang mulai dari 1, mis. (2, 3) -> "1 × 2 × 2 × 2",
+ * supaya banyaknya tanda "× 2" sama dengan banyaknya langkah yang disebut.
+ */
+const kaliBerulang = (basis: number, n: number) => ['1', ...Array(n).fill(fmt(basis))].join(' × ')
+
+/** Bilangan berpangkat untuk narasi, mis. (2, 3) -> "2³". */
+const pangkat = (basis: number, n: number) => `${fmt(basis)}${sup(n)}`
+
+/** Bilangan berpangkat untuk markup rumus — Formula mengubah ^{…} jadi pangkat. */
+const pangkatRumus = (basis: number, n: number) => `${fmt(basis)}^{${fmt(n)}}`
+
+/** Penulisan logaritma dengan bilangan pokok sebagai indeks bawah: "log₂" / "log₃". */
+const logBasis = (basis: number) => (basis === 2 ? 'log₂' : 'log₃')
+
+/* ---------------- Visual untuk animasi bongkar ---------------- */
+
+function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const { basis, a, b, maks, muat, total } = nilaiBongkar(p)
 
   const tampilLinear = step === 0 ? seg(t, 0.05, 0.9) : step <= 1 ? 1 : 0.35
   const tampilLog = fase(step, t, 1)
@@ -165,8 +203,26 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           basis={basis}
           maks={maks}
           tampil={tampilLog}
-          nyala={selesai ? total : -1}
+          nyala={selesai && muat ? total : -1}
         />
+      )}
+
+      {/* penanda hasil — digambar sebelum palang agar garis putusnya tidak menimpa label */}
+      {selesai && muat && (
+        <g>
+          <line
+            x1={X0 + (total / maks) * (X1 - X0)}
+            y1={Y_LOG - 40}
+            x2={X0 + (total / maks) * (X1 - X0)}
+            y2={Y_PALANG}
+            stroke="var(--m-hi)"
+            strokeWidth={2.4}
+            strokeDasharray="6 5"
+          />
+          <Tag x={X0 + (total / maks) * (X1 - X0)} y={Y_LOG - 52} warna="var(--m-hi)" size={16}>
+            {fmt(basis ** total)}
+          </Tag>
+        </g>
       )}
 
       {/* palang pertama: dari 1 sampai basis^a */}
@@ -175,7 +231,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           dari={0}
           ke={a}
           maks={maks}
-          y={Y_LOG + 74}
+          y={Y_PALANG}
           warna="var(--m-a)"
           label={`${fmt(basis ** a)} → ${fmt(a)} langkah`}
           opacity={palangA}
@@ -188,35 +244,18 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           dari={a}
           ke={a + b * geser}
           maks={maks}
-          y={Y_LOG + 74}
+          y={Y_PALANG}
           warna={nyalaKali ? 'var(--m-hi)' : 'var(--m-b)'}
           label={`+ ${fmt(b)} langkah`}
+          labelDi="bawah"
           opacity={geser}
         />
-      )}
-
-      {/* penanda hasil */}
-      {selesai && (
-        <g>
-          <line
-            x1={X0 + (total / maks) * (X1 - X0)}
-            y1={Y_LOG - 40}
-            x2={X0 + (total / maks) * (X1 - X0)}
-            y2={Y_LOG + 74}
-            stroke="var(--m-hi)"
-            strokeWidth={2.4}
-            strokeDasharray="6 5"
-          />
-          <Tag x={X0 + (total / maks) * (X1 - X0)} y={Y_LOG - 52} warna="var(--m-hi)" size={16}>
-            {fmt(basis ** total)}
-          </Tag>
-        </g>
       )}
 
       {/* keterangan */}
       {step === 0 && (
         <Tag x={W / 2} y={54} warna="var(--m-a)" size={16}>
-          {`${Array.from({ length: 4 }, (_, k) => fmt(basis ** (k + 1))).join(', ')}, … jaraknya melompat`}
+          {`${deretAwal(basis)}, … jaraknya melompat`}
         </Tag>
       )}
       {step === 1 && (
@@ -241,7 +280,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
           warna={nyalaLog ? 'var(--m-hi)' : 'var(--m-ab)'}
           size={17}
         >
-          {`${fmt(basis ** a)} × ${fmt(basis ** b)} = ${fmt(basis ** total)}   ·   ${fmt(a)} + ${fmt(b)} = ${fmt(total)}`}
+          {`${fmt(basis ** a)} × ${fmt(basis ** b)} = ${fmt(basis ** (a + b))}   ·   ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)}`}
         </Tag>
       )}
       {a + b > maks && step >= 3 && (
@@ -256,37 +295,41 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const basis = clamp(Math.round(p.basis ?? 2), 2, 3)
-  const a = clamp(Math.round(p.a ?? 3), 0, 4)
-  const b = clamp(Math.round(p.b ?? 2), 0, 3)
-  const maks = basis === 2 ? 7 : 5
-  const total = Math.min(a + b, maks)
+  const { basis, a, b, maks, muat, total } = nilaiBongkar(p)
+  // basis tulis sebagai indeks bawah: tanpa basis, "log" berarti basis 10
+  const logB = logBasis(basis)
 
   return (
     <Svg w={W} h={H} maxH={450} label="Garis langkah perkalian dengan dua pangkat yang bisa diubah">
       <GarisLinear basis={basis} maks={maks} tampil={0.4} />
-      <GarisLangkah basis={basis} maks={maks} tampil={1} nyala={total} />
+      <GarisLangkah basis={basis} maks={maks} tampil={1} nyala={muat ? total : -1} />
       <Palang
         dari={0}
         ke={a}
         maks={maks}
-        y={Y_LOG + 74}
+        y={Y_PALANG}
         warna={sorot === 'a' ? 'var(--m-hi)' : 'var(--m-a)'}
         label={`${fmt(a)} langkah`}
       />
       <Palang
         dari={a}
-        ke={Math.min(a + b, maks)}
+        ke={a + b}
         maks={maks}
-        y={Y_LOG + 74}
+        y={Y_PALANG}
         warna={sorot === 'b' ? 'var(--m-hi)' : 'var(--m-b)'}
         label={`+ ${fmt(b)} langkah`}
+        labelDi="bawah"
       />
       <Tag x={W / 2} y={50} warna="var(--m-ab)" size={17}>
-        {`${basis}^${a} × ${basis}^${b} = ${basis}^${a + b} = ${fmt(basis ** (a + b))}`}
+        {`${pangkat(basis, a)} × ${pangkat(basis, b)} = ${pangkat(basis, a + b)} = ${fmt(basis ** (a + b))}`}
       </Tag>
+      {!muat && (
+        <Tag x={W / 2} y={214} warna="var(--ink-soft)" size={12}>
+          (hasilnya sudah melewati ujung garis — kecilkan salah satu pangkatnya)
+        </Tag>
+      )}
       <Tag x={W / 2} y={H - 18} warna="var(--ink-2)" size={15}>
-        {`log ${fmt(basis ** a)} + log ${fmt(basis ** b)} = ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)} = log ${fmt(basis ** (a + b))}`}
+        {`${logB} ${fmt(basis ** a)} + ${logB} ${fmt(basis ** b)} = ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)} = ${logB} ${fmt(basis ** (a + b))}`}
       </Tag>
     </Svg>
   )
@@ -349,8 +392,10 @@ const konsep: Konsep = {
       {
         id: 's0',
         judul: 'Pangkat tumbuh sangat cepat',
-        narasi:
-          'Pada garis bilangan biasa, 2, 4, 8, 16, 32 makin lama makin renggang. Sulit menempatkan semuanya dalam satu gambar.',
+        narasi: (p) => {
+          const { basis } = nilaiBongkar(p)
+          return `Pada garis bilangan biasa, hasil perkalian berulang dengan ${fmt(basis)} — ${deretAwal(basis)}, … — makin lama makin renggang. Sulit menempatkan semuanya dalam satu gambar.`
+        },
         durasi: 2400,
       },
       {
@@ -363,40 +408,72 @@ const konsep: Konsep = {
       {
         id: 's2',
         judul: 'Tandai bilangan pertama',
-        narasi:
-          'Untuk sampai ke bilangan ini dari angka 1, kamu perlu beberapa kali mengalikan. Banyaknya langkah itulah yang dicatat.',
-        rumus: 'langkah menuju bilangan pertama = [a:a]',
+        narasi: (p) => {
+          const { basis, a } = nilaiBongkar(p)
+          if (a === 0)
+            return `Bilangan pertama kali ini adalah 1 sendiri (${pangkat(basis, 0)}), jadi kamu tidak perlu mengalikan sama sekali. Banyaknya langkah yang dicatat adalah 0 — palangnya belum bergerak dari angka 1.`
+          if (a === 1)
+            return `Untuk sampai ke ${fmt(basis)} dari angka 1, kamu cukup mengalikan dengan ${fmt(basis)} satu kali. Banyaknya langkah itulah, yaitu 1, yang dicatat.`
+          return `Untuk sampai ke ${fmt(basis ** a)} dari angka 1, kamu perlu mengalikan dengan ${fmt(basis)} sebanyak ${fmt(a)} kali: ${kaliBerulang(basis, a)} = ${fmt(basis ** a)}. Banyaknya langkah itulah, yaitu ${fmt(a)}, yang dicatat.`
+        },
+        rumus: (p) => {
+          const { basis, a } = nilaiBongkar(p)
+          return `langkah dari 1 sampai ${fmt(basis ** a)} = [a:${fmt(a)}]`
+        },
         durasi: 2200,
       },
       {
         id: 's3',
         judul: 'Mengalikan berarti menyambung langkah',
-        narasi:
-          'Mengalikan dengan bilangan kedua berarti melanjutkan perjalanan sebanyak langkahnya sendiri. Palangnya tinggal disambung.',
+        narasi: (p) => {
+          const { basis, a, b, maks, muat } = nilaiBongkar(p)
+          const bilPertama = fmt(basis ** a)
+          if (b === 0)
+            return `Mengalikan dengan 1 berarti melanjutkan perjalanan 0 langkah — kamu tidak bergerak sama sekali. Palangnya tidak bertambah panjang, jadi ${bilPertama} × 1 tetap ${bilPertama}.`
+          const kalimat1 =
+            b === 1
+              ? `Mengalikan dengan ${fmt(basis)} berarti melangkah satu kali lagi, jadi perjalananmu berlanjut 1 langkah.`
+              : `Mengalikan dengan ${fmt(basis ** b)} sama dengan mengalikan dengan ${fmt(basis)} sebanyak ${fmt(b)} kali lagi, jadi perjalananmu berlanjut ${fmt(b)} langkah.`
+          const kalimat2 = muat
+            ? `Palangnya tinggal disambung dari langkah ${fmt(a)} sampai langkah ${fmt(a + b)}.`
+            : `Palangnya disambung dari langkah ${fmt(a)} sampai langkah ${fmt(a + b)}, melewati ujung garis yang hanya sampai langkah ${fmt(maks)}.`
+          return `${kalimat1} ${kalimat2}`
+        },
         rumus: '[kali:×] pada nilai = [langkah:+] pada langkah',
         durasi: 2800,
       },
       {
         id: 's4',
         judul: 'Jadi pangkatnya dijumlahkan',
-        narasi:
-          'Panjang total palang adalah jumlah kedua langkah. Karena posisi pada garis ini menandai pangkat, pangkatnya memang bertambah.',
-        rumus: 'x^[a:a] × x^[b:b] = x^([a:a]+[b:b])',
+        narasi: (p) => {
+          const { basis, a, b, muat } = nilaiBongkar(p)
+          if (a + b === 0)
+            return `Kedua langkahnya nol, jadi palangnya tidak beranjak sama sekali dari angka 1. Pangkatnya pun 0 + 0 = 0, dan ${pangkat(basis, 0)} memang bernilai 1.`
+          const ekor = muat ? '' : ' — kali ini ujungnya sudah keluar dari garis'
+          return `Panjang seluruh palang adalah ${fmt(a)} langkah ditambah ${fmt(b)} langkah, yaitu ${fmt(a + b)} langkah${ekor}. Karena posisi pada garis ini menandai pangkat, ${pangkat(basis, a)} × ${pangkat(basis, b)} bernilai ${pangkat(basis, a + b)} — pangkatnya memang tinggal kamu jumlahkan.`
+        },
+        rumus: (p) => {
+          const { basis, a, b } = nilaiBongkar(p)
+          return `${pangkatRumus(basis, a)} × ${pangkatRumus(basis, b)} = ${pangkatRumus(basis, a + b)}  ·  [a:${fmt(a)}] + [b:${fmt(b)}] = ${fmt(a + b)}`
+        },
         durasi: 2400,
       },
       {
         id: 's5',
         judul: 'Logaritma membaca sumbu bawah',
-        narasi:
-          'Angka di bawah garis adalah logaritma bilangan di atasnya. Jadi log sebenarnya bertanya: "berapa langkah dari 1 sampai ke bilangan ini?"',
-        rumus: '[log:log_x N] = banyaknya langkah',
+        narasi: (p) => {
+          const { basis, a } = nilaiBongkar(p)
+          const logB = logBasis(basis)
+          return `Angka di bawah garis adalah logaritma dengan bilangan pokok ${fmt(basis)} dari bilangan di atasnya, misalnya ${logB} ${fmt(basis ** a)} = ${fmt(a)}. Jadi ${logB} sebenarnya bertanya: "berapa kali mengalikan dengan ${fmt(basis)} untuk sampai dari 1 ke bilangan ini?"`
+        },
+        rumus: (p) => `[log:${logBasis(nilaiBongkar(p).basis)} N] = banyaknya langkah dari 1 sampai N`,
         durasi: 2600,
       },
       {
         id: 's6',
         judul: 'Sifat logaritma yang terkenal',
         narasi:
-          'Karena membaca posisi pada sumbu bawah, perkalian di atas otomatis menjadi penjumlahan di bawah. Sifat ini tidak perlu dihafal — ia terlihat.',
+          'Karena logaritma membaca posisi pada sumbu bawah, perkalian di atas otomatis menjadi penjumlahan di bawah — sifat ini tidak perlu dihafal, ia terlihat. Gambar hanya menampilkan langkah bulat, tetapi sifat ini berlaku untuk semua bilangan positif, termasuk yang banyak langkahnya bukan bilangan bulat.',
         rumus: '[log:log](P × Q) = [log:log] P + [log:log] Q',
         durasi: 2600,
       },
@@ -406,7 +483,7 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Sambung dua langkah sesukamu',
     ajakan:
-      'Ubah pangkatnya dan perhatikan dua baris di bawah gambar: baris atas berbicara tentang perkalian, baris bawah tentang penjumlahan — keduanya menceritakan hal yang sama.',
+      'Ubah pangkatnya dan perhatikan kalimat paling atas dan paling bawah pada gambar: yang atas berbicara tentang perkalian, yang bawah tentang penjumlahan — keduanya menceritakan hal yang sama.',
     params: [
       { key: 'basis', label: 'Bilangan pokok', min: 2, max: 3, step: 1, awal: 2, bulat: true },
       { key: 'a', label: 'Pangkat pertama', min: 0, max: 4, step: 1, awal: 3, bulat: true },
@@ -414,19 +491,19 @@ const konsep: Konsep = {
     ],
     Visual: VisualEksperimen,
     temuan: (p) => {
-      const basis = clamp(Math.round(p.basis ?? 2), 2, 3)
-      const a = clamp(Math.round(p.a ?? 3), 0, 4)
-      const b = clamp(Math.round(p.b ?? 2), 0, 3)
+      const { basis, a, b } = nilaiBongkar(p)
       return (
         <p>
           <strong>
-            {basis}^{a} × {basis}^{b} = {fmt(basis ** a)} × {fmt(basis ** b)} ={' '}
+            {pangkat(basis, a)} × {pangkat(basis, b)} = {fmt(basis ** a)} × {fmt(basis ** b)} ={' '}
             {fmt(basis ** (a + b))}
           </strong>{' '}
           — dan pangkatnya {fmt(a)} + {fmt(b)} = {fmt(a + b)}.{' '}
           {a === 0
-            ? `Perhatikan ${basis}⁰ = 1: nol langkah berarti belum bergerak dari angka 1. Itulah kenapa apa pun berpangkat nol bernilai 1.`
-            : 'Coba buat salah satu pangkatnya nol: palangnya tidak bertambah panjang sama sekali, dan nilainya tidak berubah.'}{' '}
+            ? `Perhatikan ${pangkat(basis, 0)} = 1: nol langkah berarti belum bergerak dari angka 1. Itulah kenapa bilangan apa pun selain nol, bila dipangkatkan nol, bernilai 1.`
+            : b === 0
+              ? `Perhatikan ${pangkat(basis, 0)} = 1: palang kedua sepanjang nol langkah, jadi mengalikan dengan 1 tidak menggeser hasilnya sama sekali.`
+              : 'Coba buat salah satu pangkatnya nol: palangnya tidak bertambah panjang sama sekali, dan nilainya tidak berubah.'}{' '}
           Perhatikan juga jarak pada garis atas melompat-lompat, sedangkan pada garis bawah selalu
           rata.
         </p>
@@ -460,6 +537,14 @@ const konsep: Konsep = {
           log<sub>a</sub>(P × Q) = m + n = log<sub>a</sub> P + log<sub>a</sub> Q
         </p>
         <p>
+          Hitungan "m kali lalu n kali lagi" hanya masuk akal bila m dan n bilangan cacah (0, 1,
+          2, …). Untuk bilangan yang bukan pangkat bulat dari a, banyaknya langkah bukan bilangan
+          bulat — misalnya log<sub>2</sub> 6 ≈ 2,585. Untuk a positif, aturan a<sup>m</sup> ·
+          a<sup>n</sup> = a<sup>m+n</sup> tetap berlaku untuk pangkat berapa pun — negatif, pecahan,
+          bahkan irasional (pangkat semacam itu memang didefinisikan agar aturan ini terjaga),
+          sehingga sifat di atas berlaku untuk semua P dan Q positif.
+        </p>
+        <p>
           Dengan alasan serupa: log(P/Q) = log P − log Q, dan log(Pⁿ) = n · log P.
         </p>
         <h4>Kenapa dulu ini penting sekali</h4>
@@ -472,7 +557,7 @@ const konsep: Konsep = {
         <ul>
           <li>log hanya terdefinisi untuk bilangan positif — tidak ada pangkat yang menghasilkan bilangan negatif atau nol dari basis positif.</li>
           <li>Basisnya harus positif dan tidak sama dengan 1, karena 1 dipangkatkan apa pun tetap 1.</li>
-          <li>log(P + Q) TIDAK sama dengan log P + log Q. Yang berubah menjadi penjumlahan hanya perkalian.</li>
+          <li>log(P + Q) TIDAK selalu sama dengan log P + log Q (kebetulan sama hanya bila P + Q = P × Q, misalnya P = Q = 2). Yang berubah menjadi penjumlahan hanya perkalian.</li>
         </ul>
         <p>
           Skala logaritma dipakai di mana-mana justru karena sifat ini: skala Richter, desibel, dan
@@ -483,8 +568,9 @@ const konsep: Konsep = {
     SMP: (
       <>
         <p>
-          Pangkat itu singkatan dari perkalian berulang: 2³ berarti 2 × 2 × 2. Angka 3 menghitung{' '}
-          <strong>berapa kali</strong> perkaliannya dilakukan.
+          Pangkat itu singkatan dari perkalian berulang: 2³ berarti 2 × 2 × 2, atau: mulai dari 1,
+          lalu kalikan dengan 2 sebanyak 3 kali. Angka 3 menghitung{' '}
+          <strong>berapa kali</strong> kita mengalikan dengan 2.
         </p>
         <p>
           Kalau kamu mengalikan 2³ dengan 2⁴, kamu melakukan 3 kali perkalian lalu 4 kali lagi —
@@ -523,10 +609,10 @@ const konsep: Konsep = {
         toleransi: 1e-9,
         hint: [
           'Pangkat menghitung banyaknya perkalian yang dilakukan.',
-          `2^${m} berarti mengalikan 2 sebanyak ${m} kali, lalu ${n} kali lagi.`,
+          `2^${m} berarti mengalikan dengan 2 sebanyak ${m} kali; dikalikan lagi dengan 2^${n} berarti ${n} kali lagi.`,
           'Jadi seluruhnya tinggal dijumlahkan.',
         ],
-        pembahasan: `2^${m} × 2^${n} = 2^${m + n} = ${2 ** (m + n)}. Pangkat dijumlahkan karena yang dihitung adalah banyaknya langkah perkalian.`,
+        pembahasan: `2^${m} × 2^${n} = 2^${m + n} = ${fmt(2 ** (m + n))}. Pangkat dijumlahkan karena yang dihitung adalah banyaknya langkah perkalian.`,
       }
     },
     {
@@ -598,7 +684,7 @@ const konsep: Konsep = {
         'a³ ÷ a³ = 1, sekaligus sama dengan a³⁻³ = a⁰.',
       ],
       pembahasan:
-        'Pada garis langkah, posisi 0 adalah titik awal, yaitu angka 1. Secara aljabar: a³ ÷ a³ jelas bernilai 1, dan menurut aturan pangkat sama dengan a⁰. Jadi a⁰ = 1 dipaksakan oleh konsistensi, bukan oleh kesepakatan.',
+        'Pada garis langkah, posisi 0 adalah titik awal, yaitu angka 1. Secara aljabar: a³ ÷ a³ jelas bernilai 1, dan menurut aturan pangkat sama dengan a⁰. Jadi definisi a⁰ = 1 dipaksakan oleh konsistensi aturan pangkat, bukan kesepakatan sembarangan.',
     },
     {
       id: 'log-5',

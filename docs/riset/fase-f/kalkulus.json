@@ -1,0 +1,1061 @@
+{
+ "nama": "Kalkulus",
+ "capaian": "Elemen Kalkulus HANYA ada pada mata pelajaran Matematika Tingkat Lanjut (mata pelajaran pilihan Fase F). Teks resmi Kepka BSKAP No. 046/H/KR/2025, Lampiran II bab IV.2.D, Fase F (umumnya Kelas XI dan XII SMA/MA/Program Paket C), butir 4 \"Kalkulus\": \"Memahami laju perubahan dan laju perubahan rata-rata, serta laju perubahan sesaat sebagai konsep kunci derivatif (turunan), baik secara geometris maupun aljabar; menentukan turunan dari fungsi polinomial, eksponensial, dan trigonometri, dan menerapkan derivatif untuk membuat sketsa kurva, menghitung gradien dan menentukan persamaan garis singgung, menentukan kecepatan sesaat dan menyelesaikan soal optimasi; memahami integral, baik sebagai proses yang merupakan kebalikan dari derivatif dan juga sebagai cara menghitung luas; serta memahami teorema dasar kalkulus sebagai penghubung antara derivatif dan integral.\" Deskripsi elemen (bab IV.2.C): \"Bidang kajian Kalkulus membahas tentang laju perubahan sesaat dari suatu fungsi kontinu, dan mencakup topik limit, diferensial, dan integral, serta penggunaannya.\"",
+ "topics": [
+  {
+   "judul": "[Tingkat Lanjut] Laju Perubahan Rata-rata dan Laju Perubahan Sesaat",
+   "kelas": 12,
+   "subKonsep": [
+    "Perubahan Δy dan Δx dibaca dari tabel, grafik, dan rumus fungsi",
+    "Laju perubahan rata-rata sebagai gradien tali busur antara dua titik pada kurva",
+    "Tali busur yang kedua titiknya makin berdekatan",
+    "Laju perubahan sesaat sebagai gradien garis singgung di satu titik",
+    "Notasi hasil bagi selisih f(a+h) − f(a) dibagi h",
+    "Penafsiran satuan laju perubahan pada konteks nyata (km/jam, rupiah per unit)"
+   ],
+   "rumus": [
+    "laju rata-rata = (f(b) − f(a)) / (b − a)",
+    "laju sesaat di x = a: lim(h→0) (f(a+h) − f(a)) / h",
+    "gradien tali busur = Δy/Δx"
+   ],
+   "keterampilan": [
+    "Menghitung laju perubahan rata-rata dari tabel, grafik, atau rumus fungsi",
+    "Menggambar tali busur dan memperkirakan garis singgung secara visual",
+    "Menafsirkan makna dan satuan laju perubahan pada konteks nyata",
+    "Membedakan pertanyaan yang menuntut laju rata-rata dan laju sesaat"
+   ],
+   "prasyarat": [
+    "Gradien dan Persamaan Garis Lurus",
+    "Fungsi Kuadrat dan Grafiknya",
+    "Fungsi dan Grafiknya"
+   ],
+   "miskonsepsi": [
+    "Mengira kecepatan sesaat sama dengan jarak total dibagi waktu total",
+    "Menganggap Δy/Δx kehilangan makna ketika Δx sangat kecil",
+    "Menyamakan grafik jarak-waktu yang menanjak curam dengan percepatan besar",
+    "Mengira laju perubahan selalu positif"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa gradien tali busur bisa 'berubah menjadi' gradien garis singgung kalau dua titiknya didekatkan?",
+    "Kenapa kita memakai h mendekati 0 dan bukan langsung h = 0?",
+    "Kenapa spidometer bisa menunjukkan angka pada satu detik tertentu, padahal kecepatan butuh selang waktu?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Konsep dan Pengertian Limit Fungsi",
+   "kelas": 12,
+   "subKonsep": [
+    "Nilai yang didekati fungsi versus nilai fungsi tepat di titik itu",
+    "Pendekatan numerik lewat tabel dari kiri dan dari kanan",
+    "Limit kiri dan limit kanan",
+    "Syarat limit ada: limit kiri sama dengan limit kanan",
+    "Grafik berlubang (fungsi tidak terdefinisi di x = a tetapi limitnya ada)",
+    "Kasus limit tidak ada: lompatan, membesar tanpa batas, berosilasi"
+   ],
+   "rumus": [
+    "lim(x→a) f(x) = L",
+    "lim(x→a⁻) f(x) = lim(x→a⁺) f(x) = L"
+   ],
+   "keterampilan": [
+    "Membaca nilai limit dari grafik, termasuk grafik berlubang dan bertingkat",
+    "Menaksir limit dari tabel nilai yang mendekat dari dua arah",
+    "Menentukan ada atau tidaknya limit di suatu titik",
+    "Membedakan penulisan f(a) dengan lim(x→a) f(x)"
+   ],
+   "prasyarat": [
+    "Fungsi dan Grafiknya",
+    "Fungsi Piecewise (Fungsi Bertingkat)",
+    "Laju Perubahan Rata-rata dan Laju Perubahan Sesaat"
+   ],
+   "miskonsepsi": [
+    "Mengira limit selalu sama dengan nilai fungsi di titik tersebut",
+    "Mengira fungsi harus terdefinisi di x = a agar limitnya ada",
+    "Membaca 'x → 2' sebagai 'x = 2'",
+    "Menganggap setiap fungsi pasti punya limit di setiap titik"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sebuah fungsi bisa punya limit di titik yang justru tidak punya nilai fungsi?",
+    "Kenapa limit harus diperiksa dari dua arah?",
+    "Kenapa limit bukan sekadar 'memasukkan angka' ke dalam rumus?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Sifat-Sifat Limit dan Limit Fungsi Aljabar",
+   "kelas": 12,
+   "subKonsep": [
+    "Limit fungsi konstan dan limit fungsi identitas",
+    "Sifat jumlah, selisih, hasil kali, dan kelipatan konstanta",
+    "Sifat hasil bagi beserta syarat penyebut tidak nol",
+    "Sifat pangkat dan akar pada limit",
+    "Substitusi langsung untuk fungsi polinomial dan rasional yang penyebutnya tidak nol",
+    "Munculnya bentuk 0/0 sebagai tanda perlu manipulasi aljabar"
+   ],
+   "rumus": [
+    "lim(x→a) c = c dan lim(x→a) x = a",
+    "lim (f ± g) = lim f ± lim g",
+    "lim (f · g) = lim f · lim g",
+    "lim (f / g) = lim f / lim g, dengan lim g ≠ 0",
+    "lim (f(x))ⁿ = (lim f(x))ⁿ"
+   ],
+   "keterampilan": [
+    "Menerapkan sifat limit secara bertahap pada bentuk gabungan",
+    "Menentukan kapan substitusi langsung sah dipakai",
+    "Mengenali hasil 0/0 sebagai bentuk taktentu, bukan jawaban akhir",
+    "Memeriksa hasil limit dengan tabel atau grafik"
+   ],
+   "prasyarat": [
+    "Konsep dan Pengertian Limit Fungsi",
+    "Operasi Bentuk Aljabar",
+    "Fungsi Rasional dan Grafiknya"
+   ],
+   "miskonsepsi": [
+    "Memakai sifat hasil bagi meskipun penyebutnya menuju nol",
+    "Menuliskan 0/0 = 0 atau 0/0 = 1",
+    "Mengira substitusi langsung selalu boleh untuk semua fungsi",
+    "Mengira sifat limit berlaku juga ketika salah satu limit tidak ada"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa substitusi langsung selalu berhasil untuk fungsi polinomial?",
+    "Kenapa 0/0 disebut 'bentuk taktentu' dan bukan sekadar 'tidak terdefinisi'?",
+    "Kenapa sifat limit hasil bagi butuh syarat tambahan sedangkan sifat penjumlahan tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Bentuk Taktentu 0/0 pada Limit Fungsi Aljabar",
+   "kelas": 12,
+   "subKonsep": [
+    "Mengenali bentuk taktentu 0/0 setelah substitusi",
+    "Pemfaktoran dan pencoretan faktor (x − a) dengan syarat x ≠ a",
+    "Perkalian dengan bentuk sekawan untuk limit yang memuat akar",
+    "Menyederhanakan pecahan bertingkat sebelum substitusi",
+    "Kaitan antara faktor yang dicoret dengan 'lubang' pada grafik",
+    "Memeriksa ulang hasil dengan pendekatan numerik"
+   ],
+   "rumus": [
+    "(x² − a²)/(x − a) = x + a untuk x ≠ a",
+    "(√A − √B)(√A + √B) = A − B",
+    "(x³ − a³)/(x − a) = x² + ax + a² untuk x ≠ a"
+   ],
+   "keterampilan": [
+    "Memfaktorkan pembilang dan penyebut untuk menghilangkan faktor nol",
+    "Merasionalkan bentuk akar dengan perkalian sekawan",
+    "Menyederhanakan pecahan bertingkat menjadi bentuk tunggal",
+    "Menguji jawaban dengan tabel nilai mendekati a"
+   ],
+   "prasyarat": [
+    "Sifat-Sifat Limit dan Limit Fungsi Aljabar",
+    "Pemfaktoran Bentuk Aljabar",
+    "Merasionalkan Bentuk Akar"
+   ],
+   "miskonsepsi": [
+    "Mencoret faktor (x − a) tanpa menyadari syarat x ≠ a",
+    "Menganggap fungsi hasil penyederhanaan identik dengan fungsi asalnya",
+    "Menyimpulkan limit = 0 hanya karena pembilang menuju nol",
+    "Mengalikan sekawan pada pembilang tetapi lupa juga pada penyebut"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kita boleh mencoret faktor yang nilainya justru nol saat x mendekati a?",
+    "Kenapa grafiknya hanya 'berlubang' dan bukan terputus atau melompat?",
+    "Kenapa mengalikan bentuk sekawan bisa melenyapkan bentuk taktentu?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Limit Fungsi Trigonometri",
+   "kelas": 12,
+   "subKonsep": [
+    "Limit trigonometri yang bisa diselesaikan dengan substitusi langsung",
+    "Limit istimewa sin x / x saat x menuju 0",
+    "Limit istimewa tan x / x dan bentuk (1 − cos x)/x",
+    "Gagasan teorema apit pada juring lingkaran satuan",
+    "Peran radian sebagai syarat berlakunya limit istimewa",
+    "Penggunaan identitas trigonometri untuk mengubah bentuk lebih dulu"
+   ],
+   "rumus": [
+    "lim(x→0) sin x / x = 1",
+    "lim(x→0) tan x / x = 1",
+    "lim(x→0) sin(ax) / (bx) = a/b",
+    "lim(x→0) (1 − cos x) / x = 0",
+    "lim(x→0) (1 − cos x) / x² = 1/2"
+   ],
+   "keterampilan": [
+    "Mengubah bentuk trigonometri memakai identitas sebelum mengambil limit",
+    "Menerapkan limit istimewa pada bentuk gabungan sin/tan",
+    "Mengonversi ukuran sudut ke radian",
+    "Menyelesaikan limit trigonometri yang bercampur bentuk aljabar"
+   ],
+   "prasyarat": [
+    "Fungsi Trigonometri dan Lingkaran Satuan",
+    "Identitas Trigonometri",
+    "Konsep dan Pengertian Limit Fungsi"
+   ],
+   "miskonsepsi": [
+    "Memakai sin x / x = 1 padahal sudut dalam derajat",
+    "Mencoret x pada sin x / x sehingga menjadi 'sin'",
+    "Mengira sin x ≈ x berlaku untuk sudut besar",
+    "Mengira lim (1 − cos x)/x sama dengan lim (1 − cos x)/x²"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa sin x / x mendekati 1 hanya kalau sudut diukur dalam radian?",
+    "Kenapa panjang busur, tali busur, dan tinggi segitiga hampir sama untuk sudut yang sangat kecil?",
+    "Dari mana gagasan 'mengapit' fungsi di antara dua fungsi lain?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Limit di Tak Hingga, Limit Tak Hingga, dan Asimtot",
+   "kelas": 12,
+   "subKonsep": [
+    "Perilaku ujung grafik saat x menuju tak hingga dan minus tak hingga",
+    "Membagi pembilang dan penyebut dengan pangkat tertinggi",
+    "Bentuk taktentu ∞/∞ dan ∞ − ∞",
+    "Limit selisih dua bentuk akar kuadrat",
+    "Asimtot datar dan asimtot tegak dari fungsi rasional",
+    "Asimtot miring dan kaitannya dengan pembagian polinomial"
+   ],
+   "rumus": [
+    "lim(x→∞) 1/xⁿ = 0 untuk n > 0",
+    "lim(x→∞) (axⁿ + …)/(bxᵐ + …) = a/b jika n = m; 0 jika n < m; ±∞ jika n > m",
+    "lim(x→∞) (√(ax² + bx + c) − √(ax² + px + q)) = (b − p)/(2√a)"
+   ],
+   "keterampilan": [
+    "Menentukan asimtot datar dan tegak suatu fungsi rasional",
+    "Menyelesaikan bentuk taktentu ∞/∞ dengan pembagian pangkat tertinggi",
+    "Menyelesaikan bentuk ∞ − ∞ dengan perkalian sekawan",
+    "Menghubungkan hasil limit dengan bentuk grafik di ujung-ujungnya"
+   ],
+   "prasyarat": [
+    "Sifat-Sifat Limit dan Limit Fungsi Aljabar",
+    "Fungsi Rasional dan Grafiknya",
+    "Bentuk Taktentu 0/0 pada Limit Fungsi Aljabar"
+   ],
+   "miskonsepsi": [
+    "Memperlakukan ∞ sebagai bilangan sehingga menulis ∞ − ∞ = 0 atau ∞/∞ = 1",
+    "Mengira grafik tidak boleh memotong asimtot datar",
+    "Menyamakan 'limitnya tak hingga' dengan 'limitnya ada dan bernilai besar'",
+    "Mengira setiap fungsi rasional pasti punya asimtot datar"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa membagi dengan x pangkat tertinggi tidak mengubah nilai limitnya?",
+    "Kenapa ∞ − ∞ tidak bisa langsung disimpulkan nol?",
+    "Kenapa grafik boleh memotong asimtot datar tetapi tidak boleh memotong asimtot tegak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Kekontinuan Fungsi",
+   "kelas": 12,
+   "subKonsep": [
+    "Tiga syarat kekontinuan di sebuah titik",
+    "Diskontinu terhapuskan (lubang), diskontinu lompatan, dan diskontinu tak hingga",
+    "Kekontinuan pada selang terbuka dan tertutup",
+    "Kekontinuan fungsi piecewise dan pencarian nilai parameter agar kontinu",
+    "Gambaran 'menggambar tanpa mengangkat pensil' beserta batasannya",
+    "Gagasan teorema nilai antara secara intuitif"
+   ],
+   "rumus": [
+    "f kontinu di x = a ⟺ f(a) terdefinisi, lim(x→a) f(x) ada, dan lim(x→a) f(x) = f(a)"
+   ],
+   "keterampilan": [
+    "Memeriksa kekontinuan sebuah fungsi di titik tertentu",
+    "Menentukan nilai konstanta agar fungsi bertingkat menjadi kontinu",
+    "Mengklasifikasikan jenis ketakkontinuan dari grafik atau rumus",
+    "Menggunakan gagasan nilai antara untuk menunjukkan adanya akar persamaan"
+   ],
+   "prasyarat": [
+    "Konsep dan Pengertian Limit Fungsi",
+    "Fungsi Piecewise (Fungsi Bertingkat)",
+    "Limit di Tak Hingga, Limit Tak Hingga, dan Asimtot"
+   ],
+   "miskonsepsi": [
+    "Mengira fungsi yang punya penyebut nol pasti tidak kontinu di seluruh domainnya",
+    "Menyamakan kontinu dengan mulus (tidak bersudut)",
+    "Mengira limit ada sudah cukup untuk menyimpulkan kontinu",
+    "Mengira fungsi rasional tidak kontinu karena grafiknya terlihat 'terpisah' oleh asimtot"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa dibutuhkan tiga syarat, tidak cukup satu saja?",
+    "Kenapa fungsi nilai mutlak kontinu di nol tetapi tidak punya turunan di sana?",
+    "Kenapa kekontinuan harus dipastikan lebih dulu sebelum bicara turunan dan integral?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Definisi Turunan sebagai Limit",
+   "kelas": 12,
+   "subKonsep": [
+    "Peralihan dari gradien tali busur ke gradien garis singgung",
+    "Definisi turunan di satu titik sebagai limit hasil bagi selisih",
+    "Fungsi turunan f'(x) sebagai fungsi baru",
+    "Ragam notasi turunan: f'(x), y', dy/dx, d/dx",
+    "Menurunkan fungsi sederhana langsung dari definisi",
+    "Titik yang tidak memiliki turunan: sudut tajam, garis singgung tegak, titik diskontinu"
+   ],
+   "rumus": [
+    "f'(a) = lim(h→0) (f(a+h) − f(a)) / h",
+    "f'(x) = lim(h→0) (f(x+h) − f(x)) / h",
+    "dy/dx = lim(Δx→0) Δy/Δx"
+   ],
+   "keterampilan": [
+    "Menurunkan f(x) = x², √x, dan 1/x langsung dari definisi limit",
+    "Membaca bentuk grafik f' dari grafik f",
+    "Mengaitkan tanda f'(x) dengan arah kemiringan grafik f",
+    "Berpindah antar notasi turunan dengan benar"
+   ],
+   "prasyarat": [
+    "Laju Perubahan Rata-rata dan Laju Perubahan Sesaat",
+    "Bentuk Taktentu 0/0 pada Limit Fungsi Aljabar",
+    "Kekontinuan Fungsi"
+   ],
+   "miskonsepsi": [
+    "Memperlakukan dy/dx sebagai pecahan biasa yang bisa dicoret",
+    "Mengira f'(x) berarti nilai fungsi dibagi x",
+    "Mengira semua fungsi kontinu pasti bisa diturunkan",
+    "Mengira f'(a) adalah sebuah fungsi, bukan sebuah bilangan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa turunan harus didefinisikan lewat limit, bukan dengan membagi langsung?",
+    "Kenapa grafik nilai mutlak tidak punya turunan di titik sudutnya?",
+    "Kenapa turunan disebut gradien garis singgung, padahal yang dihitung adalah tali busur?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih",
+   "kelas": 12,
+   "subKonsep": [
+    "Turunan fungsi konstan",
+    "Aturan pangkat untuk pangkat bulat positif",
+    "Perluasan aturan pangkat ke pangkat negatif dan pecahan",
+    "Aturan kelipatan konstanta",
+    "Aturan jumlah dan selisih",
+    "Menurunkan fungsi polinomial dan bentuk akar setelah diubah ke bentuk pangkat"
+   ],
+   "rumus": [
+    "d/dx (c) = 0",
+    "d/dx (xⁿ) = n·xⁿ⁻¹",
+    "d/dx (c·f(x)) = c·f'(x)",
+    "d/dx (f(x) ± g(x)) = f'(x) ± g'(x)",
+    "d/dx (√x) = 1/(2√x)"
+   ],
+   "keterampilan": [
+    "Menurunkan fungsi polinomial dengan cepat dan benar",
+    "Mengubah bentuk akar dan pecahan menjadi bentuk pangkat sebelum diturunkan",
+    "Menghitung nilai f'(a) untuk titik tertentu",
+    "Memverifikasi aturan pangkat dengan definisi limit untuk n kecil"
+   ],
+   "prasyarat": [
+    "Definisi Turunan sebagai Limit",
+    "Bentuk Pangkat dan Akar",
+    "Operasi Bentuk Aljabar"
+   ],
+   "miskonsepsi": [
+    "Lupa menurunkan bentuk akar karena belum diubah ke bentuk pangkat",
+    "Mengira turunan konstanta adalah konstanta itu sendiri",
+    "Salah tanda pada pangkat negatif, misalnya menurunkan x⁻² menjadi −2x⁻¹",
+    "Menerapkan aturan jumlah pada perkalian, misalnya menulis (f·g)' = f'·g'"
+   ],
+   "pertanyaanKenapa": [
+    "Dari mana rumus n·xⁿ⁻¹ — kenapa pangkatnya 'turun ke depan'?",
+    "Kenapa turunan sebuah konstanta selalu nol?",
+    "Kenapa turunan penjumlahan boleh dipisah, tetapi turunan perkalian tidak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Aturan Hasil Kali dan Aturan Hasil Bagi",
+   "kelas": 12,
+   "subKonsep": [
+    "Bukti bahwa (f·g)' tidak sama dengan f'·g' lewat contoh sederhana",
+    "Aturan hasil kali dan gagasan pertambahan luas persegi panjang",
+    "Aturan hasil bagi dan syarat penyebut tidak nol",
+    "Memilih strategi: menyederhanakan lebih dulu atau langsung memakai aturan",
+    "Turunan fungsi rasional",
+    "Perluasan aturan hasil kali untuk tiga faktor"
+   ],
+   "rumus": [
+    "(u·v)' = u'·v + u·v'",
+    "(u/v)' = (u'·v − u·v') / v²",
+    "d/dx (1/v) = −v'/v²",
+    "(u·v·w)' = u'vw + uv'w + uvw'"
+   ],
+   "keterampilan": [
+    "Menetapkan u dan v dengan tepat sebelum menerapkan aturan",
+    "Menerapkan aturan hasil kali dan hasil bagi pada bentuk campuran",
+    "Menyederhanakan hasil turunan menjadi bentuk paling ringkas",
+    "Memeriksa hasil dengan menjabarkan perkalian lebih dulu"
+   ],
+   "prasyarat": [
+    "Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih",
+    "Operasi Pecahan Aljabar",
+    "Fungsi Rasional dan Grafiknya"
+   ],
+   "miskonsepsi": [
+    "Menulis (u·v)' = u'·v'",
+    "Membalik urutan pengurangan pada aturan hasil bagi menjadi (uv' − u'v)",
+    "Lupa mengkuadratkan penyebut pada aturan hasil bagi",
+    "Memakai aturan hasil bagi padahal penyebutnya konstanta"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa (u·v)' bukan u'·v'? Coba uji dengan u = x dan v = x.",
+    "Kenapa aturan hasil kali menghasilkan dua suku — apa hubungannya dengan pertambahan luas persegi panjang?",
+    "Kenapa urutan pengurangan pada aturan hasil bagi tidak boleh dibalik?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Aturan Rantai",
+   "kelas": 12,
+   "subKonsep": [
+    "Mengenali fungsi komposisi dan memisahkan lapisan luar dan dalam",
+    "Aturan rantai dalam notasi Lagrange dan notasi Leibniz",
+    "Turunan bentuk (ax + b)ⁿ",
+    "Aturan rantai bertingkat lebih dari dua lapis",
+    "Gagasan laju berantai (roda gigi bersusun)",
+    "Aturan rantai sebagai kunci pada laju perubahan terkait"
+   ],
+   "rumus": [
+    "(f ∘ g)'(x) = f'(g(x)) · g'(x)",
+    "dy/dx = dy/du · du/dx",
+    "d/dx (ax + b)ⁿ = a·n·(ax + b)ⁿ⁻¹",
+    "d/dx (√(u)) = u' / (2√u)"
+   ],
+   "keterampilan": [
+    "Mengidentifikasi fungsi dalam dan fungsi luar pada bentuk komposisi",
+    "Menurunkan bentuk berpangkat dan berakar yang memuat fungsi dalam",
+    "Merangkai aturan rantai untuk tiga lapis fungsi atau lebih",
+    "Menggabungkan aturan rantai dengan aturan hasil kali dan hasil bagi"
+   ],
+   "prasyarat": [
+    "Komposisi Fungsi",
+    "Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih",
+    "Aturan Hasil Kali dan Aturan Hasil Bagi"
+   ],
+   "miskonsepsi": [
+    "Lupa mengalikan dengan turunan fungsi dalam",
+    "Mengira d/dx (sin 2x) = cos 2x",
+    "Mencoret du pada notasi Leibniz seolah-olah pecahan biasa tanpa memahami maknanya",
+    "Menerapkan aturan rantai pada penjumlahan, bukan komposisi"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa turunan fungsi dalam ikut dikalikan?",
+    "Kenapa laju perubahan bisa berlipat, seperti dua roda gigi yang bersusun?",
+    "Kenapa notasi Leibniz membuat aturan rantai tampak 'seperti mencoret' — apakah itu kebetulan?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Turunan Fungsi Trigonometri",
+   "kelas": 12,
+   "subKonsep": [
+    "Menurunkan sin x dari definisi limit memakai limit istimewa",
+    "Turunan cos x dan asal tanda negatifnya",
+    "Turunan tan x, cot x, sec x, dan csc x dari aturan hasil bagi",
+    "Turunan fungsi trigonometri gabungan dengan aturan rantai",
+    "Grafik sin dan cos sebagai pasangan fungsi-turunan",
+    "Daur empat langkah turunan sinus"
+   ],
+   "rumus": [
+    "(sin x)' = cos x",
+    "(cos x)' = −sin x",
+    "(tan x)' = sec²x",
+    "(cot x)' = −csc²x",
+    "(sec x)' = sec x·tan x",
+    "(csc x)' = −csc x·cot x",
+    "(sin u)' = cos u · u'"
+   ],
+   "keterampilan": [
+    "Menurunkan fungsi trigonometri yang bergabung dengan aljabar",
+    "Menyederhanakan dengan identitas sebelum atau sesudah menurunkan",
+    "Menentukan gradien garis singgung pada kurva trigonometri",
+    "Menemukan titik stasioner fungsi trigonometri"
+   ],
+   "prasyarat": [
+    "Limit Fungsi Trigonometri",
+    "Aturan Rantai",
+    "Identitas Trigonometri"
+   ],
+   "miskonsepsi": [
+    "Lupa tanda negatif pada turunan cos x",
+    "Memakai satuan derajat sehingga rumus turunan menjadi salah",
+    "Mengira (sin 2x)' = cos 2x tanpa faktor 2",
+    "Mengira (sin²x)' = cos²x"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa turunan sinus tepat berupa kosinus — apa yang terlihat kalau kedua grafik ditumpuk?",
+    "Kenapa muncul tanda minus pada turunan kosinus?",
+    "Kenapa rumus turunan trigonometri hanya benar bila sudut dalam radian?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Turunan Fungsi Eksponensial dan Logaritma",
+   "kelas": 12,
+   "subKonsep": [
+    "Bilangan e sebagai basis yang membuat gradien kurva sama dengan tingginya",
+    "Turunan eˣ dan aˣ",
+    "Turunan ln x dan logaritma basis a",
+    "Penggabungan dengan aturan rantai untuk eᵘ dan ln u",
+    "Model pertumbuhan dan peluruhan eksponensial",
+    "Laju perubahan relatif dan turunan logaritmik"
+   ],
+   "rumus": [
+    "(eˣ)' = eˣ",
+    "(aˣ)' = aˣ · ln a",
+    "(ln x)' = 1/x",
+    "(log_a x)' = 1/(x · ln a)",
+    "(e^u)' = e^u · u'",
+    "(ln u)' = u'/u"
+   ],
+   "keterampilan": [
+    "Menurunkan fungsi eksponensial dan logaritma bergabung dengan aljabar",
+    "Memodelkan pertumbuhan penduduk atau peluruhan zat dan menghitung lajunya",
+    "Menentukan titik stasioner pada model eksponensial",
+    "Menggunakan sifat logaritma untuk menyederhanakan sebelum menurunkan"
+   ],
+   "prasyarat": [
+    "Fungsi Eksponensial dan Logaritma",
+    "Aturan Rantai",
+    "Aturan Hasil Kali dan Aturan Hasil Bagi"
+   ],
+   "miskonsepsi": [
+    "Menerapkan aturan pangkat sehingga menulis (eˣ)' = x·eˣ⁻¹",
+    "Menulis (2ˣ)' = x·2ˣ⁻¹",
+    "Mengira (ln x)' = 1/x berlaku untuk logaritma semua basis",
+    "Mengira (ln(x²))' = 1/x²"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa bilangan e kira-kira 2,718 dan bukan 2 atau 3?",
+    "Kenapa ada fungsi yang turunannya sama persis dengan dirinya sendiri?",
+    "Kenapa turunan ln x justru 1/x — apa hubungannya dengan luas di bawah kurva 1/x?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Turunan Implisit dan Turunan Tingkat Tinggi",
+   "kelas": 12,
+   "subKonsep": [
+    "Fungsi eksplisit dan hubungan implisit",
+    "Menurunkan kedua ruas persamaan terhadap x",
+    "Suku yang memuat y diturunkan dengan aturan rantai sehingga muncul dy/dx",
+    "Gradien garis singgung lingkaran dan elips",
+    "Turunan kedua dan artinya (percepatan, kecekungan)",
+    "Notasi f''(x), d²y/dx², dan turunan tingkat n"
+   ],
+   "rumus": [
+    "d/dx (yⁿ) = n·yⁿ⁻¹ · dy/dx",
+    "pada x² + y² = r²: dy/dx = −x/y",
+    "f''(x) = d/dx (f'(x))",
+    "d²y/dx²"
+   ],
+   "keterampilan": [
+    "Menurunkan persamaan implisit dan menyelesaikan dy/dx",
+    "Menentukan persamaan garis singgung kurva implisit",
+    "Menghitung turunan kedua dan ketiga suatu fungsi",
+    "Menafsirkan tanda turunan kedua pada konteks gerak dan bentuk grafik"
+   ],
+   "prasyarat": [
+    "Aturan Rantai",
+    "Aturan Hasil Kali dan Aturan Hasil Bagi",
+    "Persamaan Lingkaran"
+   ],
+   "miskonsepsi": [
+    "Lupa menempelkan faktor dy/dx saat menurunkan suku yang memuat y",
+    "Mengira turunan kedua berarti turunan yang dikuadratkan",
+    "Mengira setiap kurva pasti bisa dinyatakan sebagai y = f(x)",
+    "Mengira dy/dx pada hasil implisit tidak boleh memuat y"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa lingkaran tidak bisa diturunkan langsung seperti fungsi biasa?",
+    "Kenapa muncul dy/dx ketika kita menurunkan y² terhadap x?",
+    "Apa arti nyata dari turunan dari turunan?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Gradien dan Persamaan Garis Singgung Kurva",
+   "kelas": 12,
+   "subKonsep": [
+    "Gradien garis singgung di titik (a, f(a)) sama dengan f'(a)",
+    "Menyusun persamaan garis singgung",
+    "Garis normal dan hubungan gradiennya dengan garis singgung",
+    "Garis singgung dengan gradien tertentu yang diketahui",
+    "Garis singgung dari titik di luar kurva",
+    "Sudut potong antara dua kurva"
+   ],
+   "rumus": [
+    "m = f'(a)",
+    "y − f(a) = f'(a)·(x − a)",
+    "m_normal = −1 / f'(a)",
+    "m_singgung · m_normal = −1"
+   ],
+   "keterampilan": [
+    "Menyusun persamaan garis singgung dan garis normal di titik tertentu",
+    "Mencari titik singgung bila gradiennya diketahui",
+    "Menentukan garis singgung yang melalui titik di luar kurva",
+    "Menggambar garis singgung pada sketsa kurva"
+   ],
+   "prasyarat": [
+    "Definisi Turunan sebagai Limit",
+    "Gradien dan Persamaan Garis Lurus",
+    "Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih"
+   ],
+   "miskonsepsi": [
+    "Memakai nilai f(a) sebagai gradien, bukan f'(a)",
+    "Mengira garis singgung hanya boleh menyentuh kurva di satu titik saja",
+    "Menukar gradien garis singgung dan garis normal",
+    "Mengira titik yang diberikan pasti merupakan titik singgung"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa gradien garis singgung sama persis dengan nilai turunan?",
+    "Kenapa sebuah garis singgung bisa memotong kurva di titik lain?",
+    "Kenapa hasil kali gradien garis singgung dan garis normal selalu −1?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Fungsi Naik, Fungsi Turun, dan Titik Stasioner",
+   "kelas": 12,
+   "subKonsep": [
+    "Tanda f'(x) sebagai penentu arah grafik",
+    "Selang fungsi naik dan selang fungsi turun",
+    "Titik stasioner sebagai penyelesaian f'(x) = 0",
+    "Jenis titik stasioner: maksimum lokal, minimum lokal, belok datar",
+    "Uji garis bilangan tanda turunan",
+    "Membaca grafik f dari grafik f' dan sebaliknya"
+   ],
+   "rumus": [
+    "f'(x) > 0 ⟹ f naik",
+    "f'(x) < 0 ⟹ f turun",
+    "f'(x) = 0 ⟹ titik stasioner"
+   ],
+   "keterampilan": [
+    "Menentukan selang naik dan turun suatu fungsi",
+    "Menemukan semua titik stasioner beserta koordinatnya",
+    "Membuat tabel atau garis bilangan tanda f'",
+    "Menghubungkan letak akar f' dengan puncak dan lembah grafik f"
+   ],
+   "prasyarat": [
+    "Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih",
+    "Pertidaksamaan Kuadrat",
+    "Definisi Turunan sebagai Limit"
+   ],
+   "miskonsepsi": [
+    "Mengira f'(x) = 0 selalu berarti maksimum atau minimum",
+    "Menentukan naik-turun dari tanda f(x), bukan tanda f'(x)",
+    "Mengira fungsi naik berarti nilai fungsinya positif",
+    "Melupakan titik yang turunannya tidak ada saat mencari titik kritis"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa tanda turunan bisa memberi tahu arah grafik tanpa harus menggambarnya?",
+    "Kenapa ada titik dengan f' = 0 yang bukan puncak maupun lembah?",
+    "Kenapa grafik f' memotong sumbu x tepat di tempat grafik f mendatar?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Nilai Maksimum-Minimum, Kecekungan, dan Titik Belok",
+   "kelas": 12,
+   "subKonsep": [
+    "Ekstrem lokal dan ekstrem mutlak pada selang tertutup",
+    "Uji turunan pertama untuk menentukan jenis ekstrem",
+    "Uji turunan kedua dan keterbatasannya saat f'' = 0",
+    "Cekung ke atas dan cekung ke bawah dari tanda f''",
+    "Titik belok sebagai tempat pergantian kecekungan",
+    "Sketsa kurva lengkap: titik potong sumbu, stasioner, belok, dan asimtot"
+   ],
+   "rumus": [
+    "f''(a) > 0 ⟹ minimum lokal di a",
+    "f''(a) < 0 ⟹ maksimum lokal di a",
+    "titik belok: f''(x) = 0 dan tanda f'' berganti",
+    "ekstrem mutlak pada [a, b]: bandingkan nilai di titik kritis dan di x = a serta x = b"
+   ],
+   "keterampilan": [
+    "Menguji jenis titik stasioner dengan uji turunan pertama dan kedua",
+    "Menentukan selang kecekungan dan koordinat titik belok",
+    "Menentukan nilai terbesar dan terkecil pada selang tertutup",
+    "Membuat sketsa kurva berdasarkan informasi f, f', dan f''"
+   ],
+   "prasyarat": [
+    "Fungsi Naik, Fungsi Turun, dan Titik Stasioner",
+    "Turunan Implisit dan Turunan Tingkat Tinggi",
+    "Limit di Tak Hingga, Limit Tak Hingga, dan Asimtot"
+   ],
+   "miskonsepsi": [
+    "Mengira f''(x) = 0 pasti berarti titik belok",
+    "Lupa memeriksa nilai di ujung selang saat mencari ekstrem mutlak",
+    "Menyamakan maksimum lokal dengan nilai terbesar fungsi",
+    "Mengira cekung ke atas berarti fungsi sedang naik"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa tanda turunan kedua bisa membedakan puncak dari lembah?",
+    "Kenapa titik belok butuh pergantian tanda, bukan sekadar f'' = 0?",
+    "Kenapa nilai terbesar suatu fungsi bisa berada di ujung selang, bukan di titik stasioner?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Masalah Optimasi dengan Turunan",
+   "kelas": 12,
+   "subKonsep": [
+    "Menerjemahkan situasi nyata menjadi fungsi tujuan",
+    "Menggunakan persamaan kendala untuk menyisakan satu variabel",
+    "Menentukan domain yang masuk akal secara fisik",
+    "Menguji ekstrem dan memilih penyelesaian yang layak",
+    "Menafsirkan jawaban lengkap dengan satuannya",
+    "Contoh klasik: kaleng paling hemat bahan, kandang berluas maksimum, biaya produksi minimum"
+   ],
+   "rumus": [
+    "kendala ⟹ fungsi tujuan satu variabel f(x)",
+    "f'(x) = 0 lalu uji f''(x) atau tanda f'",
+    "kaleng tabung volume tetap: luas minimum saat tinggi = diameter (h = 2r)"
+   ],
+   "keterampilan": [
+    "Menyusun model matematis dari deskripsi masalah",
+    "Mengurangi jumlah variabel dengan persamaan kendala",
+    "Memeriksa kelayakan hasil terhadap domain masalah",
+    "Menyampaikan kesimpulan dalam bahasa konteks, bukan sekadar angka"
+   ],
+   "prasyarat": [
+    "Nilai Maksimum-Minimum, Kecekungan, dan Titik Belok",
+    "Luas dan Volume Bangun Ruang",
+    "Fungsi Naik, Fungsi Turun, dan Titik Stasioner"
+   ],
+   "miskonsepsi": [
+    "Melupakan batasan domain, misalnya menerima panjang bernilai negatif",
+    "Mengira setiap penyelesaian f'(x) = 0 otomatis merupakan jawaban optimal",
+    "Menetapkan variabel bebas yang salah sehingga fungsi masih memuat dua variabel",
+    "Berhenti pada nilai x tanpa menghitung nilai optimum yang diminta"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa kaleng paling hemat bahan justru punya tinggi sama dengan diameternya?",
+    "Kenapa masalah nyata harus diubah menjadi fungsi satu variabel dulu?",
+    "Kenapa nilai terbaik sering muncul tepat saat laju perubahannya nol?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Laju Perubahan Terkait dan Penerapan Turunan pada Kinematika serta Ekonomi",
+   "kelas": 12,
+   "subKonsep": [
+    "Hubungan posisi, kecepatan, dan percepatan",
+    "Kecepatan sesaat, laju, dan arah gerak dari tanda kecepatan",
+    "Laju perubahan terkait yang dihubungkan lewat aturan rantai",
+    "Contoh laju terkait: pengisian tangki, tangga merosot, bayangan memanjang",
+    "Biaya marginal, pendapatan marginal, dan keuntungan maksimum",
+    "Konsistensi satuan pada setiap laju"
+   ],
+   "rumus": [
+    "v(t) = s'(t)",
+    "a(t) = v'(t) = s''(t)",
+    "dV/dt = dV/dr · dr/dt",
+    "biaya marginal = C'(x); pendapatan marginal = R'(x)"
+   ],
+   "keterampilan": [
+    "Menurunkan fungsi posisi untuk memperoleh kecepatan dan percepatan",
+    "Menyusun persamaan penghubung dua besaran sebelum menurunkannya terhadap waktu",
+    "Menafsirkan tanda kecepatan dan percepatan pada gerak",
+    "Menghitung dan memaknai besaran marginal dalam ekonomi"
+   ],
+   "prasyarat": [
+    "Aturan Rantai",
+    "Definisi Turunan sebagai Limit",
+    "Turunan Implisit dan Turunan Tingkat Tinggi"
+   ],
+   "miskonsepsi": [
+    "Menyamakan kecepatan dengan laju sehingga mengabaikan tanda",
+    "Mengira benda berhenti ketika percepatannya nol",
+    "Mensubstitusi angka lebih dulu sebelum menurunkan pada soal laju terkait",
+    "Mengira biaya marginal adalah biaya rata-rata"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa percepatan adalah turunan dari turunan posisi?",
+    "Kenapa laju memanjangnya bayangan bisa dihitung hanya dari laju berjalan seseorang?",
+    "Kenapa ekonom memakai turunan untuk menghitung biaya tambahan satu unit terakhir?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Integral Tak Tentu sebagai Antiturunan",
+   "kelas": 12,
+   "subKonsep": [
+    "Integral sebagai proses membalik turunan",
+    "Keluarga fungsi yang turunannya sama dan lahirnya konstanta C",
+    "Aturan pangkat untuk integral dan syarat n ≠ −1",
+    "Integral fungsi trigonometri dasar",
+    "Integral eksponensial dan integral 1/x",
+    "Menentukan nilai C dari syarat awal (satu titik yang dilalui)"
+   ],
+   "rumus": [
+    "∫ xⁿ dx = xⁿ⁺¹/(n+1) + C, n ≠ −1",
+    "∫ (1/x) dx = ln|x| + C",
+    "∫ eˣ dx = eˣ + C",
+    "∫ sin x dx = −cos x + C",
+    "∫ cos x dx = sin x + C",
+    "∫ k·f(x) dx = k ∫ f(x) dx"
+   ],
+   "keterampilan": [
+    "Mengintegralkan polinomial dan bentuk pangkat pecahan",
+    "Memeriksa hasil integral dengan menurunkannya kembali",
+    "Menentukan fungsi asal dari turunannya dan satu titik yang diketahui",
+    "Menuliskan hasil integral dengan konstanta C yang benar"
+   ],
+   "prasyarat": [
+    "Aturan Turunan Dasar: Pangkat, Kelipatan, Jumlah, dan Selisih",
+    "Turunan Fungsi Trigonometri",
+    "Turunan Fungsi Eksponensial dan Logaritma"
+   ],
+   "miskonsepsi": [
+    "Lupa menuliskan konstanta C",
+    "Memakai aturan pangkat untuk n = −1 sehingga muncul pembagian dengan nol",
+    "Menulis ∫ f·g dx = ∫f dx · ∫g dx",
+    "Salah tanda pada ∫ sin x dx"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa harus ada +C — apa yang hilang saat kita menurunkan?",
+    "Kenapa aturan pangkat integral gagal tepat di n = −1, dan kenapa jawabannya justru logaritma?",
+    "Kenapa integral disebut kebalikan turunan padahal hasilnya bukan satu fungsi melainkan sekeluarga fungsi?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Integral dengan Substitusi",
+   "kelas": 12,
+   "subKonsep": [
+    "Mengenali pola f(g(x))·g'(x) di dalam integran",
+    "Memilih u dan menghitung du",
+    "Substitusi pada bentuk (ax + b)ⁿ dan munculnya faktor 1/a",
+    "Substitusi pada integral trigonometri",
+    "Mengembalikan hasil ke variabel semula pada integral tak tentu",
+    "Penyesuaian batas pada integral tentu"
+   ],
+   "rumus": [
+    "∫ f(g(x))·g'(x) dx = ∫ f(u) du dengan u = g(x)",
+    "∫ (ax + b)ⁿ dx = (ax + b)ⁿ⁺¹ / (a(n+1)) + C",
+    "∫ sin(ax) dx = −cos(ax)/a + C",
+    "∫ₐᵇ f(g(x))g'(x) dx = ∫_{g(a)}^{g(b)} f(u) du"
+   ],
+   "keterampilan": [
+    "Memilih substitusi u yang membuat integran menjadi sederhana",
+    "Menukar dx dengan du secara benar termasuk faktor konstanta",
+    "Mengembalikan jawaban ke variabel semula",
+    "Mengganti batas integrasi saat memakai substitusi pada integral tentu"
+   ],
+   "prasyarat": [
+    "Integral Tak Tentu sebagai Antiturunan",
+    "Aturan Rantai",
+    "Komposisi Fungsi"
+   ],
+   "miskonsepsi": [
+    "Mengganti bagian integran tetapi lupa mengganti dx dengan du",
+    "Lupa membagi dengan koefisien a pada bentuk (ax + b)ⁿ",
+    "Lupa mengembalikan u menjadi x pada integral tak tentu",
+    "Tidak mengubah batas integrasi pada integral tentu tetapi tetap memakai u"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa metode substitusi sebenarnya adalah aturan rantai yang dibalik?",
+    "Kenapa muncul faktor 1/a ketika mengintegralkan (ax + b)ⁿ?",
+    "Kenapa batas integral ikut berubah ketika variabelnya diganti?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Integral Parsial",
+   "kelas": 12,
+   "subKonsep": [
+    "Aturan parsial diturunkan dari aturan hasil kali turunan",
+    "Memilih u dan dv beserta panduan urutan (logaritma, aljabar, trigonometri, eksponen)",
+    "Menerapkan integral parsial dua kali",
+    "Integral siklik yang kembali ke bentuk semula",
+    "Integral ln x sebagai kasus khusus",
+    "Integral parsial pada integral tentu"
+   ],
+   "rumus": [
+    "∫ u dv = u·v − ∫ v du",
+    "d(uv) = u dv + v du",
+    "∫ x·eˣ dx = x·eˣ − eˣ + C",
+    "∫ ln x dx = x·ln x − x + C"
+   ],
+   "keterampilan": [
+    "Memilih u dan dv sehingga integral sisa lebih mudah",
+    "Menerapkan integral parsial berulang secara rapi",
+    "Menyelesaikan integral siklik dengan memindahkan ruas",
+    "Memeriksa hasil dengan menurunkan kembali"
+   ],
+   "prasyarat": [
+    "Integral dengan Substitusi",
+    "Aturan Hasil Kali dan Aturan Hasil Bagi",
+    "Integral Tak Tentu sebagai Antiturunan"
+   ],
+   "miskonsepsi": [
+    "Salah tanda pada suku −∫ v du",
+    "Memilih u yang justru membuat integral makin rumit",
+    "Mengira 'parsial' berarti mengintegralkan sebagian integran saja",
+    "Lupa bahwa v diperoleh dengan mengintegralkan dv, bukan menurunkannya"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa aturan hasil kali pada turunan bisa berubah menjadi metode untuk mengintegralkan?",
+    "Kenapa pemilihan u sangat menentukan mudah atau sulitnya penyelesaian?",
+    "Kenapa ∫ ln x dx bisa diselesaikan dengan parsial padahal tidak ada perkalian yang terlihat?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Jumlah Riemann dan Integral Tentu",
+   "kelas": 12,
+   "subKonsep": [
+    "Menaksir luas daerah lengkung dengan persegi panjang (titik kiri, kanan, tengah)",
+    "Memperbanyak partisi dan menyempitkan lebar Δx",
+    "Integral tentu sebagai limit jumlah Riemann",
+    "Notasi ∫ dari a ke b dan makna setiap bagiannya",
+    "Sifat integral tentu: batas dibalik, pemecahan selang, linearitas",
+    "Luas bertanda dan nilai rata-rata fungsi pada selang"
+   ],
+   "rumus": [
+    "∫ₐᵇ f(x) dx = lim(n→∞) Σᵢ f(xᵢ)·Δx, dengan Δx = (b − a)/n",
+    "∫ₐᵇ f(x) dx = −∫_b^a f(x) dx",
+    "∫ₐᶜ f + ∫_c^b f = ∫ₐᵇ f",
+    "∫ₐᵃ f(x) dx = 0",
+    "nilai rata-rata = 1/(b − a) · ∫ₐᵇ f(x) dx"
+   ],
+   "keterampilan": [
+    "Menaksir luas dengan sejumlah persegi panjang dan membandingkan taksiran atas-bawah",
+    "Menuliskan jumlah Riemann suatu daerah dengan notasi sigma",
+    "Menggunakan sifat-sifat integral tentu untuk menyederhanakan perhitungan",
+    "Menafsirkan integral bernilai negatif sebagai luas bertanda"
+   ],
+   "prasyarat": [
+    "Konsep dan Pengertian Limit Fungsi",
+    "Notasi Sigma dan Deret",
+    "Integral Tak Tentu sebagai Antiturunan"
+   ],
+   "miskonsepsi": [
+    "Mengira integral tentu selalu sama dengan luas, padahal yang dihitung adalah luas bertanda",
+    "Mengira Δx bisa benar-benar bernilai nol",
+    "Mengira hasil integral tentu masih memuat variabel x",
+    "Mengira jumlah Riemann hanya taksiran kasar yang tidak pernah tepat"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa luas daerah berbatas kurva lengkung bisa dihitung memakai persegi panjang yang jelas-jelas tidak pas?",
+    "Kenapa hasilnya menjadi tepat hanya ketika banyak partisi menuju tak hingga?",
+    "Kenapa integral bisa bernilai negatif padahal luas selalu positif?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Teorema Dasar Kalkulus",
+   "kelas": 12,
+   "subKonsep": [
+    "Fungsi akumulasi F(x) = ∫ₐˣ f(t) dt sebagai luas yang bertambah",
+    "Teorema Dasar Kalkulus I: turunan fungsi akumulasi kembali menjadi f(x)",
+    "Teorema Dasar Kalkulus II: menghitung integral tentu lewat antiturunan",
+    "Jembatan antara masalah gradien dan masalah luas",
+    "Alasan konstanta C tidak berpengaruh pada integral tentu",
+    "Syarat kekontinuan agar teorema berlaku"
+   ],
+   "rumus": [
+    "d/dx ∫ₐˣ f(t) dt = f(x)",
+    "∫ₐᵇ f(x) dx = F(b) − F(a) dengan F'(x) = f(x)",
+    "notasi [F(x)]ₐᵇ = F(b) − F(a)",
+    "d/dx ∫ₐ^{u(x)} f(t) dt = f(u(x))·u'(x)"
+   ],
+   "keterampilan": [
+    "Menghitung integral tentu dengan mencari antiturunan lalu mengurangkan",
+    "Menurunkan fungsi yang dinyatakan dalam bentuk integral",
+    "Menafsirkan fungsi akumulasi pada konteks nyata (jarak dari kecepatan)",
+    "Menuliskan langkah dengan notasi kurung siku secara benar"
+   ],
+   "prasyarat": [
+    "Jumlah Riemann dan Integral Tentu",
+    "Integral Tak Tentu sebagai Antiturunan",
+    "Kekontinuan Fungsi"
+   ],
+   "miskonsepsi": [
+    "Menuliskan +C pada hasil integral tentu",
+    "Membalik urutan menjadi F(a) − F(b)",
+    "Menerapkan teorema pada fungsi yang tidak kontinu di selang tersebut, misalnya 1/x pada [−1, 1]",
+    "Mengira turunan dan integral adalah dua topik terpisah yang kebetulan berdekatan"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa laju bertambahnya luas tepat sama dengan tinggi kurva di tepi kanan?",
+    "Kenapa cukup mengurangkan dua nilai antiturunan untuk mendapat luas, tanpa menjumlahkan ribuan persegi panjang?",
+    "Kenapa konstanta C lenyap sendiri pada integral tentu?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Luas Daerah dengan Integral",
+   "kelas": 12,
+   "subKonsep": [
+    "Luas daerah antara kurva dan sumbu x",
+    "Daerah yang berada di bawah sumbu x dan penanganan tandanya",
+    "Luas daerah antara dua kurva: kurva atas dikurangi kurva bawah",
+    "Menentukan batas integrasi dari titik potong kedua kurva",
+    "Integrasi terhadap sumbu y sebagai alternatif",
+    "Memecah daerah menjadi beberapa bagian bila posisi kurva bertukar"
+   ],
+   "rumus": [
+    "L = ∫ₐᵇ f(x) dx bila f(x) ≥ 0 pada [a, b]",
+    "L = ∫ₐᵇ |f(x)| dx",
+    "L = ∫ₐᵇ (f(x) − g(x)) dx dengan f di atas g",
+    "L = ∫_c^d x(y) dy untuk integrasi terhadap sumbu y",
+    "luas daerah parabola dan garis: L = |D|√D / (6a²) (rumus cepat)"
+   ],
+   "keterampilan": [
+    "Membuat sketsa daerah sebelum menyusun integral",
+    "Menentukan batas integrasi lewat titik potong kurva",
+    "Memilih integrasi terhadap x atau terhadap y yang lebih efisien",
+    "Memecah integral ketika kurva atas dan bawah bertukar posisi"
+   ],
+   "prasyarat": [
+    "Teorema Dasar Kalkulus",
+    "Sistem Persamaan dan Titik Potong Dua Kurva",
+    "Jumlah Riemann dan Integral Tentu"
+   ],
+   "miskonsepsi": [
+    "Menghitung tanpa sketsa sehingga salah menentukan kurva atas dan bawah",
+    "Menuliskan (bawah − atas) sehingga luas menjadi negatif",
+    "Memakai satu integral padahal kurva bertukar posisi di titik potong",
+    "Mengira luas daerah di bawah sumbu x bernilai negatif"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa luas di antara dua kurva cukup 'yang atas dikurangi yang bawah', tanpa peduli letaknya terhadap sumbu x?",
+    "Kenapa daerah di bawah sumbu x memberi hasil integral negatif?",
+    "Kenapa untuk beberapa daerah lebih mudah mengiris mendatar (terhadap y) daripada tegak?"
+   ]
+  },
+  {
+   "judul": "[Tingkat Lanjut] Volume Benda Putar",
+   "kelas": 12,
+   "subKonsep": [
+    "Membentuk benda putar dengan memutar daerah mengelilingi sumbu x atau sumbu y",
+    "Metode cakram: irisan tipis berbentuk tabung sangat pendek",
+    "Metode cincin (washer) untuk daerah antara dua kurva",
+    "Menentukan jari-jari irisan dari fungsi",
+    "Menentukan batas integrasi sesuai sumbu putar",
+    "Metode kulit tabung sebagai alternatif (pengayaan)"
+   ],
+   "rumus": [
+    "V = π ∫ₐᵇ [f(x)]² dx (cakram, sumbu x)",
+    "V = π ∫ₐᵇ ([f(x)]² − [g(x)]²) dx (cincin, sumbu x)",
+    "V = π ∫_c^d [x(y)]² dy (cakram, sumbu y)",
+    "V = 2π ∫ₐᵇ x·f(x) dx (kulit tabung)"
+   ],
+   "keterampilan": [
+    "Menentukan sumbu putar, jari-jari, dan batas integrasi dari sketsa",
+    "Memilih antara metode cakram dan metode cincin",
+    "Menghitung volume benda putar daerah antara dua kurva",
+    "Mengaitkan hasil dengan bentuk benda nyata (gelas, vas, poros)"
+   ],
+   "prasyarat": [
+    "Luas Daerah dengan Integral",
+    "Volume Tabung, Kerucut, dan Bola",
+    "Teorema Dasar Kalkulus"
+   ],
+   "miskonsepsi": [
+    "Menuliskan (f − g)² padahal seharusnya f² − g²",
+    "Lupa mengalikan dengan π",
+    "Memakai batas pada sumbu x padahal daerah diputar mengelilingi sumbu y",
+    "Mengira volume benda putar sama dengan luas daerah dikali 2π"
+   ],
+   "pertanyaanKenapa": [
+    "Kenapa muncul π dan kuadrat pada rumus volume benda putar?",
+    "Kenapa (f − g)² salah untuk metode cincin, padahal untuk luas kita memakai (f − g)?",
+    "Kenapa menumpuk cakram yang sangat tipis bisa menghasilkan volume yang tepat, bukan taksiran?"
+   ]
+  }
+ ],
+ "sources": [
+  "https://uploads.belajar.id/document/files/Kepka_BSKAP_No_01k17e8396ajn15j3hcw0k773b.pdf (diunduh dan diekstrak teksnya; Lampiran II bab IV.1 Matematika dan IV.2 Matematika Tingkat Lanjut, bagian C Karakteristik dan D Capaian Pembelajaran Fase F)",
+  "https://repositori.kemendikdasmen.go.id/33608/",
+  "http://repositori.kemendikdasmen.go.id/33608/1/5.%20Final%20Panduan%20Mata%20Pelajaran%20Matematika_12_09_2025_Revisi%203.pdf (Panduan Mata Pelajaran Matematika Fase A-F dan Fase F Tingkat Lanjut, Pusat Kurikulum dan Pembelajaran 2025; tabel Pemetaan Materi Esensial kolom Fase F+ dan uraian elemen Kalkulus hlm. 238-240)",
+  "https://www.pembelajaranmendalam.com/2025/11/cp-matematika-fase-f-kelas-11-12-sma-ma-smk-mak-semester-1-2-kurmer-pm.html",
+  "https://www.slideshare.net/slideshow/perbandingan-cp-2024-dan-2025-matematika-umum-dan-matematika-tl-pdf/282169071",
+  "https://www.matematrick.com/2024/01/materi-matematika-kelas-12-kurikulum.html",
+  "https://www.informasiguru.com/2026/04/download-buku-matematika-tingkat-lanjut.html",
+  "https://www.scribd.com/document/896538077/Materi-Matematika-Tingkat-Lanjut-Kelas-XI-Kur-Mer",
+  "https://www.plcpekanbaru.com/artikel/detail/1460/kisikisi-resmi-tka-matematika-lanjutan-matlan-sma-tahun-2026/",
+  "https://guru.kemendikdasmen.go.id/dokumen/74r6Yln0zK",
+  "https://guru.kemendikdasmen.go.id/kurikulum/referensi-penerapan/capaian-pembelajaran/sd-sma/matematika-tingkat-lanjut/fase-f/ (halaman contoh ATP masih kosong: \"Contoh ATP ini masih dikembangkan\")"
+ ],
+ "catatan": "1) Verifikasi awalan. PDF resmi Kepka BSKAP 046/H/KR/2025 diunduh dan diekstrak. Matematika umum Fase F (bab IV.1 butir 6) hanya memuat empat elemen: Bilangan, Aljabar dan Fungsi, Geometri, Analisis Data dan Peluang — TIDAK ada Kalkulus, dan tidak ada limit maupun turunan di dalam rumusan keempat elemen itu. Karena itu SELURUH 26 topik di sini diawali \"[Tingkat Lanjut] \".\n\n2) Kelas. Semua topik diberi kelas 12. Alasan: buku teks resmi Matematika Tingkat Lanjut Kelas XI (edisi revisi) berisi Matriks, Polinomial, Fungsi Trigonometri, Vektor, Transformasi Geometri, Fungsi dan Pemodelan — tanpa bab kalkulus; sedangkan buku Kelas XII memuat Bab 2 Limit, Bab 3 Turunan Fungsi, Bab 4 Integral. Perlu dicatat: sebagian ATP sekolah/penerbit menaruh limit dan turunan fungsi aljabar di kelas XI semester 2 (warisan pembagian Kurikulum 2013). Jika VisualMTK ingin longgar, topik nomor 2-4 dan 8-10 bisa dianggap \"kelas 11 akhir / kelas 12 awal\".\n\n3) Cakupan di luar teks CP. Teks CP resmi tidak menyebut secara eksplisit: kekontinuan, limit tak hingga, turunan implisit, teknik substitusi/parsial, dan volume benda putar. Namun deskripsi elemen resmi menyebut \"laju perubahan sesaat dari suatu fungsi kontinu ... limit, diferensial, dan integral, serta penggunaannya\", dan Panduan Mata Pelajaran 2025 secara eksplisit menyebut jumlahan Riemann, Teorema Dasar Kalkulus I dan II, serta \"limit bentuk tak hingga\". Buku teks kelas XII memuat limit fungsi trigonometri dan jumlahan Riemann. Substitusi, parsial, dan volume benda putar disertakan sebagai pengayaan karena lazim di buku penerbit dan diuji di SNBT; tandai sebagai opsional bila ingin ketat pada CP.\n\n4) TKA. Kisi-kisi TKA Matematika Lanjutan SMA 2026 membatasi bagian Kalkulus hanya pada Limit (limit fungsi aljabar dan limit fungsi trigonometri). Ini lingkup ujian, bukan lingkup kurikulum — jangan dipakai untuk memangkas topik.\n\n5) Catatan sumber. Domain guru.kemdikbud.go.id dan static.buku.kemdikbud.go.id sudah mati (DNS gagal). Halaman contoh ATP resmi untuk Matematika Tingkat Lanjut Fase F di guru.kemendikdasmen.go.id masih kosong (\"masih dikembangkan\"), sehingga pembagian kelas disandarkan pada buku teks resmi dan ATP penerbit/sekolah.\n\n6) Selaras dengan prinsip produk. Panduan resmi menegaskan \"Pembelajaran integral diharapkan tidak dimulai dengan rumus\" — sejalan dengan tagline \"Jangan cuma hafal. Lihat kenapa.\" Topik 1 (laju rata-rata → sesaat), 23 (Riemann), dan 24 (Teorema Dasar Kalkulus) adalah kandidat visual paling kuat: tali busur yang menutup, persegi panjang yang menyempit, dan luas yang bertambah dengan laju setinggi kurva."
+}
