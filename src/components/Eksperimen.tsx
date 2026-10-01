@@ -1,16 +1,26 @@
 /* ============================================================
    Visual MTK — Panggung eksperimen
-   Anak menggeser, aplikasi menggambar ulang seketika, dan
-   "temuan" di bawahnya ikut berubah. Tujuannya bukan membaca
-   kesimpulan, tapi menemukannya sendiri.
+   Anak memegang objeknya langsung — menyeret titik, merentangkan
+   sisi — dan gambar, angka, serta "temuan" ikut berubah seketika.
+   Kontrol angka ringkas di bawah gambar hanya cadangan untuk
+   ketelitian. Tujuannya bukan membaca kesimpulan, tapi
+   menemukannya sendiri.
    ============================================================ */
 
-import { useState, type ComponentType, type ReactNode } from 'react'
-import type { ParamSpec } from '../lib/types'
-import { Params, paramAwal } from './Slider'
+import type { ComponentType, ReactNode } from 'react'
+import type { FormulaRole, ParamSpec } from '../lib/types'
 import { Stage } from './Stage'
-import { SorotProvider, useSorot } from './Formula'
+import { Formula, SorotProvider, useSorot } from './Formula'
 import { Ikon } from './Ikon'
+import {
+  BilahAngka,
+  InteraksiProvider,
+  SorotDariPegangan,
+  TombolFokus,
+  useKendali,
+  useModeFokus,
+  type Nilai,
+} from './Interaksi'
 
 export interface EksperimenProps {
   judul: string
@@ -18,6 +28,10 @@ export interface EksperimenProps {
   params: ParamSpec[]
   Visual: ComponentType<{ p: Record<string, number>; sorot: string | null }>
   temuan?: (p: Record<string, number>) => ReactNode
+  /** rumus hidup yang angkanya mengikuti gambar. */
+  rumus?: (p: Record<string, number>) => string
+  roles?: Record<string, FormulaRole>
+  arti?: Record<string, string>
   /** isi tambahan di bawah kontrol, mis. rumus interaktif. */
   children?: ReactNode
 }
@@ -28,48 +42,78 @@ export function Eksperimen({
   params,
   Visual,
   temuan,
+  rumus,
+  roles,
+  arti,
   children,
 }: EksperimenProps) {
-  const [p, setP] = useState(() => paramAwal(params))
-  const awal = paramAwal(params)
-  const berubah = params.some((s) => p[s.key] !== awal[s.key])
+  const kendali = useKendali(params)
+  const mode = useModeFokus()
+
+  const tombolUlang = kendali.berubah && (
+    <button className="btn btn-sm btn-ghost" onClick={kendali.reset}>
+      <Ikon nama="ulang" /> Atur ulang
+    </button>
+  )
 
   return (
     <SorotProvider>
-      <div className="eksperimen">
-        <div className="row row-between" style={{ marginBottom: 'var(--s-3)' }}>
-          <span className="eyebrow row-tight" style={{ display: 'inline-flex' }}>
-            <Ikon nama="eksperimen" /> Eksperimen
-          </span>
-          {berubah && (
-            <button className="btn btn-sm btn-ghost" onClick={() => setP(awal)}>
-              <Ikon nama="ulang" /> Atur ulang
-            </button>
-          )}
-        </div>
-
-        <h3 className="eksperimen-judul">{judul}</h3>
-        <p className="muted" style={{ marginBottom: 'var(--s-4)' }}>
-          {ajakan}
-        </p>
-
-        <Panggung Visual={Visual} p={p} />
-
-        <div className="controls" style={{ marginTop: 'var(--s-4)' }}>
-          <Params specs={params} nilai={p} set={(k, v) => setP((s) => ({ ...s, [k]: v }))} />
-        </div>
-
-        {temuan && (
-          <div className="temuan" aria-live="polite">
-            <span className="temuan-tanda">
-              <Ikon nama="lampu" />
+      <InteraksiProvider kendali={kendali}>
+        <SorotDariPegangan />
+        <div className="eksperimen">
+          <div className="row row-between eksperimen-kepala">
+            <span className="eyebrow row-tight" style={{ display: 'inline-flex' }}>
+              <Ikon nama="eksperimen" /> Eksperimen
             </span>
-            <div className="grow">{temuan(p)}</div>
+            {!mode.fokus && tombolUlang}
           </div>
-        )}
 
-        {children}
-      </div>
+          <h3 className="eksperimen-judul">{judul}</h3>
+          <p className="muted eksperimen-ajakan">{ajakan}</p>
+
+          <div
+            className="ruang"
+            data-fokus={mode.fokus}
+            role={mode.fokus ? 'dialog' : undefined}
+            aria-modal={mode.fokus || undefined}
+            aria-label={mode.fokus ? judul : undefined}
+          >
+            {mode.fokus && (
+              <div className="ruang-kepala">
+                <strong className="ruang-judul">{judul}</strong>
+                {tombolUlang}
+              </div>
+            )}
+
+            <Panggung
+              Visual={Visual}
+              p={kendali.tampil}
+              aksi={<TombolFokus fokus={mode.fokus} onClick={mode.toggle} />}
+            />
+
+            {rumus && (
+              <div className="rumus-hidup">
+                <Formula src={rumus(kendali.tampil)} roles={roles} arti={arti} size="lg" ringkas />
+              </div>
+            )}
+
+            <BilahAngka kendali={kendali} />
+
+            {temuan && (
+              <div className="temuan" aria-live="polite">
+                <span className="temuan-tanda">
+                  <Ikon nama="lampu" />
+                </span>
+                {/* Temuan memakai nilai akhir, bukan nilai yang sedang beranimasi,
+                    supaya pembaca layar tidak membacakan setiap bingkai. */}
+                <div className="grow">{temuan(kendali.nilai)}</div>
+              </div>
+            )}
+          </div>
+
+          {children}
+        </div>
+      </InteraksiProvider>
     </SorotProvider>
   )
 }
@@ -77,13 +121,15 @@ export function Eksperimen({
 function Panggung({
   Visual,
   p,
+  aksi,
 }: {
   Visual: ComponentType<{ p: Record<string, number>; sorot: string | null }>
-  p: Record<string, number>
+  p: Nilai
+  aksi: ReactNode
 }) {
   const sorot = useSorot()
   return (
-    <Stage>
+    <Stage aksi={aksi}>
       <Visual p={p} sorot={sorot} />
     </Stage>
   )

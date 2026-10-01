@@ -16,6 +16,14 @@
    POLANYA tidak — selalu 3 diameter lebih sedikit. Hasil bagi
    keliling : diameter itulah yang diberi nama π.
 
+   Interaksi langsung (lihat docs/PANDUAN-INTERAKSI.md):
+   - Bongkar langkah 0–4: puncak roda diseret naik-turun untuk
+     membesarkan rodanya (y puncak = dasar − 2r, jadi keNilai
+     benar-benar kebalikan rumus posisinya).
+   - Bongkar langkah 5–6: ujung kanan jejak terpanjang ditarik
+     mendatar; ketiga lingkaran ikut membesar bersama.
+   - Eksperimen: ujung bawah jari-jari ditarik ke bawah.
+
    Yang dijaga agar tidak menyesatkan:
    - π BUKAN 3,14 dan BUKAN 22/7. Keduanya hampiran; 3,14 sedikit
      lebih kecil dari π, 22/7 sedikit lebih besar.
@@ -24,29 +32,86 @@
      disebut terang-terangan di bagian penjelasan.
    ============================================================ */
 
-import { Svg, Tag, Dimensi } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, Dimensi, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg, easing } from '../lib/anim'
 import { fmt, clamp } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-/* ---------------- Panggung bersama ---------------- */
-
-const W = 660
-const H = 420
-const SKALA = 26 // piksel per satuan panjang
-const DASAR_Y = 236 // garis tempat lingkaran menggelinding
-const MULAI_X = 62 // titik sentuh sebelum lingkaran bergerak
-const UKUR_Y = 292 // baris penggaris diameter
 const TAU = Math.PI * 2
+
+/** Rentang jari-jari pada bongkar — dipakai gambar, tata letak, dan ParamSpec. */
+const JARI_MIN = 1.2
+const JARI_MAKS = 3
+
+/* ---------------- Tata letak ----------------
+   Setiap panggung punya dua sistem koordinat: lebar untuk layar
+   besar dan tegak untuk HP (useSempit). Skala piksel per satuan
+   panjang selalu TETAP di dalam satu tata letak, supaya roda
+   benar-benar tumbuh saat pegangannya ditarik — bukan diam di
+   tempat karena gambarnya diperkecil sendiri.
+   Batas skala datang dari jejaknya: panjang jejak 2πr, jadi
+   jejak terpanjang harus tetap muat di dalam viewBox.           */
+
+interface TataGulir {
+  w: number
+  h: number
+  /** piksel per satuan panjang. */
+  s: number
+  /** titik sentuh sebelum roda bergerak. */
+  mulaiX: number
+  /** garis tempat roda menggelinding. */
+  dasarY: number
+  /** baris penggaris diameter. */
+  ukurY: number
+  judulY: number
+  angkaY: number
+  /** tebal kotak penggaris. */
+  tebal: number
+}
+
+// r maksimum 3 → R = 75, jejak 2π·75 = 471 px. Titik berangkat harus lebih
+// besar dari R supaya sisi kiri roda terbesar tidak keluar bingkai; setelah
+// menggelinding sisi kanannya berhenti di 82 + 471 + 75 = 628 (< 660).
+// Garis dasar sengaja rendah supaya puncak roda terbesar (y = 128) beserta
+// label pegangannya tetap di bawah keterangan langkah.
+const GULIR_LEBAR: TataGulir = {
+  w: 660,
+  h: 420,
+  s: 25,
+  mulaiX: 82,
+  dasarY: 278,
+  ukurY: 332,
+  judulY: 30,
+  angkaY: 392,
+  tebal: 22,
+}
+
+// Di HP roda digambar sebesar yang masih memungkinkan: skalanya dibatasi oleh
+// tempat mendarat roda, sebab setelah satu putaran penuh pusatnya ada di
+// x = 58 + 2π·3·16 = 360 dan sisi kanannya (408) serta label pegangan di
+// puncaknya harus tetap muat. Roda terbesar memakai 96 dari 420 satuan lebar,
+// lebih lapang daripada 150 dari 660 pada tata letak lebar.
+const GULIR_HP: TataGulir = {
+  w: 420,
+  h: 420,
+  s: 16,
+  mulaiX: 58,
+  dasarY: 250,
+  ukurY: 306,
+  judulY: 34,
+  angkaY: 384,
+  tebal: 20,
+}
 
 /**
  * Keadaan lingkaran yang sudah menggelinding sejauh sudut `theta` radian.
  * Menggelinding tanpa selip: jarak tempuh pusat = sudut × jari-jari.
  * Tanda di tepi berangkat dari titik sentuh lalu ikut berputar.
  */
-function roda(R: number, theta: number) {
-  const cx = MULAI_X + theta * R
-  const cy = DASAR_Y - R
+function roda(L: TataGulir, R: number, theta: number) {
+  const cx = L.mulaiX + theta * R
+  const cy = L.dasarY - R
   return {
     cx,
     cy,
@@ -56,13 +121,13 @@ function roda(R: number, theta: number) {
 }
 
 /** Lintasan yang ditempuh tanda tepi (sikloid), dari sudut 0 sampai `theta`. */
-function jalurTanda(R: number, theta: number) {
+function jalurTanda(L: TataGulir, R: number, theta: number) {
   const n = 40
   let d = ''
   for (let i = 0; i <= n; i++) {
     const a = (theta * i) / n
-    const x = MULAI_X + a * R - R * Math.sin(a)
-    const y = DASAR_Y - R + R * Math.cos(a)
+    const x = L.mulaiX + a * R - R * Math.sin(a)
+    const y = L.dasarY - R + R * Math.cos(a)
     d += `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)} `
   }
   return d.trim()
@@ -72,21 +137,34 @@ function jalurTanda(R: number, theta: number) {
 
 /** Lingkaran beserta diameter mendatar dan satu jari-jari ke tanda tepi. */
 function Roda({
+  L,
   R,
   r,
   theta,
   nyalaD,
   nyalaR,
   nyalaK,
+  aktif,
 }: {
+  L: TataGulir
   R: number
   r: number
   theta: number
   nyalaD: boolean
   nyalaR: boolean
   nyalaK: boolean
+  /** penggeser yang sedang dipegang; labelnya sudah tampil di pegangan. */
+  aktif: string | null
 }) {
-  const { cx, cy, tx, ty } = roda(R, theta)
+  const { cx, cy, tx, ty } = roda(L, R, theta)
+  // Setelah roda menggelinding jauh ke kanan, tidak ada lagi ruang untuk
+  // angka jari-jari di sisi kanannya — labelnya pindah ke sisi kiri.
+  const rKanan = L.w - (cx + 12) > 96
+  // Angka jari-jari dan angka diameter berebut tempat yang sama di dalam
+  // roda, jadi hanya satu yang tampil: angka r hanya muncul saat bagian
+  // [jari:r] disorot, dan selama itu angka d mengalah (tetap terbaca pada
+  // baris angka di bawah gambar).
+  const labelR = nyalaR && aktif !== 'jari'
   return (
     <g>
       {/* tepi lingkaran = keliling; nanti tepi inilah yang terbentang jadi jejak */}
@@ -111,8 +189,14 @@ function Roda({
         strokeLinecap="round"
       />
       <circle cx={tx} cy={ty} r={nyalaR ? 8 : 6} fill="var(--m-b)" />
-      {nyalaR && (
-        <Tag x={cx + 12} y={cy + R * 0.42} anchor="start" warna="var(--m-b)" size={16}>
+      {labelR && (
+        <Tag
+          x={rKanan ? cx + 12 : cx - 12}
+          y={cy + R * 0.42}
+          anchor={rKanan ? 'start' : 'end'}
+          warna="var(--m-b)"
+          size={16}
+        >
           {`r = ${fmt(r, 1)}`}
         </Tag>
       )}
@@ -127,9 +211,13 @@ function Roda({
         strokeLinecap="round"
       />
       <circle cx={cx} cy={cy} r={3.5} fill="var(--m-a)" />
-      <Tag x={cx} y={cy - 20} warna="var(--m-a)" size={nyalaD ? 18 : 15}>
-        {`d = ${fmt(2 * r, 1)}`}
-      </Tag>
+      {/* Angka diameter menempel di bawah garis diameter. Pada roda terkecil
+          ruang itu tidak cukup — angkanya tetap terbaca di baris bawah. */}
+      {R >= 29 && !labelR && (
+        <Tag x={cx} y={cy + 19} warna="var(--m-a)" size={nyalaD ? 18 : 15}>
+          {`d = ${fmt(2 * r, 1)}`}
+        </Tag>
+      )}
     </g>
   )
 }
@@ -178,9 +266,12 @@ function JejakTerukur({
               stroke="var(--m-a)"
               strokeWidth={nyalaD ? 3.5 : 2}
             />
-            <Tag x={x0 + dpx / 2} y={y} size={14} warna="var(--m-a)" latar={null}>
-              d
-            </Tag>
+            {/* huruf "d" hanya bila kotaknya cukup lebar untuk menampungnya */}
+            {dpx >= 26 && (
+              <Tag x={x0 + dpx / 2} y={y} size={14} warna="var(--m-a)" latar={null}>
+                d
+              </Tag>
+            )}
           </g>
         )
       })}
@@ -203,25 +294,75 @@ function JejakTerukur({
 
 /* ---------------- Langkah 5–6: bandingkan tiga ukuran ---------------- */
 
+interface TataBanding {
+  w: number
+  h: number
+  /** piksel per satuan panjang. */
+  s: number
+  x0: number
+  judulY: number
+  piY: number
+  /** garis jejak untuk lingkaran kecil, sedang, besar. */
+  baris: [number, number, number]
+  /** jarak baris teks dari jejaknya. */
+  dy: number
+  tebal: number
+  teks: number
+  /** x label "K : d" bila sebaris di kanan; null berarti ditulis di baris kedua. */
+  kananX: number | null
+}
+
+// Jejak terpanjang 2π·(1,5·3)·19 = 537 px, berakhir di x = 587 (< 622).
+const BANDING_LEBAR: TataBanding = {
+  w: 660,
+  h: 420,
+  s: 19,
+  x0: 50,
+  judulY: 38,
+  piY: 80,
+  baris: [140, 250, 360],
+  dy: 28,
+  tebal: 18,
+  teks: 14,
+  kananX: 622,
+}
+
+// Di HP skalanya 12 supaya ujung jejak terpanjang (367) beserta label
+// pegangannya tetap di dalam bingkai 420.
+const BANDING_HP: TataBanding = {
+  w: 420,
+  h: 440,
+  s: 12,
+  x0: 28,
+  judulY: 32,
+  piY: 72,
+  baris: [150, 262, 374],
+  dy: 26,
+  tebal: 16,
+  teks: 13,
+  kananX: null,
+}
+
+/** Tiga lingkaran sebangun: setengahnya, lingkaran tadi, dan satu setengah kalinya. */
+const KELUARGA = [
+  { nama: 'kecil', f: 0.5 },
+  { nama: 'sedang', f: 1 },
+  { nama: 'besar', f: 1.5 },
+] as const
+
 function BandingUkuran({
   step,
   t,
-  R,
+  r,
   sorot,
 }: {
   step: number
   t: number
-  R: number
+  r: number
   sorot: string | null
 }) {
-  // Rentang penggeser (jari-jari 1,2–3) dipetakan utuh ke 30–62 piksel, agar
-  // setiap geseran tetap mengubah gambar dan jejak terbesar tetap muat di panggung.
-  const dasar = 30 + clamp((R / SKALA - 1.2) / 1.8, 0, 1) * 32
-  const daftar = [
-    { nama: 'kecil', R: dasar * 0.5 },
-    { nama: 'sedang', R: dasar * 0.85 },
-    { nama: 'besar', R: dasar * 1.35 },
-  ]
+  const sempit = useSempit()
+  const L = sempit ? BANDING_HP : BANDING_LEBAR
   const muncul = fase(step, t, 5)
   const namaPi = fase(step, t, 6)
 
@@ -229,66 +370,101 @@ function BandingUkuran({
   const nyalaK = sorot === 'keliling'
   const nyalaPi = sorot === 'pi'
 
+  // Jejak terpanjang (lingkaran besar) adalah yang dipegang: ujung kanannya
+  // ditarik mendatar. x = x0 + 2π·(1,5r)·s, jadi kebalikannya persis ini.
+  const fBesar = KELUARGA[2].f
+  const ujungBesar = L.x0 + TAU * fBesar * r * L.s
+  const munculBesar = clamp((muncul - 2 * 0.26) / 0.3, 0, 1)
+
   return (
     <Svg
-      w={W}
-      h={H}
-      maxH={430}
+      w={L.w}
+      h={L.h}
+      maxH={440}
       label="Tiga lingkaran berbeda ukuran, jejaknya sama-sama memuat tiga diameter ditambah sedikit sisa"
     >
-      <Tag x={W / 2} y={44} warna="var(--ink-2)" size={17}>
-        {step >= 6 ? 'polanya sama untuk lingkaran mana pun' : 'ganti ukurannya, lihat polanya'}
+      {/* Keterangan atas dijaga pendek di HP supaya tidak menyelinap ke bawah
+          tombol layar penuh yang melayang di pojok kanan atas panggung. */}
+      <Tag x={L.w / 2} y={L.judulY} warna="var(--ink-2)" size={17}>
+        {step >= 6
+          ? sempit
+            ? 'sama untuk semua lingkaran'
+            : 'polanya sama untuk lingkaran mana pun'
+          : 'tarik ujung jejak terbawah'}
       </Tag>
       {namaPi > 0.25 && (
-        <Tag x={W / 2} y={86} warna="var(--m-hi)" size={20}>
+        <Tag x={L.w / 2} y={L.piY} warna="var(--m-hi)" size={20}>
           {`K : d = ${fmt(Math.PI, 5)}… = π`}
         </Tag>
       )}
 
-      {daftar.map((lk, i) => {
+      {KELUARGA.map((lk, i) => {
         const a = clamp((muncul - i * 0.26) / 0.3, 0, 1)
         if (a <= 0) return null
-        const y = 148 + i * 104
-        const rSat = lk.R / SKALA
-        const panjang = TAU * lk.R
+        const y = L.baris[i]
+        const rSat = lk.f * r
+        const R = rSat * L.s
+        const panjang = TAU * R
+        // Baris terakhir menulis keterangannya di BAWAH jejak, supaya ruang di
+        // atasnya bebas untuk label pegangan. Di HP hasil baginya turun ke
+        // baris kedua; urutan bacanya tetap nama lalu hasil bagi.
+        const duaBaris = L.kananX === null
+        const yTeks = i === 2 ? y + L.dy : y - L.dy - (duaBaris ? 22 : 0)
+        const yRasio = duaBaris ? yTeks + 22 : yTeks
         return (
           <g key={lk.nama} opacity={a}>
             {/* jejak utuh di belakang, lalu penggaris diameter di atasnya */}
             <line
-              x1={50}
+              x1={L.x0}
               y1={y}
-              x2={50 + panjang}
+              x2={L.x0 + panjang}
               y2={y}
               stroke="var(--m-c)"
-              strokeWidth={nyalaK ? 30 : 26}
+              strokeWidth={nyalaK ? L.tebal + 12 : L.tebal + 8}
               strokeLinecap="butt"
               opacity={0.22}
             />
             <JejakTerukur
-              x={50}
+              x={L.x0}
               y={y}
-              R={lk.R}
+              R={R}
               alpha={a}
               alphaSisa={a}
               nyalaD={nyalaD}
               nyalaSisa={nyalaPi}
-              tebal={18}
+              tebal={L.tebal}
             />
-            <Tag x={50} y={y - 26} anchor="start" warna="var(--ink-2)" size={14}>
+            <Tag x={L.x0} y={yTeks} anchor="start" warna="var(--ink-2)" size={L.teks}>
               {`${lk.nama} · d = ${fmt(2 * rSat, 2)} · K = ${fmt(TAU * rSat, 2)}`}
             </Tag>
             <Tag
-              x={50 + panjang}
-              y={y + 28}
-              anchor="end"
+              x={L.kananX ?? L.x0}
+              y={yRasio}
+              anchor={L.kananX !== null ? 'end' : 'start'}
               warna={namaPi > 0.25 ? 'var(--m-hi)' : 'var(--ink-2)'}
-              size={namaPi > 0.25 ? 16 : 14}
+              size={namaPi > 0.25 ? L.teks + 2 : L.teks}
             >
               {`K : d = ${fmt(Math.PI, 5)}`}
             </Tag>
           </g>
         )
       })}
+
+      {/* Ujung jejak terpanjang: tarik mendatar, ketiganya ikut membesar.
+          Di sini pegangan tidak diberi 'utama' — ajakan "Tarik aku" akan jatuh
+          tepat di atas keterangan baris terbawah. Sebagai gantinya angkanya
+          tampil terus, jadi titiknya tetap terbaca sebagai sesuatu yang hidup.
+          Denyut dan ajakan sudah diperoleh anak pada langkah 0–4. */}
+      <Pegangan
+        x={ujungBesar}
+        y={L.baris[2]}
+        param="jari"
+        arah="x"
+        label={`r = ${fmt(r, 1)}`}
+        labelSelalu
+        sembunyi={munculBesar <= 0.05}
+        keNilai={(pt) => (pt.x - L.x0) / (TAU * fBesar * L.s)}
+      />
     </Svg>
   )
 }
@@ -296,8 +472,31 @@ function BandingUkuran({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const r = clamp(p.jari ?? 2.4, 1.2, 3)
-  const R = r * SKALA
+  const sempit = useSempit()
+  const u = useUkuranLayar()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const r = clamp(p.jari ?? 2.4, JARI_MIN, JARI_MAKS)
+
+  if (step >= 5) return <BandingUkuran step={step} t={t} r={r} sorot={sorot} />
+
+  const L = sempit ? GULIR_HP : GULIR_LEBAR
+  // Pegangan mengambang di atas tepi roda supaya tidak berebut tempat dengan
+  // tanda tepi yang ikut berputar. Jaraknya TIDAK boleh bergantung pada r —
+  // keNilai memakai angka yang sama, jadi kebalikannya harus tetap tepat —
+  // dan dijepit di antara dua syarat:
+  //   bawah: gelembung "Tarik aku" menggantung ±43 px di bawah pegangan;
+  //          pada roda terkecil gelembung itu harus berhenti di atas garis
+  //          diameternya, bukan menutupinya;
+  //   atas:  label nilai melayang ±43 px di atas pegangan dan pada roda
+  //          terbesar harus tetap di bawah keterangan langkah.
+  const angkat = Math.max(
+    u(16, 16),
+    Math.min(
+      u(43, 43) + 4 - JARI_MIN * L.s,
+      L.dasarY - 2 * JARI_MAKS * L.s - L.judulY - u(60, 60),
+    ),
+  )
+  const R = r * L.s
   const d = 2 * r
   const K = TAU * r
   const sisa = K - 3 * d
@@ -308,31 +507,36 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaK = sorot === 'keliling'
   const nyalaPi = sorot === 'pi'
 
-  if (step >= 5) return <BandingUkuran step={step} t={t} R={R} sorot={sorot} />
-
   /* --- kemajuan tiap tahap --- */
   const gulir = fase(step, t, 1)
   const theta = TAU * easing.inOutCubic(gulir)
-  const { cx } = roda(R, theta)
+  const { cx } = roda(L, R, theta)
   const sorotJejak = step === 2 ? seg(t, 0, 0.55) : step > 2 ? 1 : 0
   const ukur = fase(step, t, 3)
   const sisaMuncul = fase(step, t, 4)
-  const jejakPx = cx - MULAI_X
+  const jejakPx = cx - L.mulaiX
 
   return (
     <Svg
-      w={W}
-      h={H}
+      w={L.w}
+      h={L.h}
       maxH={430}
       label="Lingkaran menggelinding satu putaran, jejaknya diukur memakai diameter"
     >
       {/* garis tempat lingkaran menggelinding */}
-      <line x1={30} y1={DASAR_Y} x2={W - 30} y2={DASAR_Y} stroke="var(--m-grid)" strokeWidth={2} />
+      <line
+        x1={6}
+        y1={L.dasarY}
+        x2={L.w - 6}
+        y2={L.dasarY}
+        stroke="var(--m-grid)"
+        strokeWidth={2}
+      />
 
       {/* lintasan tanda tepi — memperlihatkan gerak berputar sekaligus maju */}
       {theta > 0.05 && step <= 2 && (
         <path
-          d={jalurTanda(R, theta)}
+          d={jalurTanda(L, R, theta)}
           fill="none"
           stroke="var(--m-b)"
           strokeWidth={1.6}
@@ -344,10 +548,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* jejak yang tertinggal di garis: panjangnya tumbuh bersama sudut putar */}
       {jejakPx > 0.5 && (
         <line
-          x1={MULAI_X}
-          y1={DASAR_Y}
-          x2={MULAI_X + jejakPx}
-          y2={DASAR_Y}
+          x1={L.mulaiX}
+          y1={L.dasarY}
+          x2={L.mulaiX + jejakPx}
+          y2={L.dasarY}
           stroke="var(--m-c)"
           strokeWidth={nyalaK ? 12 : 7 + 3 * sorotJejak}
           strokeLinecap="round"
@@ -357,25 +561,25 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
       {/* tanda berangkat dan mendarat */}
       <line
-        x1={MULAI_X}
-        y1={DASAR_Y - 9}
-        x2={MULAI_X}
-        y2={DASAR_Y + 12}
+        x1={L.mulaiX}
+        y1={L.dasarY - 9}
+        x2={L.mulaiX}
+        y2={L.dasarY + 12}
         stroke="var(--m-axis)"
         strokeWidth={2}
       />
       {step >= 2 && (
         <line
-          x1={MULAI_X + Lpx}
-          y1={DASAR_Y - 9}
-          x2={MULAI_X + Lpx}
-          y2={DASAR_Y + 12}
+          x1={L.mulaiX + Lpx}
+          y1={L.dasarY - 9}
+          x2={L.mulaiX + Lpx}
+          y2={L.dasarY + 12}
           stroke="var(--m-axis)"
           strokeWidth={2}
         />
       )}
       {step === 1 && (
-        <Tag x={MULAI_X} y={DASAR_Y + 28} warna="var(--ink-2)" size={14}>
+        <Tag x={L.mulaiX} y={L.dasarY + 28} anchor="start" warna="var(--ink-2)" size={14}>
           berangkat
         </Tag>
       )}
@@ -383,10 +587,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* panjang jejak diberi nama: keliling */}
       {step === 2 && (
         <Dimensi
-          x1={MULAI_X}
-          y1={DASAR_Y}
-          x2={MULAI_X + Lpx}
-          y2={DASAR_Y}
+          x1={L.mulaiX}
+          y1={L.dasarY}
+          x2={L.mulaiX + Lpx}
+          y2={L.dasarY}
           offset={32}
           label={`K = ${fmt(K, 2)}`}
           warna="var(--m-c)"
@@ -399,10 +603,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         [0, 1, 2, 3].map((i) => (
           <line
             key={i}
-            x1={MULAI_X + i * 2 * R}
-            y1={DASAR_Y}
-            x2={MULAI_X + i * 2 * R}
-            y2={UKUR_Y - 12}
+            x1={L.mulaiX + i * 2 * R}
+            y1={L.dasarY}
+            x2={L.mulaiX + i * 2 * R}
+            y2={L.ukurY - 12}
             stroke="var(--m-axis)"
             strokeWidth={1.2}
             strokeDasharray="3 4"
@@ -411,10 +615,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         ))}
       {sisaMuncul > 0 && (
         <line
-          x1={MULAI_X + Lpx}
-          y1={DASAR_Y}
-          x2={MULAI_X + Lpx}
-          y2={UKUR_Y - 12}
+          x1={L.mulaiX + Lpx}
+          y1={L.dasarY}
+          x2={L.mulaiX + Lpx}
+          y2={L.ukurY - 12}
           stroke="var(--m-hi)"
           strokeWidth={1.4}
           strokeDasharray="3 4"
@@ -425,19 +629,23 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* penggaris diameter di bawah jejak */}
       {ukur > 0 && (
         <JejakTerukur
-          x={MULAI_X}
-          y={UKUR_Y}
+          x={L.mulaiX}
+          y={L.ukurY}
           R={R}
           alpha={ukur}
           alphaSisa={sisaMuncul}
           nyalaD={nyalaD}
           nyalaSisa={nyalaPi}
+          tebal={L.tebal}
         />
       )}
+      {/* label sisa rata kanan pada ujung jejak, supaya tidak keluar bingkai
+          saat rodanya sebesar-besarnya */}
       {sisaMuncul > 0.4 && (
         <Tag
-          x={MULAI_X + 3 * 2 * R + (Lpx - 6 * R) / 2}
-          y={UKUR_Y + 34}
+          x={L.mulaiX + Lpx}
+          y={L.ukurY + 34}
+          anchor="end"
           warna="var(--m-hi)"
           size={15}
         >
@@ -446,64 +654,157 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
 
       {/* lingkaran yang menggelinding */}
-      <Roda R={R} r={r} theta={theta} nyalaD={nyalaD} nyalaR={nyalaR} nyalaK={nyalaK} />
+      <Roda
+        L={L}
+        R={R}
+        r={r}
+        theta={theta}
+        nyalaD={nyalaD}
+        nyalaR={nyalaR}
+        nyalaK={nyalaK}
+        aktif={aktif}
+      />
 
-      {/* keterangan tiap tahap */}
+      {/* Keterangan tiap tahap. Di HP kalimatnya dipendekkan supaya tidak
+          menyelinap ke bawah tombol layar penuh di pojok kanan atas. */}
       {step === 0 && (
-        <Tag x={W / 2} y={42} warna="var(--m-a)" size={16}>
-          diameter = jarak tepi ke tepi lewat pusat
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-a)" size={16}>
+          {sempit ? 'diameter: tepi ke tepi' : 'diameter = jarak tepi ke tepi lewat pusat'}
         </Tag>
       )}
       {step === 1 && (
-        <Tag x={W / 2} y={42} warna="var(--m-b)" size={16}>
-          {`${fmt(theta / TAU, 2)} putaran · maju ${fmt(theta * r, 2)} satuan`}
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-b)" size={16}>
+          {sempit
+            ? `${fmt(theta / TAU, 2)} putaran · maju ${fmt(theta * r, 2)}`
+            : `${fmt(theta / TAU, 2)} putaran · maju ${fmt(theta * r, 2)} satuan`}
         </Tag>
       )}
       {step === 2 && (
-        <Tag x={W / 2} y={42} warna="var(--m-c)" size={16}>
-          satu putaran penuh = satu keliling
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-c)" size={16}>
+          {sempit ? 'satu putaran = satu keliling' : 'satu putaran penuh = satu keliling'}
         </Tag>
       )}
       {step === 3 && (
-        <Tag x={W / 2} y={42} warna="var(--m-a)" size={16}>
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-a)" size={16}>
           diameter muat 3 kali penuh
         </Tag>
       )}
       {step === 4 && (
-        <Tag x={W / 2} y={42} warna="var(--m-hi)" size={16}>
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-hi)" size={16}>
           {`masih tersisa ${fmt(sisa, 2)} satuan`}
         </Tag>
       )}
 
-      {/* angka hidup yang ikut penggeser */}
-      {step >= 2 && (
-        <text
-          x={W / 2}
-          y={388}
-          textAnchor="middle"
-          fontSize={15}
-          fontWeight={700}
-          fill="var(--ink-2)"
-        >
-          {`d = ${fmt(d, 1)} satuan · keliling = ${fmt(K, 2)} satuan`}
-        </text>
-      )}
+      {/* angka hidup yang ikut besar rodanya */}
+      <Tag x={L.w / 2} y={L.angkaY} warna="var(--ink-2)" size={15} latar={null}>
+        {step < 2
+          ? `d = ${fmt(d, 1)} satuan`
+          : sempit
+            ? `d = ${fmt(d, 1)} · keliling = ${fmt(K, 2)}`
+            : `d = ${fmt(d, 1)} satuan · keliling = ${fmt(K, 2)} satuan`}
+      </Tag>
+
+      {/* Puncak roda: tarik naik-turun untuk membesarkan rodanya.
+          Pegangannya di y = dasar − 2r·s − angkat, jadi keNilai membalik
+          rumus itu persis. Tangkainya memperlihatkan bahwa ia milik roda. */}
+      <line
+        x1={cx}
+        y1={L.dasarY - 2 * R}
+        x2={cx}
+        y2={L.dasarY - 2 * R - angkat}
+        stroke="var(--m-b)"
+        strokeWidth={2}
+      />
+      <Pegangan
+        x={cx}
+        y={L.dasarY - 2 * R - angkat}
+        param="jari"
+        arah="y"
+        utama
+        ajakan="Tarik aku"
+        label={`r = ${fmt(r, 1)}`}
+        keNilai={(pt) => (L.dasarY - angkat - pt.y) / (2 * L.s)}
+      />
     </Svg>
   )
 }
 
 /* ---------------- Visual untuk eksperimen bebas ---------------- */
 
+interface TataEks {
+  w: number
+  h: number
+  /** piksel per satuan panjang; tetap, supaya lingkarannya benar-benar tumbuh. */
+  s: number
+  cx: number
+  cy: number
+  panelX: number
+  yD: number
+  yK: number
+  yRasio: number
+  yCatatan: number
+  ukKecil: number
+  ukRasio: number
+  jejakX: number
+  jejakY: number
+  judulJejakY: number
+  sisaY: number
+  tebal: number
+}
+
+// r maksimum 5 → jejak 2π·5·18 = 565 px, berakhir di x = 611 (< 630).
+const EKS_LEBAR: TataEks = {
+  w: 660,
+  h: 430,
+  s: 18,
+  cx: 150,
+  cy: 138,
+  panelX: 292,
+  yD: 100,
+  yK: 140,
+  yRasio: 192,
+  yCatatan: 226,
+  ukKecil: 16,
+  ukRasio: 21,
+  jejakX: 46,
+  jejakY: 344,
+  judulJejakY: 300,
+  sisaY: 394,
+  tebal: 22,
+}
+
+// Di HP skalanya 12: jejak terpanjang 377 px, berakhir di x = 399 (< 420).
+const EKS_HP: TataEks = {
+  w: 420,
+  h: 410,
+  s: 12,
+  cx: 112,
+  cy: 146,
+  panelX: 200,
+  yD: 108,
+  yK: 146,
+  yRasio: 196,
+  yCatatan: 228,
+  ukKecil: 14,
+  ukRasio: 18,
+  jejakX: 22,
+  jejakY: 320,
+  judulJejakY: 278,
+  sisaY: 368,
+  tebal: 18,
+}
+
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const L = sempit ? EKS_HP : EKS_LEBAR
   const r = clamp(p.jari ?? 3, 1, 5)
-  // Skala tampilan menyesuaikan diri supaya jejaknya tetap muat di panggung.
-  const S = Math.min(30, 520 / (TAU * r))
-  const R = r * S
+  const R = r * L.s
   const d = 2 * r
   const K = TAU * r
   const sisa = K - 3 * d
-  const cx = 150
-  const cy = 148
+  const cx = L.cx
+  const cy = L.cy
 
   const nyalaD = sorot === 'diameter'
   const nyalaR = sorot === 'jari'
@@ -512,9 +813,9 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
 
   return (
     <Svg
-      w={W}
-      h={H}
-      maxH={430}
+      w={L.w}
+      h={L.h}
+      maxH={440}
       label="Lingkaran yang bisa diubah jari-jarinya, beserta kelilingnya yang dibentangkan"
     >
       {/* lingkaran beserta diameter dan jari-jarinya */}
@@ -546,63 +847,111 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         strokeLinecap="round"
       />
       <circle cx={cx} cy={cy} r={3.5} fill="var(--m-a)" />
-      <Tag x={cx} y={cy - 20} warna="var(--m-a)" size={nyalaD ? 18 : 15}>
-        {`d = ${fmt(d, 1)}`}
-      </Tag>
-      <Tag x={cx + 10} y={cy + R * 0.55} anchor="start" warna="var(--m-b)" size={nyalaR ? 17 : 14}>
-        {`r = ${fmt(r, 1)}`}
-      </Tag>
+      {/* Angka diameter menempel di atas garis diameter. Saat pegangan
+          dipegang, label nilainya melayang tepat di tempat ini — jadi angka
+          d mengalah dan tetap terbaca di papan angka sebelah. */}
+      {aktif !== 'jari' && (
+        <Tag x={cx} y={cy - 20} warna="var(--m-a)" size={nyalaD ? 18 : 15}>
+          {`d = ${fmt(d, 1)}`}
+        </Tag>
+      )}
+      {/* label r di kiri jari-jari; saat pegangannya ditarik, pegangan itu
+          sendiri yang menampilkan angkanya */}
+      {aktif !== 'jari' && (
+        <Tag
+          x={cx - 12}
+          y={cy + R / 2}
+          anchor="end"
+          warna="var(--m-b)"
+          size={nyalaR ? 17 : 14}
+        >
+          {`r = ${fmt(r, 1)}`}
+        </Tag>
+      )}
 
       {/* papan angka */}
-      <Tag x={296} y={104} anchor="start" warna="var(--m-a)" size={16}>
+      <Tag x={L.panelX} y={L.yD} anchor="start" warna="var(--m-a)" size={L.ukKecil}>
         {`diameter d = ${fmt(d, 2)} cm`}
       </Tag>
-      <Tag x={296} y={142} anchor="start" warna="var(--m-c)" size={16}>
+      <Tag x={L.panelX} y={L.yK} anchor="start" warna="var(--m-c)" size={L.ukKecil}>
         {`keliling K = ${fmt(K, 2)} cm`}
       </Tag>
-      <Tag x={296} y={192} anchor="start" warna="var(--m-hi)" size={nyalaPi ? 24 : 21}>
+      <Tag
+        x={L.panelX}
+        y={L.yRasio}
+        anchor="start"
+        warna="var(--m-hi)"
+        size={nyalaPi ? L.ukRasio + 3 : L.ukRasio}
+      >
         {`K : d = ${fmt(K / d, 5)}`}
       </Tag>
-      <text x={296} y={226} fontSize={14} fontWeight={700} fill="var(--ink-2)">
-        geser jari-jarinya — angka ini tidak bergeser
-      </text>
+      <Tag
+        x={L.panelX}
+        y={L.yCatatan}
+        anchor="start"
+        warna="var(--ink-2)"
+        size={sempit ? 13 : 14}
+        latar={null}
+      >
+        {sempit ? 'tidak ikut berubah' : 'tarik tepi lingkarannya, angka ini tetap'}
+      </Tag>
 
       {/* keliling dibentangkan lalu diukur pakai diameter */}
-      <text x={60} y={296} fontSize={14} fontWeight={700} fill="var(--ink-2)">
-        keliling yang dibentangkan, diukur pakai diameter:
-      </text>
+      <Tag
+        x={L.jejakX}
+        y={L.judulJejakY}
+        anchor="start"
+        warna="var(--ink-2)"
+        size={sempit ? 13 : 14}
+        latar={null}
+      >
+        {sempit
+          ? 'keliling dibentangkan, diukur pakai d:'
+          : 'keliling yang dibentangkan, diukur pakai diameter:'}
+      </Tag>
       <line
-        x1={60}
-        y1={330}
-        x2={60 + TAU * R}
-        y2={330}
+        x1={L.jejakX}
+        y1={L.jejakY}
+        x2={L.jejakX + TAU * R}
+        y2={L.jejakY}
         stroke="var(--m-c)"
-        strokeWidth={nyalaK ? 34 : 30}
+        strokeWidth={nyalaK ? L.tebal + 12 : L.tebal + 8}
         strokeLinecap="butt"
         opacity={0.22}
       />
       <JejakTerukur
-        x={60}
-        y={330}
+        x={L.jejakX}
+        y={L.jejakY}
         R={R}
         nyalaD={nyalaD}
         nyalaSisa={nyalaPi}
-        tebal={22}
+        tebal={L.tebal}
       />
-      <text
-        x={60}
-        y={382}
-        fontSize={15}
-        fontWeight={700}
-        fill="var(--ink-2)"
+      <Tag
+        x={L.jejakX}
+        y={L.sisaY}
+        anchor="start"
+        warna="var(--ink-2)"
+        size={sempit ? 13 : 15}
+        latar={null}
       >
-        {`3 diameter penuh, sisa = 0,14159… × d ≈ ${fmt(sisa, 2)} cm`}
-      </text>
-      {S < 29.9 && (
-        <text x={W - 30} y={40} textAnchor="end" fontSize={13} fill="var(--ink-2)">
-          gambar diperkecil agar muat
-        </text>
-      )}
+        {sempit
+          ? `3 diameter penuh, sisa ≈ ${fmt(sisa, 2)} cm`
+          : `3 diameter penuh, sisa = 0,14159… × d ≈ ${fmt(sisa, 2)} cm`}
+      </Tag>
+
+      {/* Ujung bawah jari-jari: tarik ke bawah, lingkarannya membesar.
+          Titik itu berada di y = cy + r·s, jadi keNilai membalik rumus itu. */}
+      <Pegangan
+        x={cx}
+        y={cy + R}
+        param="jari"
+        arah="y"
+        utama
+        ajakan="Tarik aku"
+        label={`r = ${fmt(r, 1)}`}
+        keNilai={(pt) => (pt.y - cy) / L.s}
+      />
     </Svg>
   )
 }
@@ -654,9 +1003,20 @@ const konsep: Konsep = {
   },
 
   bongkar: {
-    rasio: W / H,
     Visual: VisualBongkar,
-    params: [{ key: 'jari', label: 'Jari-jari', min: 1.2, max: 3, step: 0.2, awal: 2.4 }],
+    params: [
+      {
+        key: 'jari',
+        label: 'Jari-jari',
+        min: JARI_MIN,
+        max: JARI_MAKS,
+        step: 0.2,
+        awal: 2.4,
+        simbol: 'r',
+        peran: 'b',
+        bagian: 'jari',
+      },
+    ],
     roles: { keliling: 'c', diameter: 'a', jari: 'b', pi: 'hi' },
     arti: {
       keliling: 'Panjang tepi lingkaran — sama dengan panjang jejak satu putaran penuh.',
@@ -699,8 +1059,10 @@ const konsep: Konsep = {
       {
         id: 's4',
         judul: 'Sisanya sepotong kecil',
-        narasi:
-          'Setelah tiga diameter masih ada sisa. Panjangnya kira-kira 0,14 kali diameter — belum sampai sepertujuh diameter.',
+        narasi: (p) => {
+          const r = clamp(p.jari ?? 2.4, JARI_MIN, JARI_MAKS)
+          return `Setelah tiga diameter masih ada sisa sepanjang ${fmt(TAU * r - 6 * r, 2)} satuan. Panjangnya kira-kira 0,14 kali diameter — belum sampai sepertujuh diameter.`
+        },
         rumus: 'sisa ≈ 0,14 × [diameter:d]',
         durasi: 2000,
       },
@@ -708,7 +1070,7 @@ const konsep: Konsep = {
         id: 's5',
         judul: 'Ganti ukuran lingkarannya',
         narasi:
-          'Lingkaran kecil, sedang, dan besar punya jejak dan diameter yang berbeda panjang, tetapi polanya sama persis: tiga diameter ditambah sepotong kecil sisa. Ini bukan kebetulan, sebab lingkaran besar hanyalah lingkaran kecil yang diperbesar, jadi keliling dan diameternya dikali angka yang sama.',
+          'Tarik ujung jejak paling bawah: lingkaran kecil, sedang, dan besar punya jejak dan diameter yang berbeda panjang, tetapi polanya sama persis — tiga diameter ditambah sepotong kecil sisa. Ini bukan kebetulan, sebab lingkaran besar hanyalah lingkaran kecil yang diperbesar, jadi keliling dan diameternya dikali angka yang sama.',
         rumus: '[keliling:K] : [diameter:d] = 3,14159…',
         durasi: 2400,
       },
@@ -724,12 +1086,28 @@ const konsep: Konsep = {
   },
 
   eksperimen: {
-    judul: 'Geser jari-jarinya. Awasi angka hasil bagi.',
+    judul: 'Tarik tepi lingkarannya. Awasi angka hasil bagi.',
     ajakan:
-      'Ubah besar lingkarannya sesukamu. Keliling berubah, diameter berubah — perhatikan satu angka yang tidak mau ikut berubah.',
-    rasio: W / H,
-    params: [{ key: 'jari', label: 'Jari-jari', min: 1, max: 5, step: 0.5, awal: 3, satuan: 'cm' }],
+      'Tarik titik jingga di ujung bawah jari-jari untuk membesarkan lingkarannya. Keliling berubah, diameter berubah — satu angka tidak mau ikut.',
+    params: [
+      {
+        key: 'jari',
+        label: 'Jari-jari',
+        min: 1,
+        max: 5,
+        step: 0.5,
+        awal: 3,
+        satuan: 'cm',
+        simbol: 'r',
+        peran: 'b',
+        bagian: 'jari',
+      },
+    ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const r = clamp(p.jari ?? 3, 1, 5)
+      return `[keliling:K] : [diameter:d] = ${fmt(TAU * r, 2)} : ${fmt(2 * r, 1)} = [pi:π] = ${fmt(Math.PI, 5)}…`
+    },
     temuan: (p) => {
       const r = clamp(p.jari ?? 3, 1, 5)
       const d = 2 * r
@@ -740,8 +1118,9 @@ const konsep: Konsep = {
           Jari-jari sekarang {fmt(r, 1)} cm, jadi diameternya {fmt(d, 1)} cm dan kelilingnya{' '}
           {fmt(K, 2)} cm. Jejak sepanjang itu memuat <strong>3 diameter penuh</strong>, tersisa{' '}
           {fmt(sisa, 2)} cm — dan sisa itu {fmt(sisa / d, 5)}… kali diameter.{' '}
-          <strong>Hasil bagi K : d = {fmt(K / d, 5)}…</strong> Geser sejauh apa pun, angka itu tidak
-          bergerak: keliling dan diameter selalu membesar bersama dengan perbandingan yang sama.
+          <strong>Hasil bagi K : d = {fmt(K / d, 5)}…</strong> Tarik tepinya sejauh apa pun, angka
+          itu tidak bergerak: keliling dan diameter selalu membesar bersama dengan perbandingan yang
+          sama.
         </p>
       )
     },
@@ -924,7 +1303,7 @@ const konsep: Konsep = {
       ],
       hint: [
         'Ingat dari mana π datang: bukan dari hafalan, melainkan dari satu pembagian.',
-        'Pada eksperimen tadi, apakah hasil bagi K : d pernah berubah saat jari-jari digeser?',
+        'Pada eksperimen tadi, apakah hasil bagi K : d pernah berubah saat tepi lingkarannya ditarik?',
         'Sekarang pikirkan angkanya: apakah 3,14 dan 22/7 memberi angka yang persis sama? Kalau tidak, keduanya tidak mungkin sama-sama nilai persis π.',
       ],
       pembahasan:
@@ -948,7 +1327,7 @@ const konsep: Konsep = {
         '2K dibagi 2d — apa yang terjadi pada angka 2 di atas dan di bawah?',
       ],
       pembahasan:
-        'Salah. Keliling baru 2K dan diameter baru 2d, sehingga 2K : 2d = K : d = π. Inilah yang kamu lihat di eksperimen: geser jari-jarinya sejauh apa pun, angka 3,14159 tidak bergerak.',
+        'Salah. Keliling baru 2K dan diameter baru 2d, sehingga 2K : 2d = K : d = π. Inilah yang kamu lihat di eksperimen: tarik tepi lingkarannya sejauh apa pun, angka 3,14159 tidak bergerak.',
     },
     (rnd) => {
       const d = [10, 20, 30, 50][Math.floor(rnd() * 4)]

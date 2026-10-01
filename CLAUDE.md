@@ -29,6 +29,7 @@ Jangan menambah dependensi npm tanpa alasan kuat.
 | `src/lib/sesi.ts` | Penyusun sesi latihan soal |
 | `src/components/Bongkar.tsx` | Mesin "Rumus → Bongkar" (fitur khas) |
 | `src/components/Formula.tsx` | Rumus interaktif + `SorotProvider` |
+| `src/components/Interaksi.tsx` | Interaksi langsung: `Pegangan`, `RelGeser`, `useSeret`, kontrol angka, layar penuh |
 | `src/components/Stage.tsx` | `Svg`, `Tag`, `Dimensi`, `SikuSiku` |
 | `src/components/SoalView.tsx` | Penyaji soal + petunjuk bertahap |
 | `src/concepts/*.tsx` | Satu berkas per konsep, ditemukan otomatis |
@@ -38,8 +39,13 @@ Jangan menambah dependensi npm tanpa alasan kuat.
 
 ## Menambah konsep
 
-Baca `docs/PANDUAN-KONSEP.md` lebih dulu. Acuan kualitas:
-`src/concepts/segitiga-setengah.tsx`.
+Baca `docs/PANDUAN-KONSEP.md` dan `docs/PANDUAN-INTERAKSI.md` lebih dulu.
+Acuan kualitas: `src/concepts/segitiga-setengah.tsx`; acuan interaksi langsung:
+`src/concepts/lingkaran-luas.tsx`.
+
+Angka dalam visual diubah **langsung dari gambar** (seret, rel, tombol di dalam
+gambar), bukan lewat formulir di bawahnya. Setiap visual punya tata letak lebar
+dan tegak untuk HP (`useSempit()`).
 
 ## Bahasa
 

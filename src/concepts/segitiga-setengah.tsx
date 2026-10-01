@@ -10,54 +10,265 @@
    beralas a dan bertinggi t (satu potongan cukup bila kaki garis
    tinggi jatuh pada alas; bila sangat miring, perlu beberapa
    potongan). Jadi dua segitiga = a × t, satu segitiga = ½ a t.
+
+   Interaksi langsung: anak menyeret PUNCAK segitiga (ke samping =
+   posisi puncak, ke atas-bawah = tinggi) dan menarik ujung garis
+   ukur di bawah alas (alas). Keduanya ada di bongkar dan eksperimen.
    ============================================================ */
 
-import { Svg, Tag, Dimensi, SikuSiku } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, SikuSiku, useSempit, useSkalaSvg } from '../components/Stage'
 import { fase, seg, easing } from '../lib/anim'
 import { fmt, clamp } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
+type Titik2 = [number, number]
+
+/* ---------------- Tata letak ---------------- */
+
+/**
+ * Satu sistem koordinat untuk satu ukuran panggung. Skala satuan TIDAK
+ * bergantung pada penggeser, supaya titik yang diseret selalu menempel pada
+ * jari: posisi pegangan = kiri + nilai × satuan, dan keNilai membaliknya.
+ */
+interface Tata {
+  w: number
+  h: number
+  /** batas tinggi tampilan di layar lebar (px). */
+  maxH: number
+  /** satuan SVG per satu satuan panjang. */
+  satuan: number
+  /** x titik A (ujung kiri alas). */
+  kiri: number
+  /** y garis alas. */
+  dasar: number
+  /** jarak garis ukur alas (tempat pegangan alas) di bawah alas. */
+  ukur: number
+  /** baris keterangan di atas gambar. */
+  atasY: number
+  hurufAtas: number
+}
+
+/*
+ * Bongkar (alas 3…9, tinggi 2…6, puncak 0…1). Jajar genjang selebar
+ * a·(1 + puncak) ≤ 18 satuan harus muat, dan salinan yang BERPUTAR
+ * mengelilingi M menyapu setengah lingkaran: paling tinggi
+ * t/2 + ½√((a + a·puncak)² + t²) ≤ 12,49 satuan di atas alas, paling rendah
+ * ½√((a − a·puncak)² + t²) − t/2 ≤ 3,61 satuan di bawahnya, dan paling kiri
+ * 0,49 satuan di kiri A. Tinggi gambar dipilih agar sapuan itu tetap di dalam
+ * bingkai. Garis ukur alas cukup jauh di bawah alas supaya label pegangan alas
+ * (yang muncul di atas titiknya) tidak menutupi alas.
+ */
+const BONGKAR_LEBAR: Tata = { w: 660, h: 462, maxH: 460, satuan: 28, kiri: 78, dasar: 356, ukur: 60, atasY: 30, hurufAtas: 17 }
+const BONGKAR_HP: Tata = { w: 440, h: 362, maxH: 460, satuan: 20.5, kiri: 66, dasar: 262, ukur: 68, atasY: 20, hurufAtas: 15 }
+
+/*
+ * Eksperimen (alas 2…10, tinggi 1…6, puncak −0,4…1,4): puncak menjangkau
+ * x = kiri − 4 … kiri + 14 satuan. Di kiri-kanan disisakan ruang untuk label
+ * pegangan puncak ("t = 5,5") dan ajakan di bawahnya, yang tampil di tengah
+ * titiknya; di atas puncak tertinggi ada ruang untuk label itu di bawah angka
+ * luas. Garis ukur alas cukup jauh supaya label pegangan alas tidak menyentuh
+ * pegangan puncak saat tingginya 1.
+ * Semua jarak ini dihitung untuk skala layar serendah 0,6 px per satuan
+ * (HP 320 px, dan nilai cadangan Pegangan sebelum gambar diukur).
+ */
+const EKS_LEBAR: Tata = { w: 660, h: 408, maxH: 430, satuan: 29, kiri: 182, dasar: 300, ukur: 74, atasY: 36, hurufAtas: 20 }
+const EKS_HP: Tata = { w: 440, h: 330, maxH: 430, satuan: 17, kiri: 134, dasar: 210, ukur: 88, atasY: 18, hurufAtas: 18 }
+
 /* ---------------- Geometri bersama ---------------- */
 
-const W = 660
-const H = 420
-const SKALA = 40 // piksel per satuan
-const DASAR_Y = 330
-const KIRI_X = 130
-
 interface Bentuk {
-  A: [number, number]
-  B: [number, number]
-  P: [number, number]
-  M: [number, number]
+  A: Titik2
+  B: Titik2
+  P: Titik2
+  M: Titik2
   b: number
   h: number
   px: number
 }
 
-function bentuk(
-  alas: number,
-  tinggi: number,
-  puncak: number,
-  skala = SKALA,
-  kiri = KIRI_X,
-): Bentuk {
-  const b = alas * skala
-  const h = tinggi * skala
+function bentuk(alas: number, tinggi: number, puncak: number, L: Tata): Bentuk {
+  const b = alas * L.satuan
+  const h = tinggi * L.satuan
   const px = puncak * b
-  const A: [number, number] = [kiri, DASAR_Y]
-  const B: [number, number] = [kiri + b, DASAR_Y]
-  const P: [number, number] = [kiri + px, DASAR_Y - h]
+  const A: Titik2 = [L.kiri, L.dasar]
+  const B: Titik2 = [L.kiri + b, L.dasar]
+  const P: Titik2 = [L.kiri + px, L.dasar - h]
   // Titik tengah sisi PB — pusat perputaran salinan.
-  const M: [number, number] = [(B[0] + P[0]) / 2, (B[1] + P[1]) / 2]
+  const M: Titik2 = [(B[0] + P[0]) / 2, (B[1] + P[1]) / 2]
   return { A, B, P, M, b, h, px }
 }
 
-const putar = (
-  [x, y]: [number, number],
-  [cx, cy]: [number, number],
-  derajat: number,
-): [number, number] => {
+/**
+ * Kebalikan posisi pegangan puncak. Puncak digambar di
+ * (kiri + puncak·alas·satuan, dasar − tinggi·satuan), jadi dari jari:
+ */
+const nilaiPuncak = (L: Tata, alas: number) => (pt: { x: number; y: number }) => ({
+  tinggi: (L.dasar - pt.y) / L.satuan,
+  puncak: (pt.x - L.kiri) / (alas * L.satuan),
+})
+
+/** Kebalikan posisi pegangan alas (x = kiri + alas × satuan). */
+const nilaiAlas = (L: Tata) => (pt: { x: number; y: number }) => (pt.x - L.kiri) / L.satuan
+
+/* ---------------- Label yang tidak saling menabrak ---------------- */
+
+type Jangkar = 'start' | 'middle' | 'end'
+
+interface Kotak {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+}
+
+interface Tempat {
+  x: number
+  y: number
+  anchor: Jangkar
+  kotak: Kotak
+}
+
+/** Ukuran huruf Tag di layar ini (Tag memperbesar huruf agar ≥ 11 px). */
+const ukuranTag = (skala: number, size: number) =>
+  skala > 0 ? Math.max(size, Math.min(size * 1.6, 11 / skala)) : size
+
+/** Kotak yang ditempati sebuah Tag — rumusnya sama dengan Tag di Stage.tsx. */
+function kotakTag(
+  skala: number,
+  x: number,
+  y: number,
+  teks: string,
+  size: number,
+  anchor: Jangkar = 'middle',
+  layar = false,
+): Kotak {
+  const ukuran = layar ? size : ukuranTag(skala, size)
+  const lebar = teks.length * ukuran * 0.58 + 14 * (ukuran / size)
+  const x0 = anchor === 'middle' ? x - lebar / 2 : anchor === 'end' ? x - lebar : x
+  return { x0, x1: x0 + lebar, y0: y - ukuran * 0.82, y1: y + ukuran * 0.68 }
+}
+
+const tempat = (
+  skala: number,
+  x: number,
+  y: number,
+  teks: string,
+  size: number,
+  anchor: Jangkar = 'middle',
+): Tempat => ({ x, y, anchor, kotak: kotakTag(skala, x, y, teks, size, anchor) })
+
+const tabrak = (a: Kotak, b: Kotak, sela = 2) =>
+  a.x0 < b.x1 + sela && b.x0 < a.x1 + sela && a.y0 < b.y1 + sela && b.y0 < a.y1 + sela
+
+/**
+ * Calon pertama yang muat di bingkai dan tidak menabrak apa pun. Bila tidak
+ * ada yang lega, label disembunyikan (null): angkanya tetap terbaca di kontrol
+ * angka dan di rumus, dan itu lebih baik daripada label yang saling menimpa.
+ */
+function letakkan(calon: Tempat[], halangan: Kotak[], L: Tata): Tempat | null {
+  const muat = (k: Kotak) => k.x0 >= 2 && k.y0 >= 2 && k.x1 <= L.w - 2 && k.y1 <= L.h - 2
+  return calon.find((c) => muat(c.kotak) && !halangan.some((o) => tabrak(c.kotak, o))) ?? null
+}
+
+/** Ajakan di bawah pegangan puncak — dibuat pendek supaya muat walau puncaknya di tepi gambar. */
+const AJAKAN = 'Seret aku'
+
+/** Ukuran pegangan dalam satuan SVG — meniru Pegangan di Interaksi.tsx. */
+function ukuranPegangan(skalaLayar: number) {
+  const s = skalaLayar || 0.6
+  const r = Math.max(8, 9 / s)
+  const ujungPanah = r * 1.9 + 1 / s
+  const lebarPanah = r * 0.55 + 1 / s
+  return {
+    r,
+    ujungPanah,
+    /** titik beserta panah petunjuk arahnya. */
+    kotak([x, y]: Titik2, bebas: boolean): Kotak[] {
+      const luar = r + 1.75 / s
+      const k: Kotak[] = [
+        { x0: x - luar, y0: y - luar, x1: x + luar, y1: y + luar },
+        { x0: x - ujungPanah, y0: y - lebarPanah, x1: x + ujungPanah, y1: y + lebarPanah },
+      ]
+      if (bebas) k.push({ x0: x - lebarPanah, y0: y - ujungPanah, x1: x + lebarPanah, y1: y + ujungPanah })
+      return k
+    },
+    /** lingkaran terang di sekeliling pegangan yang sedang dipegang. */
+    halo: ([x, y]: Titik2): Kotak => ({ x0: x - r * 2.1, y0: y - r * 2.1, x1: x + r * 2.1, y1: y + r * 2.1 }),
+    /** label nilai yang muncul di atas titik saat dipegang. */
+    label: ([x, y]: Titik2, teks: string) => kotakTag(0, x, y - r - 22 / s, teks, 15 / s, 'middle', true),
+    /** ajakan di bawah pegangan utama. */
+    ajakan: ([x, y]: Titik2) => kotakTag(0, x, y + r + 24 / s, AJAKAN, 13 / s, 'middle', true),
+  }
+}
+
+type UkuranPegangan = ReturnType<typeof ukuranPegangan>
+
+/**
+ * Semua yang ditempati kedua pegangan: titik + panah, label nilai dan lingkaran
+ * terang bila sedang dipegang, dan ajakan di bawah pegangan puncak.
+ */
+function halanganPegangan(
+  peg: UkuranPegangan,
+  P: Titik2,
+  ujungAlas: Titik2,
+  aktif: string | null,
+  ajakan: boolean,
+  teksT: string,
+  teksA: string,
+): Kotak[] {
+  const k = [...peg.kotak(P, true), ...peg.kotak(ujungAlas, false)]
+  if (aktif === 'tinggi') k.push(peg.label(P, teksT), peg.halo(P))
+  if (aktif === 'alas') k.push(peg.label(ujungAlas, teksA), peg.halo(ujungAlas))
+  // Ajakan hanya tampil selama tidak ada pegangan yang dipegang (lihat PeganganSegitiga).
+  if (ajakan && aktif === null) k.push(peg.ajakan(P))
+  return k
+}
+
+/**
+ * Calon letak label t: di samping garis tinggi setengah jalan, lalu makin jauh
+ * (melewati panah pegangan puncak bila tingginya pendek), lalu sejajar puncak.
+ * Terakhir tepat di atas panah pegangan puncak — kira-kira tempat label
+ * pegangannya muncul saat diseret, jadi angkanya tidak melompat jauh.
+ */
+function calonLabelT(skala: number, peg: UkuranPegangan, P: Titik2, dasar: number, teks: string, size: number) {
+  const tengah = (P[1] + dasar) / 2
+  const lewat = peg.ujungPanah + 8
+  const letak: [number, number][] = [
+    [14, tengah],
+    [lewat, tengah],
+    [lewat, P[1]],
+    [lewat + 56, tengah],
+  ]
+  return [
+    ...letak.flatMap(([d, y]) => [
+      tempat(skala, P[0] - d, y, teks, size, 'end'),
+      tempat(skala, P[0] + d, y, teks, size, 'start'),
+    ]),
+    tempat(skala, P[0], P[1] - peg.ujungPanah - 4 - 0.68 * ukuranTag(skala, size), teks, size),
+  ]
+}
+
+/** Calon letak label a: pada garis ukur, di kanan pegangannya, atau di kiri A. */
+function calonLabelA(
+  skala: number,
+  peg: UkuranPegangan,
+  A: Titik2,
+  B: Titik2,
+  yUkur: number,
+  teks: string,
+  size: number,
+) {
+  return [
+    tempat(skala, (A[0] + B[0]) / 2, yUkur, teks, size),
+    tempat(skala, B[0] + peg.ujungPanah + 8, yUkur, teks, size, 'start'),
+    tempat(skala, A[0] - 12, yUkur, teks, size, 'end'),
+  ]
+}
+
+/* ---------------- Bagian gambar yang dipakai berulang ---------------- */
+
+const putar = ([x, y]: Titik2, [cx, cy]: Titik2, derajat: number): Titik2 => {
   const a = (derajat * Math.PI) / 180
   const c = Math.cos(a)
   const s = Math.sin(a)
@@ -66,69 +277,115 @@ const putar = (
   return [cx + dx * c - dy * s, cy + dx * s + dy * c]
 }
 
-const poly = (...t: [number, number][]) => t.map(([x, y]) => `${x},${y}`).join(' ')
+const poly = (...t: Titik2[]) => t.map(([x, y]) => `${x},${y}`).join(' ')
 
-/* ---------------- Bagian gambar yang dipakai berulang ---------------- */
-
-function GarisTinggi({
-  bt,
-  tinggi,
-  nyala,
-  opacity = 1,
-  sisi = 'kiri',
-}: {
-  bt: Bentuk
-  tinggi: number
-  nyala: boolean
-  opacity?: number
-  /** letak label t terhadap garis tinggi. */
-  sisi?: 'kiri' | 'kanan'
-}) {
-  const kaki: [number, number] = [bt.P[0], DASAR_Y]
-  const kanan = sisi === 'kanan'
+/** ├──── a ────● : garis ukur di bawah alas; titik di ujungnya adalah pegangan alas. */
+function GarisUkurAlas({ bt, yUkur, nyala }: { bt: Bentuk; yUkur: number; nyala: boolean }) {
+  const [ax, ay] = bt.A
+  const [bx] = bt.B
   return (
-    <g opacity={opacity}>
+    <g style={{ pointerEvents: 'none' }}>
+      <line x1={ax} y1={ay + 5} x2={ax} y2={yUkur} stroke="var(--m-a)" strokeWidth={1.4} strokeDasharray="3 4" opacity={0.6} />
+      <line x1={bx} y1={ay + 5} x2={bx} y2={yUkur} stroke="var(--m-a)" strokeWidth={1.4} strokeDasharray="3 4" opacity={0.6} />
+      <line x1={ax} y1={yUkur} x2={bx} y2={yUkur} stroke="var(--m-a)" strokeWidth={nyala ? 3 : 2} />
+      <line x1={ax} y1={yUkur - 7} x2={ax} y2={yUkur + 7} stroke="var(--m-a)" strokeWidth={2} />
+    </g>
+  )
+}
+
+/** Garis tinggi putus-putus dari puncak ke garis alas, dengan tanda siku-siku. */
+function GarisTinggi({ bt, nyala }: { bt: Bentuk; nyala: boolean }) {
+  const [kx, ky] = [bt.P[0], bt.A[1]]
+  return (
+    <g style={{ pointerEvents: 'none' }}>
       <line
         x1={bt.P[0]}
         y1={bt.P[1]}
-        x2={kaki[0]}
-        y2={kaki[1]}
+        x2={kx}
+        y2={ky}
         stroke="var(--m-b)"
         strokeWidth={nyala ? 4 : 2.4}
         strokeDasharray="7 5"
         style={{ transition: 'stroke-width var(--d-1)' }}
       />
-      <SikuSiku x={kaki[0]} y={kaki[1]} ux={0} uy={-1} vx={1} vy={0} s={12} warna="var(--m-b)" />
-      <Tag
-        x={bt.P[0] + (kanan ? 16 : -16)}
-        y={(bt.P[1] + DASAR_Y) / 2}
-        anchor={kanan ? 'start' : 'end'}
-        warna="var(--m-b)"
-        size={nyala ? 19 : 16}
-      >
-        {`t = ${fmt(tinggi)}`}
-      </Tag>
+      <SikuSiku x={kx} y={ky} ux={0} uy={-1} vx={1} vy={0} s={12} warna="var(--m-b)" />
     </g>
   )
 }
 
-function GarisAlas({ bt, alas, nyala }: { bt: Bentuk; alas: number; nyala: boolean }) {
+function GarisAlas({ bt, nyala }: { bt: Bentuk; nyala: boolean }) {
   return (
-    <g>
-      <line
-        x1={bt.A[0]}
-        y1={DASAR_Y}
-        x2={bt.B[0]}
-        y2={DASAR_Y}
-        stroke="var(--m-a)"
-        strokeWidth={nyala ? 7 : 4}
-        strokeLinecap="round"
-        style={{ transition: 'stroke-width var(--d-1)' }}
+    <line
+      x1={bt.A[0]}
+      y1={bt.A[1]}
+      x2={bt.B[0]}
+      y2={bt.B[1]}
+      stroke="var(--m-a)"
+      strokeWidth={nyala ? 7 : 4}
+      strokeLinecap="round"
+      style={{ transition: 'stroke-width var(--d-1)', pointerEvents: 'none' }}
+    />
+  )
+}
+
+/** Tag yang letaknya sudah dipilih oleh letakkan(). */
+function TagDi({ di, warna, size, children }: { di: Tempat; warna: string; size: number; children: string }) {
+  return (
+    <Tag x={di.x} y={di.y} anchor={di.anchor} warna={warna} size={size}>
+      {children}
+    </Tag>
+  )
+}
+
+/** Pegangan puncak (posisi puncak + tinggi) dan pegangan ujung garis ukur (alas). */
+function PeganganSegitiga({
+  L,
+  bt,
+  alas,
+  yUkur,
+  teksT,
+  teksA,
+  sembunyi = false,
+  bolehUtama = true,
+}: {
+  L: Tata
+  bt: Bentuk
+  alas: number
+  yUkur: number
+  teksT: string
+  teksA: string
+  sembunyi?: boolean
+  /** false bila ajakan di bawah puncak akan menutupi sesuatu yang sedang jadi tokoh. */
+  bolehUtama?: boolean
+}) {
+  // Ajakan di bawah puncak baru hilang setelah seret pertama SELESAI. Selama
+  // pegangan alas dipegang, puncak sementara bukan pegangan utama supaya
+  // ajakannya tidak menabrak label alas saat tingginya pendek.
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  return (
+    <>
+      <Pegangan
+        x={bt.B[0]}
+        y={yUkur}
+        param="alas"
+        arah="x"
+        label={teksA}
+        keNilai={nilaiAlas(L)}
+        sembunyi={sembunyi}
       />
-      <Tag x={(bt.A[0] + bt.B[0]) / 2} y={DASAR_Y + 30} warna="var(--m-a)" size={nyala ? 19 : 16}>
-        {`a = ${fmt(alas)}`}
-      </Tag>
-    </g>
+      <Pegangan
+        x={bt.P[0]}
+        y={bt.P[1]}
+        param={['tinggi', 'puncak']}
+        panah={{ kiriKanan: 'puncak', atasBawah: 'tinggi' }}
+        arah="bebas"
+        utama={bolehUtama && aktif !== 'alas'}
+        ajakan={AJAKAN}
+        label={teksT}
+        keNilai={nilaiPuncak(L, alas)}
+        sembunyi={sembunyi}
+      />
+    </>
   )
 }
 
@@ -173,13 +430,27 @@ function namaGabungan(p: Record<string, number>): string {
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+function VisualBongkar(props: DeriveState) {
+  const L = useSempit() ? BONGKAR_HP : BONGKAR_LEBAR
+  return (
+    <Svg w={L.w} h={L.h} maxH={L.maxH} label="Segitiga digandakan dan diputar menjadi jajar genjang">
+      <IsiBongkar {...props} L={L} />
+    </Svg>
+  )
+}
+
+/** Dipisah dari VisualBongkar supaya bisa membaca skala layar dari dalam Svg. */
+function IsiBongkar({ step, t, p, sorot, L }: DeriveState & { L: Tata }) {
+  const ctx = useInteraksi()
+  const aktif = ctx?.kendali.aktif ?? null
+  const skala = useSkalaSvg()
+  const peg = ukuranPegangan(skala)
+
   const { alas, tinggi, puncak, luas, tegak } = nilaiBongkar(p)
-  // Jajar genjang selebar a·(1 + puncak) ≤ 2a harus muat di kanvas. Skala hanya
-  // bergantung pada alas, supaya menggeser puncak tidak mengubah tinggi yang tergambar.
-  const skala = Math.min(SKALA, 250 / alas)
-  const bt = bentuk(alas, tinggi, puncak, skala)
-  const { A, B, P, M, b } = bt
+  const bt = bentuk(alas, tinggi, puncak, L)
+  const { A, B, P, M, b, h, px } = bt
+  const yUkur = L.dasar + L.ukur
+  const ujungAlas: Titik2 = [B[0], yUkur]
 
   /* --- kemajuan tiap tahap --- */
   const gambarSegitiga = fase(step, t, 0)
@@ -187,12 +458,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const sudutPutar = 180 * easing.inOutCubic(fase(step, t, 2))
   const tampakJajar = step >= 3
   // Potong bagian kiri jajar genjang lalu geser ke kanan sejauh a.
-  const geser =
-    step === 4 ? seg(t, 0.12, 0.92) : step === 5 ? 1 - seg(t, 0, 0.55) : step > 5 ? 0 : 0
+  const geser = step === 4 ? seg(t, 0.12, 0.92) : step === 5 ? 1 - seg(t, 0, 0.55) : 0
   // Potongan hanya tampak selama dipotong-geser. Begitu kembali ke bentuk semula
   // (tahap 5), yang tampak lagi adalah DUA segitiga kembar, sesuai narasinya.
   const tampakPotongan = step === 4 || (step === 5 && geser > 0)
   const sorotSetengah = step >= 6 ? seg(t, 0, 0.5) : 0
+  // Ukuran dan pegangannya baru ada setelah segitiganya cukup tergambar.
+  const tampakUkuran = gambarSegitiga > 0.6
 
   /* --- titik salinan setelah diputar --- */
   const A2 = putar(A, M, sudutPutar)
@@ -204,51 +476,112 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaSetengah = sorot === 'setengah'
 
   /* --- potongan saat jajar genjang diubah jadi persegi panjang --- */
-  const potKiri: [number, number][] = [A, [KIRI_X + bt.px, DASAR_Y], P]
-  const potKanan: [number, number][] = [
-    [KIRI_X + bt.px, DASAR_Y],
-    B,
-    [B[0] + bt.px, P[1]],
-    P,
-  ]
+  const kaki: Titik2 = [A[0] + px, L.dasar]
+  const potKiri: Titik2[] = [A, kaki, P]
+  const potKanan: Titik2[] = [kaki, B, [B[0] + px, P[1]], P]
   const geserX = geser * b
 
+  /* --- label: yang tetap lebih dulu, lalu yang bisa pindah menghindar --- */
+  const teksT = `t = ${fmt(tinggi)}`
+  const teksA = `a = ${fmt(alas)}`
+  const keterangan =
+    step === 1 && salinanMuncul > 0.4
+      ? { teks: 'salinan yang sama persis', warna: 'var(--m-b)' }
+      : step === 3
+        ? { teks: `dua segitiga = satu ${namaGabungan(p)}`, warna: 'var(--ink-2)' }
+        : step >= 6
+          ? { teks: `satu segitiga = ${fmt(luas)} = separuh dari ${fmt(alas * tinggi)}`, warna: 'var(--m-a)' }
+          : null
+
+  // Di tahap 2 titik putar adalah tokohnya. Bila ajakan "Seret aku" di bawah
+  // puncak akan menutupi titik itu (puncak dekat ujung kiri, alas pendek),
+  // puncak tidak dijadikan pegangan utama selama tahap ini.
+  const kotakPutar: Kotak = { x0: M[0] - 7, y0: M[1] - 7, x1: M[0] + 7, y1: M[1] + 7 }
+  const ajakanTutupPutar = step === 2 && !!ctx?.ajakan && tabrak(peg.ajakan(P), kotakPutar)
+  const ajakanTampil = !!ctx?.ajakan && !ajakanTutupPutar
+
+  const halangan: Kotak[] = []
+  if (keterangan) halangan.push(kotakTag(skala, L.w / 2, L.atasY, keterangan.teks, L.hurufAtas))
+  if (tampakUkuran) halangan.push(...halanganPegangan(peg, P, ujungAlas, aktif, ajakanTampil, teksT, teksA))
+  if (step === 2) halangan.push(kotakPutar)
+
+  // Luas persegi panjang: di tengahnya, tepat di kanannya, di atasnya, atau
+  // (bila persegi panjangnya kecil dan sesak) di baris keterangan.
+  const teksKotak = `a × t = ${fmt(alas * tinggi)}`
+  const hurufKotak = L.hurufAtas + 1
+  const letakKotak =
+    step >= 4 && step <= 5 && geser > 0.9
+      ? letakkan(
+          [
+            tempat(skala, P[0] + b / 2, L.dasar - h / 2, teksKotak, hurufKotak),
+            tempat(skala, P[0] + b + 12, L.dasar - h / 2, teksKotak, hurufKotak, 'start'),
+            tempat(skala, P[0] + b / 2, P[1] - 26, teksKotak, hurufKotak),
+            tempat(skala, L.w / 2, L.atasY, teksKotak, hurufKotak),
+          ],
+          halangan,
+          L,
+        )
+      : null
+  if (letakKotak) halangan.push(letakKotak.kotak)
+
+  // Di tahap 2 titik putar adalah tokohnya, jadi labelnya dapat tempat lebih dulu.
+  const calonPutar: [number, number, Jangkar][] = [
+    [14, -18, 'start'],
+    [14, 18, 'start'],
+    [-14, -18, 'end'],
+    [-14, 18, 'end'],
+    [0, -30, 'middle'],
+    [0, 32, 'middle'],
+    [peg.ujungPanah + 8, 0, 'start'],
+    [-peg.ujungPanah - 8, 0, 'end'],
+    [peg.ujungPanah + 8, 30, 'start'],
+    [-peg.ujungPanah - 8, 30, 'end'],
+    // Bila puncak di atas ujung kanan alas, M jatuh tepat di bawah pegangan
+    // puncak dan ajakannya; labelnya perlu menjauh sedikit.
+    [0, 66, 'middle'],
+    [peg.ujungPanah + 50, 0, 'start'],
+    [-peg.ujungPanah - 50, 0, 'end'],
+  ]
+  const letakPutar =
+    step === 2
+      ? letakkan(
+          calonPutar.map(([dx, dy, jangkar]) => tempat(skala, M[0] + dx, M[1] + dy, 'titik putar', 15, jangkar)),
+          halangan,
+          L,
+        )
+      : null
+  if (letakPutar) halangan.push(letakPutar.kotak)
+
+  const hurufT = nyalaTinggi ? 19 : 16
+  const letakT =
+    tampakUkuran && aktif !== 'tinggi'
+      ? letakkan(calonLabelT(skala, peg, P, L.dasar, teksT, hurufT), halangan, L)
+      : null
+  if (letakT) halangan.push(letakT.kotak)
+
+  const hurufA = nyalaAlas ? 19 : 16
+  const letakA =
+    tampakUkuran && aktif !== 'alas'
+      ? letakkan(calonLabelA(skala, peg, A, B, yUkur, teksA, hurufA), halangan, L)
+      : null
+
   return (
-    <Svg w={W} h={H} maxH={430} label="Segitiga digandakan dan diputar menjadi jajar genjang">
+    <>
       {/* garis dasar */}
-      <line
-        x1={40}
-        y1={DASAR_Y}
-        x2={W - 40}
-        y2={DASAR_Y}
-        stroke="var(--m-grid)"
-        strokeWidth={2}
-      />
+      <line x1={8} y1={L.dasar} x2={L.w - 8} y2={L.dasar} stroke="var(--m-grid)" strokeWidth={2} />
 
       {/* --- tahap 4-5: jajar genjang dipotong dan digeser --- */}
       {step >= 4 && step <= 5 && (
         <g>
-          <polygon
-            points={poly(...potKanan)}
-            fill="var(--m-ab-soft)"
-            stroke="var(--m-ab)"
-            strokeWidth={2.5}
-          />
+          <polygon points={poly(...potKanan)} fill="var(--m-ab-soft)" stroke="var(--m-ab)" strokeWidth={2.5} />
           {/* Bila tegak, potongan kiri hanyalah garis tanpa luas: tidak ada yang dipotong. */}
           {!tegak && (
             <polygon
-              points={poly(
-                ...(potKiri.map(([x, y]) => [x + geserX, y]) as [number, number][]),
-              )}
+              points={poly(...potKiri.map(([x, y]): Titik2 => [x + geserX, y]))}
               fill="var(--m-b-soft)"
               stroke="var(--m-b)"
               strokeWidth={2.5}
             />
-          )}
-          {geser > 0.9 && (
-            <Tag x={KIRI_X + bt.px + b / 2} y={DASAR_Y - bt.h / 2} warna="var(--m-ab)" size={18}>
-              {`a × t = ${fmt(alas * tinggi)}`}
-            </Tag>
           )}
         </g>
       )}
@@ -256,7 +589,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* --- jajar genjang utuh (tahap 3 dan 6) --- */}
       {tampakJajar && !tampakPotongan && (
         <polygon
-          points={poly(A, B, [B[0] + bt.px, P[1]], P)}
+          points={poly(A, B, [B[0] + px, P[1]], P)}
           fill="var(--m-ghost)"
           stroke="var(--ink-3)"
           strokeWidth={2}
@@ -289,89 +622,116 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         />
       )}
 
-      {/* --- ukuran --- */}
-      {gambarSegitiga > 0.6 && (
+      {/* --- ukuran: alas, tinggi, dan garis ukur tempat pegangan alas --- */}
+      {tampakUkuran && (
         <>
-          <GarisAlas bt={bt} alas={alas} nyala={nyalaAlas} />
-          <GarisTinggi bt={bt} tinggi={tinggi} nyala={nyalaTinggi} />
+          <GarisUkurAlas bt={bt} yUkur={yUkur} nyala={nyalaAlas} />
+          <GarisAlas bt={bt} nyala={nyalaAlas} />
+          <GarisTinggi bt={bt} nyala={nyalaTinggi} />
         </>
+      )}
+      {letakT && (
+        <TagDi di={letakT} warna="var(--m-b)" size={hurufT}>
+          {teksT}
+        </TagDi>
+      )}
+      {letakA && (
+        <TagDi di={letakA} warna="var(--m-a)" size={hurufA}>
+          {teksA}
+        </TagDi>
+      )}
+      {letakKotak && (
+        <TagDi di={letakKotak} warna="var(--m-ab)" size={hurufKotak}>
+          {teksKotak}
+        </TagDi>
       )}
 
       {/* --- keterangan tahap --- */}
-      {step === 1 && salinanMuncul > 0.4 && (
-        <Tag x={W / 2} y={70} warna="var(--m-b)" size={17}>
-          salinan yang sama persis
-        </Tag>
+      {step === 2 && <circle cx={M[0]} cy={M[1]} r={6} fill="var(--m-hi)" />}
+      {letakPutar && (
+        <TagDi di={letakPutar} warna="var(--m-hi)" size={15}>
+          titik putar
+        </TagDi>
       )}
-      {step === 2 && (
-        <g>
-          <circle cx={M[0]} cy={M[1]} r={6} fill="var(--m-hi)" />
-          <Tag x={M[0] + 14} y={M[1] - 18} anchor="start" warna="var(--m-hi)" size={15}>
-            titik putar
-          </Tag>
-        </g>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={70} warna="var(--ink-2)" size={17}>
-          {`dua segitiga = satu ${namaGabungan(p)}`}
-        </Tag>
-      )}
-      {step >= 6 && (
-        <Tag x={W / 2} y={70} warna="var(--m-a)" size={18}>
-          {`satu segitiga = ${fmt(luas)} = separuh dari ${fmt(alas * tinggi)}`}
+      {keterangan && (
+        <Tag x={L.w / 2} y={L.atasY} warna={keterangan.warna} size={L.hurufAtas}>
+          {keterangan.teks}
         </Tag>
       )}
 
-      {/* dimensi tinggi pada jajar genjang saat sudah jadi persegi panjang */}
-      {step >= 4 && step <= 5 && geser > 0.9 && (
-        <Dimensi
-          x1={KIRI_X + bt.px + b + 14}
-          y1={DASAR_Y}
-          x2={KIRI_X + bt.px + b + 14}
-          y2={DASAR_Y - bt.h}
-          label={`t = ${fmt(tinggi)}`}
-          warna="var(--m-b)"
-        />
-      )}
-    </Svg>
+      <PeganganSegitiga
+        L={L}
+        bt={bt}
+        alas={alas}
+        yUkur={yUkur}
+        teksT={teksT}
+        teksA={teksA}
+        sembunyi={!tampakUkuran}
+        bolehUtama={!ajakanTutupPutar}
+      />
+    </>
   )
 }
 
 /* ---------------- Visual untuk eksperimen bebas ---------------- */
 
-function VisualEksperimen({
-  p,
-  sorot,
-}: {
-  p: Record<string, number>
-  sorot: string | null
-}) {
+function VisualEksperimen(props: { p: Record<string, number>; sorot: string | null }) {
+  const L = useSempit() ? EKS_HP : EKS_LEBAR
+  return (
+    <Svg w={L.w} h={L.h} maxH={L.maxH} label="Segitiga yang bisa diubah alas, tinggi, dan posisi puncaknya">
+      <IsiEksperimen {...props} L={L} />
+    </Svg>
+  )
+}
+
+/** Rentang posisi puncak di eksperimen (pecahan dari alas); dipakai params dan garis luncurnya. */
+const PUNCAK_EKS = { min: -0.4, max: 1.4 }
+
+function IsiEksperimen({ p, sorot, L }: { p: Record<string, number>; sorot: string | null; L: Tata }) {
+  const ctx = useInteraksi()
+  const aktif = ctx?.kendali.aktif ?? null
+  const skala = useSkalaSvg()
+  const peg = ukuranPegangan(skala)
+
   const alas = p.alas ?? 6
   const tinggi = p.tinggi ?? 4
   const puncak = p.puncak ?? 0.35
-  // Skala tetap (tidak bergantung penggeser) dan titik kiri yang digeser, supaya
-  // puncak selalu tampak di atas garis putus-putus untuk seluruh rentang penggeser:
-  // posisi puncak −0,4 … 1,4 kali alas, alas sampai 10 → puncak di x = 60 … 600.
-  const skala = 30
-  const kiri = 180
-  const bt = bentuk(alas, tinggi, puncak, skala, kiri)
+  const bt = bentuk(alas, tinggi, puncak, L)
+  const { A, B, P } = bt
   const luas = (alas * tinggi) / 2
-  // Label t pindah ke kanan garis tinggi bila di kiri tidak muat di kanvas.
-  const lebarLabelT = `t = ${fmt(tinggi)}`.length * 19 * 0.58 + 14
-  const sisiLabelT = bt.P[0] - 16 - lebarLabelT < 4 ? 'kanan' : 'kiri'
-
+  const yUkur = L.dasar + L.ukur
+  const ujungAlas: Titik2 = [B[0], yUkur]
   // Bayangan posisi puncak lain, memperlihatkan luas tak berubah.
-  const bayang = [0, 0.5, 1].map((f) => bentuk(alas, tinggi, f, skala, kiri))
+  const bayang = [0, 0.5, 1].map((f) => bentuk(alas, tinggi, f, L))
+
+  const teksT = `t = ${fmt(tinggi)}`
+  const teksA = `a = ${fmt(alas)}`
+  const judul = `Luas = ${fmt(luas)} satuan²`
+  const nyalaAlas = sorot === 'alas'
+  const nyalaTinggi = sorot === 'tinggi'
+
+  const halangan: Kotak[] = [
+    kotakTag(skala, L.w / 2, L.atasY, judul, L.hurufAtas),
+    ...halanganPegangan(peg, P, ujungAlas, aktif, !!ctx?.ajakan, teksT, teksA),
+  ]
+  const hurufT = nyalaTinggi ? 19 : 16
+  const letakT = aktif !== 'tinggi' ? letakkan(calonLabelT(skala, peg, P, L.dasar, teksT, hurufT), halangan, L) : null
+  if (letakT) halangan.push(letakT.kotak)
+  const hurufA = nyalaAlas ? 19 : 16
+  const letakA = aktif !== 'alas' ? letakkan(calonLabelA(skala, peg, A, B, yUkur, teksA, hurufA), halangan, L) : null
 
   return (
-    <Svg w={W} h={H} maxH={430} label="Segitiga yang bisa diubah alas, tinggi, dan posisi puncaknya">
-      <line x1={40} y1={DASAR_Y} x2={W - 40} y2={DASAR_Y} stroke="var(--m-grid)" strokeWidth={2} />
-      {/* garis sejajar alas setinggi t: puncak boleh geser di sepanjang garis ini */}
+    <>
+      <line x1={8} y1={L.dasar} x2={L.w - 8} y2={L.dasar} stroke="var(--m-grid)" strokeWidth={2} />
+      {/* garis sejajar alas setinggi t: puncak boleh diseret di sepanjang garis ini.
+          Panjangnya persis sejauh puncak bisa pergi, supaya titiknya tidak
+          berhenti di tengah garis tanpa sebab yang terlihat. */}
       <line
-        x1={40}
-        y1={DASAR_Y - bt.h}
-        x2={W - 40}
-        y2={DASAR_Y - bt.h}
+        x1={L.kiri + PUNCAK_EKS.min * bt.b}
+        y1={P[1]}
+        x2={L.kiri + PUNCAK_EKS.max * bt.b}
+        y2={P[1]}
+        strokeLinecap="round"
         stroke="var(--m-b)"
         strokeWidth={1.5}
         strokeDasharray="4 6"
@@ -391,7 +751,7 @@ function VisualEksperimen({
       ))}
 
       <polygon
-        points={poly(bt.A, bt.B, bt.P)}
+        points={poly(A, B, P)}
         fill="var(--m-a)"
         fillOpacity={0.24}
         stroke="var(--m-a)"
@@ -399,15 +759,26 @@ function VisualEksperimen({
         strokeLinejoin="round"
       />
 
-      <GarisAlas bt={bt} alas={alas} nyala={sorot === 'alas'} />
-      <GarisTinggi bt={bt} tinggi={tinggi} nyala={sorot === 'tinggi'} sisi={sisiLabelT} />
+      <GarisUkurAlas bt={bt} yUkur={yUkur} nyala={nyalaAlas} />
+      <GarisAlas bt={bt} nyala={nyalaAlas} />
+      <GarisTinggi bt={bt} nyala={nyalaTinggi} />
+      {letakT && (
+        <TagDi di={letakT} warna="var(--m-b)" size={hurufT}>
+          {teksT}
+        </TagDi>
+      )}
+      {letakA && (
+        <TagDi di={letakA} warna="var(--m-a)" size={hurufA}>
+          {teksA}
+        </TagDi>
+      )}
 
-      <circle cx={bt.P[0]} cy={bt.P[1]} r={7} fill="var(--m-b)" />
-
-      <Tag x={W / 2} y={52} warna="var(--m-a)" size={20}>
-        {`Luas = ${fmt(luas)} satuan²`}
+      <Tag x={L.w / 2} y={L.atasY} warna="var(--m-ab)" size={L.hurufAtas}>
+        {judul}
       </Tag>
-    </Svg>
+
+      <PeganganSegitiga L={L} bt={bt} alas={alas} yUkur={yUkur} teksT={teksT} teksA={teksA} />
+    </>
   )
 }
 
@@ -448,12 +819,15 @@ const konsep: Konsep = {
   },
 
   bongkar: {
-    rasio: W / H,
     Visual: VisualBongkar,
+    // Pegangan puncak berwarna tinggi (oranye), jadi posisi puncak memakai warna yang sama.
+    // Posisi puncak sengaja tanpa `bagian` dan tanpa `simbol`: ia tidak punya lambang di
+    // gambar maupun di rumus, dan kata "puncak" bila ditulis miring seperti variabel
+    // matematika terbaca keliru. Kontrol angkanya memakai label "Posisi puncak".
     params: [
-      { key: 'alas', label: 'Alas', min: 3, max: 9, step: 1, awal: 6, bulat: true },
-      { key: 'tinggi', label: 'Tinggi', min: 2, max: 6, step: 1, awal: 4, bulat: true },
-      { key: 'puncak', label: 'Posisi puncak', min: 0, max: 1, step: 0.05, awal: 0.35 },
+      { key: 'alas', label: 'Alas', min: 3, max: 9, step: 1, awal: 6, bulat: true, simbol: 'a', peran: 'a', bagian: 'alas' },
+      { key: 'tinggi', label: 'Tinggi', min: 2, max: 6, step: 1, awal: 4, bulat: true, simbol: 't', peran: 'b', bagian: 'tinggi' },
+      { key: 'puncak', label: 'Posisi puncak', min: 0, max: 1, step: 0.05, awal: 0.35, peran: 'b' },
     ],
     roles: { alas: 'a', tinggi: 'b', setengah: 'hi', luas: 'ab' },
     arti: {
@@ -550,22 +924,26 @@ const konsep: Konsep = {
   },
 
   eksperimen: {
-    judul: 'Geser puncaknya. Perhatikan angka luasnya.',
+    judul: 'Seret puncaknya. Perhatikan angka luasnya.',
     ajakan:
-      'Puncak segitiga boleh bergeser ke mana saja di sepanjang garis putus-putus. Ubah juga alas dan tingginya.',
-    rasio: W / H,
+      'Seret titik oranye di puncak menyusuri garis putus-putus, lalu naik atau turun. Tarik titik ungu di bawah alas untuk mengubah alasnya.',
     params: [
-      { key: 'alas', label: 'Alas', min: 2, max: 10, step: 0.5, awal: 6 },
-      { key: 'tinggi', label: 'Tinggi', min: 1, max: 6, step: 0.5, awal: 4 },
-      { key: 'puncak', label: 'Posisi puncak', min: -0.4, max: 1.4, step: 0.05, awal: 0.35 },
+      { key: 'alas', label: 'Alas', min: 2, max: 10, step: 0.5, awal: 6, simbol: 'a', peran: 'a', bagian: 'alas' },
+      { key: 'tinggi', label: 'Tinggi', min: 1, max: 6, step: 0.5, awal: 4, simbol: 't', peran: 'b', bagian: 'tinggi' },
+      { key: 'puncak', label: 'Posisi puncak', min: PUNCAK_EKS.min, max: PUNCAK_EKS.max, step: 0.05, awal: 0.35, peran: 'b' },
     ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const alas = p.alas ?? 6
+      const tinggi = p.tinggi ?? 4
+      return `[luas:L] = [setengah:½] × [alas:${fmt(alas)}] × [tinggi:${fmt(tinggi)}] = ${fmt((alas * tinggi) / 2)}`
+    },
     temuan: (p) => {
       const alas = p.alas ?? 6
       const tinggi = p.tinggi ?? 4
       return (
         <p>
-          <strong>Coba geser "posisi puncak" saja.</strong> Bentuknya berubah drastis, tetapi
+          <strong>Coba seret puncaknya ke samping saja.</strong> Bentuknya berubah drastis, tetapi
           luasnya diam di angka {fmt((alas * tinggi) / 2)}. Yang menentukan luas cuma dua: alas{' '}
           {fmt(alas)} dan tinggi {fmt(tinggi)}. Sekarang gandakan tingginya (misalnya dari 2
           menjadi 4) — luasnya ikut menjadi dua kali lipat, karena dalam rumus tinggi hanya

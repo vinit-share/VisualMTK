@@ -6,119 +6,237 @@
    pernyataan bahwa dua sisi sama berat. Timbangan memperlihatkan
    akibatnya secara langsung — begitu satu sisi saja dikurangi,
    timbangannya miring dan pernyataan itu jadi tidak benar lagi.
+
+   Interaksi langsung: anak memegang benda di piring timbangan.
+   - Titik di ujung deretan kotak menambah/mengurangi kotak (a).
+   - Titik di atas tumpukan bola adalah "tempat bola berikutnya":
+     seret ke petak mana pun, tumpukannya terisi sampai di situ.
+     Petak disusun berkelok (baris ganjil dari kanan) supaya
+     menyeret terus ke atas tidak pernah melompat ke tepi seberang.
+   - Di bongkar, bola kiri (b) menempel pada persamaan ax + b = c,
+     jadi mengubahnya selalu mengubah KEDUA sisi dan timbangan
+     tetap datar. Isi kotak (x) dipegang dari tumpukan kanan, yang
+     tumbuh a bola sekaligus — satu untuk setiap kotak.
+   - Di eksperimen, a, b, dan c dipegang sendiri-sendiri; isi kotak x
+     menyesuaikan, dan timbangan baru miring bila c < b. Tombol
+     "−1 bola" dan "+1 bola" di bawah timbangan mengubah KEDUA sisi
+     sekaligus, sehingga x tidak berubah.
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
-import { fase, seg } from '../lib/anim'
-import { clamp, fmt, pecahanTeks } from '../lib/num'
+import { useState, type ReactNode } from 'react'
+import { Pegangan, useInteraksi, type Titik } from '../components/Interaksi'
+import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { fase, seg, useTween } from '../lib/anim'
+import { clamp, fmt, lerp, pecahanTeks } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 680
-const H = 430
+/* ---------------- Ukuran benda ---------------- */
 
-const CX = W / 2
-const BEAM_Y = 132
-const LENGAN = 208
-const PAN_TURUN = 74
-const PAN_LEBAR = 178
+const R_BOLA = 11
+/** jarak pusat ke pusat dua bola bertetangga. */
+const JARAK_BOLA = 24
+const KOTAK = 34
+const JARAK_KOTAK = 40
+/** celah antara atap kotak dan baris bola pertama di piring kiri. Cukup
+    lebar supaya pegangan a (di kaki kotak) dan pegangan b (di baris bola
+    pertama) tetap ≥ 71 terpisah — lebih dari 48 px layar, di HP selebar 320 px pun. */
+const CELAH_KIRI = 20
+const PER_BARIS_KIRI = 4
+const PER_BARIS_KANAN = 5
+/** celah antara kolom kelompok dan bola sisa di piring kanan (bongkar). */
+const CELAH_SISA = 6
+const TEBAL_PIRING = 9
+const MIRING_MAKS = 11
+/** jarak pusat label jumlah benda di bawah permukaan piring. */
+const LABEL_TURUN = 33
+
+/**
+ * Ajakan di bawah pegangan utama. Lebih pendek dari bawaan "Coba geser aku":
+ * pegangan utama bisa berada di kolom paling kanan tumpukan kanan, dan di HP
+ * ajakan bawaan (±150 satuan) akan keluar dari tepi gambar.
+ */
+const AJAKAN = 'Seret aku'
 
 /** Seberapa "hidup" sebuah benda digambar: 1 penuh, 0 hilang. */
 const hidup = (i: number, jumlah: number) => clamp(jumlah - i, 0, 1)
 
-function Timbangan({
-  kiri,
-  kanan,
-  isiKiri,
-  isiKanan,
-  catatan,
-}: {
-  /** berat total sisi kiri dan kanan, untuk menentukan kemiringan. */
-  kiri: number
-  kanan: number
-  isiKiri: (x: number, y: number) => React.ReactNode
-  isiKanan: (x: number, y: number) => React.ReactNode
-  catatan?: { teks: string; warna: string }
-}) {
-  const beda = kanan - kiri
-  const sudut = clamp(beda * 2.4, -11, 11)
-  const rad = (sudut * Math.PI) / 180
+/* ---------------- Tata letak ---------------- */
 
-  const ex = Math.cos(rad) * LENGAN
-  const ey = Math.sin(rad) * LENGAN
-  const kiriUjung = { x: CX - ex, y: BEAM_Y - ey }
-  const kananUjung = { x: CX + ex, y: BEAM_Y + ey }
+interface Letak {
+  w: number
+  h: number
+  cx: number
+  /** jarak mendatar pusat piring ke poros. */
+  lengan: number
+  lebarPiring: number
+  /** tinggi permukaan piring saat timbangan datar. */
+  piringY: number
+  /** jarak permukaan piring ke palang di bawahnya. */
+  tiang: number
+  alasY: number
+}
 
+/*  Anggaran tinggi. Label seret sebuah pegangan puncaknya ±43 px layar di atas
+    titiknya, yaitu ±56 satuan pada skala terkecil (0,77: panggung lebar
+    tersempit 560 px, atau HP 360 px).
+    - Bongkar: pegangan tertinggi di petak ke-30 atau puncak kolom x = 6,
+      155 di atas piring kanan. Piring kanan di bongkar tidak pernah terangkat
+      (di langkah 1 justru turun), jadi puncak labelnya ≥ 43 di lebar dan ≥ 51
+      di HP — tetap di bawah keterangan atas (atasY).
+    - Eksperimen: pegangan c = 20 ada 107 di atas piring. Saat diseret,
+      kemiringan ditahan; kalau seretnya dimulai ketika c < b, piring kanan
+      terangkat lengan × sin 11° (38 di lebar, 20 di HP). Karena itu piring
+      eksperimen lebar diturunkan sampai puncak label tetap ≥ 0. */
+
+const BONGKAR_LEBAR = { w: 680, h: 466, cx: 340, lengan: 200, lebarPiring: 190, piringY: 254, tiang: 62, alasY: 402, atasY: 28, catatanY: 440 }
+const BONGKAR_HP = { w: 420, h: 492, cx: 210, lengan: 104, lebarPiring: 180, piringY: 262, tiang: 62, alasY: 404, atasY: 28, catatanY: 446 }
+
+const EKSPERIMEN_LEBAR = { w: 680, h: 502, cx: 340, lengan: 200, lebarPiring: 190, piringY: 202, tiang: 62, alasY: 342, ajakY: 378, tombolY: 414, catatanY: 460 }
+const EKSPERIMEN_HP = { w: 420, h: 520, cx: 210, lengan: 104, lebarPiring: 180, piringY: 194, tiang: 62, alasY: 334, ajakY: 370, tombolY: 412, catatanY: 466 }
+
+/** Pusat piring kiri dan kanan untuk kemiringan tertentu (derajat). */
+function piring(L: Letak, miring: number) {
+  // Piring hanya naik-turun; letak mendatarnya tetap, jadi pegangan yang
+  // hanya membaca arah x tidak pernah ikut bergeser karena kemiringan.
+  const dy = Math.sin((miring * Math.PI) / 180) * L.lengan
+  return {
+    kiri: { x: L.cx - L.lengan, y: L.piringY - dy },
+    kanan: { x: L.cx + L.lengan, y: L.piringY + dy },
+  }
+}
+
+/**
+ * Kemiringan timbangan. Selama sebuah titik dipegang, kemiringannya ditahan:
+ * benda yang sedang dipegang belum "diletakkan", dan titik yang menempel di
+ * piring tidak ikut naik-turun di bawah jari (tanpa ini tumpukan yang makin
+ * berat menurunkan piring, jari jadi relatif lebih tinggi, dan nilainya
+ * terus bertambah sendiri). Begitu dilepas, timbangan berayun ke posisinya.
+ */
+function useMiring(beda: number, tahan: boolean) {
+  const target = clamp(beda * 2.4, -MIRING_MAKS, MIRING_MAKS)
+  const [beku, setBeku] = useState<number | null>(null)
+  if (tahan && beku === null) setBeku(target)
+  if (!tahan && beku !== null) setBeku(null)
+  return useTween(tahan && beku !== null ? beku : target, { durasi: 320 })
+}
+
+/* ---------------- Susunan benda ---------------- */
+
+/**
+ * Letak petak ke-i pada tumpukan, relatif terhadap pusat baris pertama.
+ * Baris genap diisi dari kiri, baris ganjil dari kanan (berkelok), sehingga
+ * petak berikutnya selalu bersebelahan dengan petak sebelumnya.
+ */
+function petak(i: number, per: number) {
+  const baris = Math.floor(i / per)
+  const k = i % per
+  const kolom = baris % 2 === 0 ? k : per - 1 - k
+  return { dx: (kolom - (per - 1) / 2) * JARAK_BOLA, dy: -baris * JARAK_BOLA }
+}
+
+/** Kebalikan petak(): nomor petak terdekat dari titik (dx, dy). */
+function petakDari(dx: number, dy: number, per: number, barisMaks: number) {
+  const baris = clamp(Math.round(-dy / JARAK_BOLA), 0, barisMaks)
+  const kolom = clamp(Math.round(dx / JARAK_BOLA + (per - 1) / 2), 0, per - 1)
+  return baris * per + (baris % 2 === 0 ? kolom : per - 1 - kolom)
+}
+
+/** Pusat baris bola pertama di piring kiri (di atas deretan kotak) dan kanan. */
+const dasarKiri = (P: Titik) => P.y - KOTAK - CELAH_KIRI - R_BOLA
+const dasarKanan = (P: Titik) => P.y - R_BOLA
+
+/** Pusat mendatar kotak ke-i dari a kotak yang dideretkan di tengah piring. */
+const pusatKotak = (P: Titik, i: number, a: number) => P.x + (i - (a - 1) / 2) * JARAK_KOTAK
+
+/** Titik pegangan a: tepat di ujung kanan deretan kotak, di tepi bawah piring
+    (71 di bawah baris bola kiri pertama, tempat pegangan b). */
+const titikA = (P: Titik, a: number) => ({ x: P.x + (a * JARAK_KOTAK) / 2, y: P.y + 6 })
+/** Kebalikan titikA(). */
+const aDari = (P: Titik, pt: Titik) => (2 * (pt.x - P.x)) / JARAK_KOTAK
+
+/* ---------------- Gambar timbangan ---------------- */
+
+function Timbangan({ L, miring, children }: { L: Letak; miring: number; children?: ReactNode }) {
+  const { kiri, kanan } = piring(L, miring)
+  const palangY = L.piringY + L.tiang
   return (
     <g>
-      {/* tiang dan alas */}
+      {/* tiang poros dan alas */}
       <path
-        d={`M ${CX - 44} ${H - 46} L ${CX + 44} ${H - 46} L ${CX + 12} ${BEAM_Y + 6} L ${CX - 12} ${BEAM_Y + 6} Z`}
+        d={`M ${L.cx - 40} ${L.alasY} L ${L.cx + 40} ${L.alasY} L ${L.cx + 10} ${palangY} L ${L.cx - 10} ${palangY} Z`}
         fill="var(--surface-3)"
         stroke="var(--ink-3)"
         strokeWidth={1.5}
       />
-      <rect x={CX - 62} y={H - 46} width={124} height={12} rx={6} fill="var(--ink-3)" />
+      <rect x={L.cx - 60} y={L.alasY} width={120} height={12} rx={6} fill="var(--ink-3)" />
 
-      {/* palang */}
-      <g style={{ transition: 'none' }}>
+      {/* palang, tiang piring, dan piring */}
+      {[kiri, kanan].map((P, i) => (
         <line
-          x1={kiriUjung.x}
-          y1={kiriUjung.y}
-          x2={kananUjung.x}
-          y2={kananUjung.y}
-          stroke="var(--ink)"
-          strokeWidth={7}
-          strokeLinecap="round"
+          key={`t${i}`}
+          x1={P.x}
+          y1={P.y + L.tiang}
+          x2={P.x}
+          y2={P.y + TEBAL_PIRING}
+          stroke="var(--ink-2)"
+          strokeWidth={4}
         />
-        <circle cx={CX} cy={BEAM_Y} r={9} fill="var(--ink)" />
-
-        {/* tali dan piring */}
-        {[kiriUjung, kananUjung].map((u, i) => (
-          <g key={i}>
-            <line
-              x1={u.x}
-              y1={u.y}
-              x2={u.x}
-              y2={u.y + PAN_TURUN}
-              stroke="var(--ink-3)"
-              strokeWidth={2}
-            />
-            <rect
-              x={u.x - PAN_LEBAR / 2}
-              y={u.y + PAN_TURUN}
-              width={PAN_LEBAR}
-              height={9}
-              rx={4.5}
-              fill="var(--ink-2)"
-            />
-          </g>
-        ))}
-      </g>
-
-      {isiKiri(kiriUjung.x, kiriUjung.y + PAN_TURUN)}
-      {isiKanan(kananUjung.x, kananUjung.y + PAN_TURUN)}
-
-      {catatan && (
-        <Tag x={CX} y={H - 16} warna={catatan.warna} size={16}>
-          {catatan.teks}
-        </Tag>
-      )}
+      ))}
+      <line
+        x1={kiri.x}
+        y1={kiri.y + L.tiang}
+        x2={kanan.x}
+        y2={kanan.y + L.tiang}
+        stroke="var(--ink)"
+        strokeWidth={7}
+        strokeLinecap="round"
+      />
+      <circle cx={L.cx} cy={palangY} r={8} fill="var(--ink)" />
+      {[kiri, kanan].map((P, i) => (
+        <rect
+          key={`p${i}`}
+          x={P.x - L.lebarPiring / 2}
+          y={P.y}
+          width={L.lebarPiring}
+          height={TEBAL_PIRING}
+          rx={TEBAL_PIRING / 2}
+          fill="var(--ink-2)"
+        />
+      ))}
+      {children}
     </g>
   )
 }
 
-/** Kotak berlabel x. */
-function KotakX({ x, y, o, nyala }: { x: number; y: number; o: number; nyala: boolean }) {
+/** Kotak berlabel x; (x, y) adalah titik tengah alasnya. */
+function KotakX({
+  x,
+  y,
+  o,
+  nyala,
+  teks,
+}: {
+  x: number
+  y: number
+  o: number
+  nyala: boolean
+  teks: string
+}) {
+  // Ukuran huruf dihitung DI SINI, bukan di VisualBongkar/VisualEksperimen:
+  // SkalaCtx baru dipasang oleh <Svg>, jadi useUkuranLayar() yang dipanggil di
+  // luar <Svg> selalu jatuh ke nilai cadangan. Akibatnya huruf x terkunci di 16
+  // satuan dan menyusut sampai 10,9 px di layar 320 px — di bawah batas 11 px.
+  const u = useUkuranLayar()
   if (o <= 0.01) return null
-  const s = 40
+  const huruf = Math.max(16, u(12, 16))
   return (
     <g opacity={o}>
       <rect
-        x={x - s / 2}
-        y={y - s}
-        width={s}
-        height={s}
-        rx={7}
+        x={x - KOTAK / 2}
+        y={y - KOTAK}
+        width={KOTAK}
+        height={KOTAK}
+        rx={6}
         fill="var(--m-a)"
         fillOpacity={nyala ? 0.55 : 0.32}
         stroke="var(--m-a)"
@@ -126,43 +244,49 @@ function KotakX({ x, y, o, nyala }: { x: number; y: number; o: number; nyala: bo
       />
       <text
         x={x}
-        y={y - s / 2}
+        y={y - KOTAK / 2}
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={19}
+        fontSize={huruf}
         fontWeight={800}
         fill="var(--m-a)"
       >
-        x
+        {teks}
       </text>
     </g>
   )
 }
 
-/** Bola satuan. */
+/** Bola satuan; (x, y) adalah pusatnya. */
 function Bola({ x, y, o, warna }: { x: number; y: number; o: number; warna: string }) {
   if (o <= 0.01) return null
-  return <circle cx={x} cy={y - 11} r={11} fill={warna} fillOpacity={0.75} stroke={warna} strokeWidth={1.6} opacity={o} />
+  return (
+    <circle cx={x} cy={y} r={R_BOLA} fill={warna} fillOpacity={0.75} stroke={warna} strokeWidth={1.6} opacity={o} />
+  )
 }
 
-/** Susun benda dalam piring: baris berisi maksimal `perBaris`. */
-function baris(n: number, perBaris: number, lebar: number, tinggiBaris = 30) {
-  const pos: { x: number; y: number; i: number }[] = []
-  const total = Math.ceil(n)
-  for (let i = 0; i < total; i++) {
-    const b = Math.floor(i / perBaris)
-    const dalamBaris = Math.min(perBaris, total - b * perBaris)
-    const k = i % perBaris
-    const step = lebar / Math.max(1, dalamBaris)
-    pos.push({ x: (k - (dalamBaris - 1) / 2) * step, y: -b * tinggiBaris, i })
-  }
-  return pos
+/** Bekas bola yang baru diambil: lingkaran putus-putus di tempatnya semula. */
+function BekasBola({ x, y, o }: { x: number; y: number; o: number }) {
+  if (o <= 0.01) return null
+  return (
+    <circle
+      cx={x}
+      cy={y}
+      r={R_BOLA - 1}
+      fill="none"
+      stroke="var(--ink-3)"
+      strokeWidth={1.5}
+      strokeDasharray="3 3"
+      opacity={o * 0.8}
+    />
+  )
 }
 
-/** Kotak tingginya 40, jadi barisnya harus berjarak lebih dari itu agar tidak saling tindih. */
-const TINGGI_BARIS_KOTAK = 46
-/** Bola di kiri diletakkan di atas baris kotak tertinggi (kotak ke-4 membuka baris kedua). */
-const angkatBola = (nKotak: number) => -46 - TINGGI_BARIS_KOTAK * (Math.ceil(nKotak / 3) - 1)
+/** Teks jumlah benda di satu sisi, mis. "2 kotak + 3 bola". */
+function teksSisi(kotak: number, bola: number) {
+  if (kotak <= 0) return `${fmt(bola)} bola`
+  return bola > 0 ? `${fmt(kotak)} kotak + ${fmt(bola)} bola` : `${fmt(kotak)} kotak`
+}
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
@@ -186,8 +310,19 @@ function nilaiBongkar(p: Record<string, number>) {
   }
 }
 
+/** Baris tertinggi tumpukan kanan di bongkar: c paling banyak 4 × 6 + 6 = 30. */
+const BARIS_MAKS_KANAN_BONGKAR = Math.floor(30 / PER_BARIS_KANAN)
+
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const { a, b, x, c } = nilaiBongkar(p)
+  const sempit = useSempit()
+  const interaksi = useInteraksi()
+  const aktif = interaksi?.kendali.aktif ?? null
+  // Ajakan tampil di bawah pegangan utama (x) sampai anak pernah menyeret;
+  // selama tumpukan kanan baru dua baris, ajakan itu menempati tempat label
+  // jumlah bola kanan, jadi label itu disembunyikan dulu.
+  const ajakanX = !!interaksi?.ajakan && aktif !== 'x'
+  const L = sempit ? BONGKAR_HP : BONGKAR_LEBAR
 
   const buangSepihak = step === 1 ? seg(t, 0.15, 0.6) : 0
   const buangDua = step >= 2 ? (step === 2 ? seg(t, 0.15, 0.7) : 1) : 0
@@ -205,71 +340,189 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const beratKiri = nKotak * x + nBolaKiri
   const beratKanan = nBolaKanan
 
+  const miring = useMiring(beratKanan - beratKiri, aktif !== null)
+  const { kiri: PK, kanan: PN } = piring(L, miring)
+  const yKiri = dasarKiri(PK)
+  const yKanan = dasarKanan(PN)
+
   const nyalaX = sorot === 'x' || sorot === 'a'
   const nyalaB = sorot === 'b'
   const nyalaC = sorot === 'c'
 
+  // Bekas bola yang diambil tampak selama langkah membuang, lalu memudar
+  // saat bola kanan disusun menjadi kelompok.
+  const bekas = step === 1 || step === 2 ? 1 : step === 3 ? 1 - kelompok : 0
+
+  // Susunan kelompok di kanan: a kolom setinggi x (satu kolom = isi satu
+  // kotak), lalu b bola sisa dalam kolom bertiga. Seluruhnya di tengah piring,
+  // digeser 6 ke kanan: di HP, ajakan di bawah pegangan x (puncak kolom
+  // pertama) jadi tidak menyentuh pegangan a di ujung deretan 4 kotak.
+  const ax = a * x
+  const geserKolom = -((a + 1) * JARAK_BOLA + CELAH_SISA) / 2 + 6
+  const letakKanan = (i: number) => {
+    const baris = petak(i, PER_BARIS_KANAN)
+    const kolom =
+      i < ax
+        ? { dx: geserKolom + Math.floor(i / x) * JARAK_BOLA, dy: -(i % x) * JARAK_BOLA }
+        : {
+            dx: geserKolom + (a + Math.floor((i - ax) / 3)) * JARAK_BOLA + CELAH_SISA,
+            dy: -((i - ax) % 3) * JARAK_BOLA,
+          }
+    return { x: PN.x + lerp(baris.dx, kolom.dx, kelompok), y: yKanan + lerp(baris.dy, kolom.dy, kelompok) }
+  }
+
   const catatan =
     step === 1 && buangSepihak > 0.5
-      ? { teks: 'timbangan miring — pernyataannya jadi tidak benar', warna: 'var(--m-hi)' }
+      ? sempit
+        ? ['timbangan miring —', 'pernyataannya jadi tidak benar']
+        : ['timbangan miring — pernyataannya jadi tidak benar']
       : Math.abs(beratKiri - beratKanan) < 0.01
-        ? { teks: 'setimbang — kedua sisi masih bernilai sama', warna: 'var(--m-ab)' }
-        : undefined
+        ? ['setimbang — kedua sisi masih bernilai sama']
+        : null
+  const warnaCatatan = step === 1 ? 'var(--m-hi)' : 'var(--m-ab)'
+
+  // Pegangan hanya tampil bila bendanya ada di gambar.
+  const tampakA = step !== 4
+  const tampakB = step <= 2 || step >= 5
+  const xDiBaris = step <= 2 || (step === 3 && kelompok < 0.5)
+  const slotB = petak(b, PER_BARIS_KIRI)
+  const slotC = petak(c, PER_BARIS_KANAN)
+  const pA = titikA(PK, a)
+  const pX = xDiBaris
+    ? { x: PN.x + slotC.dx, y: yKanan + slotC.dy }
+    : { x: PN.x + geserKolom, y: yKanan - x * JARAK_BOLA }
+  // Pegangan x di baris pertama atau kedua: ajakannya jatuh di tempat label
+  // jumlah bola kanan.
+  const ajakanTutupLabel = ajakanX && pX.y > PN.y - 2 * JARAK_BOLA
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Timbangan dua lengan yang mewakili persamaan">
-      <Timbangan
-        kiri={beratKiri}
-        kanan={beratKanan}
-        catatan={catatan}
-        isiKiri={(px, py) => (
-          <g>
-            {baris(a, 3, PAN_LEBAR - 46, TINGGI_BARIS_KOTAK).map(({ x: dx, y: dy, i }) => (
-              <KotakX key={`k${i}`} x={px + dx} y={py + dy} o={hidup(i, nKotak)} nyala={nyalaX} />
-            ))}
-            {baris(b, 4, PAN_LEBAR - 40).map(({ x: dx, y: dy, i }) => (
-              <Bola
-                key={`b${i}`}
-                x={px + dx}
-                y={py + dy + angkatBola(a)}
-                o={hidup(i, nBolaKiri)}
-                warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
-              />
-            ))}
-          </g>
-        )}
-        isiKanan={(px, py) => (
-          <g>
-            {baris(c, 5, PAN_LEBAR - 30).map(({ x: dx, y: dy, i }) => (
-              <Bola
-                key={`c${i}`}
-                x={px + dx}
-                y={py + dy}
-                o={hidup(i, nBolaKanan)}
-                warna={nyalaC ? 'var(--m-hi)' : 'var(--m-c)'}
-              />
-            ))}
-          </g>
-        )}
-      />
+    <Svg w={L.w} h={L.h} maxH={470} label="Timbangan dua lengan yang mewakili persamaan">
+      <Timbangan L={L} miring={miring}>
+        {/* piring kiri: kotak x, lalu bola lepas di atasnya */}
+        {Array.from({ length: a }, (_, i) => (
+          <KotakX
+            key={`k${i}`}
+            x={pusatKotak(PK, i, a)}
+            y={PK.y}
+            o={hidup(i, nKotak)}
+            nyala={nyalaX}
+            teks={periksa ? fmt(x) : 'x'}
+          />
+        ))}
+        {Array.from({ length: b }, (_, i) => {
+          const s = petak(i, PER_BARIS_KIRI)
+          const o = hidup(i, nBolaKiri)
+          return (
+            <g key={`b${i}`}>
+              <BekasBola x={PK.x + s.dx} y={yKiri + s.dy} o={(1 - o) * bekas} />
+              <Bola x={PK.x + s.dx} y={yKiri + s.dy} o={o} warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'} />
+            </g>
+          )
+        })}
 
-      {/* kelompok pembagian */}
+        {/* piring kanan */}
+        {Array.from({ length: c }, (_, i) => {
+          const s = petak(i, PER_BARIS_KANAN)
+          const o = hidup(i, nBolaKanan)
+          const q = letakKanan(i)
+          return (
+            <g key={`c${i}`}>
+              {i >= ax && <BekasBola x={PN.x + s.dx} y={yKanan + s.dy} o={(1 - o) * bekas} />}
+              <Bola x={q.x} y={q.y} o={o} warna={nyalaC ? 'var(--m-hi)' : 'var(--m-c)'} />
+            </g>
+          )
+        })}
+
+        {/* jumlah benda, menempel di bawah piringnya. Saat banyak kotak
+            diseret, label inilah yang menyebut angkanya (lihat pegangan a). */}
+        {aktif !== 'b' && (
+          <Tag x={PK.x} y={PK.y + LABEL_TURUN} size={14} warna={aktif === 'a' ? 'var(--m-a)' : 'var(--ink-2)'}>
+            {teksSisi(Math.round(nKotak), Math.round(nBolaKiri))}
+          </Tag>
+        )}
+        {!ajakanTutupLabel && (
+          <Tag x={PN.x} y={PN.y + LABEL_TURUN} size={14} warna="var(--ink-2)">
+            {teksSisi(0, Math.round(nBolaKanan))}
+          </Tag>
+        )}
+      </Timbangan>
+
+      {/* keterangan langkah */}
       {kelompok > 0.2 && ambilSatu < 0.5 && (
-        <Tag x={CX} y={40} warna="var(--m-ab)" size={16}>
+        <Tag x={L.cx} y={L.atasY} warna="var(--m-ab)" size={sempit ? 15 : 16}>
           {a === 1
-            ? 'cuma satu kotak — tidak ada yang perlu dibagi'
-            : `kedua sisi dibagi menjadi ${fmt(a)} kelompok sama besar`}
+            ? sempit
+              ? 'cuma satu kotak — tak ada yang dibagi'
+              : 'cuma satu kotak — tidak ada yang perlu dibagi'
+            : sempit
+              ? `kedua sisi dibagi jadi ${fmt(a)} kelompok`
+              : `kedua sisi dibagi menjadi ${fmt(a)} kelompok sama besar`}
         </Tag>
       )}
       {periksa && (
-        <Tag x={CX} y={40} warna="var(--m-ab)" size={17}>
+        <Tag x={L.cx} y={L.atasY} warna="var(--m-ab)" size={17}>
           {`periksa: ${fmt(a)} × ${fmt(x)} + ${fmt(b)} = ${fmt(c)}`}
         </Tag>
       )}
-      {step === 4 && ambilSatu > 0.6 && (
-        <Tag x={CX} y={40} warna="var(--m-a)" size={18}>
+      {step === 4 && ambilSatu > 0.6 && aktif !== 'x' && (
+        <Tag x={L.cx} y={L.atasY} warna="var(--m-a)" size={18}>
           {`x = ${fmt(x)}`}
         </Tag>
+      )}
+      {catatan?.map((baris, i) => (
+        <Tag key={i} x={L.cx} y={L.catatanY + i * 26} warna={warnaCatatan} size={sempit ? 15 : 16}>
+          {baris}
+        </Tag>
+      ))}
+
+      {/* Pegangan. Banyak kotak dipegang di ujung deretannya; label seretnya
+          sengaja tidak dipakai karena akan menutupi kotak yang sedang
+          bertambah — angkanya dibaca dari label di bawah piring. Bola kiri
+          di "tempat bola berikutnya" — karena c = ax + b, bola kanan ikut
+          bertambah atau berkurang sama banyak. Isi kotak (utama) dipegang di
+          tumpukan kanan: sebelum dikelompokkan lewat petak ke-c (tumbuh a
+          bola sekaligus), sesudahnya lewat puncak kolom kelompok pertama. */}
+      <Pegangan
+        x={pA.x}
+        y={pA.y}
+        param="a"
+        arah="x"
+        sembunyi={!tampakA}
+        keNilai={(pt) => aDari(PK, pt)}
+      />
+      <Pegangan
+        x={PK.x + slotB.dx}
+        y={yKiri + slotB.dy}
+        param="b"
+        arah="bebas"
+        label={`b = ${fmt(b)}`}
+        sembunyi={!tampakB}
+        keNilai={(pt) => petakDari(pt.x - PK.x, pt.y - yKiri, PER_BARIS_KIRI, Math.floor(6 / PER_BARIS_KIRI))}
+      />
+      {xDiBaris ? (
+        <Pegangan
+          x={pX.x}
+          y={pX.y}
+          param="x"
+          arah="bebas"
+          utama
+          ajakan={AJAKAN}
+          label={`x = ${fmt(x)}`}
+          keNilai={(pt) =>
+            (petakDari(pt.x - PN.x, pt.y - yKanan, PER_BARIS_KANAN, BARIS_MAKS_KANAN_BONGKAR) - b) / a
+          }
+        />
+      ) : (
+        <Pegangan
+          x={pX.x}
+          y={pX.y}
+          param="x"
+          arah="y"
+          utama
+          ajakan={AJAKAN}
+          label={`x = ${fmt(x)}`}
+          keNilai={(pt) => (yKanan - pt.y) / JARAK_BOLA}
+        />
       )}
     </Svg>
   )
@@ -277,61 +530,207 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
 /* ---------------- Visual untuk eksperimen ---------------- */
 
-function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+function nilaiEksperimen(p: Record<string, number>) {
   const a = Math.max(1, Math.round(p.a ?? 2))
   const b = Math.max(0, Math.round(p.b ?? 3))
   const c = Math.max(0, Math.round(p.c ?? 11))
-  const x = (c - b) / a
+  return { a, b, c, x: (c - b) / a }
+}
+
+const B_MAKS_EKSPERIMEN = 8
+const C_MAKS_EKSPERIMEN = 20
+
+/**
+ * Tombol di dalam gambar yang mengubah bola di KEDUA sisi sekaligus —
+ * tindakan yang menjadi inti konsep ini. Nilai x tidak berubah.
+ */
+function TombolKeduaSisi({ cx, y, tanda, label }: { cx: number; y: number; tanda: 1 | -1; label: string }) {
+  const ctx = useInteraksi()
+  const u = useUkuranLayar()
+  if (!ctx) return null
+  const { kendali } = ctx
+  const b = kendali.nilai.b ?? 3
+  const c = kendali.nilai.c ?? 11
+  const bisa = tanda < 0 ? b > 0 && c > 0 : b < B_MAKS_EKSPERIMEN && c < C_MAKS_EKSPERIMEN
+  const huruf = u(14, 15)
+  const tinggi = u(40, 40)
+  const lebar = Math.max(u(48, 48), label.length * huruf * 0.6 + u(28, 28))
+  // Tombol menempatkan dirinya sendiri terhadap sumbu timbangan: setengah
+  // lebarnya ditambah celah 18 px layar. Jaraknya WAJIB dihitung di dalam
+  // <Svg>, karena lebar tombol ikut membesar di layar sempit — jarak tetap
+  // dalam satuan SVG membuat kedua tombol bertumpuk di layar 320 px.
+  const x = cx + tanda * (lebar / 2 + u(18, 18))
+  const tekan = () => {
+    if (!bisa) return
+    kendali.atur({ b: b + tanda, c: c + tanda }, { halus: true })
+    ctx.tandaiMenyeret()
+  }
+  return (
+    <g
+      className="tombol-gambar"
+      data-param="b c"
+      role="button"
+      tabIndex={0}
+      aria-disabled={!bisa || undefined}
+      aria-label={tanda < 0 ? 'Ambil satu bola dari kedua sisi' : 'Tambah satu bola ke kedua sisi'}
+      onClick={tekan}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          e.stopPropagation()
+          tekan()
+        }
+      }}
+      style={{ cursor: bisa ? 'pointer' : 'default' }}
+      opacity={bisa ? 1 : 0.4}
+    >
+      <rect
+        x={x - lebar / 2}
+        y={y - Math.max(tinggi, u(48, 48)) / 2}
+        width={lebar}
+        height={Math.max(tinggi, u(48, 48))}
+        fill="transparent"
+      />
+      <rect
+        x={x - lebar / 2}
+        y={y - tinggi / 2}
+        width={lebar}
+        height={tinggi}
+        rx={tinggi / 2}
+        fill="var(--surface)"
+        stroke="var(--m-ab)"
+        strokeWidth={u(2, 2)}
+      />
+      <text
+        x={x}
+        y={y}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize={huruf}
+        fontWeight={800}
+        fill="var(--m-ab)"
+        style={{ pointerEvents: 'none' }}
+      >
+        {label}
+      </text>
+    </g>
+  )
+}
+
+function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+  const { a, b, c, x } = nilaiEksperimen(p)
   const setimbang = x >= 0
+  const sempit = useSempit()
+  const interaksi = useInteraksi()
+  const aktif = interaksi?.kendali.aktif ?? null
+  // Ajakan di bawah pegangan utama (c); selama tumpukannya baru dua baris,
+  // ajakan itu jatuh di tempat label jumlah bola kanan.
+  const ajakanC = !!interaksi?.ajakan && aktif !== 'c'
+  const L = sempit ? EKSPERIMEN_HP : EKSPERIMEN_LEBAR
+
+  const miring = useMiring(c - (a * Math.max(0, x) + b), aktif !== null)
+  const { kiri: PK, kanan: PN } = piring(L, miring)
+  const yKiri = dasarKiri(PK)
+  const yKanan = dasarKanan(PN)
 
   const nyalaX = sorot === 'x' || sorot === 'a'
   const nyalaB = sorot === 'b'
   const nyalaC = sorot === 'c'
 
+  const slotB = petak(b, PER_BARIS_KIRI)
+  const slotC = petak(c, PER_BARIS_KANAN)
+  const pA = titikA(PK, a)
+
+  const catatan = setimbang
+    ? [`x = (${fmt(c)} − ${fmt(b)}) ÷ ${fmt(a)} = ${pecahanTeks(c - b, a)}`]
+    : ['x negatif — kotaknya "berutang"', 'timbangan tidak bisa menggambarkannya']
+
   return (
-    <Svg w={W} h={H} maxH={440} label="Timbangan untuk persamaan a x tambah b sama dengan c">
-      <Timbangan
-        kiri={a * Math.max(0, x) + b}
-        kanan={c}
-        catatan={{
-          teks: setimbang
-            ? `x = (${fmt(c)} − ${fmt(b)}) ÷ ${fmt(a)} = ${pecahanTeks(c - b, a)}`
-            : 'nilai x menjadi negatif — kotaknya "berutang", timbangan tidak bisa menggambarkannya',
-          warna: setimbang ? 'var(--m-ab)' : 'var(--m-hi)',
-        }}
-        isiKiri={(px, py) => (
-          <g>
-            {baris(a, 3, PAN_LEBAR - 46, TINGGI_BARIS_KOTAK).map(({ x: dx, y: dy, i }) => (
-              <KotakX key={`k${i}`} x={px + dx} y={py + dy} o={1} nyala={nyalaX} />
-            ))}
-            {baris(b, 4, PAN_LEBAR - 40).map(({ x: dx, y: dy, i }) => (
-              <Bola
-                key={`b${i}`}
-                x={px + dx}
-                y={py + dy + angkatBola(a)}
-                o={1}
-                warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
-              />
-            ))}
-          </g>
+    <Svg w={L.w} h={L.h} maxH={500} label="Timbangan untuk persamaan a x tambah b sama dengan c">
+      <Timbangan L={L} miring={miring}>
+        {Array.from({ length: a }, (_, i) => (
+          <KotakX
+            key={`k${i}`}
+            x={pusatKotak(PK, i, a)}
+            y={PK.y}
+            o={1}
+            nyala={nyalaX}
+            teks="x"
+          />
+        ))}
+        {Array.from({ length: b }, (_, i) => {
+          const s = petak(i, PER_BARIS_KIRI)
+          return (
+            <Bola key={`b${i}`} x={PK.x + s.dx} y={yKiri + s.dy} o={1} warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'} />
+          )
+        })}
+        {Array.from({ length: c }, (_, i) => {
+          const s = petak(i, PER_BARIS_KANAN)
+          return (
+            <Bola key={`c${i}`} x={PN.x + s.dx} y={yKanan + s.dy} o={1} warna={nyalaC ? 'var(--m-hi)' : 'var(--m-c)'} />
+          )
+        })}
+
+        {aktif !== 'b' && (
+          <Tag x={PK.x} y={PK.y + LABEL_TURUN} size={14} warna={aktif === 'a' ? 'var(--m-a)' : 'var(--ink-2)'}>
+            {teksSisi(a, b)}
+          </Tag>
         )}
-        isiKanan={(px, py) => (
-          <g>
-            {baris(c, 5, PAN_LEBAR - 30).map(({ x: dx, y: dy, i }) => (
-              <Bola
-                key={`c${i}`}
-                x={px + dx}
-                y={py + dy}
-                o={1}
-                warna={nyalaC ? 'var(--m-hi)' : 'var(--m-c)'}
-              />
-            ))}
-          </g>
+        {aktif !== 'c' && !(ajakanC && slotC.dy > -2 * JARAK_BOLA) && (
+          <Tag x={PN.x} y={PN.y + LABEL_TURUN} size={14} warna="var(--ink-2)">
+            {teksSisi(0, c)}
+          </Tag>
         )}
-      />
-      <Tag x={CX} y={34} warna="var(--ink)" size={19}>
-        {`${a === 1 ? '' : fmt(a)}x ${b === 0 ? '' : `+ ${fmt(b)} `}= ${fmt(c)}`}
+      </Timbangan>
+
+      {/* ubah kedua sisi sekaligus */}
+      <Tag x={L.cx} y={L.ajakY} size={13} warna="var(--ink-2)" latar={null} tebal={700}>
+        ubah kedua sisi sekaligus
       </Tag>
+      <TombolKeduaSisi cx={L.cx} y={L.tombolY} tanda={-1} label="−1 bola" />
+      <TombolKeduaSisi cx={L.cx} y={L.tombolY} tanda={1} label="+1 bola" />
+
+      {catatan.map((baris, i) => (
+        <Tag
+          key={i}
+          x={L.cx}
+          y={L.catatanY + i * 26}
+          warna={setimbang ? 'var(--m-ab)' : 'var(--m-hi)'}
+          size={sempit ? 15 : 16}
+        >
+          {baris}
+        </Tag>
+      ))}
+
+      <Pegangan
+        x={pA.x}
+        y={pA.y}
+        param="a"
+        arah="x"
+        keNilai={(pt) => aDari(PK, pt)}
+      />
+      <Pegangan
+        x={PK.x + slotB.dx}
+        y={yKiri + slotB.dy}
+        param="b"
+        arah="bebas"
+        label={`b = ${fmt(b)}`}
+        keNilai={(pt) =>
+          petakDari(pt.x - PK.x, pt.y - yKiri, PER_BARIS_KIRI, Math.floor(B_MAKS_EKSPERIMEN / PER_BARIS_KIRI))
+        }
+      />
+      <Pegangan
+        x={PN.x + slotC.dx}
+        y={yKanan + slotC.dy}
+        param="c"
+        arah="bebas"
+        utama
+        ajakan={AJAKAN}
+        label={`c = ${fmt(c)}`}
+        keNilai={(pt) =>
+          petakDari(pt.x - PN.x, pt.y - yKanan, PER_BARIS_KANAN, Math.floor(C_MAKS_EKSPERIMEN / PER_BARIS_KANAN))
+        }
+      />
     </Svg>
   )
 }
@@ -379,9 +778,9 @@ const konsep: Konsep = {
   bongkar: {
     Visual: VisualBongkar,
     params: [
-      { key: 'a', label: 'Banyak kotak x', min: 1, max: 4, step: 1, awal: 2, bulat: true },
-      { key: 'b', label: 'Bola tambahan di kiri', min: 1, max: 6, step: 1, awal: 3, bulat: true },
-      { key: 'x', label: 'Isi tiap kotak', min: 1, max: 6, step: 1, awal: 4, bulat: true },
+      { key: 'a', label: 'Banyak kotak x', min: 1, max: 4, step: 1, awal: 2, bulat: true, simbol: 'a', peran: 'a', bagian: 'a' },
+      { key: 'b', label: 'Bola tambahan di kiri', min: 1, max: 6, step: 1, awal: 3, bulat: true, simbol: 'b', peran: 'b', bagian: 'b' },
+      { key: 'x', label: 'Isi tiap kotak', min: 1, max: 6, step: 1, awal: 4, bulat: true, simbol: 'x', peran: 'a', bagian: 'x' },
     ],
     roles: { a: 'a', x: 'a', b: 'b', c: 'c', nol: 'hi' },
     arti: {
@@ -466,18 +865,20 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Rancang persamaanmu sendiri',
     ajakan:
-      'Ubah banyaknya kotak, bola di kiri, dan bola di kanan. Perhatikan kapan timbangan bisa setimbang, dan kapan tidak.',
+      'Seret titik di ujung kotak dan di puncak tumpukan bola, lalu ketuk "−1 bola". Kapan timbangan tidak bisa setimbang?',
     params: [
-      { key: 'a', label: 'Banyak kotak x', min: 1, max: 4, step: 1, awal: 2, bulat: true },
-      { key: 'b', label: 'Bola di kiri', min: 0, max: 8, step: 1, awal: 3, bulat: true },
-      { key: 'c', label: 'Bola di kanan', min: 0, max: 20, step: 1, awal: 11, bulat: true },
+      { key: 'a', label: 'Banyak kotak x', min: 1, max: 4, step: 1, awal: 2, bulat: true, simbol: 'a', peran: 'a', bagian: 'a' },
+      { key: 'b', label: 'Bola di kiri', min: 0, max: B_MAKS_EKSPERIMEN, step: 1, awal: 3, bulat: true, simbol: 'b', peran: 'b', bagian: 'b' },
+      { key: 'c', label: 'Bola di kanan', min: 0, max: C_MAKS_EKSPERIMEN, step: 1, awal: 11, bulat: true, simbol: 'c', peran: 'c', bagian: 'c' },
     ],
     Visual: VisualEksperimen,
+    // Persamaan yang sedang digambar timbangan, dengan warna yang sama dengan bendanya.
+    rumus: (p) => {
+      const { a, b, c } = nilaiEksperimen(p)
+      return `${a === 1 ? '' : `[a:${fmt(a)}]`}[x:x]${b === 0 ? '' : ` + [b:${fmt(b)}]`} = [c:${fmt(c)}]`
+    },
     temuan: (p) => {
-      const a = Math.max(1, Math.round(p.a ?? 2))
-      const b = Math.max(0, Math.round(p.b ?? 3))
-      const c = Math.max(0, Math.round(p.c ?? 11))
-      const x = (c - b) / a
+      const { a, b, c, x } = nilaiEksperimen(p)
       const bulat = Number.isInteger(x)
       // a ≤ 4 sehingga pecahan berpenyebut 2 atau 4 punya bentuk desimal tepat: tulis "=", bukan "≈".
       const desimalTepat = Number.isInteger(x * 1000)

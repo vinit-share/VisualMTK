@@ -11,30 +11,176 @@
    bukan hal baru — ia rekaman perjalanan satu titik di lingkaran.
    ============================================================ */
 
-import { Svg, Tag, SikuSiku } from '../components/Stage'
+import { useRef } from 'react'
+import { Pegangan, useInteraksi, type Titik } from '../components/Interaksi'
+import { Svg, Tag, SikuSiku, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, rad } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 700
-const H = 430
+/**
+ * Tata letak gambar. Di layar lebar lingkaran dan gelombang berdampingan,
+ * sehingga garis penghubungnya mendatar dan tinggi keduanya sebanding. Di HP
+ * gelombang turun ke bawah lingkaran, supaya lingkarannya bisa digambar besar.
+ */
+interface Tata {
+  sempit: boolean
+  w: number
+  h: number
+  maxH: number
+  /** pusat dan jari-jari lingkaran satuan. */
+  cx: number
+  cy: number
+  r: number
+  /** rentang mendatar gelombang, garis nolnya, dan tinggi untuk nilai 1. */
+  wx0: number
+  wx1: number
+  wcy: number
+  ws: number
+  /** garis dasar label derajat di bawah gelombang. */
+  tandaY: number
+  /** baris keterangan pertama. */
+  ketY: number
+}
 
-const CX = 152
-const CY = 218
-const R = 108
+const LEBAR: Tata = {
+  sempit: false,
+  w: 728,
+  h: 430,
+  maxH: 440,
+  // Pusat cukup jauh dari tepi kiri, supaya ajakan "Coba putar aku" di bawah
+  // titik tidak terpotong saat titiknya di sisi kiri lingkaran.
+  cx: 188,
+  cy: 218,
+  r: 108,
+  // Gelombang dimulai cukup jauh dari lingkaran, supaya pegangan di θ = 0°
+  // (tepi kanan lingkaran) dan pegangan di awal grafik tidak berdempet, dan
+  // ajakan di bawah titik (θ ≈ 330°–340°) tidak menimpa label "−1" grafik pada
+  // panggung lebar tersempit (gambar selebar ±528 px). Ujung kanan menyisakan
+  // ruang untuk sorot pegangan.
+  wx0: 400,
+  wx1: 700,
+  wcy: 218,
+  ws: 108, // tinggi gelombang sama dengan jari-jari, supaya sebanding
+  // Label derajat di bawah lingkaran sorot pegangan grafik saat titiknya di lembah.
+  tandaY: 372,
+  ketY: 40,
+}
 
-const WX0 = 300
-const WX1 = 676
-const WSKALA = R // tinggi gelombang sama dengan jari-jari, supaya sebanding
+const HP: Tata = {
+  sempit: true,
+  w: 420,
+  h: 546,
+  maxH: 480,
+  cx: 210,
+  cy: 152,
+  r: 118,
+  // Label "1" grafik cukup jauh ke kiri, supaya ajakan di bawah titik
+  // (θ ≈ 220°) tidak menimpanya pada HP 320 px.
+  wx0: 40,
+  // Sorot pegangan di ujung kanan grafik tetap di dalam bingkai pada HP 320 px.
+  wx1: 392,
+  wcy: 372,
+  // Tidak bisa sebanding tanpa mengecilkan lingkaran; garis 1 dan −1 tetap diberi label.
+  ws: 72,
+  tandaY: 482,
+  ketY: 501,
+}
 
 /** Ubah sudut derajat menjadi titik pada lingkaran satuan (koordinat layar). */
-const titik = (deg: number) => ({
-  x: CX + R * Math.cos(rad(deg)),
-  y: CY - R * Math.sin(rad(deg)),
+const titikPada = (L: Tata, deg: number) => ({
+  x: L.cx + L.r * Math.cos(rad(deg)),
+  y: L.cy - L.r * Math.sin(rad(deg)),
 })
 
 /** Buang sisa galat mengambang: Math.sin(π) memberi 1,2·10⁻¹⁶, padahal sin 180° tepat 0. */
 const nol = (v: number) => (Math.abs(v) < 1e-9 ? 0 : v)
+
+/* ---------------- Letak label "1" pada jari-jari ---------------- */
+
+/** Ajakan pada pegangan titik P sebelum anak pernah menyeret. */
+const AJAKAN = 'Coba putar aku'
+
+interface Kotak {
+  x0: number
+  x1: number
+  y0: number
+  y1: number
+}
+
+/** Perkiraan kotak latar sebuah Tag (rumusnya sama dengan Tag di Stage.tsx). */
+function kotakTag(x: number, y: number, teks: string, size: number, skala: number, layar = false): Kotak {
+  const uk = !layar && skala > 0 ? Math.max(size, Math.min(size * 1.6, 11 / skala)) : size
+  const lebar = [...teks].length * uk * 0.58 + 7 * (uk / size) * 2
+  return { x0: x - lebar / 2, x1: x + lebar / 2, y0: y - uk * 0.82, y1: y + uk * 0.68 }
+}
+
+const luasTumpang = (a: Kotak, b: Kotak) =>
+  Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) *
+  Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0))
+
+const lebarkan = (k: Kotak, d: number): Kotak => ({ x0: k.x0 - d, x1: k.x1 + d, y0: k.y0 - d, y1: k.y1 + d })
+
+/**
+ * Tempat yang dicoba untuk label "1", urut dari yang paling disukai:
+ * [jarak dari pusat (× r), sisi (1 = luar segitiga, −1 = dalam), jarak dari garis jari-jari].
+ */
+const KANDIDAT_SATU: [number, number, number][] = [0.62, 0.54, 0.7, 0.46, 0.78, 0.38, 0.3].flatMap(
+  (f): [number, number, number][] => [
+    [f, 1, 17],
+    [f, -1, 17],
+    [f, 1, 26],
+  ],
+)
+
+/**
+ * Label "1" duduk di samping jari-jari, di sisi luar segitiga (bukan di bawah
+ * sisi mendatar, yang panjangnya cos θ), agar jelas yang bernilai 1 adalah sisi
+ * miringnya. Bila tempat itu tertimpa pegangan P, sorotnya, garis sin/cos, atau
+ * ajakan "Coba putar aku" di bawah titik, label bergeser sepanjang jari-jari ke
+ * tempat kosong terdekat. Ukuran pegangan dan ajakan dihitung dengan rumus yang
+ * sama dengan Pegangan di Interaksi.tsx.
+ */
+function letakSatu(L: Tata, theta: number, skalaUkur: number, ajakan: boolean, menyala: boolean) {
+  const { cx: CX, cy: CY, r: R } = L
+  const s = nol(Math.sin(rad(theta)))
+  const c = nol(Math.cos(rad(theta)))
+  const luar = s * c >= 0 ? 1 : -1
+  const di = (f: number, k: number, samping: number) => ({
+    x: CX + f * R * c - samping * k * luar * s,
+    y: CY - (f * R * s + samping * k * luar * c),
+  })
+  const skala = skalaUkur || 0.6
+  const px = (n: number) => n / skala
+  const rTitik = Math.max(8, px(9))
+  const P = { x: CX + R * c, y: CY - R * s }
+  const rP = menyala ? rTitik * 2.1 : rTitik
+  // [kotak, bobot]. Menutup titik P atau garis sin/cos jauh lebih buruk daripada
+  // menyentuh tepi ajakan: label "1" yang duduk di atas garis sinus terbaca
+  // sebagai panjang sisi tegak, bukan sisi miring.
+  const halang: [Kotak, number][] = [
+    [lebarkan({ x0: P.x - rP, x1: P.x + rP, y0: P.y - rP, y1: P.y + rP }, px(3)), 100],
+    [{ x0: Math.min(P.x, CX) - 2, x1: Math.max(P.x, CX) + 2, y0: CY - 2, y1: CY + 2 }, 100],
+    [{ x0: P.x - 2, x1: P.x + 2, y0: Math.min(P.y, CY) - 2, y1: Math.max(P.y, CY) + 2 }, 100],
+  ]
+  if (ajakan && !menyala) {
+    halang.push([lebarkan(kotakTag(P.x, P.y + rTitik + px(24), AJAKAN, px(13), skalaUkur, true), px(4)), 1])
+  }
+  // Bila tidak ada tempat yang benar-benar kosong, pakai yang tumpangannya (berbobot) paling kecil.
+  let terbaik = di(0.62, 1, 17)
+  let paling = Infinity
+  for (const [f, k, samping] of KANDIDAT_SATU) {
+    const q = di(f, k, samping)
+    const kotak = kotakTag(q.x, q.y, '1', 12, skalaUkur)
+    const luas = halang.reduce((j, [h, bobot]) => j + bobot * luasTumpang(h, kotak), 0)
+    if (luas === 0) return q
+    if (luas < paling) {
+      paling = luas
+      terbaik = q
+    }
+  }
+  return terbaik
+}
 
 /** Bilangan bertanda; negatifnya memakai '−' (U+2212), bukan tanda hubung. */
 const bil = (n: number, desimal?: number) =>
@@ -75,34 +221,71 @@ function nilaiBongkar(p: Record<string, number>) {
   }
 }
 
+/**
+ * Busur sudut θ di pusat. Lewat satu putaran busurnya melebar menjadi spiral,
+ * supaya 400° tidak tampak sama dengan 40°.
+ */
+function jalurBusur(L: Tata, theta: number) {
+  const titikBusur = (d: number) => {
+    const rb = 16 + (6 * d) / 360
+    return `${(L.cx + rb * Math.cos(rad(d))).toFixed(1)} ${(L.cy - rb * Math.sin(rad(d))).toFixed(1)}`
+  }
+  const p = [`M ${titikBusur(0)}`]
+  for (let d = 6; d < theta; d += 6) p.push(`L ${titikBusur(d)}`)
+  p.push(`L ${titikBusur(theta)}`)
+  return p.join(' ')
+}
+
 function Lingkaran({
+  L,
   theta,
   tampilSegitiga,
   tampilCos,
   nyalaSin,
   nyalaCos,
+  nyalaSudut,
+  ajakan = false,
 }: {
+  L: Tata
   theta: number
   tampilSegitiga: number
   tampilCos: number
   nyalaSin: boolean
   nyalaCos: boolean
+  /** sudutnya sedang diputar anak (pegangan P menyala). */
+  nyalaSudut: boolean
+  /** ajakan "Coba putar aku" sedang tampil di bawah titik. */
+  ajakan?: boolean
 }) {
-  const P = titik(theta)
-  const s = Math.sin(rad(theta))
-  const c = Math.cos(rad(theta))
+  const skala = useSkalaSvg()
+  const { cx: CX, cy: CY, r: R } = L
+  const P = titikPada(L, theta)
+  const s = nol(Math.sin(rad(theta)))
+  const c = nol(Math.cos(rad(theta)))
   // Di sumbu, segitiganya gepeng: tidak ada sudut siku-siku yang perlu ditandai.
-  const gepeng = Math.abs(s) < 1e-9 || Math.abs(c) < 1e-9
-  // Label "1" diletakkan di sisi luar jari-jari (bukan di bawah sisi mendatar,
-  // yang panjangnya cos θ), agar jelas yang bernilai 1 adalah sisi miringnya.
-  const k = s * c >= 0 ? 1 : -1
-  const label1 = { x: CX + 0.8 * R * c - 16 * k * s, y: CY - (0.8 * R * s + 16 * k * c) }
+  const gepeng = s === 0 || c === 0
+  const label1 = letakSatu(L, theta, skala, ajakan, nyalaSudut)
+  // Label θ duduk di kuadran yang berseberangan dengan titiknya: di sana tidak
+  // ada segitiga, pegangan, atau label "1" yang bisa tertimpa.
+  const kanan = c < 0
+  const bawah = s >= 0
 
   return (
     <g>
       <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--m-grid)" strokeWidth={2} />
       <line x1={CX - R - 18} y1={CY} x2={CX + R + 18} y2={CY} stroke="var(--m-axis)" strokeWidth={1.6} />
       <line x1={CX} y1={CY - R - 18} x2={CX} y2={CY + R + 18} stroke="var(--m-axis)" strokeWidth={1.6} />
+
+      {/* busur sudut */}
+      {theta > 0.5 && (
+        <path
+          d={jalurBusur(L, theta)}
+          fill="none"
+          stroke={nyalaSudut ? 'var(--m-hi)' : 'var(--ink-3)'}
+          strokeWidth={nyalaSudut ? 2.4 : 1.6}
+          strokeLinecap="round"
+        />
+      )}
 
       {/* segitiga siku-siku */}
       {tampilSegitiga > 0.02 && (
@@ -158,7 +341,13 @@ function Lingkaran({
       <circle cx={P.x} cy={P.y} r={6} fill="var(--m-hi)" />
       <circle cx={CX} cy={CY} r={3.5} fill="var(--ink)" />
 
-      <Tag x={CX + 40} y={CY - 14} warna="var(--ink-2)" size={13} latar={null}>
+      <Tag
+        x={CX + (kanan ? 30 : -30)}
+        y={CY + (bawah ? 19 : -19)}
+        anchor={kanan ? 'start' : 'end'}
+        warna={nyalaSudut ? 'var(--m-hi)' : 'var(--ink-2)'}
+        size={13}
+      >
         {`θ = ${fmt(Math.round(theta))}°`}
       </Tag>
       <Tag x={label1.x} y={label1.y} warna="var(--ink-3)" size={12}>
@@ -169,6 +358,7 @@ function Lingkaran({
 }
 
 function Gelombang({
+  L,
   theta,
   maksDeg,
   tampilCos,
@@ -176,6 +366,7 @@ function Gelombang({
   nyalaCos,
   rekam,
 }: {
+  L: Tata
   theta: number
   maksDeg: number
   tampilCos: number
@@ -184,8 +375,12 @@ function Gelombang({
   /** Sudut terjauh yang sudah terekam di grafik; bawaannya sampai θ. */
   rekam?: number
 }) {
+  const u = useUkuranLayar()
+  const huruf = Math.max(12, u(12))
+  const { wx0: WX0, wx1: WX1 } = L
   const kx = (deg: number) => WX0 + (deg / maksDeg) * (WX1 - WX0)
-  const ky = (v: number) => CY - v * WSKALA
+  const ky = (v: number) => L.wcy - v * L.ws
+  const P = titikPada(L, theta)
 
   const langkah = 2
   const ujung = Math.max(theta, rekam ?? theta)
@@ -201,7 +396,7 @@ function Gelombang({
 
   return (
     <g>
-      <line x1={WX0} y1={CY} x2={WX1} y2={CY} stroke="var(--m-axis)" strokeWidth={1.6} />
+      <line x1={WX0} y1={L.wcy} x2={WX1} y2={L.wcy} stroke="var(--m-axis)" strokeWidth={1.6} />
       {[1, -1].map((v) => (
         <line
           key={v}
@@ -214,10 +409,10 @@ function Gelombang({
           strokeDasharray="5 5"
         />
       ))}
-      <text x={WX0 - 8} y={ky(1)} textAnchor="end" dominantBaseline="middle" fontSize={12} fontWeight={700} fill="var(--ink-soft)">
+      <text x={WX0 - 8} y={ky(1)} textAnchor="end" dominantBaseline="middle" fontSize={huruf} fontWeight={700} fill="var(--ink-soft)">
         1
       </text>
-      <text x={WX0 - 8} y={ky(-1)} textAnchor="end" dominantBaseline="middle" fontSize={12} fontWeight={700} fill="var(--ink-soft)">
+      <text x={WX0 - 8} y={ky(-1)} textAnchor="end" dominantBaseline="middle" fontSize={huruf} fontWeight={700} fill="var(--ink-soft)">
         −1
       </text>
       {tanda
@@ -226,9 +421,9 @@ function Gelombang({
           <text
             key={d}
             x={kx(d)}
-            y={CY + R + 34}
+            y={L.tandaY}
             textAnchor="middle"
-            fontSize={11.5}
+            fontSize={huruf}
             fontWeight={700}
             fill="var(--ink-soft)"
           >
@@ -256,8 +451,8 @@ function Gelombang({
 
       {/* garis penghubung dari lingkaran ke titik gelombang */}
       <line
-        x1={titik(theta).x}
-        y1={titik(theta).y}
+        x1={P.x}
+        y1={P.y}
         x2={kx(theta)}
         y2={ky(Math.sin(rad(theta)))}
         stroke="var(--m-hi)"
@@ -268,7 +463,7 @@ function Gelombang({
       <circle cx={kx(theta)} cy={ky(Math.sin(rad(theta)))} r={5.5} fill="var(--m-a)" />
       <line
         x1={kx(theta)}
-        y1={CY}
+        y1={L.wcy}
         x2={kx(theta)}
         y2={ky(Math.sin(rad(theta)))}
         stroke="var(--m-a)"
@@ -279,9 +474,103 @@ function Gelombang({
   )
 }
 
+/**
+ * Dua pegangan untuk sudut yang sama:
+ * - titik P di lingkaran, diputar (sudut dibaca dengan Math.atan2);
+ * - titik di grafik, diseret mendatar karena sumbu mendatar grafik adalah θ.
+ * Nilai θ dibaca pada label θ di pusat lingkaran, jadi pegangan tidak perlu
+ * label sendiri yang bisa menimpa label "1" atau keterangan di atasnya.
+ */
+function PeganganSudut({
+  L,
+  theta,
+  maksDeg,
+  sembunyi = false,
+}: {
+  L: Tata
+  theta: number
+  /** sudut di ujung kanan grafik. */
+  maksDeg: number
+  sembunyi?: boolean
+}) {
+  const ctx = useInteraksi()
+  // Sudut "tanpa jepit" dari seretan terakhir. Tanpa ini, memutar terus
+  // melewati 360° lalu kembali ke 180° membuat titiknya melompat.
+  const putaran = useRef<number | null>(null)
+  const P = titikPada(L, theta)
+  const sGambar = Math.sin(rad(theta))
+
+  const dariLingkaran = (pt: Titik) => {
+    const a = ((Math.atan2(L.cy - pt.y, pt.x - L.cx) * 180) / Math.PI + 360) % 360
+    const spec = ctx?.peta.get('theta')
+    const nilai = ctx?.kendali.nilai.theta ?? theta
+    const lalu = putaran.current
+    const acuan =
+      lalu !== null && spec && Math.abs(clamp(lalu, spec.min, spec.max) - nilai) <= 1 ? lalu : nilai
+    // Pilih sudut yang setara dengan a (selisih kelipatan 360°) yang paling dekat dengan acuan.
+    const baru = a + 360 * Math.round((acuan - a) / 360)
+    // Yang diingat paling jauh setengah putaran di luar rentang. Kalau anak terus
+    // memutar melewati batas, titiknya diam di batas dan langsung ikut lagi begitu
+    // jari kembali ke dekatnya — tanpa ini, setiap putaran ekstra harus diputar
+    // balik dulu sebelum titiknya mau bergerak, jadi titiknya terasa macet.
+    putaran.current = spec ? clamp(baru, spec.min - 180, spec.max + 180) : baru
+    return baru
+  }
+
+  return (
+    <>
+      <Pegangan
+        x={L.wx0 + (theta / maksDeg) * (L.wx1 - L.wx0)}
+        y={L.wcy - sGambar * L.ws}
+        param="theta"
+        arah="x"
+        sembunyi={sembunyi}
+        keNilai={(pt) => ((pt.x - L.wx0) / (L.wx1 - L.wx0)) * maksDeg}
+      />
+      <Pegangan
+        x={P.x}
+        y={P.y}
+        param="theta"
+        arah="putar"
+        utama
+        ajakan={AJAKAN}
+        sembunyi={sembunyi}
+        keNilai={dariLingkaran}
+      />
+    </>
+  )
+}
+
+/** Keterangan gambar. Di HP kalimat panjang dipecah di tanda pisah menjadi dua baris. */
+function Keterangan({ L, warna, children }: { L: Tata; warna: string; children: string }) {
+  if (!L.sempit) {
+    return (
+      <Tag x={L.w / 2} y={L.ketY} warna={warna} size={16}>
+        {children}
+      </Tag>
+    )
+  }
+  const size = 15
+  const muat = children.length * size * 0.58 + 14 <= L.w - 24
+  const baris = muat ? [children] : children.split(' — ')
+  const y0 = baris.length === 1 ? L.ketY + 13 : L.ketY
+  return (
+    <>
+      {baris.map((b, i) => (
+        <Tag key={i} x={L.w / 2} y={y0 + i * 26} warna={warna} size={size}>
+          {b}
+        </Tag>
+      ))}
+    </>
+  )
+}
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const L = useSempit() ? HP : LEBAR
+  const ctx = useInteraksi()
+  const aktif = ctx?.kendali.aktif === 'theta'
   const dasar = nilaiBongkar(p).theta
 
   const putarPenuh = step === 2 ? 360 * seg(t, 0.02, 0.98) : 0
@@ -304,16 +593,44 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const s = nol(Math.sin(rad(theta)))
   const c = nol(Math.cos(rad(theta)))
 
+  // Titiknya dipegang anak hanya pada langkah yang sudutnya mengikuti nilai θ.
+  // Pada langkah 2, 4, dan 5 titiknya diputar oleh animasi, jadi pegangannya disembunyikan.
+  const bebas = step === 0 || step === 1 || step === 3 || step === 6
+
+  const keterangan: [string, string] | null =
+    step <= 1
+      ? ['var(--m-a)', `sin ${fmt(Math.round(theta))}° ${sama(s)} ${angka(s)} — itulah tinggi titiknya`]
+      : step === 2
+        ? ['var(--ink-2)', 'tingginya direkam terhadap sudut']
+        : step === 3
+          ? ['var(--m-b)', `cos ${fmt(Math.round(theta))}° ${sama(c)} ${angka(c)} — posisi mendatarnya`]
+          : step === 4
+            ? ['var(--m-hi)', 'setelah 90°, tingginya mulai menurun']
+            : step === 5
+              ? ['var(--m-ab)', 'lewat 360°, titik kembali ke tempat semula — polanya berulang']
+              : identitas
+                ? [
+                    'var(--m-ab)',
+                    `${angka(s * s)} + ${angka(c * c)} = 1 — ${
+                      s === 0 || c === 0 ? 'tetap berlaku walau segitiganya gepeng' : 'Pythagoras pada segitiga itu'
+                    }`,
+                  ]
+                : null
+
   return (
-    <Svg w={W} h={H} maxH={440} label="Lingkaran satuan dan grafik sinus yang terbentuk dari perputaran titik">
+    <Svg w={L.w} h={L.h} maxH={L.maxH} label="Lingkaran satuan dan grafik sinus yang terbentuk dari perputaran titik">
       <Lingkaran
+        L={L}
         theta={theta}
         tampilSegitiga={tampilSegitiga}
         tampilCos={tampilCos}
         nyalaSin={nyalaSin}
         nyalaCos={nyalaCos}
+        nyalaSudut={aktif && bebas}
+        ajakan={!!ctx?.ajakan && bebas && !aktif}
       />
       <Gelombang
+        L={L}
         theta={theta}
         maksDeg={maksDeg}
         tampilCos={tampilCos}
@@ -322,38 +639,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         rekam={rekam}
       />
 
-      {step <= 1 && (
-        <Tag x={W / 2} y={40} warna="var(--m-a)" size={16}>
-          {`sin ${fmt(Math.round(theta))}° ${sama(s)} ${angka(s)} — itulah tinggi titiknya`}
-        </Tag>
+      {keterangan && (
+        <Keterangan L={L} warna={keterangan[0]}>
+          {keterangan[1]}
+        </Keterangan>
       )}
-      {step === 2 && (
-        <Tag x={W / 2} y={40} warna="var(--ink-2)" size={16}>
-          tingginya direkam terhadap sudut
-        </Tag>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={40} warna="var(--m-b)" size={16}>
-          {`cos ${fmt(Math.round(theta))}° ${sama(c)} ${angka(c)} — posisi mendatarnya`}
-        </Tag>
-      )}
-      {step === 4 && (
-        <Tag x={W / 2} y={40} warna="var(--m-hi)" size={16}>
-          setelah 90°, tingginya mulai menurun
-        </Tag>
-      )}
-      {step === 5 && (
-        <Tag x={W / 2} y={40} warna="var(--m-ab)" size={16}>
-          lewat 360°, titiknya kembali ke tempat semula — polanya berulang
-        </Tag>
-      )}
-      {identitas && (
-        <Tag x={W / 2} y={40} warna="var(--m-ab)" size={16}>
-          {`${angka(s * s)} + ${angka(c * c)} = 1 — ${
-            s === 0 || c === 0 ? 'tetap berlaku walau segitiganya gepeng' : 'Pythagoras pada segitiga itu'
-          }`}
-        </Tag>
-      )}
+
+      <PeganganSudut L={L} theta={theta} maksDeg={maksDeg} sembunyi={!bebas} />
     </Svg>
   )
 }
@@ -361,35 +653,49 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+  const L = useSempit() ? HP : LEBAR
+  const ctx = useInteraksi()
+  const aktif = ctx?.kendali.aktif === 'theta'
   const theta = clamp(Math.round(p.theta ?? 40), 0, 720)
   const s = nol(Math.sin(rad(theta)))
   const c = nol(Math.cos(rad(theta)))
 
+  // Di layar lebar ketiga angka ditumpuk di tengah; di HP sin dan cos berdampingan di bawah grafik.
+  const posSin = L.sempit ? { x: L.w * 0.27, y: L.ketY } : { x: L.w / 2, y: 36 }
+  const posCos = L.sempit ? { x: L.w * 0.73, y: L.ketY } : { x: L.w / 2, y: 68 }
+  const posJumlah = L.sempit ? { x: L.w / 2, y: L.ketY + 26 } : { x: L.w / 2, y: L.h - 18 }
+
   return (
-    <Svg w={W} h={H} maxH={440} label="Lingkaran satuan dengan sudut yang bisa diputar bebas">
+    <Svg w={L.w} h={L.h} maxH={L.maxH} label="Lingkaran satuan dengan sudut yang bisa diputar bebas">
       <Lingkaran
+        L={L}
         theta={theta}
         tampilSegitiga={1}
         tampilCos={1}
         nyalaSin={sorot === 'sin' || sorot === 'y'}
         nyalaCos={sorot === 'cos' || sorot === 'x'}
+        nyalaSudut={aktif}
+        ajakan={!!ctx?.ajakan && !aktif}
       />
       <Gelombang
+        L={L}
         theta={theta}
         maksDeg={720}
         tampilCos={1}
         nyalaSin={sorot === 'sin' || sorot === 'y'}
         nyalaCos={sorot === 'cos' || sorot === 'x'}
       />
-      <Tag x={W / 2} y={36} warna="var(--m-a)" size={16}>
+      <Tag x={posSin.x} y={posSin.y} warna="var(--m-a)" size={L.sempit ? 15 : 16}>
         {`sin ${fmt(theta)}° ${sama(s)} ${angka(s, 4)}`}
       </Tag>
-      <Tag x={W / 2} y={68} warna="var(--m-b)" size={16}>
+      <Tag x={posCos.x} y={posCos.y} warna="var(--m-b)" size={L.sempit ? 15 : 16}>
         {`cos ${fmt(theta)}° ${sama(c)} ${angka(c, 4)}`}
       </Tag>
-      <Tag x={W / 2} y={H - 18} warna="var(--m-ab)" size={15}>
+      <Tag x={posJumlah.x} y={posJumlah.y} warna="var(--m-ab)" size={15}>
         {`sin² + cos² = ${fmt(s * s + c * c, 4)}`}
       </Tag>
+
+      <PeganganSudut L={L} theta={theta} maksDeg={720} />
     </Svg>
   )
 }
@@ -436,7 +742,9 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'theta', label: 'Sudut θ', min: 0, max: 360, step: 1, awal: 40, satuan: '°' }],
+    params: [
+      { key: 'theta', label: 'Sudut θ', min: 0, max: 360, step: 1, awal: 40, satuan: '°', simbol: 'θ', peran: 'hi' },
+    ],
     roles: { sin: 'a', cos: 'b', y: 'a', x: 'b', satu: 'hi' },
     arti: {
       sin: 'Sinus — tinggi titik pada lingkaran satuan (bertanda: negatif bila titiknya di bawah sumbu mendatar).',
@@ -455,10 +763,10 @@ const konsep: Konsep = {
         narasi: (p) => {
           const { theta, s, c } = nilaiBongkar(p)
           if (s === 0) {
-            return `Di ${fmt(theta)}° titiknya duduk tepat pada sumbu mendatar, jadi garis tegaknya habis dan tidak ada segitiga yang terbentuk. Geser θ sedikit saja, dan segitiga siku-sikunya langsung muncul.`
+            return `Di ${fmt(theta)}° titiknya duduk tepat pada sumbu mendatar, jadi garis tegaknya habis dan tidak ada segitiga yang terbentuk. Putar titik merah muda itu sedikit saja, dan segitiga siku-sikunya langsung muncul.`
           }
           if (c === 0) {
-            return `Di ${fmt(theta)}° titiknya tepat ${s > 0 ? 'di atas' : 'di bawah'} pusat, jadi jari-jarinya berimpit dengan garis tegak dan segitiganya gepeng. Geser θ sedikit saja, dan segitiga siku-sikunya langsung muncul.`
+            return `Di ${fmt(theta)}° titiknya tepat ${s > 0 ? 'di atas' : 'di bawah'} pusat, jadi jari-jarinya berimpit dengan garis tegak dan segitiganya gepeng. Putar titik merah muda itu sedikit saja, dan segitiga siku-sikunya langsung muncul.`
           }
           // Titik di bawah sumbu: garis tegaknya naik ke sumbu, bukan "diturunkan".
           return `Tarik jari-jari ke titik di sudut ${fmt(theta)}°, lalu buat garis tegak lurus dari titik itu ${s > 0 ? 'turun' : 'naik'} ke sumbu mendatar. Terbentuk segitiga siku-siku yang sisi miringnya jari-jari itu sendiri.`
@@ -489,7 +797,7 @@ const konsep: Konsep = {
         id: 's2',
         judul: 'Putar titiknya satu putaran',
         narasi:
-          'Sambil titik berputar, tingginya kita catat di sebelah kanan. Naik sampai puncak, turun melewati nol, lalu ke bawah, lalu kembali.',
+          'Sambil titik berputar, tingginya kita catat pada grafik. Naik sampai puncak, turun melewati nol, lalu ke bawah, lalu kembali.',
         durasi: 3400,
       },
       {
@@ -546,15 +854,17 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Putar sudutnya sendiri',
     ajakan:
-      'Geser θ melewati 360°. Perhatikan garis putus-putus yang menghubungkan titik di lingkaran dengan titik di grafik.',
-    params: [{ key: 'theta', label: 'Sudut θ', min: 0, max: 720, step: 1, awal: 40, satuan: '°' }],
+      'Putar titik merah muda di lingkaran sampai lewat 360°, atau seret titiknya di grafik. Garis putus-putus selalu menghubungkan keduanya.',
+    params: [
+      { key: 'theta', label: 'Sudut θ', min: 0, max: 720, step: 1, awal: 40, satuan: '°', simbol: 'θ', peran: 'hi' },
+    ],
     Visual: VisualEksperimen,
     temuan: (p) => {
       const theta = clamp(Math.round(p.theta ?? 40), 0, 720)
       const s = nol(Math.sin(rad(theta)))
       const c = nol(Math.cos(rad(theta)))
       const kuadran = Math.floor((theta % 360) / 90) + 1
-      // Pasangan satu putaran yang masih terjangkau penggeser (0°–720°).
+      // Pasangan satu putaran yang masih bisa dicapai di eksperimen (0°–720°).
       const pasangan = theta + 360 <= 720 ? theta + 360 : theta - 360
       const letak =
         s === 0 || c === 0

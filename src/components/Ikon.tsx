@@ -29,6 +29,11 @@ export type NamaIkon =
   | 'menu'
   | 'tutup'
   | 'cari'
+  | 'tambah'
+  | 'kurang'
+  | 'perbesar'
+  | 'perkecil'
+  | 'geser'
   | 'acak'
   | 'target'
   | 'petunjuk'
@@ -62,6 +67,11 @@ const P: Record<NamaIkon, { d: string; isi?: boolean }[]> = {
   menu: [{ d: 'M4 7h16M4 12h16M4 17h16' }],
   tutup: [{ d: 'M6.5 6.5l11 11M17.5 6.5l-11 11' }],
   cari: [{ d: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14M20 20l-4.2-4.2' }],
+  tambah: [{ d: 'M12 5.5v13M5.5 12h13' }],
+  kurang: [{ d: 'M5.5 12h13' }],
+  perbesar: [{ d: 'M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15' }],
+  perkecil: [{ d: 'M9 4.5V9H4.5M19.5 9H15V4.5M15 19.5V15h4.5M4.5 15H9v4.5' }],
+  geser: [{ d: 'M12 3.5v17M3.5 12h17M9 6.5l3-3 3 3M9 17.5l3 3 3-3M6.5 9l-3 3 3 3M17.5 9l3 3-3 3' }],
   acak: [{ d: 'M3 7h4l10 10h4M17 3.5 20.5 7 17 10.5M3 17h4l3-3M14 10l3-3M17 13.5l3.5 3.5-3.5 3.5' }],
   target: [{ d: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 11.4a.6.6 0 1 1 0 1.2.6.6 0 0 1 0-1.2', isi: false }],
   petunjuk: [{ d: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18M12 10.5V17M12 7.4v.4' }],

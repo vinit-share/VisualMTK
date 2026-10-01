@@ -13,14 +13,14 @@
    dinyatakan terang-terangan pada bagian penjelasan.
    ============================================================ */
 
-import { Svg, Tag, Dimensi } from '../components/Stage'
+import { Pegangan, RelGeser, useInteraksi, type Titik } from '../components/Interaksi'
+import { Svg, Tag, Dimensi, useSempit } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 import { Juring } from '../visuals/juring'
 
 const W = 680
-const H = 430
 const SKALA = 24 // piksel per satuan panjang
 
 /** Mulai dari jumlah potongan ini susunannya tampak hampir persis persegi panjang. */
@@ -31,6 +31,25 @@ const POTONGAN_RAPI = 24
  * sebenarnya r·cos(π/n), selalu kurang dari r.
  */
 const galatTinggi = (n: number) => (1 - Math.cos(Math.PI / n)) * 100
+
+/**
+ * Puncak potongan berjarak πr/n, jadi barisan puncak selebar (n−1)πr/n —
+ * satu jarak antarpuncak lebih pendek dari bingkai πr. Susunan digeser
+ * SETENGAH jarak itu supaya duduk tepat di tengah bingkai; kalau tidak,
+ * pada n kecil potongan paling kiri menjorok sampai ke luar gambar
+ * (n = 4, r = 6, tata letak HP: 9 satuan terpotong).
+ */
+const geserTengah = (lebar: number, n: number) => lebar / (2 * n)
+
+/**
+ * Sudut kiri-atas susunan bergerak sepanjang satu garis lurus saat r berubah:
+ * setiap satuan r memindahkannya π/2 satuan ke kiri dan ½ satuan ke atas.
+ * Posisi jari diproyeksikan ke garis itu, jadi sudutnya benar-benar mengikuti
+ * jari — dan jarak tempuhnya 3,3× lebih panjang daripada menyeret tegak saja.
+ */
+const K_SUDUT = Math.PI ** 2 / 4 + 0.25
+const rDariSudut = (pt: Titik, cx: number, cy: number, skala: number) =>
+  ((cx - pt.x) * (Math.PI / 2) + (cy - pt.y) * 0.5) / (skala * K_SUDUT)
 
 /**
  * Nilai bongkar yang diturunkan dari penggeser — dipakai bersama oleh gambar
@@ -54,10 +73,16 @@ function bacaBongkar(p: Record<string, number>) {
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const { r, n, setengah, luas } = bacaBongkar(p)
-  const R = r * SKALA
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif
+  // Tata letak tegak untuk HP: bentuknya tetap besar, rel potongan di bawah.
+  const L = sempit
+    ? { w: 420, h: 520, skala: 16, cy: 215, atasY: 40, rel: 470, x1: 78, x2: 342 }
+    : { w: W, h: 470, skala: SKALA, cy: 200, atasY: 30, rel: 422, x1: 170, x2: 510 }
+  const R = r * L.skala
 
-  const cx = W / 2
-  const cy = 190
+  const cx = L.w / 2
+  const cy = L.cy
   const lebar = Math.PI * R
   const rx = cx - lebar / 2
   const ry = cy - R / 2
@@ -71,7 +96,12 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const selesai = step >= 6
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Lingkaran dipotong menjadi juring lalu disusun menyerupai persegi panjang">
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={470}
+      label="Lingkaran dipotong menjadi juring lalu disusun menyerupai persegi panjang"
+    >
       {/* bingkai persegi panjang tujuan */}
       {kotak > 0 && (
         <rect
@@ -93,14 +123,15 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         <circle cx={cx} cy={cy} r={R} fill="var(--m-a)" fillOpacity={0.6} opacity={1 - seams} />
       )}
 
-      {/* juring */}
+      {/* juring — digeser setengah jarak antarpuncak agar terpusat di bingkai */}
       <g opacity={seams}>
-        <Juring n={n} t={susun} r={R} cx={cx} cy={cy} rx={rx} ry={ry} />
+        <Juring n={n} t={susun} r={R} cx={cx} cy={cy} rx={rx + geserTengah(lebar, n)} ry={ry} />
       </g>
 
-      {/* jari-jari pada keadaan lingkaran */}
-      {susun < 0.15 && (
-        <g opacity={1 - susun / 0.15}>
+      {/* jari-jari pada keadaan lingkaran — tetap tampak sampai pegangan
+          berpindah ke sudut susunan, supaya titiknya tidak pernah melayang */}
+      {susun < 0.5 && (
+        <g opacity={1 - susun / 0.5}>
           <line
             x1={cx}
             y1={cy}
@@ -110,13 +141,16 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             strokeWidth={sorot === 'jari' ? 4 : 2.5}
           />
           <circle cx={cx} cy={cy} r={4} fill="var(--ink)" />
-          <Tag x={cx + R / 2} y={cy - 16} warna="var(--ink)" size={16}>
-            {`r = ${fmt(r)}`}
-          </Tag>
+          {aktif !== 'r' && (
+            <Tag x={cx + R / 2} y={cy - 24} warna="var(--ink)" size={16}>
+              {`r = ${fmt(r)}`}
+            </Tag>
+          )}
         </g>
       )}
 
-      {/* tinggi susunan */}
+      {/* tinggi susunan. Angkanya di atas ujung garis, bukan di tengahnya:
+          di tengah ia tertimpa titik pegangan saat r kecil. */}
       {susun > 0.85 && (
         <g opacity={(susun - 0.85) / 0.15}>
           <Dimensi
@@ -124,9 +158,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             y1={ry}
             x2={rx - 18}
             y2={ry + R}
-            label={`r = ${fmt(r)}`}
-            warna={nyalaTinggi ? 'var(--m-b)' : 'var(--m-axis)'}
+            warna={nyalaTinggi || aktif === 'r' ? 'var(--m-b)' : 'var(--m-axis)'}
           />
+          {aktif !== 'r' && (
+            <Tag x={rx - 18} y={ry - 30} anchor="start" warna={nyalaTinggi ? 'var(--m-b)' : 'var(--ink-2)'} size={14}>
+              {`r = ${fmt(r)}`}
+            </Tag>
+          )}
         </g>
       )}
 
@@ -146,25 +184,66 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
       {/* keterangan tiap tahap */}
       {step === 1 && (
-        <Tag x={cx} y={cy + R + 40} warna="var(--ink-2)" size={16}>
+        <Tag x={cx} y={L.atasY} warna="var(--ink-2)" size={16}>
           {`dipotong menjadi ${n} juring`}
         </Tag>
       )}
       {step === 3 && (
-        <Tag x={cx} y={54} warna="var(--ink-2)" size={16}>
-          {n >= POTONGAN_RAPI ? 'sudah hampir persis persegi panjang' : 'geser jumlah potongan ke kanan'}
+        <Tag x={cx} y={L.atasY} warna="var(--ink-2)" size={16}>
+          {n >= POTONGAN_RAPI ? 'sudah hampir persis persegi panjang' : 'geser rel potongan ke kanan'}
         </Tag>
       )}
-      {step === 5 && (
-        <Tag x={cx} y={54} warna="var(--m-a)" size={17}>
-          {`keliling = 2 × π × r, jadi setengahnya = π × r`}
-        </Tag>
-      )}
+      {/* Di HP kalimat ini dipecah dua baris: satu baris utuh selebar 468
+          satuan tidak muat pada bingkai 420 dan ujungnya terpotong. */}
+      {step === 5 &&
+        (sempit
+          ? ['keliling = 2 × π × r', 'jadi setengahnya = π × r']
+          : ['keliling = 2 × π × r, jadi setengahnya = π × r']
+        ).map((baris, i) => (
+          <Tag key={baris} x={cx} y={L.atasY + i * 26} warna="var(--m-a)" size={17}>
+            {baris}
+          </Tag>
+        ))}
       {selesai && (
-        <Tag x={cx} y={54} warna="var(--m-ab)" size={19}>
+        <Tag x={cx} y={L.atasY} warna="var(--m-ab)" size={19}>
           {`luas = π × ${fmt(r)} × ${fmt(r)} = ${fmt(luas, 2)}`}
         </Tag>
       )}
+
+      {/* Jari-jari dipegang di ujungnya selama masih lingkaran, lalu di sudut
+          kiri-atas susunan setelah tersusun. Ajakan "Coba geser aku" hanya
+          dipasang pada pegangan yang letaknya tidak di tepi kiri gambar:
+          gelembungnya selebar 143 satuan dan akan terpotong di sana. */}
+      {susun < 0.5 ? (
+        <Pegangan
+          x={cx + R}
+          y={cy}
+          param="r"
+          arah="x"
+          utama
+          label={`r = ${fmt(r)}`}
+          keNilai={(pt) => Math.hypot(pt.x - cx, pt.y - cy) / L.skala}
+        />
+      ) : (
+        <Pegangan
+          x={rx}
+          y={ry}
+          param="r"
+          arah="bebas"
+          label={`r = ${fmt(r)}`}
+          keNilai={(pt) => rDariSudut(pt, cx, cy, L.skala)}
+        />
+      )}
+      <RelGeser
+        x1={L.x1}
+        x2={L.x2}
+        y={L.rel}
+        param="n"
+        label={`${n} potongan`}
+        kiri="4"
+        kanan="48"
+        utama={susun >= 0.5}
+      />
     </Svg>
   )
 }
@@ -172,13 +251,24 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif
   const r = p.r ?? 4
   const n = Math.max(4, Math.round(p.n ?? 16))
   const susun = clamp(p.susun ?? 1, 0, 1)
-  const R = r * SKALA
 
-  const cx = W / 2
-  const cy = 200
+  // Dua tata letak untuk hal yang sama: lebar untuk layar besar, tegak untuk
+  // HP. Di HP bentuknya justru digambar lebih besar, bukan dikecilkan.
+  // Dua rel perlu jarak tegak ±105 satuan: label nilai rel bawah menjulur 58
+  // satuan ke atas dan keterangan ujung rel atas 42 satuan ke bawah (pada
+  // skala layar terkecil). Dengan 72 satuan seperti sebelumnya, angka "4" dan
+  // "64" di ujung rel potongan tertimpa label "tersusun".
+  const L = sempit
+    ? { w: 420, h: 520, skala: 16, cy: 216, judulY: 32, relN: 362, relS: 468, x1: 78, x2: 342 }
+    : { w: W, h: 500, skala: SKALA, cy: 190, judulY: 36, relN: 350, relS: 452, x1: 150, x2: 530 }
+  const R = r * L.skala
+  const cx = L.w / 2
+  const cy = L.cy
   const lebar = Math.PI * R
   const rx = cx - lebar / 2
   const ry = cy - R / 2
@@ -190,9 +280,11 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
   // di sana, jadi jaraknya dari tepi atas bingkai = tinggi sebenarnya.
   const tinggiNyata = R * Math.cos(Math.PI / n)
   const galat = galatTinggi(n)
+  const tersusun = susun >= 0.5
+  const nyalaJari = sorot === 'jari' || sorot === 'r2' || aktif === 'r'
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Lingkaran yang bisa diubah jari-jari dan jumlah potongannya">
+    <Svg w={L.w} h={L.h} maxH={500} label="Lingkaran yang bisa diubah jari-jari dan jumlah potongannya">
       <rect
         x={rx}
         y={ry}
@@ -206,7 +298,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         opacity={susun * 0.6}
       />
 
-      <Juring n={n} t={susun} r={R} cx={cx} cy={cy} rx={rx} ry={ry} />
+      <Juring n={n} t={susun} r={R} cx={cx} cy={cy} rx={rx + geserTengah(lebar, n)} ry={ry} />
 
       {susun > 0.85 && (
         <>
@@ -215,9 +307,15 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
             y1={ry}
             x2={rx - 18}
             y2={ry + R}
-            label={`r = ${fmt(r)}`}
-            warna={sorot === 'jari' || sorot === 'r2' ? 'var(--m-b)' : 'var(--m-axis)'}
+            warna={nyalaJari ? 'var(--m-b)' : 'var(--m-axis)'}
           />
+          {/* angkanya di atas ujung garis: di tengah garis ia tertimpa titik
+              pegangan pada r kecil, dan di HP terpotong tepi kiri */}
+          {aktif !== 'r' && (
+            <Tag x={rx - 18} y={ry - 30} anchor="start" warna={nyalaJari ? 'var(--m-b)' : 'var(--ink-2)'} size={14}>
+              {`r = ${fmt(r)}`}
+            </Tag>
+          )}
           <Dimensi
             x1={rx}
             y1={ry + R + 26}
@@ -243,9 +341,63 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         </>
       )}
 
-      <Tag x={cx} y={44} warna="var(--m-ab)" size={19}>
+      {/* jari-jari saat masih berbentuk lingkaran — tetap tampak sampai
+          pegangan berpindah ke sudut susunan (susun 0,5), jadi titiknya
+          selalu menempel pada garis yang dikendalikannya */}
+      {susun < 0.5 && (
+        <g opacity={1 - susun / 0.5}>
+          <line x1={cx} y1={cy} x2={cx + R} y2={cy} stroke="var(--m-b)" strokeWidth={3} />
+          <circle cx={cx} cy={cy} r={4} fill="var(--ink)" />
+          {aktif !== 'r' && (
+            <Tag x={cx + R / 2} y={cy - 24} warna="var(--m-b)" size={15}>
+              {`r = ${fmt(r)}`}
+            </Tag>
+          )}
+        </g>
+      )}
+
+      <Tag x={cx} y={L.judulY} warna="var(--m-ab)" size={19}>
         {`Luas = π r² = ${fmt(Math.PI * r * r, 2)}`}
       </Tag>
+
+      {/* Jari-jari dipegang langsung: di ujung jari-jari saat masih lingkaran,
+          di sudut kiri-atas susunan saat sudah tersusun. Sudut itu bergerak
+          menyerong, jadi jari boleh menyeret ke mana saja (lihat rDariSudut).
+          Ajakan "Coba geser aku" hanya pada pegangan yang jauh dari tepi
+          kiri; di sudut susunan gelembungnya akan terpotong, jadi denyut
+          pindah ke rel susunan. */}
+      {tersusun ? (
+        <Pegangan
+          x={rx}
+          y={ry}
+          param="r"
+          arah="bebas"
+          label={`r = ${fmt(r)}`}
+          keNilai={(pt) => rDariSudut(pt, cx, cy, L.skala)}
+        />
+      ) : (
+        <Pegangan
+          x={cx + R}
+          y={cy}
+          param="r"
+          arah="x"
+          utama
+          label={`r = ${fmt(r)}`}
+          keNilai={(pt) => Math.hypot(pt.x - cx, pt.y - cy) / L.skala}
+        />
+      )}
+
+      <RelGeser x1={L.x1} x2={L.x2} y={L.relN} param="n" label={`${n} potongan`} kiri="4" kanan="64" />
+      <RelGeser
+        x1={L.x1}
+        x2={L.x2}
+        y={L.relS}
+        param="susun"
+        label={susun >= 0.98 ? 'tersusun' : susun <= 0.02 ? 'masih utuh' : 'menyusun…'}
+        kiri="lingkaran"
+        kanan="persegi panjang"
+        utama={tersusun}
+      />
     </Svg>
   )
 }
@@ -299,8 +451,8 @@ const konsep: Konsep = {
   bongkar: {
     Visual: VisualBongkar,
     params: [
-      { key: 'r', label: 'Jari-jari', min: 2, max: 6, step: 0.5, awal: 4 },
-      { key: 'n', label: 'Jumlah potongan', min: 4, max: 48, step: 2, awal: 12, bulat: true },
+      { key: 'r', label: 'Jari-jari', min: 2, max: 6, step: 0.5, awal: 4, simbol: 'r', peran: 'b', bagian: 'jari' },
+      { key: 'n', label: 'Jumlah potongan', min: 4, max: 48, step: 2, awal: 12, bulat: true, simbol: 'n' },
     ],
     roles: { pi: 'a', jari: 'b', r2: 'b', luas: 'ab', keliling: 'a' },
     arti: {
@@ -338,8 +490,8 @@ const konsep: Konsep = {
         narasi: (p) => {
           const { n, rapi } = bacaBongkar(p)
           return rapi
-            ? `Dengan ${fmt(n)} potongan, sisinya sudah hampir lurus dan bentuknya hampir persis persegi panjang. Geser "jumlah potongan" ke kiri kalau kamu ingin melihat gelombangnya muncul lagi.`
-            : `Dengan ${fmt(n)} potongan, sisinya masih bergelombang. Geser "jumlah potongan" ke kanan: sisinya makin lurus dan bentuknya makin mendekati persegi panjang.`
+            ? `Dengan ${fmt(n)} potongan, sisinya sudah hampir lurus dan bentuknya hampir persis persegi panjang. Geser titik pada rel potongan ke kiri kalau kamu ingin melihat gelombangnya muncul lagi.`
+            : `Dengan ${fmt(n)} potongan, sisinya masih bergelombang. Geser titik pada rel potongan ke kanan: sisinya makin lurus dan bentuknya makin mendekati persegi panjang.`
         },
         durasi: 2000,
       },
@@ -386,13 +538,17 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Geser potongannya, lalu geser jari-jarinya',
     ajakan:
-      'Penggeser "susunan" memindahkan potongan dari bentuk lingkaran ke bentuk persegi panjang. Perhatikan garis merah muda: jaraknya dari tepi atas bingkai adalah tinggi susunan yang sebenarnya, r × cos(π/n), selalu kurang dari r. Garisnya hilang sendiri kalau potongannya sudah terlalu banyak untuk terlihat bedanya.',
+      'Seret sudut kiri-atas susunan untuk membesarkan lingkarannya — atau ujung jari-jarinya, selama masih berbentuk lingkaran. Rel potongan menambah juring; rel susunan membuka dan merapikan susunannya. Garis merah muda menandai tinggi susunan yang sebenarnya, r × cos(π/n) — selalu kurang dari r: 29% lebih pendek pada 4 potongan, di bawah 1% mulai 24 potongan, lalu hilang sendiri karena bedanya tidak terlihat lagi.',
     params: [
-      { key: 'r', label: 'Jari-jari', min: 1, max: 6, step: 0.5, awal: 4 },
-      { key: 'n', label: 'Jumlah potongan', min: 4, max: 64, step: 2, awal: 16, bulat: true },
+      { key: 'r', label: 'Jari-jari', min: 1, max: 6, step: 0.5, awal: 4, simbol: 'r', peran: 'b', bagian: 'r2' },
+      { key: 'n', label: 'Jumlah potongan', min: 4, max: 64, step: 2, awal: 16, bulat: true, simbol: 'n' },
       { key: 'susun', label: 'Susunan', min: 0, max: 1, step: 0.02, awal: 1 },
     ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const r = p.r ?? 4
+      return `[luas:L] = [pi:π] × [r2:${fmt(r)}^2] = ${fmt(Math.PI * r * r, 2)}`
+    },
     temuan: (p) => {
       const r = p.r ?? 4
       const n = Math.max(4, Math.round(p.n ?? 16))

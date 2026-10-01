@@ -9,15 +9,39 @@
 
    Bagian penutup sengaja membongkar kesalahan paling sering:
    (a+b)² BUKAN a² + b². Dua ubin ab itulah yang biasanya terlupakan.
+
+   Interaksi langsung: anak memegang persegi itu sendiri.
+   - Titik ungu di tepi atas = BATAS antara bagian a dan b. Digeser ke
+     kanan, bagian a memanjang (b tetap), persegi ikut membesar.
+   - Titik jingga di pojok kanan bawah = ujung sisi. Ditarik keluar,
+     bagian b memanjang.
+   Pojok kiri atas persegi tidak pernah bergeser, jadi titik yang diseret
+   selalu menempel di jari. Skala gambar baru menyesuaikan setelah jari
+   diangkat, supaya persegi tetap besar tetapi masih ada ruang untuk
+   ditarik lagi. Label a², ab, b², penggaris, dan (a+b)² ikut berubah.
    ============================================================ */
 
-import { Svg, Tag, Dimensi } from '../components/Stage'
-import { fase, seg } from '../lib/anim'
+import { useEffect, useRef, useState } from 'react'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, Dimensi, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
+import { fase, seg, useTween } from '../lib/anim'
 import { fmt } from '../lib/num'
-import type { DeriveState, Konsep } from '../lib/types'
+import type { DeriveState, Konsep, ParamSpec } from '../lib/types'
 
-const W = 660
-const H = 440
+/* ---------------- Penggeser ---------------- */
+
+const PARAM_BONGKAR: ParamSpec[] = [
+  { key: 'a', label: 'Nilai a', min: 1, max: 6, step: 1, awal: 3, bulat: true, simbol: 'a', peran: 'a', bagian: 'a' },
+  { key: 'b', label: 'Nilai b', min: 1, max: 6, step: 1, awal: 2, bulat: true, simbol: 'b', peran: 'b', bagian: 'b' },
+]
+
+const PARAM_EKSPERIMEN: ParamSpec[] = [
+  { key: 'a', label: 'Nilai a', min: 1, max: 7, step: 1, awal: 3, bulat: true, simbol: 'a', peran: 'a', bagian: 'a' },
+  { key: 'b', label: 'Nilai b', min: 1, max: 7, step: 1, awal: 2, bulat: true, simbol: 'b', peran: 'b', bagian: 'b' },
+]
+
+/** a + b terbesar yang bisa dicapai penggeser — menentukan skala terkecil gambar. */
+const jumlahMaks = (ps: ParamSpec[]) => ps.reduce((s, p) => s + p.max, 0)
 
 /** Nilai a dan b yang benar-benar digambar: penggeser dibulatkan ke bilangan bulat.
     Dipakai bersama oleh gambar dan teks langkah agar keduanya tidak pernah berbeda. */
@@ -25,21 +49,83 @@ function nilaiAB(p: Record<string, number>) {
   return { a: Math.round(p.a ?? 3), b: Math.round(p.b ?? 2) }
 }
 
+/* ---------------- Tata letak ---------------- */
+
+interface Letak {
+  w: number
+  h: number
+  /** pojok kiri atas persegi — tetap di tempat, persegi tumbuh ke kanan dan ke bawah. */
+  x0: number
+  y0: number
+  /** sisi persegi terpanjang yang masih muat. */
+  ruang: number
+  /** tata letak lebar: poros panel teks di kanan persegi. HP: null. */
+  panelX: number | null
+  /** HP: garis teks di atas dan di bawah persegi. */
+  judulY: number
+  bawahY: number
+}
+
+/**
+ * Dua tata letak. Lebar: persegi di kiri, angka-angkanya di panel kanan.
+ * HP (tegak): persegi selebar mungkin, teks di atas dan di bawahnya.
+ */
+function letak(sempit: boolean, jenis: 'bongkar' | 'eksperimen'): Letak {
+  // HP: y0 = 100 memberi ruang bagi label "a = …" yang muncul di atas titik
+  // batas saat dipegang, tanpa menabrak judul, sampai panggung selebar 300 px.
+  if (sempit) {
+    return jenis === 'bongkar'
+      ? { w: 420, h: 520, x0: 48, y0: 100, ruang: 332, panelX: null, judulY: 26, bawahY: 500 }
+      : { w: 420, h: 490, x0: 48, y0: 100, ruang: 332, panelX: null, judulY: 26, bawahY: 0 }
+  }
+  return { w: 680, h: 460, x0: 60, y0: 74, ruang: 330, panelX: 560, judulY: 0, bawahY: 0 }
+}
+
+/**
+ * Satuan panjang yang disisakan di kanan-bawah persegi saat skala dipilih,
+ * supaya pojoknya selalu masih bisa ditarik keluar beberapa langkah.
+ */
+const SISA = 3
+
+/**
+ * Berapa satuan SVG untuk panjang 1. Persegi dibuat sebesar mungkin dengan
+ * menyisakan SISA satuan. Selama titik a atau b dipegang, skalanya DIBEKUKAN
+ * agar titiknya menempel di jari; setelah dilepas, skala bergerak halus ke
+ * ukuran yang pas lagi.
+ */
+function useSatuan(jumlah: number, maks: number, ruang: number, dipegang: boolean) {
+  const pas = ruang / Math.min(maks, jumlah + SISA)
+  const [beku, setBeku] = useState<number | null>(null)
+  const halus = useTween(beku ?? pas, { durasi: 420 })
+  // Nilai bisa naik lebih cepat daripada skala mengecil (papan ketik, angka
+  // yang diketik): kecilkan seperlunya supaya persegi tidak keluar bingkai.
+  const tampil = Math.min(beku ?? halus, ruang / jumlah)
+  // Skala terakhir yang tampil sebelum titik dipegang.
+  const terakhir = useRef(tampil)
+  useEffect(() => {
+    if (!dipegang) terakhir.current = tampil
+  })
+  useEffect(() => {
+    setBeku(dipegang ? terakhir.current : null)
+  }, [dipegang])
+  return tampil
+}
+
 /** Susun letak keempat daerah untuk nilai a dan b tertentu. */
-function tata(a: number, b: number) {
-  const u = Math.min(48, 320 / (a + b))
-  const S = (a + b) * u
-  const x0 = (W - S) / 2
-  const y0 = 74
+function tata(L: Letak, u: number, a: number, b: number) {
+  const { x0, y0 } = L
   const ax = a * u
   const bx = b * u
+  const S = ax + bx
   return {
     u,
-    S,
     x0,
     y0,
     ax,
     bx,
+    S,
+    /** a + b terbesar yang masih muat pada skala ini — seretan ditahan di sini. */
+    jumlahMuat: Math.floor(L.ruang / u + 1e-6),
     // daerah: [x, y, lebar, tinggi]
     a2: [x0, y0, ax, ax] as const,
     ab1: [x0, y0 + ax, ax, bx] as const, // kiri bawah, a lebar × b tinggi
@@ -48,6 +134,98 @@ function tata(a: number, b: number) {
   }
 }
 
+type Geo = ReturnType<typeof tata>
+
+/* ---------------- Tabrakan label ---------------- */
+
+interface Kotak {
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+}
+
+const tabrak = (p: Kotak | null, q: Kotak | null, sela = 2) =>
+  !!p && !!q && p.x1 < q.x2 + sela && q.x1 < p.x2 + sela && p.y1 < q.y2 + sela && q.y1 < p.y2 + sela
+
+/** Kotak sebuah Tag rata tengah (rumus lebarnya sama dengan Tag di Stage.tsx). */
+function kotakTag(x: number, y: number, teks: string, ukuran: number, pad = 14): Kotak {
+  const lebar = teks.length * ukuran * 0.58 + pad
+  return { x1: x - lebar / 2, x2: x + lebar / 2, y1: y - ukuran * 0.82, y2: y + ukuran * 0.68 }
+}
+
+/**
+ * Letak titik a (batas, tepi atas) dan b (pojok kanan bawah), beserta kotak
+ * yang harus dihindari label lain: badan titiknya, label nilai yang muncul di
+ * atas titik saat dipegang, dan ajakan "Coba geser aku" di bawah titik utama.
+ * Ukurannya cerminan Pegangan di Interaksi.tsx.
+ *
+ * adaA: titik a sudah boleh tampil (di bongkar baru setelah sisi dipotong).
+ */
+function useTitikAB(g: Geo, L: Letak, a: number, b: number, aktif: string | null, adaA: boolean) {
+  const ajakanHidup = useInteraksi()?.ajakan ?? false
+  const skala = useSkalaSvg() || 0.6
+  const px = (n: number) => n / skala
+  const r = Math.max(8, px(9))
+  const A = { x: g.x0 + g.ax, y: g.y0 }
+  const B = { x: g.x0 + g.S, y: g.y0 + g.S }
+  const label = (x: number, y: number, teks: string) => kotakTag(x, y - r - px(22), teks, px(15))
+  const ajakanDi = (x: number, y: number) => kotakTag(x, y + r + px(24), 'Coba geser aku', px(13))
+  const bulat = (x: number, y: number): Kotak => {
+    const k = r + px(2)
+    return { x1: x - k, x2: x + k, y1: y - k, y2: y + k }
+  }
+  // panah kecil di sekitar titik: ujung 1,9r, mata panah 0,55r ke samping
+  const panahX = (x: number, y: number): Kotak => ({ x1: x - r * 1.9 - px(1), x2: x + r * 1.9 + px(1), y1: y - r * 0.6, y2: y + r * 0.6 })
+  const panahY = (x: number, y: number): Kotak => ({ x1: x - r * 0.6, x2: x + r * 0.6, y1: y - r * 1.9 - px(1), y2: y + r * 1.9 + px(1) })
+  const labelA = aktif === 'a' ? label(A.x, A.y, `a = ${fmt(a)}`) : null
+  const labelB = aktif === 'b' ? label(B.x, B.y, `b = ${fmt(b)}`) : null
+  const badanA = [bulat(A.x, A.y), panahX(A.x, A.y)]
+  // Pojok ditarik ke dalam sampai perseginya kecil: label "b = …" bisa menutupi
+  // titik a. Selama itu titik a disembunyikan (batasnya tetap terlihat dari
+  // garis potong dan penggaris).
+  const tampakA = adaA && !badanA.some((k) => tabrak(labelB, k))
+
+  // Titik utama = pojok b. Bila persegi sudah sebesar bingkai, ajakan di bawah
+  // pojok akan keluar dari tepi kanan; saat itu ajakan pindah ke titik a.
+  // Selama sebuah titik dipegang, pilihan ini tidak berubah — kecuali titik
+  // utama yang TIDAK dipegang ikut terdorong sampai ajakannya keluar bingkai
+  // (mis. titik a diseret ke kanan pertama kali): ajakannya dilepas dulu.
+  const muat = (k: Kotak) => k.x1 >= 0 && k.x2 <= L.w
+  const pilihan = muat(ajakanDi(B.x, B.y)) ? 'b' : tampakA && muat(ajakanDi(A.x, A.y)) ? 'a' : null
+  const [tadi, setTadi] = useState(pilihan)
+  if (!aktif && tadi !== pilihan) setTadi(pilihan)
+  const titikTadi = tadi === 'a' ? A : tadi === 'b' ? B : null
+  const utama = !aktif
+    ? pilihan
+    : tadi !== aktif && titikTadi && !muat(ajakanDi(titikTadi.x, titikTadi.y))
+      ? null
+      : tadi
+  const titikUtama = utama === 'a' ? A : utama === 'b' ? B : null
+  const ajakan = ajakanHidup && titikUtama && aktif !== utama ? ajakanDi(titikUtama.x, titikUtama.y) : null
+
+  return {
+    A,
+    B,
+    labelA,
+    tampakA,
+    utama,
+    hindari: [
+      ...(tampakA ? badanA : []),
+      bulat(B.x, B.y),
+      panahX(B.x, B.y),
+      panahY(B.x, B.y),
+      labelA,
+      labelB,
+      ajakan,
+    ],
+  }
+}
+
+type TitikInfo = ReturnType<typeof useTitikAB>
+
+/* ---------------- Potongan gambar ---------------- */
+
 function Daerah({
   kotak,
   warna,
@@ -55,7 +233,7 @@ function Daerah({
   nilai,
   opacity = 1,
   nyala = false,
-  u,
+  hindari = [],
 }: {
   kotak: readonly [number, number, number, number]
   warna: string
@@ -63,10 +241,23 @@ function Daerah({
   nilai: string
   opacity?: number
   nyala?: boolean
-  u: number
+  /** kotak label/titik lain; teks daerah disembunyikan bila menabraknya. */
+  hindari?: (Kotak | null)[]
 }) {
+  const u = useUkuranLayar()
   const [x, y, w, h] = kotak
-  const kecil = Math.min(w, h) < 46
+  const hurufNilai = Math.max(13, u(12))
+  const hurufLabel = Math.min(24, Math.max(hurufNilai, Math.min(w, h) * 0.4))
+  const lebarLabel = label.length * hurufLabel * 0.6
+  const lebarNilai = nilai.length * hurufNilai * 0.6
+  const muatLabel = w >= lebarLabel + 8 && h >= hurufLabel + 6
+  const muatNilai = muatLabel && h >= hurufLabel + hurufNilai + 18 && w >= lebarNilai + 8
+  const tinggi = hurufLabel + (muatNilai ? hurufNilai + 2 : 0)
+  const cx = x + w / 2
+  const cy = y + h / 2
+  const lebar = Math.max(lebarLabel, muatNilai ? lebarNilai : 0)
+  const blok: Kotak = { x1: cx - lebar / 2, x2: cx + lebar / 2, y1: cy - tinggi / 2, y2: cy + tinggi / 2 }
+  const teks = muatLabel && !hindari.some((k) => tabrak(k, blok))
   return (
     <g opacity={opacity}>
       <rect
@@ -79,37 +270,204 @@ function Daerah({
         stroke={warna}
         strokeWidth={nyala ? 3.5 : 2}
       />
-      {!kecil && (
-        <>
-          <text
-            x={x + w / 2}
-            y={y + h / 2 - (u > 30 ? 8 : 0)}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize={Math.min(24, Math.min(w, h) * 0.42)}
-            fontWeight={800}
-            fill={warna}
-            style={{ pointerEvents: 'none' }}
-          >
-            {label}
-          </text>
-          {u > 30 && (
-            <text
-              x={x + w / 2}
-              y={y + h / 2 + 14}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize={13}
-              fontWeight={700}
-              fill="var(--ink-2)"
-              style={{ pointerEvents: 'none' }}
-            >
-              {nilai}
-            </text>
-          )}
-        </>
+      {teks && (
+        <text
+          x={cx}
+          y={blok.y1 + hurufLabel / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={hurufLabel}
+          fontWeight={800}
+          fill={warna}
+          style={{ pointerEvents: 'none' }}
+        >
+          {label}
+        </text>
+      )}
+      {teks && muatNilai && (
+        <text
+          x={cx}
+          y={blok.y2 - hurufNilai / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={hurufNilai}
+          fontWeight={700}
+          fill="var(--ink-2)"
+          style={{ pointerEvents: 'none' }}
+        >
+          {nilai}
+        </text>
       )}
     </g>
+  )
+}
+
+/** Kisi satuan tipis: luas terbaca sebagai banyaknya petak. */
+function Kisi({ g, n, opacity = 1 }: { g: Geo; n: number; opacity?: number }) {
+  if (opacity <= 0 || n < 2) return null
+  const garis = []
+  for (let i = 1; i < n; i++) {
+    const k = i * g.u
+    garis.push(<line key={`x${i}`} x1={g.x0 + k} y1={g.y0} x2={g.x0 + k} y2={g.y0 + g.S} />)
+    garis.push(<line key={`y${i}`} x1={g.x0} y1={g.y0 + k} x2={g.x0 + g.S} y2={g.y0 + k} />)
+  }
+  return (
+    <g stroke="var(--m-axis)" strokeWidth={1} opacity={0.35 * opacity} style={{ pointerEvents: 'none' }}>
+      {garis}
+    </g>
+  )
+}
+
+/** Penggaris sisi atas: "a = 3 │ b = 2", tepat di atas titik batas. */
+function PenggarisAtas({
+  g,
+  a,
+  b,
+  gabung = false,
+  aktif,
+  labelA,
+}: {
+  g: Geo
+  a: number
+  b: number
+  /** belum dipotong: satu ukuran "a + b". */
+  gabung?: boolean
+  aktif: string | null
+  /** label titik a yang sedang dipegang, bila ada. */
+  labelA: Kotak | null
+}) {
+  const skala = useSkalaSvg()
+  // 16 satuan di atas tepi: label ukuran tidak menyentuh titik batas di HP.
+  const yR = g.y0 - 16
+  if (gabung) {
+    return (
+      <Dimensi x1={g.x0} y1={yR} x2={g.x0 + g.S} y2={yR} label={`a + b = ${fmt(a + b)}`} warna="var(--ink-2)" />
+    )
+  }
+  // Ukuran huruf Tag yang benar-benar tampil (Tag memperbesar huruf di layar kecil).
+  const uk = skala > 0 ? Math.max(13, Math.min(13 * 1.6, 11 / skala)) : 13
+  const teksB = `b = ${fmt(b)}`
+  const kotakB = kotakTag(g.x0 + g.ax + g.bx / 2, yR - 13 * 0.9, teksB, uk, 14 * (uk / 13))
+  // Label statis disembunyikan selama titiknya sendiri menampilkan nilai itu.
+  const tampakA = aktif !== 'a'
+  const tampakB = aktif !== 'b' && !tabrak(labelA, kotakB)
+  return (
+    <>
+      <Dimensi
+        x1={g.x0}
+        y1={yR}
+        x2={g.x0 + g.ax}
+        y2={yR}
+        label={tampakA ? `a = ${fmt(a)}` : undefined}
+        warna="var(--m-a)"
+      />
+      <Dimensi
+        x1={g.x0 + g.ax}
+        y1={yR}
+        x2={g.x0 + g.S}
+        y2={yR}
+        label={tampakB ? teksB : undefined}
+        warna="var(--m-b)"
+      />
+    </>
+  )
+}
+
+/** Penggaris sisi kiri: sisi yang sama juga a lalu b. */
+function PenggarisKiri({ g, gabung = false }: { g: Geo; gabung?: boolean }) {
+  const xR = g.x0 - 12
+  const xL = g.x0 - 30
+  if (gabung) {
+    const yT = g.y0 + g.S / 2
+    return (
+      <>
+        <Dimensi x1={xR} y1={g.y0} x2={xR} y2={g.y0 + g.S} warna="var(--ink-2)" />
+        {/* diputar supaya tidak memakan tepi kiri yang sempit */}
+        <g transform={`rotate(-90 ${xL} ${yT})`}>
+          <Tag x={xL} y={yT} size={13} warna="var(--ink-2)">
+            a + b
+          </Tag>
+        </g>
+      </>
+    )
+  }
+  return (
+    <>
+      <Dimensi x1={xR} y1={g.y0} x2={xR} y2={g.y0 + g.ax} warna="var(--m-a)" />
+      <Dimensi x1={xR} y1={g.y0 + g.ax} x2={xR} y2={g.y0 + g.S} warna="var(--m-b)" />
+      <Tag x={xL} y={g.y0 + g.ax / 2} size={13} warna="var(--m-a)">
+        a
+      </Tag>
+      <Tag x={xL} y={g.y0 + g.ax + g.bx / 2} size={13} warna="var(--m-b)">
+        b
+      </Tag>
+    </>
+  )
+}
+
+interface Baris {
+  teks: string
+  warna: string
+  size: number
+}
+
+/** Beberapa baris teks bertumpuk di panel kanan (tata letak lebar). */
+function Panel({ x, y, baris }: { x: number; y: number; baris: Baris[] }) {
+  const jarak = 34
+  const mulai = y - ((baris.length - 1) * jarak) / 2
+  return (
+    <>
+      {baris.map((br, i) => (
+        <Tag key={i} x={x} y={mulai + i * jarak} warna={br.warna} size={br.size}>
+          {br.teks}
+        </Tag>
+      ))}
+    </>
+  )
+}
+
+/**
+ * Dua titik yang dipegang anak. keNilai adalah kebalikan persis dari letaknya:
+ *   titik a: x = x0 + a·u            →  a = (x − x0) / u
+ *   titik b: x = y = x0 + (a + b)·u  →  b = rata-rata kedua jarak / u − a
+ * Seretan ditahan pada jumlahMuat supaya persegi tidak keluar bingkai.
+ */
+function TitikAB({
+  g,
+  a,
+  b,
+  titik,
+  sembunyiB = false,
+}: {
+  g: Geo
+  a: number
+  b: number
+  titik: TitikInfo
+  sembunyiB?: boolean
+}) {
+  return (
+    <>
+      <Pegangan
+        x={titik.A.x}
+        y={titik.A.y}
+        param="a"
+        arah="x"
+        utama={titik.utama === 'a'}
+        label={`a = ${fmt(a)}`}
+        sembunyi={!titik.tampakA}
+        keNilai={(pt) => Math.min((pt.x - g.x0) / g.u, g.jumlahMuat - b)}
+      />
+      <Pegangan
+        x={titik.B.x}
+        y={titik.B.y}
+        param="b"
+        arah="bebas"
+        utama={titik.utama === 'b'}
+        label={`b = ${fmt(b)}`}
+        sembunyi={sembunyiB}
+        keNilai={(pt) => Math.min((pt.x - g.x0 + (pt.y - g.y0)) / (2 * g.u) - a, g.jumlahMuat - a)}
+      />
+    </>
   )
 }
 
@@ -117,10 +475,16 @@ function Daerah({
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const { a, b } = nilaiAB(p)
-  const g = tata(a, b)
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const L = letak(sempit, 'bongkar')
+  const u = useSatuan(a + b, jumlahMaks(PARAM_BONGKAR), L.ruang, aktif === 'a' || aktif === 'b')
+  const g = tata(L, u, a, b)
 
   const persegi = fase(step, t, 0)
   const potong = fase(step, t, 1)
+  // Titik batas baru ada setelah sisi dipotong; pojok ada sejak perseginya muncul.
+  const titik = useTitikAB(g, L, a, b, aktif, potong > 0.5)
   // Keempat daerah muncul berurutan di dalam langkah 2.
   const d1 = step === 2 ? seg(t, 0, 0.3) : step > 2 ? 1 : 0
   const d2 = step === 2 ? seg(t, 0.25, 0.55) : step > 2 ? 1 : 0
@@ -133,8 +497,52 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const nyalaB = sorot === 'b' || sorot === 'b2'
   const nyalaAb = sorot === 'ab' || sorot === 'dua-ab' || gabungAb > 0.5 || sorotHilang > 0.4
 
+  const luas = (a + b) ** 2
+  // Keterangan tiap tahap: satu baris di HP, bertumpuk di panel pada layar lebar.
+  const keterangan: Baris[] =
+    step === 0
+      ? L.panelX
+        ? [
+            { teks: 'luas seluruh persegi', warna: 'var(--ink-2)', size: 16 },
+            { teks: `(${fmt(a)} + ${fmt(b)})² = ${fmt(luas)}`, warna: 'var(--ink)', size: 20 },
+          ]
+        : [{ teks: `luas seluruh persegi = (${fmt(a)} + ${fmt(b)})² = ${fmt(luas)}`, warna: 'var(--ink-2)', size: 17 }]
+      : step === 3
+        ? L.panelX
+          ? [
+              { teks: `a² = ${fmt(a * a)}`, warna: 'var(--m-a)', size: 17 },
+              { teks: `ab = ${fmt(a * b)}`, warna: 'var(--m-ab)', size: 17 },
+              { teks: `ab = ${fmt(a * b)}`, warna: 'var(--m-ab)', size: 17 },
+              { teks: `b² = ${fmt(b * b)}`, warna: 'var(--m-b)', size: 17 },
+              { teks: `jumlah = ${fmt(luas)}`, warna: 'var(--ink)', size: 19 },
+            ]
+          : [
+              {
+                teks: `${fmt(a * a)} + ${fmt(a * b)} + ${fmt(a * b)} + ${fmt(b * b)} = ${fmt(luas)}`,
+                warna: 'var(--ink-2)',
+                size: 17,
+              },
+            ]
+        : step === 4
+          ? L.panelX
+            ? [
+                { teks: 'dua ubin ab', warna: 'var(--m-ab)', size: 16 },
+                { teks: `2ab = ${fmt(2 * a * b)}`, warna: 'var(--m-ab)', size: 20 },
+              ]
+            : [{ teks: `dua ubin ab = 2ab = ${fmt(2 * a * b)}`, warna: 'var(--m-ab)', size: 17 }]
+          : step === 6
+            ? L.panelX
+              ? [
+                  { teks: 'kalau dua ubin ab', warna: 'var(--m-hi)', size: 16 },
+                  { teks: 'dilupakan...', warna: 'var(--m-hi)', size: 16 },
+                  { teks: `a² + b² = ${fmt(a * a + b * b)}`, warna: 'var(--ink)', size: 17 },
+                  { teks: `padahal (a+b)² = ${fmt(luas)}`, warna: 'var(--m-hi)', size: 17 },
+                ]
+              : [{ teks: 'kalau dua ubin ab dilupakan...', warna: 'var(--m-hi)', size: 17 }]
+            : []
+
   return (
-    <Svg w={W} h={H} maxH={450} label="Persegi bersisi a tambah b yang dibagi menjadi empat daerah">
+    <Svg w={L.w} h={L.h} maxH={460} label="Persegi bersisi a tambah b yang dibagi menjadi empat daerah">
       {/* persegi utuh */}
       <rect
         x={g.x0}
@@ -146,22 +554,23 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         strokeWidth={2.5}
         opacity={persegi}
       />
+      <Kisi g={g} n={a + b} opacity={persegi} />
 
       {/* keempat daerah */}
       {d1 > 0 && (
-        <Daerah kotak={g.a2} warna="var(--m-a)" label="a²" nilai={fmt(a * a)} opacity={d1} nyala={nyalaA} u={g.u} />
+        <Daerah kotak={g.a2} warna="var(--m-a)" label="a²" nilai={fmt(a * a)} opacity={d1} nyala={nyalaA} hindari={titik.hindari} />
       )}
       {d2 > 0 && (
-        <Daerah kotak={g.ab2} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} opacity={d2} nyala={nyalaAb} u={g.u} />
+        <Daerah kotak={g.ab2} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} opacity={d2} nyala={nyalaAb} hindari={titik.hindari} />
       )}
       {d3 > 0 && (
-        <Daerah kotak={g.ab1} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} opacity={d3} nyala={nyalaAb} u={g.u} />
+        <Daerah kotak={g.ab1} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} opacity={d3} nyala={nyalaAb} hindari={titik.hindari} />
       )}
       {d4 > 0 && (
-        <Daerah kotak={g.b2} warna="var(--m-b)" label="b²" nilai={fmt(b * b)} opacity={d4} nyala={nyalaB} u={g.u} />
+        <Daerah kotak={g.b2} warna="var(--m-b)" label="b²" nilai={fmt(b * b)} opacity={d4} nyala={nyalaB} hindari={titik.hindari} />
       )}
 
-      {/* garis potong */}
+      {/* garis potong dari titik batas */}
       {potong > 0 && (
         <g opacity={potong}>
           <line
@@ -185,93 +594,31 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         </g>
       )}
 
-      {/* ukuran sisi */}
+      {/* ukuran sisi atas dan kiri */}
       {persegi > 0.5 && (
         <>
-          {potong < 0.4 ? (
-            <>
-              <Dimensi
-                x1={g.x0}
-                y1={g.y0 + g.S + 22}
-                x2={g.x0 + g.S}
-                y2={g.y0 + g.S + 22}
-                label={`a + b = ${fmt(a + b)}`}
-                warna="var(--ink-2)"
-              />
-              <Dimensi
-                x1={g.x0 - 22}
-                y1={g.y0}
-                x2={g.x0 - 22}
-                y2={g.y0 + g.S}
-                label={`a + b`}
-                warna="var(--ink-2)"
-              />
-            </>
-          ) : (
-            <>
-              <Dimensi
-                x1={g.x0}
-                y1={g.y0 + g.S + 22}
-                x2={g.x0 + g.ax}
-                y2={g.y0 + g.S + 22}
-                label={`a = ${fmt(a)}`}
-                warna={nyalaA ? 'var(--m-a)' : 'var(--m-axis)'}
-              />
-              <Dimensi
-                x1={g.x0 + g.ax}
-                y1={g.y0 + g.S + 22}
-                x2={g.x0 + g.S}
-                y2={g.y0 + g.S + 22}
-                label={`b = ${fmt(b)}`}
-                warna={nyalaB ? 'var(--m-b)' : 'var(--m-axis)'}
-              />
-              <Dimensi
-                x1={g.x0 - 22}
-                y1={g.y0}
-                x2={g.x0 - 22}
-                y2={g.y0 + g.ax}
-                label={`a`}
-                warna={nyalaA ? 'var(--m-a)' : 'var(--m-axis)'}
-              />
-              <Dimensi
-                x1={g.x0 - 22}
-                y1={g.y0 + g.ax}
-                x2={g.x0 - 22}
-                y2={g.y0 + g.S}
-                label={`b`}
-                warna={nyalaB ? 'var(--m-b)' : 'var(--m-axis)'}
-              />
-            </>
-          )}
+          <PenggarisAtas g={g} a={a} b={b} gabung={potong < 0.4} aktif={aktif} labelA={titik.labelA} />
+          <PenggarisKiri g={g} gabung={potong < 0.4} />
         </>
       )}
 
       {/* keterangan tahap */}
-      {step === 0 && (
-        <Tag x={W / 2} y={40} warna="var(--ink-2)" size={17}>
-          {`luas seluruh persegi = (${fmt(a)} + ${fmt(b)})² = ${fmt((a + b) ** 2)}`}
-        </Tag>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={40} warna="var(--ink-2)" size={17}>
-          {`${fmt(a * a)} + ${fmt(a * b)} + ${fmt(a * b)} + ${fmt(b * b)} = ${fmt((a + b) ** 2)}`}
-        </Tag>
-      )}
-      {step === 4 && (
-        <Tag x={W / 2} y={40} warna="var(--m-ab)" size={17}>
-          {`dua ubin ab = 2ab = ${fmt(2 * a * b)}`}
-        </Tag>
-      )}
-      {step === 6 && (
-        <>
-          <Tag x={W / 2} y={36} warna="var(--m-hi)" size={17}>
-            {`kalau dua ubin ab dilupakan...`}
+      {L.panelX !== null ? (
+        <Panel x={L.panelX} y={220} baris={keterangan} />
+      ) : (
+        keterangan.map((br, i) => (
+          <Tag key={i} x={L.w / 2} y={L.judulY} warna={br.warna} size={br.size}>
+            {br.teks}
           </Tag>
-          <Tag x={W / 2} y={H - 22} warna="var(--m-hi)" size={17}>
-            {`a² + b² = ${fmt(a * a + b * b)}, padahal (a+b)² = ${fmt((a + b) ** 2)}`}
-          </Tag>
-        </>
+        ))
       )}
+      {step === 6 && L.panelX === null && (
+        <Tag x={L.w / 2} y={L.bawahY} warna="var(--m-hi)" size={17}>
+          {`a² + b² = ${fmt(a * a + b * b)}, padahal (a+b)² = ${fmt(luas)}`}
+        </Tag>
+      )}
+
+      <TitikAB g={g} a={a} b={b} titik={titik} sembunyiB={persegi <= 0.5} />
     </Svg>
   )
 }
@@ -280,48 +627,48 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
   const { a, b } = nilaiAB(p)
-  const g = tata(a, b)
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const L = letak(sempit, 'eksperimen')
+  const u = useSatuan(a + b, jumlahMaks(PARAM_EKSPERIMEN), L.ruang, aktif === 'a' || aktif === 'b')
+  const g = tata(L, u, a, b)
+  const titik = useTitikAB(g, L, a, b, aktif, true)
   const nyalaA = sorot === 'a' || sorot === 'a2'
   const nyalaB = sorot === 'b' || sorot === 'b2'
   const nyalaAb = sorot === 'ab' || sorot === 'dua-ab'
+  const judul = `(${fmt(a)} + ${fmt(b)})² = ${fmt((a + b) ** 2)}`
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Persegi bersisi a tambah b dengan a dan b yang bisa diubah">
-      <Daerah kotak={g.a2} warna="var(--m-a)" label="a²" nilai={fmt(a * a)} nyala={nyalaA} u={g.u} />
-      <Daerah kotak={g.ab2} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} nyala={nyalaAb} u={g.u} />
-      <Daerah kotak={g.ab1} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} nyala={nyalaAb} u={g.u} />
-      <Daerah kotak={g.b2} warna="var(--m-b)" label="b²" nilai={fmt(b * b)} nyala={nyalaB} u={g.u} />
+    <Svg w={L.w} h={L.h} maxH={460} label="Persegi bersisi a tambah b; batas a dan pojok b bisa diseret">
+      <Kisi g={g} n={a + b} />
+      <Daerah kotak={g.a2} warna="var(--m-a)" label="a²" nilai={fmt(a * a)} nyala={nyalaA} hindari={titik.hindari} />
+      <Daerah kotak={g.ab2} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} nyala={nyalaAb} hindari={titik.hindari} />
+      <Daerah kotak={g.ab1} warna="var(--m-ab)" label="ab" nilai={fmt(a * b)} nyala={nyalaAb} hindari={titik.hindari} />
+      <Daerah kotak={g.b2} warna="var(--m-b)" label="b²" nilai={fmt(b * b)} nyala={nyalaB} hindari={titik.hindari} />
 
-      <rect
-        x={g.x0}
-        y={g.y0}
-        width={g.S}
-        height={g.S}
-        fill="none"
-        stroke="var(--ink)"
-        strokeWidth={2.5}
-      />
+      <rect x={g.x0} y={g.y0} width={g.S} height={g.S} fill="none" stroke="var(--ink)" strokeWidth={2.5} />
 
-      <Dimensi
-        x1={g.x0}
-        y1={g.y0 + g.S + 22}
-        x2={g.x0 + g.ax}
-        y2={g.y0 + g.S + 22}
-        label={`a = ${fmt(a)}`}
-        warna={nyalaA ? 'var(--m-a)' : 'var(--m-axis)'}
-      />
-      <Dimensi
-        x1={g.x0 + g.ax}
-        y1={g.y0 + g.S + 22}
-        x2={g.x0 + g.S}
-        y2={g.y0 + g.S + 22}
-        label={`b = ${fmt(b)}`}
-        warna={nyalaB ? 'var(--m-b)' : 'var(--m-axis)'}
-      />
+      <PenggarisAtas g={g} a={a} b={b} aktif={aktif} labelA={titik.labelA} />
+      <PenggarisKiri g={g} />
 
-      <Tag x={W / 2} y={40} warna="var(--ink)" size={19}>
-        {`(${fmt(a)} + ${fmt(b)})² = ${fmt((a + b) ** 2)}`}
-      </Tag>
+      {L.panelX !== null ? (
+        <Panel
+          x={L.panelX}
+          y={200}
+          baris={[
+            { teks: judul, warna: 'var(--ink)', size: 21 },
+            { teks: `a² = ${fmt(a * a)}`, warna: 'var(--m-a)', size: 17 },
+            { teks: `ab + ab = ${fmt(2 * a * b)}`, warna: 'var(--m-ab)', size: 17 },
+            { teks: `b² = ${fmt(b * b)}`, warna: 'var(--m-b)', size: 17 },
+          ]}
+        />
+      ) : (
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--ink)" size={19}>
+          {judul}
+        </Tag>
+      )}
+
+      <TitikAB g={g} a={a} b={b} titik={titik} />
     </Svg>
   )
 }
@@ -365,10 +712,7 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [
-      { key: 'a', label: 'Nilai a', min: 1, max: 6, step: 1, awal: 3, bulat: true },
-      { key: 'b', label: 'Nilai b', min: 1, max: 6, step: 1, awal: 2, bulat: true },
-    ],
+    params: PARAM_BONGKAR,
     roles: { a: 'a', b: 'b', a2: 'a', b2: 'b', ab: 'ab', 'dua-ab': 'ab', jumlah: 'c' },
     arti: {
       a: 'Panjang bagian pertama pada sisi persegi.',
@@ -393,7 +737,7 @@ const konsep: Konsep = {
         id: 's1',
         judul: 'Tandai batas antara a dan b',
         narasi:
-          'Tandai titik batas itu pada sisi bawah dan sisi kiri, lalu tarik garis tegak dari sisi bawah dan garis mendatar dari sisi kiri. Persegi tadi kini terbagi menjadi empat daerah.',
+          'Tandai titik batas itu pada sisi atas dan sisi kiri, lalu tarik garis tegak dari sisi atas dan garis mendatar dari sisi kiri. Persegi tadi kini terbagi menjadi empat daerah.',
         durasi: 1500,
       },
       {
@@ -455,16 +799,21 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ubah a dan b, perhatikan bagian mana yang paling cepat membesar',
     ajakan:
-      'Perhatikan ubin ab. Kalau a dan b sama-sama dinaikkan dengan besar yang sama, luas dua ubin itu bertambah paling cepat. Selama yang satu kurang dari dua kali yang lain, dua ubin itu bersama-sama menjadi bagian terbesar. Tepat dua kali? Luasnya sama dengan persegi yang lebih besar.',
-    params: [
-      { key: 'a', label: 'Nilai a', min: 1, max: 7, step: 1, awal: 3, bulat: true },
-      { key: 'b', label: 'Nilai b', min: 1, max: 7, step: 1, awal: 2, bulat: true },
-    ],
+      'Seret titik ungu di tepi atas untuk mengubah a, lalu tarik pojok jingga untuk mengubah b. Kapan dua ubin ab menjadi bagian terbesar?',
+    params: PARAM_EKSPERIMEN,
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const { a, b } = nilaiAB(p)
+      return `([a:${fmt(a)}] + [b:${fmt(b)}])^2 = [a2:${fmt(a * a)}] + [dua-ab:${fmt(2 * a * b)}] + [b2:${fmt(b * b)}] = ${fmt((a + b) ** 2)}`
+    },
     temuan: (p) => {
       const { a, b } = nilaiAB(p)
       const kiri = (a + b) ** 2
       const salah = a * a + b * b
+      const duaAb = 2 * a * b
+      // 2ab > a² ⇔ 2b > a, jadi dua ubin ab terbesar selama yang satu kurang
+      // dari dua kali yang lain, dan tepat seluas persegi besar saat dua kali.
+      const besar = Math.max(a * a, b * b)
       return (
         <p>
           <strong>
@@ -472,6 +821,11 @@ const konsep: Konsep = {
           </strong>
           , sedangkan a² + b² hanya {fmt(salah)}. Selisihnya {fmt(kiri - salah)} — persis luas dua
           ubin ab ({fmt(a)} × {fmt(b)} × 2).{' '}
+          {duaAb > besar
+            ? 'Dua ubin ab bersama-sama menjadi bagian terbesar, karena yang satu kurang dari dua kali yang lain. '
+            : duaAb === besar
+              ? 'Yang satu tepat dua kali yang lain, jadi dua ubin ab persis seluas persegi yang lebih besar. '
+              : 'Yang satu lebih dari dua kali yang lain, jadi persegi yang lebih besar mengalahkan dua ubin ab. '}
           {a === b
             ? `Sekarang a dan b sama besar, jadi dua ubin ab itu menempati tepat setengah dari seluruh persegi.`
             : `Coba buat a dan b sama besar: dua ubin ab akan menempati setengah dari seluruh persegi.`}

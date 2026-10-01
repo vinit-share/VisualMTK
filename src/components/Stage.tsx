@@ -4,23 +4,105 @@
    nyaman di layar kecil, punya keterangan yang dibaca pembaca layar.
    ============================================================ */
 
-import type { ReactNode, SVGProps } from 'react'
+import {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type SVGProps,
+} from 'react'
+
+/* ---------------- Skala layar ---------------- */
+
+/** Berapa piksel layar untuk satu satuan koordinat SVG (0 bila belum diukur). */
+const SkalaCtx = createContext(0)
+
+export const useSkalaSvg = () => useContext(SkalaCtx)
+
+/**
+ * Ubah ukuran layar (px) menjadi satuan SVG pada skala saat ini, supaya
+ * huruf, garis, dan area sentuh tetap nyaman di layar kecil.
+ *   const u = useUkuranLayar(); <text fontSize={u(13)} />
+ */
+export function useUkuranLayar() {
+  const s = useSkalaSvg()
+  return (px: number, cadangan = px) => (s > 0 ? px / s : cadangan)
+}
+
+/** Huruf label tidak boleh tampil lebih kecil dari ini di layar. */
+const HURUF_MIN_PX = 11
+
+/* ---------------- Ukuran panggung ---------------- */
+
+/** Lebar isi panggung dalam piksel layar (0 bila belum diukur, mis. saat uji). */
+const LebarCtx = createContext(0)
+
+export const useLebarPanggung = () => useContext(LebarCtx)
+
+/** Untuk uji otomatis: paksa lebar panggung tertentu tanpa mengukur DOM. */
+export function LebarPanggungUji({ lebar, children }: { lebar: number; children: ReactNode }) {
+  return <LebarCtx.Provider value={lebar}>{children}</LebarCtx.Provider>
+}
+
+/**
+ * Ukuran layar → satuan SVG untuk komponen yang MENGGAMBAR <Svg> itu sendiri
+ * (di sana useUkuranLayar belum tahu skalanya, karena skala baru tersedia di
+ * dalam <Svg>). Beri lebar sistem koordinat yang akan dipakai.
+ */
+export function useUkuranLayarUntuk(w: number) {
+  const lebar = useLebarPanggung()
+  const skala = lebar > 0 && w > 0 ? lebar / w : 0
+  return (px: number, cadangan = px) => (skala > 0 ? px / skala : cadangan)
+}
+
+/** Batas lebar panggung yang dianggap sempit (HP tegak). */
+export const PANGGUNG_SEMPIT = 560
+
+/**
+ * true bila panggung sempit. Visual sebaiknya memakai sistem koordinat
+ * yang lebih tegak di sini (mis. 420 × 560), bukan mengecilkan tata letak
+ * lebar sampai huruf dan bentuknya tak terbaca.
+ */
+export function useSempit() {
+  const lebar = useLebarPanggung()
+  return lebar > 0 && lebar < PANGGUNG_SEMPIT
+}
 
 export function Stage({
   children,
   keterangan,
   polos = false,
   className = '',
+  aksi,
 }: {
   children: ReactNode
   /** kalimat yang menjelaskan apa yang sedang terlihat. */
   keterangan?: ReactNode
   polos?: boolean
   className?: string
+  /** tombol kecil yang melayang di pojok kanan atas (mis. layar penuh). */
+  aksi?: ReactNode
 }) {
+  const ref = useRef<HTMLElement>(null)
+  const [lebar, setLebar] = useState(0)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ukur = () => {
+      const g = getComputedStyle(el)
+      setLebar(Math.round(el.clientWidth - parseFloat(g.paddingLeft) - parseFloat(g.paddingRight)))
+    }
+    ukur()
+    const ro = new ResizeObserver(ukur)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
   return (
-    <figure className={`stage ${polos ? 'stage-plain' : ''} ${className}`}>
-      {children}
+    <figure ref={ref} className={`stage ${polos ? 'stage-plain' : ''} ${className}`}>
+      {aksi && <div className="stage-aksi">{aksi}</div>}
+      <LebarCtx.Provider value={lebar}>{children}</LebarCtx.Provider>
       {keterangan && (
         <figcaption className="stage-caption" aria-live="polite">
           {keterangan}
@@ -47,8 +129,27 @@ export interface SvgProps extends Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'wid
  * ukuran garis dan huruf konsisten di seluruh aplikasi.
  */
 export function Svg({ w, h, maxH, label, children, style, ...rest }: SvgProps) {
+  const ref = useRef<SVGSVGElement>(null)
+  const [skala, setSkala] = useState(0)
+
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ukur = () => {
+      const r = el.getBoundingClientRect()
+      // preserveAspectRatio "meet": skala = yang lebih kecil dari dua sumbu
+      const s = Math.min(r.width / w, r.height / h)
+      if (s > 0) setSkala((lama) => (Math.abs(lama - s) > 0.005 ? s : lama))
+    }
+    ukur()
+    const ro = new ResizeObserver(ukur)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [w, h])
+
   return (
     <svg
+      ref={ref}
       viewBox={`0 0 ${w} ${h}`}
       preserveAspectRatio="xMidYMid meet"
       role={label ? 'img' : 'presentation'}
@@ -56,7 +157,7 @@ export function Svg({ w, h, maxH, label, children, style, ...rest }: SvgProps) {
       style={{ maxHeight: maxH ? `${maxH}px` : undefined, ...style }}
       {...rest}
     >
-      {children}
+      <SkalaCtx.Provider value={skala}>{children}</SkalaCtx.Provider>
     </svg>
   )
 }
@@ -73,6 +174,7 @@ export function Tag({
   tebal = 800,
   padX = 7,
   opacity = 1,
+  layar = false,
 }: {
   x: number
   y: number
@@ -84,18 +186,25 @@ export function Tag({
   tebal?: number
   padX?: number
   opacity?: number
+  /** ukuran sudah dihitung dalam piksel layar; jangan diperbesar lagi. */
+  layar?: boolean
 }) {
-  const lebar = children.length * size * 0.58 + padX * 2
+  const skala = useSkalaSvg()
+  // Di layar kecil gambar diperkecil; label diperbesar secukupnya
+  // (paling banyak 1,6×) agar tidak pernah tampil lebih kecil dari 11 px.
+  const ukuran =
+    !layar && skala > 0 ? Math.max(size, Math.min(size * 1.6, HURUF_MIN_PX / skala)) : size
+  const lebar = children.length * ukuran * 0.58 + padX * (ukuran / size) * 2
   const rx = anchor === 'middle' ? x - lebar / 2 : anchor === 'end' ? x - lebar : x
   return (
     <g opacity={opacity} style={{ pointerEvents: 'none' }}>
       {latar && (
         <rect
           x={rx}
-          y={y - size * 0.82}
+          y={y - ukuran * 0.82}
           width={lebar}
-          height={size * 1.5}
-          rx={size * 0.6}
+          height={ukuran * 1.5}
+          rx={ukuran * 0.6}
           fill={latar}
           opacity={0.92}
         />
@@ -105,7 +214,7 @@ export function Tag({
         y={y}
         textAnchor={anchor}
         dominantBaseline="middle"
-        fontSize={size}
+        fontSize={ukuran}
         fontWeight={tebal}
         fill={warna}
       >

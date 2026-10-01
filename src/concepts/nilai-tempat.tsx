@@ -7,31 +7,69 @@
    mewakili batang, bukan kubus. Bilangan 25 dan 52 memakai
    angka yang sama persis, tetapi tumpukan baloknya jauh berbeda.
 
+   Interaksi langsung (lihat docs/PANDUAN-INTERAKSI.md):
+   - Banyak batang diubah dengan menyeret titik di ujung kanan
+     deretnya — deret memanjang ke kanan, satu petak per batang.
+   - Banyak kubus satuan diubah dengan menyeret titik di puncak
+     tumpukannya — tumpukan meninggi satu kubus per langkah, dan
+     tidak pernah sampai sepuluh (sepuluh sudah jadi batang).
+   - Selama kubus masih berserakan (langkah 0–1) belum ada batang
+     maupun tumpukan satuan, jadi yang dipegang adalah kubus
+     terakhir pada tumpukan berserakan: satu titik yang mengubah
+     JUMLAH kubus, lalu membaginya sendiri ke puluhan dan satuan.
+     Tumpukan berserakan disusun 12 per baris — bukan 10 — supaya
+     kelompok sepuluh belum terbaca sebelum langkah pengelompokan.
+
    Fondasi diam-diam untuk: bilangan besar, desimal, dan
    notasi ilmiah.
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, useSempit } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 680
-const H = 430
+/** Kubus per baris pada tumpukan berserakan. Sengaja bukan 10. */
+const KOLOM_ACAK = 12
+/** Simpangan acak tiap kubus pada tumpukan berserakan (satuan SVG). */
+const OLENG = 7
 
-const KUBUS = 22 // sisi satu kubus satuan
-const SELA = 3
+/**
+ * Ajakan pada pegangan utama. Pil ajakan dipusatkan pada titiknya, sedangkan
+ * semua pegangan utama di sini berdiri dekat tepi kiri gambar (nilai 0 =
+ * tumpukan kosong). Pada panggung tersempit — 560 px untuk tata letak lebar,
+ * 320 px untuk HP — pil hanya muat selama teksnya ≤ 10 huruf; kalimat yang
+ * lebih panjang terpotong tepi kiri viewBox. Arah geraknya sudah ditunjukkan
+ * panah kecil pada titiknya, dan begitu disentuh muncul label "n batang" /
+ * "n kubus", jadi ajakan cukup sependek ini.
+ */
+const AJAKAN = 'Seret aku'
 
-/** Satu batang puluhan: sepuluh kubus yang menyatu. */
-function Batang({ x, y, o = 1, nyala = false }: { x: number; y: number; o?: number; nyala?: boolean }) {
+/* ---------------- Balok ---------------- */
+
+/** Satu batang puluhan: sepuluh kubus satuan yang sudah menyatu. */
+function Batang({
+  x,
+  y,
+  sisi,
+  o = 1,
+  nyala = false,
+}: {
+  x: number
+  y: number
+  sisi: number
+  o?: number
+  nyala?: boolean
+}) {
   if (o <= 0.01) return null
   return (
     <g opacity={o}>
       <rect
         x={x}
-        y={y - 10 * KUBUS}
-        width={KUBUS}
-        height={10 * KUBUS}
+        y={y - 10 * sisi}
+        width={sisi}
+        height={10 * sisi}
         rx={3}
         fill="var(--m-a)"
         fillOpacity={nyala ? 0.7 : 0.45}
@@ -42,9 +80,9 @@ function Batang({ x, y, o = 1, nyala = false }: { x: number; y: number; o?: numb
         <line
           key={i}
           x1={x}
-          y1={y - (i + 1) * KUBUS}
-          x2={x + KUBUS}
-          y2={y - (i + 1) * KUBUS}
+          y1={y - (i + 1) * sisi}
+          x2={x + sisi}
+          y2={y - (i + 1) * sisi}
           stroke="var(--m-a)"
           strokeWidth={0.8}
           opacity={0.55}
@@ -57,12 +95,14 @@ function Batang({ x, y, o = 1, nyala = false }: { x: number; y: number; o?: numb
 function Kubus({
   x,
   y,
+  sisi,
   o = 1,
   nyala = false,
   warna = 'var(--m-b)',
 }: {
   x: number
   y: number
+  sisi: number
   o?: number
   nyala?: boolean
   warna?: string
@@ -71,9 +111,9 @@ function Kubus({
   return (
     <rect
       x={x}
-      y={y - KUBUS}
-      width={KUBUS}
-      height={KUBUS}
+      y={y - sisi}
+      width={sisi}
+      height={sisi}
       rx={3}
       fill={warna}
       fillOpacity={nyala ? 0.75 : 0.5}
@@ -84,20 +124,57 @@ function Kubus({
   )
 }
 
-/** Susunan kubus berserakan sebelum dikelompokkan. */
-function posisiAcak(i: number) {
-  // Pola tetap (bukan acak sungguhan) supaya gambar stabil di tiap render.
-  const a = (i * 2654435761) % 1000
-  const b = (i * 40503) % 1000
-  return { dx: (a / 1000) * 380, dy: (b / 1000) * 120 }
+/**
+ * Satu tumpukan lengkap: deret batang puluhan, lalu tumpukan kubus satuan
+ * di sebelah kanannya. Kubus satuan ditumpuk rapat seperti isi batang, jadi
+ * sembilan kubus persis SATU kubus lebih pendek daripada satu batang.
+ */
+function Tumpukan({
+  x,
+  dasar,
+  sisi,
+  sela,
+  jarak,
+  pul,
+  sat,
+  nyalaPul = false,
+  nyalaSat = false,
+}: {
+  x: number
+  dasar: number
+  sisi: number
+  sela: number
+  jarak: number
+  pul: number
+  sat: number
+  nyalaPul?: boolean
+  nyalaSat?: boolean
+}) {
+  const xs = x + pul * (sisi + sela) + jarak
+  return (
+    <>
+      {Array.from({ length: pul }, (_, k) => (
+        <Batang key={k} sisi={sisi} x={x + k * (sisi + sela)} y={dasar} nyala={nyalaPul} />
+      ))}
+      {Array.from({ length: sat }, (_, i) => (
+        <Kubus key={`s${i}`} sisi={sisi} x={xs} y={dasar - i * sisi} nyala={nyalaSat} />
+      ))}
+    </>
+  )
 }
 
-/* ---------------- Visual untuk animasi bongkar ---------------- */
+/* ---------------- Nilai ---------------- */
 
-/** Nilai penggeser bongkar yang sudah dibulatkan — dipakai gambar DAN teks langkah. */
+/** Nilai penggeser yang sudah dibulatkan — dipakai gambar DAN teks langkah. */
 function bacaBongkar(p: Record<string, number>) {
   const puluhan = clamp(Math.round(p.puluhan ?? 2), 0, 9)
   const satuan = clamp(Math.round(p.satuan ?? 5), 0, 9)
+  return { puluhan, satuan, bilangan: puluhan * 10 + satuan, kebalikan: satuan * 10 + puluhan }
+}
+
+function bacaEksperimen(p: Record<string, number>) {
+  const puluhan = clamp(Math.round(p.puluhan ?? 3), 0, 9)
+  const satuan = clamp(Math.round(p.satuan ?? 7), 0, 9)
   return { puluhan, satuan, bilangan: puluhan * 10 + satuan, kebalikan: satuan * 10 + puluhan }
 }
 
@@ -130,97 +207,274 @@ function bentukPanjang(p: Record<string, number>, tok: (id: string, teks: string
 const polos = (_id: string, teks: string) => teks
 const token = (id: string, teks: string) => `[${id}:${teks}]`
 
+/** Perkiraan lebar label Tag — rumus yang sama dengan komponen Tag. */
+const lebarTag = (teks: string, uk: number) => teks.length * uk * 0.58 + 14
+
+/* ---------------- Tata letak bongkar ---------------- */
+
+/**
+ * Dua sistem koordinat untuk hal yang sama. Angka-angka di bawah dipilih
+ * supaya pada SEMUA nilai penggeser tidak ada yang keluar bingkai dan kedua
+ * pegangan tetap berjauhan. Tiga batas yang paling mengikat:
+ * - jarak mendatar antara pegangan puluhan dan pegangan satuan
+ *   = jarak + kubus/2 + sela/2 → 70 (lebar) dan 65 (HP). Keduanya lebih
+ *   besar daripada u(48) pada panggung tersempit yang masuk akal
+ *   (58 pada panggung lebar 560 px, 63 pada HP 320 px).
+ * - Label nilai pegangan muncul di ATAS titiknya dan dipusatkan padanya.
+ *   Pada panggung tersempit label "0 batang"/"9 satuan" selebar ±99 (lebar)
+ *   dan ±105 (HP), jadi pegangan puluhan pada nilai 0 (kiri − sela/2) harus
+ *   ≥ 53 satuan dari tepi kiri, dan pegangan satuan pada 9 batang harus
+ *   ≥ 53 satuan dari tepi kanan. Itulah yang menentukan `kiri` dan ukuran
+ *   kubus di HP — bukan ukuran baloknya sendiri.
+ * - Tumpukan berserakan 12 kolom: lebar 11·(kubus+6)+kubus dan tinggi
+ *   8·(kubus+6)+kubus, digeser satu petak ke kanan (xAcak) supaya petak
+ *   "nol kubus" di sebelah kiri petak pertama masih di dalam bingkai.
+ */
+function letakBongkar(sempit: boolean) {
+  return sempit
+    ? {
+        w: 420,
+        h: 546,
+        maxH: 500,
+        kubus: 18,
+        sela: 8,
+        jarak: 52,
+        kiri: 62,
+        dasar: 420,
+        yBanding: 26,
+        ukBanding: 15,
+        xAngka: 208,
+        yAngka: 88,
+        ukAngka: 54,
+        dxAngka: 16,
+        yPeranA: 122,
+        yPeranB: 148,
+        yLabel: 454,
+        yLabelTurun: 482,
+        ukLabel: 15,
+        yRumus: 522,
+        ukRumus: 16,
+        pendek: true,
+      }
+    : {
+        w: 680,
+        h: 460,
+        maxH: 460,
+        kubus: 22,
+        sela: 10,
+        jarak: 54,
+        kiri: 70,
+        dasar: 330,
+        yBanding: 44,
+        ukBanding: 17,
+        xAngka: 550,
+        yAngka: 140,
+        ukAngka: 70,
+        dxAngka: 21,
+        yPeranA: 178,
+        yPeranB: 206,
+        yLabel: 364,
+        yLabelTurun: 392,
+        ukLabel: 16,
+        yRumus: 436,
+        ukRumus: 18,
+        pendek: false,
+      }
+}
+
+/* ---------------- Visual untuk animasi bongkar ---------------- */
+
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const { puluhan, satuan, bilangan, kebalikan } = bacaBongkar(p)
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const L = letakBongkar(sempit)
 
   const berserak = step === 0 ? 1 : step === 1 ? 1 - seg(t, 0.1, 0.9) : 0
   const menyatu = step >= 2 ? (step === 2 ? seg(t, 0.15, 0.9) : 1) : 0
   const tulis = fase(step, t, 3)
   const banding = fase(step, t, 4)
   const rumus = step >= 5
+  const tercecer = berserak >= 0.5
 
-  const nyalaPuluhan = sorot === 'puluhan'
-  const nyalaSatuan = sorot === 'satuan'
+  const nyalaPuluhan = sorot === 'puluhan' || aktif === 'puluhan'
+  const nyalaSatuan = sorot === 'satuan' || aktif === 'satuan'
 
-  const dasar = 330
-  const kiri = 90
+  const LB = L.kubus + L.sela
+  const PETAK = L.kubus + 6
+  const tinggiBatang = 10 * L.kubus
+  const xBatang = (k: number) => L.kiri + k * LB
+  const xSatuan = L.kiri + puluhan * LB + L.jarak
+  const xSatuanC = xSatuan + L.kubus / 2
 
-  // Posisi setiap kubus: dari berserakan menuju kelompok sepuluh.
-  const kubusRapi = (i: number) => {
+  /* Posisi tujuan tiap kubus: kelompok sepuluh berdiri tepat di tempat
+     batangnya nanti, sisanya menumpuk di kolom satuan. */
+  const rapi = (i: number) => {
     const kelompok = Math.floor(i / 10)
-    const dalam = i % 10
-    if (kelompok < puluhan) {
-      return { x: kiri + kelompok * (KUBUS + 14), y: dasar - dalam * KUBUS }
-    }
-    const sisaIdx = i - puluhan * 10
-    return {
-      x: kiri + puluhan * (KUBUS + 14) + 46 + (sisaIdx % 5) * (KUBUS + SELA),
-      y: dasar - Math.floor(sisaIdx / 5) * (KUBUS + SELA),
-    }
+    if (kelompok < puluhan) return { x: xBatang(kelompok), y: L.dasar - (i % 10) * L.kubus }
+    return { x: xSatuan, y: L.dasar - (i - puluhan * 10) * L.kubus }
   }
 
-  // Label kelompok. Bila batangnya sedikit (mis. 1 batang dan 3 kubus), kedua
-  // label berdempetan dan latar label satuan menutupi ujung "= 10" pada label
-  // puluhan. Dalam keadaan itu label satuan diturunkan satu baris.
+  /* Posisi berserakan: kisi 12 kolom dengan simpangan tetap (bukan acak
+     sungguhan) supaya gambarnya sama di setiap render. */
+  const xAcak = L.kiri + PETAK
+  const tercerai = (i: number) => ({
+    x: xAcak + (i % KOLOM_ACAK) * PETAK + (((i * 2654435761) % 1000) / 1000 - 0.5) * 2 * OLENG,
+    y: L.dasar - Math.floor(i / KOLOM_ACAK) * PETAK + (((i * 40503) % 1000) / 1000 - 0.5) * 2 * OLENG,
+  })
+
+  /* Petak kubus ke-n pada tumpukan berserakan, dan kebalikannya. n = 0
+     diletakkan satu petak di kiri petak pertama, supaya `keNilai` benar-benar
+     kebalikan dari rumus posisi ini untuk SEMUA nilai 0..99. */
+  const petak = (n: number) =>
+    n <= 0
+      ? { x: xAcak + L.kubus / 2 - PETAK, y: L.dasar - L.kubus / 2 }
+      : {
+          x: xAcak + ((n - 1) % KOLOM_ACAK) * PETAK + L.kubus / 2,
+          y: L.dasar - Math.floor((n - 1) / KOLOM_ACAK) * PETAK - L.kubus / 2,
+        }
+  /* Kolom boleh melewati kedua ujung baris satu petak: petak −1 adalah kubus
+     TERAKHIR baris di bawahnya dan petak ke-12 adalah kubus PERTAMA baris di
+     atasnya, jadi menyeret ke kanan terus tetap menambah kubus. Dengan batas
+     0..11 deretnya buntu di tiap kelipatan 12 (12, 24, 36, …): anak menarik
+     ke kanan dan angkanya diam.
+     Titik ini sengaja TIDAK ikut bergerak saat kubus terbang ke kelompoknya
+     di langkah 1 — ia menandai petak tempat pile ditinggalkan, dan kisi inilah
+     yang dibaca `dariPetak`. Titik yang ikut beranimasi membuat nilainya
+     hanyut sendiri (terukur sampai 2 kubus) selama jari menahannya. */
+  const dariPetak = (pt: { x: number; y: number }) => {
+    const kol = clamp(Math.round((pt.x - xAcak - L.kubus / 2) / PETAK), -1, KOLOM_ACAK)
+    const baris = clamp(Math.round((L.dasar - L.kubus / 2 - pt.y) / PETAK), 0, 8)
+    const n = clamp(baris * KOLOM_ACAK + kol + 1, 0, 99)
+    return { puluhan: Math.floor(n / 10), satuan: n % 10 }
+  }
+  const titikPetak = petak(bilangan)
+  /* Petak kubus BERIKUTNYA, supaya titiknya selalu punya benda untuk dituju —
+     termasuk saat belum ada satu kubus pun (tanpa ini langkah 0 pada nilai 0
+     hanya menampilkan satu titik melayang di kanvas kosong). */
+  const petakBerikut = petak(bilangan + 1)
+
+  // Label kelompok. Bila batangnya sedikit, kedua label berdempetan dan latar
+  // label satuan menutupi ujung label puluhan; dalam keadaan itu label satuan
+  // diturunkan satu baris.
   const labelPuluhan = `${fmt(puluhan)} batang puluhan = ${fmt(puluhan * 10)}`
   const labelSatuan = `${fmt(satuan)} satuan`
-  const lebarLabel = (s: string) => s.length * 16 * 0.58 + 14 // perkiraan yang sama dengan Tag
-  const xPuluhan = Math.max(kiri + (puluhan * (KUBUS + 14)) / 2 - 7, lebarLabel(labelPuluhan) / 2 + 2)
-  const xSatuan = kiri + puluhan * (KUBUS + 14) + 46 + (Math.min(satuan, 5) * (KUBUS + SELA)) / 2
-  const labelBerdempet =
-    puluhan > 0 && xSatuan - lebarLabel(labelSatuan) / 2 < xPuluhan + lebarLabel(labelPuluhan) / 2 + 2
-  const ySatuan = labelBerdempet ? dasar + 52 : dasar + 28
+  // Label yang ikut jari dibuat sependek mungkin: ia dipusatkan pada titiknya,
+  // dan pada nilai 0 titik itu berdiri di tepi kiri gambar.
+  const pegangPuluhan = `${fmt(puluhan)} batang`
+  const xPuluhan = Math.max(L.kiri + (puluhan * LB - L.sela) / 2, lebarTag(labelPuluhan, L.ukLabel) / 2 + 4)
+  const berdempet =
+    puluhan > 0 &&
+    xSatuanC - lebarTag(labelSatuan, L.ukLabel) / 2 < xPuluhan + lebarTag(labelPuluhan, L.ukLabel) / 2 + 4
+  const ySatuan = berdempet ? L.yLabelTurun : L.yLabel
+
+  const pesanBanding =
+    bilangan === kebalikan
+      ? L.pendek
+        ? `angka kembar: ditukar tetap ${fmt(bilangan)}`
+        : `kedua angkanya kembar: ditukar pun tetap ${fmt(bilangan)}`
+      : L.pendek
+        ? `angka sama, tetapi ${fmt(bilangan)} ≠ ${fmt(kebalikan)}`
+        : `angka yang sama, tetapi ${fmt(bilangan)} ≠ ${fmt(kebalikan)}`
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Kubus satuan yang dikelompokkan menjadi batang puluhan">
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Kubus satuan yang dikelompokkan menjadi batang puluhan"
+    >
+      {/* lantai tempat balok berdiri */}
+      {!tercecer && (
+        <line
+          x1={L.kiri - 16}
+          y1={L.dasar}
+          x2={xSatuan + L.kubus + 16}
+          y2={L.dasar}
+          stroke="var(--line)"
+          strokeWidth={1.5}
+        />
+      )}
+
+      {/* petak kosong: ke mana batang / kubus berikutnya akan masuk */}
+      {!tercecer && puluhan < 9 && (
+        <rect
+          x={xBatang(puluhan)}
+          y={L.dasar - tinggiBatang}
+          width={L.kubus}
+          height={tinggiBatang}
+          rx={3}
+          fill="none"
+          stroke="var(--m-a)"
+          strokeWidth={1.2}
+          strokeDasharray="5 5"
+          opacity={0.32}
+        />
+      )}
+      {!tercecer && satuan < 9 && (
+        <rect
+          x={xSatuan}
+          y={L.dasar - (satuan + 1) * L.kubus}
+          width={L.kubus}
+          height={L.kubus}
+          rx={3}
+          fill="none"
+          stroke="var(--m-b)"
+          strokeWidth={1.2}
+          strokeDasharray="5 5"
+          opacity={0.32}
+        />
+      )}
+      {tercecer && bilangan < 99 && (
+        <rect
+          x={petakBerikut.x - L.kubus / 2}
+          y={petakBerikut.y - L.kubus / 2}
+          width={L.kubus}
+          height={L.kubus}
+          rx={3}
+          fill="none"
+          stroke="var(--m-ab)"
+          strokeWidth={1.2}
+          strokeDasharray="5 5"
+          opacity={0.32 * berserak}
+        />
+      )}
+
       {/* kubus satuan, bergerak dari berserakan ke kelompok sepuluh */}
-      {menyatu < 0.95 &&
-        Array.from({ length: bilangan }, (_, i) => {
-          const rapi = kubusRapi(i)
-          const acak = posisiAcak(i)
-          const x = rapi.x + berserak * (acak.dx - (rapi.x - kiri))
-          const y = rapi.y - berserak * acak.dy
-          const dalamKelompok = i < puluhan * 10
-          return (
-            <Kubus
-              key={i}
-              x={x}
-              y={y}
-              o={dalamKelompok ? 1 - menyatu : 1}
-              warna={dalamKelompok && berserak < 0.5 ? 'var(--m-a)' : 'var(--m-b)'}
-              nyala={dalamKelompok ? nyalaPuluhan : nyalaSatuan}
-            />
-          )
-        })}
+      {Array.from({ length: bilangan }, (_, i) => {
+        const dalamKelompok = i < puluhan * 10
+        if (dalamKelompok && menyatu > 0.95) return null
+        const a = rapi(i)
+        const b = tercerai(i)
+        return (
+          <Kubus
+            key={i}
+            sisi={L.kubus}
+            x={a.x + berserak * (b.x - a.x)}
+            y={a.y + berserak * (b.y - a.y)}
+            o={dalamKelompok ? 1 - menyatu : 1}
+            warna={dalamKelompok && !tercecer ? 'var(--m-a)' : 'var(--m-b)'}
+            nyala={tercecer ? nyalaPuluhan || nyalaSatuan : dalamKelompok ? nyalaPuluhan : nyalaSatuan}
+          />
+        )
+      })}
 
       {/* batang puluhan yang terbentuk */}
       {menyatu > 0.05 &&
         Array.from({ length: puluhan }, (_, k) => (
-          <Batang key={k} x={kiri + k * (KUBUS + 14)} y={dasar} o={menyatu} nyala={nyalaPuluhan} />
+          <Batang key={k} sisi={L.kubus} x={xBatang(k)} y={L.dasar} o={menyatu} nyala={nyalaPuluhan} />
         ))}
 
-      {/* sisa kubus satuan setelah menyatu */}
-      {menyatu > 0.05 &&
-        Array.from({ length: satuan }, (_, i) => (
-          <Kubus
-            key={`s${i}`}
-            x={kiri + puluhan * (KUBUS + 14) + 46 + (i % 5) * (KUBUS + SELA)}
-            y={dasar - Math.floor(i / 5) * (KUBUS + SELA)}
-            o={menyatu}
-            nyala={nyalaSatuan}
-          />
-        ))}
-
-      {/* label kelompok */}
+      {/* label kelompok; disembunyikan saat pegangannya menampilkan label yang sama */}
       {menyatu > 0.6 && (
         <>
-          {puluhan > 0 && (
-            <Tag x={xPuluhan} y={dasar + 28} warna="var(--m-a)" size={16}>
+          {puluhan > 0 && aktif !== 'puluhan' && (
+            <Tag x={xPuluhan} y={L.yLabel} warna="var(--m-a)" size={L.ukLabel}>
               {labelPuluhan}
             </Tag>
           )}
-          {satuan > 0 && (
-            <Tag x={xSatuan} y={ySatuan} warna="var(--m-b)" size={16}>
+          {satuan > 0 && aktif !== 'satuan' && (
+            <Tag x={xSatuanC} y={ySatuan} warna="var(--m-b)" size={L.ukLabel}>
               {labelSatuan}
             </Tag>
           )}
@@ -231,10 +485,10 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {tulis > 0.1 && (
         <g opacity={tulis}>
           <text
-            x={W - 130}
-            y={140}
+            x={L.xAngka}
+            y={L.yAngka}
             textAnchor="middle"
-            fontSize={70}
+            fontSize={L.ukAngka}
             fontWeight={800}
             fontFamily="var(--font-math)"
             fill="var(--ink)"
@@ -242,10 +496,12 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             <tspan fill={nyalaPuluhan ? 'var(--m-hi)' : 'var(--m-a)'}>{fmt(puluhan)}</tspan>
             <tspan fill={nyalaSatuan ? 'var(--m-hi)' : 'var(--m-b)'}>{fmt(satuan)}</tspan>
           </text>
-          <Tag x={W - 152} y={172} warna="var(--m-a)" size={13}>
+          {/* dua baris: "puluhan" dan "satuan" tidak muat berdampingan di
+              bawah dua angka yang cuma selebar ±42 satuan */}
+          <Tag x={L.xAngka - L.dxAngka} y={L.yPeranA} warna="var(--m-a)" size={13}>
             puluhan
           </Tag>
-          <Tag x={W - 108} y={172} warna="var(--m-b)" size={13}>
+          <Tag x={L.xAngka + L.dxAngka} y={L.yPeranB} warna="var(--m-b)" size={13}>
             satuan
           </Tag>
         </g>
@@ -254,86 +510,285 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* perbandingan dengan bilangan kebalikannya */}
       {banding > 0.2 && (
         <g opacity={banding}>
-          <Tag x={W / 2} y={44} warna="var(--m-hi)" size={17}>
-            {bilangan === kebalikan
-              ? `kedua angkanya kembar: ditukar pun tetap ${fmt(bilangan)}`
-              : `angka yang sama, tetapi ${fmt(bilangan)} ≠ ${fmt(kebalikan)}`}
+          <Tag x={L.w / 2} y={L.yBanding} warna="var(--m-hi)" size={L.ukBanding}>
+            {pesanBanding}
           </Tag>
         </g>
       )}
 
       {rumus && (
-        <Tag x={W / 2} y={H - 22} warna="var(--m-ab)" size={18}>
+        <Tag x={L.w / 2} y={L.yRumus} warna="var(--m-ab)" size={L.ukRumus}>
           {bentukPanjang(p, polos)}
         </Tag>
+      )}
+
+      {/* Selama kubus berserakan belum ada batang maupun kolom satuan: yang
+          dipegang adalah kubus terakhir, dan satu titik itu mengurus kedua
+          angkanya. Setelah tersusun, tiap kelompok punya pegangannya sendiri. */}
+      {tercecer ? (
+        <Pegangan
+          x={titikPetak.x}
+          y={titikPetak.y}
+          param={['satuan', 'puluhan']}
+          keNilai={dariPetak}
+          arah="bebas"
+          utama
+          warna="var(--m-ab)"
+          label={`${fmt(bilangan)} kubus`}
+          ajakan={AJAKAN}
+        />
+      ) : (
+        <>
+          <Pegangan
+            x={L.kiri + puluhan * LB - L.sela / 2}
+            y={L.dasar - tinggiBatang / 2}
+            param="puluhan"
+            keNilai={(pt) => (pt.x - L.kiri + L.sela / 2) / LB}
+            arah="x"
+            // Pil ajakan berhenti tampil begitu anak memegang pegangan lain:
+            // kalau tidak, ia menutupi label "n satuan" yang sedang dibaca.
+            utama={aktif === null}
+            label={pegangPuluhan}
+            ajakan={AJAKAN}
+          />
+          <Pegangan
+            x={xSatuanC}
+            y={L.dasar - satuan * L.kubus}
+            param="satuan"
+            keNilai={(pt) => (L.dasar - pt.y) / L.kubus}
+            arah="y"
+            label={labelSatuan}
+          />
+        </>
       )}
     </Svg>
   )
 }
 
+/* ---------------- Tata letak eksperimen ---------------- */
+
+/**
+ * Dua tumpukan dibandingkan. Di layar lebar keduanya berdampingan; di HP satu
+ * tumpukan penuh saja sudah selebar 299 dari 420 satuan, jadi keduanya
+ * bertumpuk atas-bawah dengan tepi kiri yang sama — panjang deretnya tetap
+ * mudah dibandingkan seperti dua batang diagram.
+ * Hanya tumpukan pertama yang bisa dipegang; tumpukan kedua adalah akibatnya,
+ * bukan sesuatu yang diatur sendiri. Karena itu hanya tumpukan pertama yang
+ * perlu ruang untuk label pegangan (±53 satuan di kiri dan kanannya).
+ */
+function letakEksperimen(sempit: boolean) {
+  return sempit
+    ? {
+        w: 420,
+        h: 546,
+        maxH: 500,
+        kubus: 18,
+        sela: 7,
+        jarak: 56,
+        tegak: true,
+        ax: 62,
+        aDasar: 244,
+        bx: 62,
+        bDasar: 496,
+        pemisah: 300,
+        yBarisA: 286,
+        yBarisB: 530,
+        ukBaris: 15,
+        nomorAtas: false,
+        yNomor: 0,
+        xNomorA: 0,
+        xNomorB: 0,
+        ukNomor: 22,
+      }
+    : {
+        w: 680,
+        h: 388,
+        maxH: 440,
+        kubus: 16,
+        sela: 7,
+        jarak: 52,
+        tegak: false,
+        ax: 58,
+        aDasar: 300,
+        bx: 382,
+        bDasar: 300,
+        pemisah: 360,
+        yBarisA: 340,
+        yBarisB: 340,
+        ukBaris: 15,
+        nomorAtas: true,
+        yNomor: 58,
+        xNomorA: 195,
+        xNomorB: 520,
+        ukNomor: 26,
+      }
+}
+
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const puluhan = clamp(Math.round(p.puluhan ?? 3), 0, 9)
-  const satuan = clamp(Math.round(p.satuan ?? 7), 0, 9)
-  const bilangan = puluhan * 10 + satuan
-  const kebalikan = satuan * 10 + puluhan
+  const { puluhan, satuan, bilangan, kebalikan } = bacaEksperimen(p)
+  const sempit = useSempit()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const L = letakEksperimen(sempit)
 
-  const dasar = 300
-  const nyalaPuluhan = sorot === 'puluhan'
-  const nyalaSatuan = sorot === 'satuan'
+  const nyalaPuluhan = sorot === 'puluhan' || aktif === 'puluhan'
+  const nyalaSatuan = sorot === 'satuan' || aktif === 'satuan'
 
-  const kiriX = 60
-  const kananX = W / 2 + 30
-  // Lebar satu tumpukan: batang berjajar, lalu kubus lima per baris.
-  const lebar = (pul: number, sat: number) =>
-    sat > 0
-      ? pul * (KUBUS + 8) + 26 + (Math.min(sat, 5) - 1) * (KUBUS + SELA) + KUBUS
-      : Math.max(pul * (KUBUS + 8) - 8, 0)
-  // Tumpukan besar (mis. 99) tidak muat di separuh panggung: kubusnya akan
-  // terpotong atau menyeberang ke sisi lain. Keduanya diperkecil dengan skala
-  // yang SAMA agar batang kiri dan kanan tetap sebanding ukurannya.
-  const skala = Math.min(
-    1,
-    (W / 2 - 10 - kiriX) / Math.max(lebar(puluhan, satuan), 1),
-    (W - 2 - kananX) / Math.max(lebar(satuan, puluhan), 1),
-  )
+  const LB = L.kubus + L.sela
+  const tinggiBatang = 10 * L.kubus
+  const xSatuanC = L.ax + puluhan * LB + L.jarak + L.kubus / 2
 
-  const gambar = (px: number, pul: number, sat: number, warnaKuat: boolean) => (
-    <g transform={`translate(${px} ${dasar}) scale(${skala}) translate(${-px} ${-dasar})`}>
-      {Array.from({ length: pul }, (_, k) => (
-        <Batang key={k} x={px + k * (KUBUS + 8)} y={dasar} nyala={warnaKuat && nyalaPuluhan} />
-      ))}
-      {Array.from({ length: sat }, (_, i) => (
-        <Kubus
-          key={`s${i}`}
-          x={px + pul * (KUBUS + 8) + 26 + (i % 5) * (KUBUS + SELA)}
-          y={dasar - Math.floor(i / 5) * (KUBUS + SELA)}
-          nyala={warnaKuat && nyalaSatuan}
-        />
-      ))}
-    </g>
-  )
+  const barisA = `${fmt(bilangan)} = ${fmt(puluhan)} × 10 + ${fmt(satuan)} × 1`
+  const barisB = `${fmt(kebalikan)} = ${fmt(satuan)} × 10 + ${fmt(puluhan)} × 1`
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Perbandingan tumpukan balok untuk dua bilangan dengan angka yang sama">
-      {gambar(kiriX, puluhan, satuan, true)}
-      {gambar(kananX, satuan, puluhan, false)}
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Dua tumpukan balok untuk dua bilangan yang memakai angka yang sama"
+    >
+      {/* lantai masing-masing tumpukan */}
+      <line
+        x1={L.ax - 14}
+        y1={L.aDasar}
+        x2={L.ax + 9 * LB + L.jarak + L.kubus + 14}
+        y2={L.aDasar}
+        stroke="var(--line)"
+        strokeWidth={1.5}
+      />
+      <line
+        x1={L.bx - 14}
+        y1={L.bDasar}
+        x2={L.bx + 9 * LB + L.jarak + L.kubus + 14}
+        y2={L.bDasar}
+        stroke="var(--line)"
+        strokeWidth={1.5}
+      />
 
-      <line x1={W / 2} y1={70} x2={W / 2} y2={dasar + 40} stroke="var(--line)" strokeWidth={1.5} />
+      {/* pemisah antara bilanganmu dan kebalikannya */}
+      {L.tegak ? (
+        <line
+          x1={30}
+          y1={L.pemisah}
+          x2={L.w - 30}
+          y2={L.pemisah}
+          stroke="var(--line)"
+          strokeWidth={1.5}
+        />
+      ) : (
+        <line
+          x1={L.pemisah}
+          y1={40}
+          x2={L.pemisah}
+          y2={L.aDasar + 20}
+          stroke="var(--line)"
+          strokeWidth={1.5}
+        />
+      )}
 
-      <Tag x={200} y={56} warna="var(--ink)" size={26}>
-        {fmt(bilangan)}
+      {/* petak kosong pada tumpukan yang bisa dipegang */}
+      {puluhan < 9 && (
+        <rect
+          x={L.ax + puluhan * LB}
+          y={L.aDasar - tinggiBatang}
+          width={L.kubus}
+          height={tinggiBatang}
+          rx={3}
+          fill="none"
+          stroke="var(--m-a)"
+          strokeWidth={1.2}
+          strokeDasharray="5 5"
+          opacity={0.32}
+        />
+      )}
+      {satuan < 9 && (
+        <rect
+          x={L.ax + puluhan * LB + L.jarak}
+          y={L.aDasar - (satuan + 1) * L.kubus}
+          width={L.kubus}
+          height={L.kubus}
+          rx={3}
+          fill="none"
+          stroke="var(--m-b)"
+          strokeWidth={1.2}
+          strokeDasharray="5 5"
+          opacity={0.32}
+        />
+      )}
+
+      <Tumpukan
+        x={L.ax}
+        dasar={L.aDasar}
+        sisi={L.kubus}
+        sela={L.sela}
+        jarak={L.jarak}
+        pul={puluhan}
+        sat={satuan}
+        nyalaPul={nyalaPuluhan}
+        nyalaSat={nyalaSatuan}
+      />
+      <Tumpukan
+        x={L.bx}
+        dasar={L.bDasar}
+        sisi={L.kubus}
+        sela={L.sela}
+        jarak={L.jarak}
+        pul={satuan}
+        sat={puluhan}
+      />
+
+      {L.nomorAtas && (
+        <>
+          <Tag x={L.xNomorA} y={L.yNomor} warna="var(--ink)" size={L.ukNomor}>
+            {fmt(bilangan)}
+          </Tag>
+          <Tag x={L.xNomorB} y={L.yNomor} warna="var(--ink-2)" size={L.ukNomor}>
+            {fmt(kebalikan)}
+          </Tag>
+        </>
+      )}
+
+      <Tag
+        x={L.nomorAtas ? L.xNomorA : L.w / 2}
+        y={L.yBarisA}
+        warna="var(--m-ab)"
+        size={L.ukBaris}
+      >
+        {barisA}
       </Tag>
-      <Tag x={W / 2 + 170} y={56} warna="var(--ink-2)" size={26}>
-        {fmt(kebalikan)}
+      <Tag
+        x={L.nomorAtas ? L.xNomorB : L.w / 2}
+        y={L.yBarisB}
+        warna="var(--ink-2)"
+        size={L.ukBaris}
+      >
+        {barisB}
       </Tag>
-      <Tag x={200} y={dasar + 40} warna="var(--m-a)" size={15}>
-        {`${fmt(puluhan)} × 10 + ${fmt(satuan)} × 1`}
-      </Tag>
-      <Tag x={W / 2 + 170} y={dasar + 40} warna="var(--ink-2)" size={15}>
-        {`${fmt(satuan)} × 10 + ${fmt(puluhan)} × 1`}
-      </Tag>
+
+      {/* Deret batang dipanjangkan dari ujung kanannya, tumpukan kubus
+          ditinggikan dari puncaknya. Keduanya berjarak mendatar tetap
+          (jarak + kubus/2 + sela/2), jadi tidak pernah berdempet. */}
+      <Pegangan
+        x={L.ax + puluhan * LB - L.sela / 2}
+        y={L.aDasar - tinggiBatang / 2}
+        param="puluhan"
+        keNilai={(pt) => (pt.x - L.ax + L.sela / 2) / LB}
+        arah="x"
+        // Lihat catatan yang sama di VisualBongkar.
+        utama={aktif === null}
+        label={`${fmt(puluhan)} batang`}
+        ajakan={AJAKAN}
+      />
+      <Pegangan
+        x={xSatuanC}
+        y={L.aDasar - satuan * L.kubus}
+        param="satuan"
+        keNilai={(pt) => (L.aDasar - pt.y) / L.kubus}
+        arah="y"
+        label={`${fmt(satuan)} satuan`}
+      />
     </Svg>
   )
 }
@@ -379,8 +834,30 @@ const konsep: Konsep = {
   bongkar: {
     Visual: VisualBongkar,
     params: [
-      { key: 'puluhan', label: 'Angka puluhan', min: 0, max: 9, step: 1, awal: 2, bulat: true },
-      { key: 'satuan', label: 'Angka satuan', min: 0, max: 9, step: 1, awal: 5, bulat: true },
+      {
+        key: 'puluhan',
+        label: 'Angka puluhan',
+        min: 0,
+        max: 9,
+        step: 1,
+        awal: 2,
+        bulat: true,
+        simbol: 'puluhan',
+        peran: 'a',
+        bagian: 'puluhan',
+      },
+      {
+        key: 'satuan',
+        label: 'Angka satuan',
+        min: 0,
+        max: 9,
+        step: 1,
+        awal: 5,
+        bulat: true,
+        simbol: 'satuan',
+        peran: 'b',
+        bagian: 'satuan',
+      },
     ],
     roles: { puluhan: 'a', satuan: 'b', bilangan: 'ab' },
     arti: {
@@ -399,7 +876,9 @@ const konsep: Konsep = {
         narasi: (p) => {
           const { bilangan } = bacaBongkar(p)
           if (bilangan === 0) {
-            return 'Kedua angkanya 0, jadi belum ada satu kubus pun di sini. Geser salah satu angka supaya kubus kecil bermunculan — satu kubus bernilai satu.'
+            // Belum ada tumpukan yang bisa disebut, jadi yang ditunjuk adalah
+            // titiknya sendiri dan petak putus-putus di sebelah kanannya.
+            return 'Belum ada satu kubus pun di sini. Tarik titiknya ke kanan, ke petak putus-putus itu, supaya kubus kecil bermunculan — satu kubus bernilai satu.'
           }
           if (bilangan < 10) {
             return `Ada ${fmt(bilangan)} kubus kecil di sini, satu kubus bernilai satu. Sedikit begini masih mudah dihitung, tetapi kalau kubusnya puluhan, menghitung satu per satu melelahkan dan gampang keliru.`
@@ -423,7 +902,7 @@ const konsep: Konsep = {
           const sisa =
             satuan === 0
               ? 'Semuanya pas, tidak ada kubus yang tersisa.'
-              : `Sisa ${fmt(satuan)} kubus yang tidak cukup sepuluh dibiarkan berdiri sendiri.`
+              : `Sisa ${fmt(satuan)} kubus yang tidak cukup sepuluh berdiri sendiri di kolom kanan.`
           return `Kubus dikumpulkan sepuluh demi sepuluh, dan terbentuk ${fmt(puluhan)} kelompok. ${sisa}`
         },
         durasi: 2400,
@@ -487,17 +966,40 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Susun bilanganmu sendiri',
     ajakan:
-      'Geser kedua angka. Kiri adalah bilanganmu, kanan adalah bilangan dengan angka yang sama tetapi bertukar tempat.',
+      'Seret titik ungu di ujung deret batang, dan titik jingga di puncak tumpukan kubus. Tumpukan satunya memakai angka yang sama, hanya bertukar tempat.',
     params: [
-      { key: 'puluhan', label: 'Angka puluhan', min: 0, max: 9, step: 1, awal: 3, bulat: true },
-      { key: 'satuan', label: 'Angka satuan', min: 0, max: 9, step: 1, awal: 7, bulat: true },
+      {
+        key: 'puluhan',
+        label: 'Angka puluhan',
+        min: 0,
+        max: 9,
+        step: 1,
+        awal: 3,
+        bulat: true,
+        simbol: 'puluhan',
+        peran: 'a',
+        bagian: 'puluhan',
+      },
+      {
+        key: 'satuan',
+        label: 'Angka satuan',
+        min: 0,
+        max: 9,
+        step: 1,
+        awal: 7,
+        bulat: true,
+        simbol: 'satuan',
+        peran: 'b',
+        bagian: 'satuan',
+      },
     ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const { puluhan, satuan, bilangan } = bacaEksperimen(p)
+      return `[bilangan:${fmt(bilangan)}] = [puluhan:${fmt(puluhan)}] × 10 + [satuan:${fmt(satuan)}] × 1`
+    },
     temuan: (p) => {
-      const pul = clamp(Math.round(p.puluhan ?? 3), 0, 9)
-      const sat = clamp(Math.round(p.satuan ?? 7), 0, 9)
-      const n = pul * 10 + sat
-      const k = sat * 10 + pul
+      const { puluhan: pul, satuan: sat, bilangan: n, kebalikan: k } = bacaEksperimen(p)
       const beda = Math.abs(n - k)
       return (
         <p>
@@ -506,8 +1008,8 @@ const konsep: Konsep = {
             ? 'Karena kedua angkanya sama, menukar tempat tidak mengubah apa pun — inilah satu-satunya keadaan ketika hal itu terjadi.'
             : `Kalau kedua angkanya ditukar tempat, bilangannya menjadi ${fmt(k)}, berselisih ${fmt(beda)}. Selisih itu selalu 9 dikali beda kedua angkanya: 9 × ${fmt(Math.abs(pul - sat))} = ${fmt(beda)}.`}{' '}
           {sat === 0
-            ? 'Angka satuannya 0, jadi tidak ada kubus lepas: bilangannya kelipatan sepuluh.'
-            : 'Coba buat angka satuannya 0: bilangannya menjadi kelipatan sepuluh.'}
+            ? 'Tumpukan kubusnya kosong, jadi tidak ada kubus lepas: bilangannya kelipatan sepuluh.'
+            : 'Coba turunkan tumpukan kubus sampai habis: bilangannya menjadi kelipatan sepuluh.'}
         </p>
       )
     },

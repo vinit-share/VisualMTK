@@ -3,6 +3,10 @@
 Dokumen ini adalah kontrak untuk siapa pun (manusia atau agen) yang menambah
 konsep baru. Ikuti persis. Acuan kualitas: `src/concepts/segitiga-setengah.tsx`.
 
+Cara anak mengubah angka di dalam gambar — pegangan seret, rel, tata letak HP,
+layar penuh — diatur di `docs/PANDUAN-INTERAKSI.md`. Acuan interaksinya:
+`src/concepts/lingkaran-luas.tsx`.
+
 ## Aturan yang tidak bisa ditawar
 
 1. **Akurasi matematika di atas keindahan visual.** Jangan pernah membuat animasi

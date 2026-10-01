@@ -319,7 +319,6 @@
 @media (min-width: 620px) {
   .params { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
 }
-.slider-unit { font-size: var(--t-xs); color: var(--ink-soft); font-family: var(--font-ui); }
 
 .temuan {
   display: flex;
@@ -530,3 +529,235 @@
 
 /* Rangka pemuatan untuk daftar topik kelas */
 .rangka-topik { height: 8.5rem; }
+
+/* ---------------- Interaksi langsung ---------------- */
+/* Titik seret di dalam gambar. Area sentuhnya digambar sebagai lingkaran
+   transparan yang jauh lebih besar dari titiknya (lihat Pegangan). */
+.pegangan { cursor: grab; -webkit-tap-highlight-color: transparent; }
+.pegangan:focus { outline: none; }
+.pegangan[data-pegang] { cursor: grabbing; }
+.pegangan-denyut {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fx-denyut 1.7s var(--ease-out) infinite;
+  pointer-events: none;
+}
+@keyframes fx-denyut {
+  0% { transform: scale(1); opacity: 0.85; }
+  80%, 100% { transform: scale(3.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pegangan-denyut { animation: none; transform: scale(1.9); opacity: 0.45; }
+}
+
+/* Ruang visual: panggung + angka + penjelasan singkatnya. */
+.ruang { position: relative; display: flex; flex-direction: column; gap: var(--s-3); }
+.stage-aksi {
+  position: absolute;
+  top: var(--s-2);
+  right: var(--s-2);
+  z-index: 3;
+  display: flex;
+  gap: var(--s-2);
+}
+.tombol-fokus {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--ink-2);
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-1);
+  transition: color var(--d-2) var(--ease-out), border-color var(--d-2) var(--ease-out);
+}
+.tombol-fokus:hover { color: var(--brand-ink); border-color: var(--brand); }
+
+/* Layar penuh: panggung memakai hampir seluruh layar, kontrol tetap ringkas. */
+.ruang[data-fokus='true'] {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  height: 100dvh;
+  gap: var(--s-2);
+  overflow: hidden;
+  background: var(--paper);
+  padding:
+    max(var(--s-3), env(safe-area-inset-top))
+    max(var(--s-3), env(safe-area-inset-right))
+    max(var(--s-3), env(safe-area-inset-bottom))
+    max(var(--s-3), env(safe-area-inset-left));
+  animation: fx-masuk var(--d-2) var(--ease-out);
+}
+.ruang[data-fokus='true'] > .stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-2);
+}
+.ruang[data-fokus='true'] > .stage svg { height: 100%; max-height: none !important; }
+.ruang[data-fokus='true'] .temuan {
+  flex: none;
+  margin-top: 0;
+  max-height: 18dvh;
+  overflow: auto;
+  font-size: var(--t-sm);
+}
+.ruang[data-fokus='true'] .bongkar-narasi { min-height: 0; }
+.ruang[data-fokus='true'] .bongkar-narasi p { font-size: var(--t-sm); }
+.ruang[data-fokus='true'] .bongkar-kontrol { flex: none; }
+.ruang-kepala {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: 2.75rem;
+}
+.ruang-judul { font-size: var(--t-md); line-height: 1.25; }
+
+/* Kontrol angka ringkas: "− r = 5 +". */
+.bilah-angka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+}
+.chip-angka {
+  --cw: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--d-2) var(--ease-out), box-shadow var(--d-2) var(--ease-out);
+}
+.chip-angka[data-aktif] {
+  border-color: var(--cw);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cw) 24%, transparent);
+}
+.chip-angka-tombol {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--r-pill);
+  color: var(--cw);
+  background: color-mix(in oklab, var(--cw) 10%, transparent);
+  font-size: 1.15rem;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.chip-angka-tombol:hover:not(:disabled) { background: color-mix(in oklab, var(--cw) 20%, transparent); }
+.chip-angka-tombol:disabled { opacity: 0.32; cursor: default; }
+.chip-angka-nilai {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  min-height: 2.75rem;
+  padding: 0 0.55rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font-math);
+  font-size: var(--t-md);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.chip-angka-nilai:hover { background: var(--surface-2); }
+.chip-angka-simbol {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: var(--fw-bold);
+  color: var(--cw);
+}
+.chip-angka-simbol[data-lambang='true'] {
+  font-family: var(--font-math);
+  font-size: var(--t-md);
+  font-style: italic;
+}
+.chip-angka-sama { color: var(--ink-soft); }
+.chip-angka-nilai b { font-weight: var(--fw-black); min-width: 2ch; text-align: center; }
+.chip-angka-satuan { font-family: var(--font-ui); font-size: var(--t-xs); color: var(--ink-soft); }
+.chip-angka-input {
+  width: 5.5rem;
+  height: 2.75rem;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  text-align: center;
+  font-family: var(--font-math);
+  font-size: var(--t-md);
+  color: var(--ink);
+}
+.bilah-angka-semua {
+  min-height: 2.75rem;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  font-size: var(--t-xs);
+  font-weight: var(--fw-bold);
+  color: var(--ink-2);
+  background: var(--surface-2);
+}
+
+/* Kartu yang berisi visual: di layar sempit panggungnya dibuat selebar
+   kartu, karena gambar adalah tokoh utama halaman. */
+@media (max-width: 640px) {
+  .card-visual { padding: var(--s-3); }
+  .card-visual .stage {
+    margin-inline: calc(-1 * var(--s-3));
+    border-radius: 0;
+    border-inline: none;
+    padding: var(--s-2) 0;
+  }
+  .card-visual .ruang[data-fokus='true'] > .stage {
+    margin-inline: 0;
+    border-radius: var(--r-lg);
+    border-inline: 1px solid var(--line);
+  }
+  .eksperimen-ajakan { font-size: var(--t-sm); }
+}
+
+.tombol-gambar { -webkit-tap-highlight-color: transparent; }
+.tombol-gambar:focus { outline: none; }
+.tombol-gambar:focus-visible > rect:nth-last-of-type(1) { stroke: var(--ink); stroke-width: 3; }
+.tombol-gambar:active > rect:nth-last-of-type(1) { filter: brightness(0.92); }
+
+/* ---------------- Sentuhan jari ---------------- */
+/* Di layar sentuh setiap sasaran ketuk paling sedikit ±44 px, sesuai
+   pedoman aksesibilitas. Tautan di tengah kalimat dikecualikan. */
+@media (pointer: coarse), (max-width: 640px) {
+  .btn-icon { width: 2.75rem; height: 2.75rem; }
+  .btn-sm { min-height: 2.75rem; }
+  .segmented button { min-height: 2.75rem; }
+  .chip-outline { min-height: 2.5rem; }
+  .merek { min-height: 2.75rem; }
+  .topik-salah summary { min-height: 2.75rem; display: flex; align-items: center; }
+  .fx-part { padding-block: 0.45rem; }
+  .rel-item { min-height: 2.75rem; }
+}
+@media (max-width: 640px) {
+  .rel-item { min-width: 2.75rem; justify-content: center; }
+  .rel-no { width: 1.75rem; height: 1.75rem; font-size: var(--t-xs); }
+}
+
+/* Rumus hidup di bawah gambar eksperimen: angkanya ikut bergerak. */
+.rumus-hidup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: auto;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--surface-inset);
+  font-variant-numeric: tabular-nums;
+}
+.ruang[data-fokus='true'] .rumus-hidup { flex: none; }

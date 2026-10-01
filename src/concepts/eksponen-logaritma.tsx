@@ -10,50 +10,200 @@
 
    Logaritma tidak lain adalah jawaban atas pertanyaan
    "berapa langkah perkalian yang dibutuhkan?".
+
+   Interaksi langsung (docs/PANDUAN-INTERAKSI.md):
+   - pangkat pertama  a : seret ujung palang pertama pada garis langkah
+   - pangkat kedua    b : seret ujung palang kedua (sambungannya)
+   - bilangan pokok     : tombol di dalam gambar (hanya dua nilai)
+   Palang pertama dan palang kedua sengaja dipisah menjadi dua baris:
+   kalau disambung pada satu baris, kedua pegangan berimpit tepat saat
+   b = 0 — keadaan yang justru sering dicoba anak.
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, TombolGambar, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, sup } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 690
-const H = 440
+/**
+ * Panjang garis langkah: 7 langkah untuk kedua bilangan pokok.
+ * Karena a paling besar 4 dan b paling besar 3, a + b tidak pernah
+ * melewati ujung garis — jadi pegangan hasil selalu ada di dalam
+ * bingkai, dan tidak ada keadaan "hasilnya keluar dari gambar".
+ */
+const MAKS = 7
 
-const X0 = 76
-const X1 = 640
-const Y_LINEAR = 128
-const Y_LOG = 292
-/** Letak palang langkah — cukup jauh di bawah keterangan garis langkah. */
-const Y_PALANG = Y_LOG + 88
+/* ---------------- Tata letak ---------------- */
+
+interface Tata {
+  w: number
+  h: number
+  maxH: number
+  sempit: boolean
+  /** ujung kiri dan kanan kedua garis bilangan. */
+  X0: number
+  X1: number
+  /** kalimat perkalian di puncak gambar. */
+  yJudul: number
+  /** kalimat logaritma (hanya pada panggung eksperimen). */
+  yLogaritma: number
+  yLinear: number
+  yKetLinear: number
+  yLangkah: number
+  yKetLangkah: number
+  /** label nilai dipasang selang-seling dua baris bila tonggaknya rapat. */
+  seling: boolean
+  yPalangA: number
+  yLabelA: number
+  yPalangB: number
+  yLabelB: number
+  /**
+   * Keterangan keadaan bilangan pokok ("1 langkah = × 2") dan tombol
+   * penggantinya. Di layar lebar keduanya sebaris di sebelah kanan
+   * keterangan garis biasa; di HP tidak ada ruang di sana, jadi keduanya
+   * ditumpuk di bawah — keterangannya tetap lengkap supaya arti bilangan
+   * pokok tidak hilang justru di layar yang paling sering dipakai.
+   */
+  ketPokok: { x: number; y: number }
+  tombolPokok: { x: number; y: number }
+}
+
+const LEBAR: Tata = {
+  w: 700,
+  h: 490,
+  maxH: 470,
+  sempit: false,
+  X0: 80,
+  X1: 624,
+  yJudul: 32,
+  yLogaritma: 62,
+  yLinear: 110,
+  yKetLinear: 150,
+  yLangkah: 234,
+  yKetLangkah: 284,
+  seling: false,
+  yPalangA: 352,
+  yLabelA: 322,
+  yPalangB: 424,
+  yLabelB: 394,
+  // Digeser ke kanan: pada panggung 560 px (tata letak lebar yang paling
+  // sempit, skala ±0,75) Tag membesar sampai ±14,6 satuan, sehingga latar
+  // "1 langkah = × 2" sempat menimpa latar keterangan garis biasa yang
+  // dimulai di X0. Tombolnya ikut bergeser supaya tetap ada jarak.
+  ketPokok: { x: 505, y: 150 },
+  tombolPokok: { x: 604, y: 150 },
+}
+
+const HP: Tata = {
+  w: 420,
+  h: 546,
+  maxH: 520,
+  sempit: true,
+  X0: 84,
+  X1: 336,
+  yJudul: 26,
+  // Dinaikkan karena alasan yang sama: pada 320 px, kalimat logaritma
+  // membesar sampai ±16 satuan dan ekornya menyentuh angka garis biasa.
+  yLogaritma: 53,
+  yLinear: 106,
+  // Keterangan garis biasa dinaikkan dan garis langkah diturunkan: di layar
+  // 320 px sebuah Tag membesar sampai ±16 satuan (batas 11 px layar), dan
+  // ekor hurufnya sempat menyentuh baris atas label selang-seling yang
+  // dipasang di y = yLangkah − 48.
+  yKetLinear: 126,
+  yLangkah: 214,
+  yKetLangkah: 266,
+  seling: true,
+  yPalangA: 346,
+  yLabelA: 300,
+  yPalangB: 426,
+  yLabelB: 380,
+  // Ditumpuk dan ditaruh cukup rendah supaya area sentuh tombol (±48 px
+  // layar) tidak menyentuh area sentuh pegangan palang kedua, bahkan pada
+  // layar 320 px — di situ jari-jari sentuh pegangan mencapai 38 satuan.
+  ketPokok: { x: 210, y: 462 },
+  tombolPokok: { x: 210, y: 506 },
+}
+
+/** Posisi langkah ke-k pada garis langkah. */
+const kx = (L: Tata, k: number) => L.X0 + (k / MAKS) * (L.X1 - L.X0)
+
+/** Kebalikan `kx`: posisi jari (koordinat SVG) menjadi banyaknya langkah. */
+const keLangkah = (L: Tata, x: number) => ((x - L.X0) / (L.X1 - L.X0)) * MAKS
+
+/** Setengah lebar sebuah `Tag`, memakai rumus lebar di Stage.tsx. */
+function setengahTag(teks: string, size: number, u: (px: number, cadangan?: number) => number) {
+  const ukuran = Math.max(size, Math.min(size * 1.6, u(11, size)))
+  return (teks.length * ukuran * 0.58 + 7 * (ukuran / size) * 2) / 2
+}
+
+/** Keterangan di bawah sebuah garis: rata kiri di layar lebar, di tengah pada HP. */
+function KetGaris({ L, y, warna, children }: { L: Tata; y: number; warna?: string; children: string }) {
+  return (
+    <Tag
+      x={L.sempit ? L.w / 2 : L.X0}
+      y={y}
+      anchor={L.sempit ? 'middle' : 'start'}
+      warna={warna ?? 'var(--ink-soft)'}
+      size={13}
+    >
+      {children}
+    </Tag>
+  )
+}
 
 /* ---------------- Garis biasa (skala linear) ---------------- */
 
-function GarisLinear({ basis, maks, tampil }: { basis: number; maks: number; tampil: number }) {
-  const nilaiMaks = basis ** maks
-  const kx = (v: number) => X0 + (v / nilaiMaks) * (X1 - X0)
+/**
+ * Pada garis biasa hasil perkalian berulang menumpuk di ujung kiri.
+ * Titiknya semua digambar (itulah pesannya), tetapi angkanya hanya
+ * ditulis bila masih muat — kalau tidak, labelnya justru saling menimpa.
+ */
+function GarisLinear({ L, basis, tampil }: { L: Tata; basis: number; tampil: number }) {
+  const u = useUkuranLayar()
+  const nilaiMaks = basis ** MAKS
+  const px = (v: number) => L.X0 + (v / nilaiMaks) * (L.X1 - L.X0)
+  const huruf = u(12.5, 13)
+
+  let xTerakhir = -Infinity
+  let lebarTerakhir = 0
+  const titik = Array.from({ length: MAKS + 1 }, (_, k) => basis ** k).map((v) => {
+    const x = px(v)
+    const teks = fmt(v)
+    const lebar = teks.length * huruf * 0.58
+    const beriLabel = x - xTerakhir >= (lebar + lebarTerakhir) / 2 + u(10, 10)
+    if (beriLabel) {
+      xTerakhir = x
+      lebarTerakhir = lebar
+    }
+    return { x, teks, beriLabel }
+  })
+
   return (
     <g opacity={tampil}>
-      <line x1={X0} y1={Y_LINEAR} x2={X1} y2={Y_LINEAR} stroke="var(--m-axis)" strokeWidth={1.8} />
-      {Array.from({ length: maks + 1 }, (_, k) => basis ** k).map((v, k) => (
+      <line x1={L.X0} y1={L.yLinear} x2={L.X1} y2={L.yLinear} stroke="var(--m-axis)" strokeWidth={1.8} />
+      {titik.map((d, k) => (
         <g key={k}>
-          <circle cx={kx(v)} cy={Y_LINEAR} r={5} fill="var(--m-a)" />
-          <text
-            x={kx(v)}
-            y={Y_LINEAR - 16}
-            textAnchor="middle"
-            fontSize={13}
-            fontWeight={800}
-            fill="var(--m-a)"
-            fontFamily="var(--font-math)"
-          >
-            {fmt(v)}
-          </text>
+          <circle cx={d.x} cy={L.yLinear} r={4.5} fill="var(--m-a)" />
+          {d.beriLabel && (
+            <text
+              x={d.x}
+              y={L.yLinear - 21}
+              textAnchor="middle"
+              fontSize={huruf}
+              fontWeight={800}
+              fill="var(--m-a)"
+              fontFamily="var(--font-math)"
+            >
+              {d.teks}
+            </text>
+          )}
         </g>
       ))}
-      <Tag x={X0 + 6} y={Y_LINEAR + 26} anchor="start" warna="var(--ink-soft)" size={13}>
-        garis biasa: makin ke kanan makin renggang
-      </Tag>
+      <KetGaris L={L} y={L.yKetLinear}>
+        garis biasa: jarak = nilainya
+      </KetGaris>
     </g>
   )
 }
@@ -61,90 +211,144 @@ function GarisLinear({ basis, maks, tampil }: { basis: number; maks: number; tam
 /* ---------------- Garis langkah (skala logaritma) ---------------- */
 
 function GarisLangkah({
+  L,
   basis,
-  maks,
   tampil,
   nyala,
 }: {
+  L: Tata
   basis: number
-  maks: number
   tampil: number
   nyala: number
 }) {
-  const kx = (k: number) => X0 + (k / maks) * (X1 - X0)
+  const u = useUkuranLayar()
+  const hurufNilai = u(13.5, 14)
+  const hurufLangkah = u(12, 12.5)
   return (
     <g opacity={tampil}>
-      <line x1={X0} y1={Y_LOG} x2={X1} y2={Y_LOG} stroke="var(--m-axis)" strokeWidth={1.8} />
-      {Array.from({ length: maks + 1 }, (_, k) => k).map((k) => (
-        <g key={k}>
-          <line x1={kx(k)} y1={Y_LOG - 7} x2={kx(k)} y2={Y_LOG + 7} stroke="var(--m-axis)" strokeWidth={1.4} />
-          <text
-            x={kx(k)}
-            y={Y_LOG - 18}
-            textAnchor="middle"
-            fontSize={14}
-            fontWeight={800}
-            fill={nyala === k ? 'var(--m-hi)' : 'var(--m-b)'}
-            fontFamily="var(--font-math)"
-          >
-            {fmt(basis ** k)}
-          </text>
-          <text
-            x={kx(k)}
-            y={Y_LOG + 26}
-            textAnchor="middle"
-            fontSize={12.5}
-            fontWeight={700}
-            fill="var(--ink-soft)"
-          >
-            {fmt(k)}
-          </text>
-        </g>
-      ))}
-      <Tag x={X0 + 6} y={Y_LOG + 48} anchor="start" warna="var(--ink-soft)" size={13}>
-        angka bawah = banyaknya langkah perkalian
-      </Tag>
+      <line x1={L.X0} y1={L.yLangkah} x2={L.X1} y2={L.yLangkah} stroke="var(--m-axis)" strokeWidth={1.8} />
+      {Array.from({ length: MAKS + 1 }, (_, k) => k).map((k) => {
+        const naik = L.seling && k % 2 === 1
+        return (
+          <g key={k}>
+            <line
+              x1={kx(L, k)}
+              y1={L.yLangkah - 7}
+              x2={kx(L, k)}
+              y2={L.yLangkah + 7}
+              stroke="var(--m-axis)"
+              strokeWidth={1.4}
+            />
+            {naik && (
+              <line
+                x1={kx(L, k)}
+                y1={L.yLangkah - 36}
+                x2={kx(L, k)}
+                y2={L.yLangkah - 12}
+                stroke="var(--m-axis)"
+                strokeWidth={1}
+                opacity={0.5}
+              />
+            )}
+            <text
+              x={kx(L, k)}
+              y={L.yLangkah - (naik ? 48 : 22)}
+              textAnchor="middle"
+              fontSize={hurufNilai}
+              fontWeight={800}
+              fill={nyala === k ? 'var(--m-hi)' : 'var(--m-b)'}
+              fontFamily="var(--font-math)"
+            >
+              {fmt(basis ** k)}
+            </text>
+            <text
+              x={kx(L, k)}
+              y={L.yLangkah + 26}
+              textAnchor="middle"
+              fontSize={hurufLangkah}
+              fontWeight={700}
+              fill="var(--ink-soft)"
+            >
+              {fmt(k)}
+            </text>
+          </g>
+        )
+      })}
+      <KetGaris L={L} y={L.yKetLangkah}>
+        garis langkah: jarak = banyaknya langkah
+      </KetGaris>
     </g>
   )
 }
 
 /** Palang penanda sepanjang beberapa langkah. */
 function Palang({
+  L,
   dari,
   ke,
-  maks,
   y,
+  yLabel,
   warna,
   label,
-  labelDi = 'atas',
+  tampilLabel = true,
   opacity = 1,
 }: {
+  L: Tata
   dari: number
   ke: number
-  maks: number
   y: number
+  yLabel: number
   warna: string
   label: string
-  /** palang kedua memberi label di bawah agar tidak menimpa label palang pertama. */
-  labelDi?: 'atas' | 'bawah'
+  /** disembunyikan saat pegangannya dipegang — pegangan menulis labelnya sendiri. */
+  tampilLabel?: boolean
   opacity?: number
 }) {
-  const kx = (k: number) => X0 + (k / maks) * (X1 - X0)
-  const a = kx(dari)
-  // palang yang melewati ujung garis dipotong di tepi gambar, tanpa tanda ujung
-  const terpotong = kx(ke) > W - 12
-  const b = Math.min(kx(ke), W - 12)
-  // label tetap di dalam bingkai (lebar sesuai hitungan Tag)
-  const setengahLebar = (label.length * 14 * 0.58 + 14) / 2
-  const xLabel = clamp((a + b) / 2, setengahLebar + 4, W - setengahLebar - 4)
+  const u = useUkuranLayar()
+  const a = kx(L, dari)
+  const b = kx(L, ke)
+  const setengah = setengahTag(label, 14, u)
+  const xLabel = clamp((a + b) / 2, setengah + 6, L.w - setengah - 6)
   return (
     <g opacity={opacity}>
-      <line x1={a} y1={y} x2={b} y2={y} stroke={warna} strokeWidth={4} strokeLinecap="round" />
-      <line x1={a} y1={y - 7} x2={a} y2={y + 7} stroke={warna} strokeWidth={2.4} />
-      {!terpotong && <line x1={b} y1={y - 7} x2={b} y2={y + 7} stroke={warna} strokeWidth={2.4} />}
-      <Tag x={xLabel} y={labelDi === 'atas' ? y - 18 : y + 20} warna={warna} size={14}>
-        {label}
+      <line x1={a} y1={y} x2={b} y2={y} stroke={warna} strokeWidth={5} strokeLinecap="round" />
+      <line x1={a} y1={y - 8} x2={a} y2={y + 8} stroke={warna} strokeWidth={2.4} />
+      <line x1={b} y1={y - 8} x2={b} y2={y + 8} stroke={warna} strokeWidth={2.4} />
+      {tampilLabel && (
+        <Tag x={xLabel} y={yLabel} warna={warna} size={14}>
+          {label}
+        </Tag>
+      )}
+    </g>
+  )
+}
+
+/**
+ * Bilangan pokok hanya punya dua nilai, jadi lebih wajar diketuk daripada
+ * diseret. Keterangan keadaannya ditulis utuh di kedua tata letak: "× 2"
+ * saja tidak memberi tahu apa pun, sedangkan justru kalimat
+ * "1 langkah = × 2" itulah arti seluruh garis langkah.
+ */
+function KendaliPokok({ L, basis }: { L: Tata; basis: number }) {
+  const lain = basis === 2 ? 3 : 2
+  return (
+    <g>
+      <Tag
+        x={L.ketPokok.x}
+        y={L.ketPokok.y}
+        anchor={L.sempit ? 'middle' : 'end'}
+        warna="var(--ink-2)"
+        size={13}
+      >
+        {`1 langkah = × ${fmt(basis)}`}
       </Tag>
+      <TombolGambar
+        x={L.tombolPokok.x}
+        y={L.tombolPokok.y}
+        param="basis"
+        ubah={(v) => (Math.round(v) === 2 ? 3 : 2)}
+        label={`ganti ke × ${fmt(lain)}`}
+      />
     </g>
   )
 }
@@ -156,10 +360,7 @@ function nilaiBongkar(p: Record<string, number>) {
   const basis = clamp(Math.round(p.basis ?? 2), 2, 3)
   const a = clamp(Math.round(p.a ?? 3), 0, 4)
   const b = clamp(Math.round(p.b ?? 2), 0, 3)
-  const maks = basis === 2 ? 7 : 5
-  // hasil hanya boleh ditandai di garis bila memang masih muat
-  const muat = a + b <= maks
-  return { basis, a, b, maks, muat, total: Math.min(a + b, maks) }
+  return { basis, a, b, total: a + b }
 }
 
 /** Empat hasil perkalian berulang pertama, mis. "2, 4, 8, 16". */
@@ -184,154 +385,298 @@ const logBasis = (basis: number) => (basis === 2 ? 'log₂' : 'log₃')
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const { basis, a, b, maks, muat, total } = nilaiBongkar(p)
+  const L = useSempit() ? HP : LEBAR
+  return (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Garis bilangan biasa dan garis berdasarkan banyaknya langkah perkalian"
+    >
+      <IsiBongkar L={L} step={step} t={t} p={p} sorot={sorot} />
+    </Svg>
+  )
+}
 
-  const tampilLinear = step === 0 ? seg(t, 0.05, 0.9) : step <= 1 ? 1 : 0.35
-  const tampilLog = fase(step, t, 1)
+/**
+ * Isi panggung bongkar — sengaja komponen tersendiri, bukan badan VisualBongkar.
+ * `useUkuranLayar()` membaca skala yang dipasang oleh `Svg`, jadi ia hanya
+ * memberi ukuran layar yang benar bila dipanggil DI DALAM <Svg>.
+ */
+function IsiBongkar({ L, step, t, p, sorot }: DeriveState & { L: Tata }) {
+  const { basis, a, b, total } = nilaiBongkar(p)
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+
+  // Langkah 0 tetap MEMUNCULKAN garis biasa sejak bingkai pertama (0,35, sama
+  // dengan kadar latarnya nanti) lalu menguatkannya. Kalau mulai dari nol,
+  // anak yang baru membuka halaman menemukan panggung kosong sebelum menekan
+  // "Putar" — tidak ada objek yang bisa dilihat, apalagi dipegang.
+  const tampilLinear = step === 0 ? 0.35 + 0.65 * seg(t, 0.05, 0.9) : step <= 1 ? 1 : 0.35
+  const tampilLangkah = fase(step, t, 1)
   const palangA = fase(step, t, 2)
   const geser = step === 3 ? seg(t, 0.1, 0.92) : step > 3 ? 1 : 0
   const selesai = step >= 4
 
   const nyalaLog = sorot === 'log' || sorot === 'langkah'
-  const nyalaKali = sorot === 'kali'
+  const nyalaA = sorot === 'a' || aktif === 'a'
+  const nyalaB = sorot === 'b' || sorot === 'kali' || aktif === 'b'
+
+  // Pegangan disembunyikan selama palangnya belum utuh; selama itu label
+  // palang yang menampilkan angkanya.
+  const sembunyiA = palangA < 0.5
+  const sembunyiB = geser < 0.995
+
+  const ket =
+    step === 0
+      ? { teks: `${deretAwal(basis)}, … jaraknya melompat`, warna: 'var(--m-a)', size: 16 }
+      : step === 1
+        ? {
+            teks: L.sempit
+              ? 'pakai banyaknya langkah — jaraknya rata'
+              : 'susun berdasarkan banyaknya langkah — jaraknya jadi rata',
+            warna: 'var(--m-b)',
+            size: 16,
+          }
+        : step === 2
+          ? {
+              teks: `${fmt(basis ** a)} berjarak ${fmt(a)} langkah dari 1`,
+              warna: 'var(--m-a)',
+              size: 16,
+            }
+          : step === 3
+            ? {
+                teks: L.sempit
+                  ? `× ${fmt(basis ** b)} = sambung ${fmt(b)} langkah`
+                  : `mengalikan dengan ${fmt(basis ** b)} = menyambung ${fmt(b)} langkah lagi`,
+                warna: 'var(--m-hi)',
+                size: 16,
+              }
+            : {
+                teks: L.sempit
+                  ? `${fmt(basis ** a)} × ${fmt(basis ** b)} = ${fmt(basis ** total)}  ·  ${fmt(a)} + ${fmt(b)} = ${fmt(total)}`
+                  : `${fmt(basis ** a)} × ${fmt(basis ** b)} = ${fmt(basis ** total)}   ·   ${fmt(a)} + ${fmt(b)} = ${fmt(total)}`,
+                warna: nyalaLog ? 'var(--m-hi)' : 'var(--m-ab)',
+                size: 17,
+              }
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Garis bilangan biasa dan garis berdasarkan banyaknya langkah perkalian">
-      <GarisLinear basis={basis} maks={maks} tampil={tampilLinear} />
-      {tampilLog > 0.02 && (
-        <GarisLangkah
-          basis={basis}
-          maks={maks}
-          tampil={tampilLog}
-          nyala={selesai && muat ? total : -1}
+    <>
+      {/* penghubung hasil digambar paling awal supaya latar label menutupinya */}
+      {selesai && (
+        <line
+          x1={kx(L, total)}
+          y1={L.yLangkah + 40}
+          x2={kx(L, total)}
+          y2={L.yPalangB}
+          stroke="var(--m-hi)"
+          strokeWidth={2.2}
+          strokeDasharray="6 5"
+          opacity={0.7}
         />
       )}
 
-      {/* penanda hasil — digambar sebelum palang agar garis putusnya tidak menimpa label */}
-      {selesai && muat && (
-        <g>
-          <line
-            x1={X0 + (total / maks) * (X1 - X0)}
-            y1={Y_LOG - 40}
-            x2={X0 + (total / maks) * (X1 - X0)}
-            y2={Y_PALANG}
-            stroke="var(--m-hi)"
-            strokeWidth={2.4}
-            strokeDasharray="6 5"
-          />
-          <Tag x={X0 + (total / maks) * (X1 - X0)} y={Y_LOG - 52} warna="var(--m-hi)" size={16}>
-            {fmt(basis ** total)}
-          </Tag>
-        </g>
+      <GarisLinear L={L} basis={basis} tampil={tampilLinear} />
+      {tampilLangkah > 0.02 && (
+        <GarisLangkah L={L} basis={basis} tampil={tampilLangkah} nyala={selesai ? total : -1} />
       )}
 
       {/* palang pertama: dari 1 sampai basis^a */}
       {palangA > 0.05 && (
         <Palang
+          L={L}
           dari={0}
           ke={a}
-          maks={maks}
-          y={Y_PALANG}
-          warna="var(--m-a)"
-          label={`${fmt(basis ** a)} → ${fmt(a)} langkah`}
+          y={L.yPalangA}
+          yLabel={L.yLabelA}
+          warna={nyalaA ? 'var(--m-hi)' : 'var(--m-a)'}
+          label={`${fmt(a)} langkah`}
+          tampilLabel={sembunyiA || (!L.sempit && aktif !== 'a')}
           opacity={palangA}
         />
       )}
 
-      {/* palang kedua: disambung sejauh b langkah */}
+      {/* palang kedua: disambung sejauh b langkah, dimulai di tempat palang pertama berhenti */}
       {geser > 0.05 && (
         <Palang
+          L={L}
           dari={a}
           ke={a + b * geser}
-          maks={maks}
-          y={Y_PALANG}
-          warna={nyalaKali ? 'var(--m-hi)' : 'var(--m-b)'}
+          y={L.yPalangB}
+          yLabel={L.yLabelB}
+          warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
           label={`+ ${fmt(b)} langkah`}
-          labelDi="bawah"
+          tampilLabel={sembunyiB || (!L.sempit && aktif !== 'b')}
           opacity={geser}
         />
       )}
 
-      {/* keterangan */}
-      {step === 0 && (
-        <Tag x={W / 2} y={54} warna="var(--m-a)" size={16}>
-          {`${deretAwal(basis)}, … jaraknya melompat`}
-        </Tag>
+      {/* garis putus yang menyambungkan ujung palang pertama ke awal palang kedua */}
+      {geser > 0.05 && palangA > 0.05 && (
+        <line
+          x1={kx(L, a)}
+          y1={L.yPalangA + 10}
+          x2={kx(L, a)}
+          y2={L.yPalangB - 10}
+          stroke="var(--m-axis)"
+          strokeWidth={1.2}
+          strokeDasharray="4 4"
+          opacity={Math.min(palangA, geser) * 0.8}
+        />
       )}
-      {step === 1 && (
-        <Tag x={W / 2} y={54} warna="var(--m-b)" size={16}>
-          susun berdasarkan banyaknya langkah — jaraknya jadi rata
-        </Tag>
-      )}
-      {step === 2 && (
-        <Tag x={W / 2} y={54} warna="var(--m-a)" size={16}>
-          {`${fmt(basis ** a)} berjarak ${fmt(a)} langkah dari 1`}
-        </Tag>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={54} warna="var(--m-hi)" size={16}>
-          {`mengalikan dengan ${fmt(basis ** b)} = menyambung ${fmt(b)} langkah lagi`}
-        </Tag>
-      )}
-      {selesai && (
-        <Tag
-          x={W / 2}
-          y={54}
-          warna={nyalaLog ? 'var(--m-hi)' : 'var(--m-ab)'}
-          size={17}
-        >
-          {`${fmt(basis ** a)} × ${fmt(basis ** b)} = ${fmt(basis ** (a + b))}   ·   ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)}`}
-        </Tag>
-      )}
-      {a + b > maks && step >= 3 && (
-        <Tag x={W / 2} y={H - 16} warna="var(--ink-soft)" size={13}>
-          (hasilnya sudah melewati ujung garis — kecilkan salah satu pangkatnya)
-        </Tag>
-      )}
-    </Svg>
+
+      <Tag x={L.w / 2} y={L.yJudul} warna={ket.warna} size={ket.size}>
+        {ket.teks}
+      </Tag>
+
+      <KendaliPokok L={L} basis={basis} />
+
+      {/* Ujung tiap palang dipegang langsung. Selama palangnya belum ada,
+          pegangannya ikut disembunyikan. Di HP labelnya menempel terus pada
+          pegangan (labelSelalu): pil ajakan "Seret aku" tidak muat di bawah
+          palang kedua pada layar sesempit itu, sedangkan denyut tetap ada. */}
+      <Pegangan
+        x={kx(L, a)}
+        y={L.yPalangA}
+        param="a"
+        arah="x"
+        utama={step <= 2}
+        ajakan="Seret aku"
+        sembunyi={sembunyiA}
+        labelSelalu={L.sempit}
+        label={`${fmt(a)} langkah`}
+        keNilai={(pt) => keLangkah(L, pt.x)}
+      />
+      <Pegangan
+        x={kx(L, a + b)}
+        y={L.yPalangB}
+        param="b"
+        arah="x"
+        utama={step >= 3}
+        ajakan="Seret aku"
+        sembunyi={sembunyiB}
+        labelSelalu={L.sempit}
+        label={`+ ${fmt(b)} langkah`}
+        keNilai={(pt) => keLangkah(L, pt.x) - a}
+      />
+    </>
   )
 }
 
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const { basis, a, b, maks, muat, total } = nilaiBongkar(p)
-  // basis tulis sebagai indeks bawah: tanpa basis, "log" berarti basis 10
+  const L = useSempit() ? HP : LEBAR
+  return (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Garis langkah perkalian dengan dua pangkat yang bisa diubah"
+    >
+      <IsiEksperimen L={L} p={p} sorot={sorot} />
+    </Svg>
+  )
+}
+
+function IsiEksperimen({
+  L,
+  p,
+  sorot,
+}: {
+  L: Tata
+  p: Record<string, number>
+  sorot: string | null
+}) {
+  const { basis, a, b, total } = nilaiBongkar(p)
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  // Tanpa indeks bawah, "log" berarti bilangan pokok 10 — jadi selalu ditulis.
   const logB = logBasis(basis)
+  const nyalaA = sorot === 'a' || aktif === 'a'
+  const nyalaB = sorot === 'b' || sorot === 'kali' || aktif === 'b'
+  const nyalaLog = sorot === 'log' || sorot === 'langkah'
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Garis langkah perkalian dengan dua pangkat yang bisa diubah">
-      <GarisLinear basis={basis} maks={maks} tampil={0.4} />
-      <GarisLangkah basis={basis} maks={maks} tampil={1} nyala={muat ? total : -1} />
+    <>
+      <line
+        x1={kx(L, total)}
+        y1={L.yLangkah + 40}
+        x2={kx(L, total)}
+        y2={L.yPalangB}
+        stroke="var(--m-hi)"
+        strokeWidth={2.2}
+        strokeDasharray="6 5"
+        opacity={0.7}
+      />
+
+      <GarisLinear L={L} basis={basis} tampil={0.4} />
+      <GarisLangkah L={L} basis={basis} tampil={1} nyala={total} />
+
       <Palang
+        L={L}
         dari={0}
         ke={a}
-        maks={maks}
-        y={Y_PALANG}
-        warna={sorot === 'a' ? 'var(--m-hi)' : 'var(--m-a)'}
+        y={L.yPalangA}
+        yLabel={L.yLabelA}
+        warna={nyalaA ? 'var(--m-hi)' : 'var(--m-a)'}
         label={`${fmt(a)} langkah`}
+        tampilLabel={!L.sempit && aktif !== 'a'}
       />
       <Palang
+        L={L}
         dari={a}
         ke={a + b}
-        maks={maks}
-        y={Y_PALANG}
-        warna={sorot === 'b' ? 'var(--m-hi)' : 'var(--m-b)'}
+        y={L.yPalangB}
+        yLabel={L.yLabelB}
+        warna={nyalaB ? 'var(--m-hi)' : 'var(--m-b)'}
         label={`+ ${fmt(b)} langkah`}
-        labelDi="bawah"
+        tampilLabel={!L.sempit && aktif !== 'b'}
       />
-      <Tag x={W / 2} y={50} warna="var(--m-ab)" size={17}>
-        {`${pangkat(basis, a)} × ${pangkat(basis, b)} = ${pangkat(basis, a + b)} = ${fmt(basis ** (a + b))}`}
+      <line
+        x1={kx(L, a)}
+        y1={L.yPalangA + 10}
+        x2={kx(L, a)}
+        y2={L.yPalangB - 10}
+        stroke="var(--m-axis)"
+        strokeWidth={1.2}
+        strokeDasharray="4 4"
+        opacity={0.8}
+      />
+
+      <Tag x={L.w / 2} y={L.yJudul} warna="var(--m-ab)" size={17}>
+        {`${pangkat(basis, a)} × ${pangkat(basis, b)} = ${pangkat(basis, total)} = ${fmt(basis ** total)}`}
       </Tag>
-      {!muat && (
-        <Tag x={W / 2} y={214} warna="var(--ink-soft)" size={12}>
-          (hasilnya sudah melewati ujung garis — kecilkan salah satu pangkatnya)
-        </Tag>
-      )}
-      <Tag x={W / 2} y={H - 18} warna="var(--ink-2)" size={15}>
-        {`${logB} ${fmt(basis ** a)} + ${logB} ${fmt(basis ** b)} = ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)} = ${logB} ${fmt(basis ** (a + b))}`}
+      <Tag
+        x={L.w / 2}
+        y={L.yLogaritma}
+        warna={nyalaLog ? 'var(--m-hi)' : 'var(--ink-2)'}
+        size={15}
+      >
+        {`${logB} ${fmt(basis ** a)} + ${logB} ${fmt(basis ** b)} = ${fmt(a)} + ${fmt(b)} = ${fmt(total)}`}
       </Tag>
-    </Svg>
+
+      <KendaliPokok L={L} basis={basis} />
+
+      <Pegangan
+        x={kx(L, a)}
+        y={L.yPalangA}
+        param="a"
+        arah="x"
+        labelSelalu={L.sempit}
+        label={`${fmt(a)} langkah`}
+        keNilai={(pt) => keLangkah(L, pt.x)}
+      />
+      <Pegangan
+        x={kx(L, a + b)}
+        y={L.yPalangB}
+        param="b"
+        arah="x"
+        utama
+        ajakan="Seret aku"
+        labelSelalu={L.sempit}
+        label={`+ ${fmt(b)} langkah`}
+        keNilai={(pt) => keLangkah(L, pt.x) - a}
+      />
+    </>
   )
 }
 
@@ -377,9 +722,41 @@ const konsep: Konsep = {
   bongkar: {
     Visual: VisualBongkar,
     params: [
-      { key: 'basis', label: 'Bilangan pokok', min: 2, max: 3, step: 1, awal: 2, bulat: true },
-      { key: 'a', label: 'Pangkat pertama', min: 0, max: 4, step: 1, awal: 3, bulat: true },
-      { key: 'b', label: 'Pangkat kedua', min: 0, max: 3, step: 1, awal: 2, bulat: true },
+      {
+        key: 'basis',
+        label: 'Bilangan pokok',
+        min: 2,
+        max: 3,
+        step: 1,
+        awal: 2,
+        bulat: true,
+        simbol: 'pokok',
+        peran: 'plain',
+      },
+      {
+        key: 'a',
+        label: 'Pangkat pertama',
+        min: 0,
+        max: 4,
+        step: 1,
+        awal: 3,
+        bulat: true,
+        simbol: 'a',
+        peran: 'a',
+        bagian: 'a',
+      },
+      {
+        key: 'b',
+        label: 'Pangkat kedua',
+        min: 0,
+        max: 3,
+        step: 1,
+        awal: 2,
+        bulat: true,
+        simbol: 'b',
+        peran: 'b',
+        bagian: 'b',
+      },
     ],
     roles: { a: 'a', b: 'b', log: 'ab', kali: 'hi', langkah: 'ab' },
     arti: {
@@ -387,6 +764,7 @@ const konsep: Konsep = {
       b: 'Banyaknya langkah tambahan.',
       log: 'Logaritma — jawaban atas pertanyaan "berapa langkah perkalian yang dibutuhkan?".',
       kali: 'Perkalian pada bilangan menjadi penyambungan jarak pada garis langkah.',
+      langkah: 'Penjumlahan pada banyaknya langkah — panjang palang pertama ditambah panjang palang kedua.',
     },
     steps: [
       {
@@ -426,18 +804,15 @@ const konsep: Konsep = {
         id: 's3',
         judul: 'Mengalikan berarti menyambung langkah',
         narasi: (p) => {
-          const { basis, a, b, maks, muat } = nilaiBongkar(p)
+          const { basis, a, b, total } = nilaiBongkar(p)
           const bilPertama = fmt(basis ** a)
           if (b === 0)
-            return `Mengalikan dengan 1 berarti melanjutkan perjalanan 0 langkah — kamu tidak bergerak sama sekali. Palangnya tidak bertambah panjang, jadi ${bilPertama} × 1 tetap ${bilPertama}.`
+            return `Mengalikan dengan 1 berarti melanjutkan perjalanan 0 langkah — kamu tidak bergerak sama sekali. Palang kedua tidak bertambah panjang, jadi ${bilPertama} × 1 tetap ${bilPertama}.`
           const kalimat1 =
             b === 1
               ? `Mengalikan dengan ${fmt(basis)} berarti melangkah satu kali lagi, jadi perjalananmu berlanjut 1 langkah.`
               : `Mengalikan dengan ${fmt(basis ** b)} sama dengan mengalikan dengan ${fmt(basis)} sebanyak ${fmt(b)} kali lagi, jadi perjalananmu berlanjut ${fmt(b)} langkah.`
-          const kalimat2 = muat
-            ? `Palangnya tinggal disambung dari langkah ${fmt(a)} sampai langkah ${fmt(a + b)}.`
-            : `Palangnya disambung dari langkah ${fmt(a)} sampai langkah ${fmt(a + b)}, melewati ujung garis yang hanya sampai langkah ${fmt(maks)}.`
-          return `${kalimat1} ${kalimat2}`
+          return `${kalimat1} Palang kedua tinggal disambung dari langkah ${fmt(a)} sampai langkah ${fmt(total)}.`
         },
         rumus: '[kali:×] pada nilai = [langkah:+] pada langkah',
         durasi: 2800,
@@ -446,15 +821,14 @@ const konsep: Konsep = {
         id: 's4',
         judul: 'Jadi pangkatnya dijumlahkan',
         narasi: (p) => {
-          const { basis, a, b, muat } = nilaiBongkar(p)
-          if (a + b === 0)
+          const { basis, a, b, total } = nilaiBongkar(p)
+          if (total === 0)
             return `Kedua langkahnya nol, jadi palangnya tidak beranjak sama sekali dari angka 1. Pangkatnya pun 0 + 0 = 0, dan ${pangkat(basis, 0)} memang bernilai 1.`
-          const ekor = muat ? '' : ' — kali ini ujungnya sudah keluar dari garis'
-          return `Panjang seluruh palang adalah ${fmt(a)} langkah ditambah ${fmt(b)} langkah, yaitu ${fmt(a + b)} langkah${ekor}. Karena posisi pada garis ini menandai pangkat, ${pangkat(basis, a)} × ${pangkat(basis, b)} bernilai ${pangkat(basis, a + b)} — pangkatnya memang tinggal kamu jumlahkan.`
+          return `Panjang kedua palang adalah ${fmt(a)} langkah ditambah ${fmt(b)} langkah, yaitu ${fmt(total)} langkah. Karena posisi pada garis ini menandai pangkat, ${pangkat(basis, a)} × ${pangkat(basis, b)} bernilai ${pangkat(basis, total)} — pangkatnya memang tinggal kamu jumlahkan.`
         },
         rumus: (p) => {
-          const { basis, a, b } = nilaiBongkar(p)
-          return `${pangkatRumus(basis, a)} × ${pangkatRumus(basis, b)} = ${pangkatRumus(basis, a + b)}  ·  [a:${fmt(a)}] + [b:${fmt(b)}] = ${fmt(a + b)}`
+          const { basis, a, b, total } = nilaiBongkar(p)
+          return `${pangkatRumus(basis, a)} × ${pangkatRumus(basis, b)} = ${pangkatRumus(basis, total)}  ·  [a:${fmt(a)}] + [b:${fmt(b)}] = ${fmt(total)}`
         },
         durasi: 2400,
       },
@@ -483,27 +857,69 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Sambung dua langkah sesukamu',
     ajakan:
-      'Ubah pangkatnya dan perhatikan kalimat paling atas dan paling bawah pada gambar: yang atas berbicara tentang perkalian, yang bawah tentang penjumlahan — keduanya menceritakan hal yang sama.',
+      'Seret ujung kedua palang, atau ketuk tombol bilangan pokok di dalam gambar. Perhatikan kalimat perkalian di atas dan kalimat logaritma di bawahnya — keduanya selalu cocok.',
     params: [
-      { key: 'basis', label: 'Bilangan pokok', min: 2, max: 3, step: 1, awal: 2, bulat: true },
-      { key: 'a', label: 'Pangkat pertama', min: 0, max: 4, step: 1, awal: 3, bulat: true },
-      { key: 'b', label: 'Pangkat kedua', min: 0, max: 3, step: 1, awal: 2, bulat: true },
+      {
+        key: 'basis',
+        label: 'Bilangan pokok',
+        min: 2,
+        max: 3,
+        step: 1,
+        awal: 2,
+        bulat: true,
+        simbol: 'pokok',
+        peran: 'plain',
+      },
+      {
+        key: 'a',
+        label: 'Pangkat pertama',
+        min: 0,
+        max: 4,
+        step: 1,
+        awal: 3,
+        bulat: true,
+        simbol: 'a',
+        peran: 'a',
+        bagian: 'a',
+      },
+      {
+        key: 'b',
+        label: 'Pangkat kedua',
+        min: 0,
+        max: 3,
+        step: 1,
+        awal: 2,
+        bulat: true,
+        simbol: 'b',
+        peran: 'b',
+        bagian: 'b',
+      },
     ],
     Visual: VisualEksperimen,
+    // Rumus hidup di bawah gambar: angkanya ikut bergerak, dan bagian
+    // [a]/[b] menyala saat pegangan palangnya dipegang (lewat
+    // ParamSpec.bagian), jadi objek, angka, dan rumus terasa satu sistem.
+    rumus: (p) => {
+      const { basis, a, b, total } = nilaiBongkar(p)
+      const logB = logBasis(basis)
+      const P = fmt(basis ** a)
+      const Q = fmt(basis ** b)
+      return `[log:${logB}](${P} × ${Q}) = [log:${logB}] ${P} + [log:${logB}] ${Q} = [a:${fmt(a)}] + [b:${fmt(b)}] = ${fmt(total)}`
+    },
     temuan: (p) => {
-      const { basis, a, b } = nilaiBongkar(p)
+      const { basis, a, b, total } = nilaiBongkar(p)
       return (
         <p>
           <strong>
             {pangkat(basis, a)} × {pangkat(basis, b)} = {fmt(basis ** a)} × {fmt(basis ** b)} ={' '}
-            {fmt(basis ** (a + b))}
+            {fmt(basis ** total)}
           </strong>{' '}
-          — dan pangkatnya {fmt(a)} + {fmt(b)} = {fmt(a + b)}.{' '}
+          — dan pangkatnya {fmt(a)} + {fmt(b)} = {fmt(total)}.{' '}
           {a === 0
             ? `Perhatikan ${pangkat(basis, 0)} = 1: nol langkah berarti belum bergerak dari angka 1. Itulah kenapa bilangan apa pun selain nol, bila dipangkatkan nol, bernilai 1.`
             : b === 0
               ? `Perhatikan ${pangkat(basis, 0)} = 1: palang kedua sepanjang nol langkah, jadi mengalikan dengan 1 tidak menggeser hasilnya sama sekali.`
-              : 'Coba buat salah satu pangkatnya nol: palangnya tidak bertambah panjang sama sekali, dan nilainya tidak berubah.'}{' '}
+              : 'Seret ujung salah satu palang sampai panjangnya nol: palang itu berarti × 1 — ia tidak menambah langkah, jadi hasilnya ditentukan palang yang satu lagi saja.'}{' '}
           Perhatikan juga jarak pada garis atas melompat-lompat, sedangkan pada garis bawah selalu
           rata.
         </p>
@@ -587,9 +1003,13 @@ const konsep: Konsep = {
 
   rumus: {
     src: '[log:log](P × Q) = [log:log] P + [log:log] Q',
-    roles: { log: 'ab' },
+    // a dan b tidak ada di rumus akhir, tetapi ada di rumus hidup
+    // eksperimen — warna dan artinya diambil dari sini.
+    roles: { log: 'ab', a: 'a', b: 'b' },
     arti: {
       log: 'Logaritma — banyaknya langkah perkalian dari 1 sampai bilangan itu. Karena menghitung langkah, menggabungkan perkalian berarti menjumlahkan langkahnya.',
+      a: 'Banyaknya langkah perkalian pada palang pertama — seret ujungnya di gambar.',
+      b: 'Banyaknya langkah tambahan pada palang kedua — seret ujungnya di gambar.',
     },
   },
 

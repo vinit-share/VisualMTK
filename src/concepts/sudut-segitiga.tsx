@@ -10,15 +10,39 @@
    Kejujuran matematis: bukti ini bergantung pada postulat
    kesejajaran. Pada bola atau bidang hiperbolik, jumlahnya bukan 180°.
    Hal itu disebutkan pada penjelasan tingkat SMA.
+
+   ---------------- Interaksi langsung ----------------
+   Puncak segitiga DIPAKU: di situlah garis sejajar ditarik dan di situ
+   pula ketiga sudut berkumpul, jadi garis itu tidak pernah bergoyang.
+   Yang diseret adalah kedua POJOK ALAS, meluncur di sepanjang garis
+   alas seperti engsel gunting: pojok kiri hanya mengubah sudut kiri,
+   pojok kanan hanya sudut kanan, dan sudut puncak selalu mengambil
+   sisanya. Pojok digambar di x = puncak ∓ tinggi × cot(sudut), dan
+   keNilai membaliknya persis: sudut = atan2(tinggi, jarak mendatar
+   pojok ke puncak). Karena itu titiknya menempel pada jari.
+
+   ---------------- Rentang sudut 35°…105° ----------------
+   Skala gambar harus TETAP supaya titik yang diseret menempel pada jari
+   (docs/PANDUAN-INTERAKSI.md), jadi lebar alas — tinggi × (cot α + cot β)
+   — wajib muat di bingkai pada nilai penggeser mana pun. Sudut alas 20°
+   menuntut alas 5,5 × tinggi; di HP (viewBox 440) segitiganya tinggal
+   setinggi ±70 satuan dan sudutnya tidak terbaca lagi. Batas 35° membuat
+   alas paling lebar 2,9 × tinggi. Batas atas 105° dan α + β ≤ 140°
+   menjaga arah sebaliknya: alas paling sempit tetap cukup lebar untuk
+   dua pegangan dan dua label yang tidak berdempet.
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, useSempit, useSkalaSvg } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
-import { clamp, fmt, rad } from '../lib/num'
+import { clamp, deg, fmt, rad } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 690
-const H = 430
+/** Batas sudut alas yang masih bisa digambar pada skala tetap. */
+const MIN_SUDUT = 35
+const MAKS_SUDUT = 105
+/** Batas jumlah kedua sudut alas; sisanya (≥ 35°) untuk sudut puncak. */
+const MAKS_JUMLAH = 140
 
 type Titik = [number, number]
 
@@ -45,29 +69,139 @@ function juringSudut(c: Titik, r: number, a1: number, a2: number) {
   return `M ${c[0].toFixed(1)} ${c[1].toFixed(1)} L ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 ${sweep} ${x2.toFixed(1)} ${y2.toFixed(1)} Z`
 }
 
-type Kotak = { x0: number; x1: number; y0: number; y1: number }
+const lerpT = (a: Titik, b: Titik, s: number): Titik => [
+  a[0] + (b[0] - a[0]) * s,
+  a[1] + (b[1] - a[1]) * s,
+]
+
+/* ---------------- Tata letak ---------------- */
 
 /**
- * Bangun segitiga dari dua sudut alas, lalu perbesar atau perkecil
- * (tanpa mengubah sudutnya) supaya seluruhnya muat di dalam kotak.
- * Alas selalu mendatar pada garis y1. Tanpa langkah ini puncak segitiga
- * yang tinggi-ramping keluar dari panggung dan terpotong.
+ * Satu sistem koordinat untuk satu ukuran panggung. Tidak ada satu pun
+ * angka di sini yang bergantung pada penggeser: hanya begitulah pojok yang
+ * diseret bisa menempel pada jari.
  */
-function segitiga(alfa: number, beta: number, kotak: Kotak) {
-  // Segitiga satuan: A = (0, 0), B = (1, 0). Aturan sinus: AP = sin β / sin(α + β).
-  const ap = Math.sin(rad(beta)) / Math.sin(rad(alfa + beta))
-  const ux = ap * Math.cos(rad(alfa))
-  const uy = ap * Math.sin(rad(alfa))
-  const xMin = Math.min(0, ux)
-  const xMax = Math.max(1, ux)
-  const lebar = kotak.x1 - kotak.x0
-  const skala = Math.min(lebar / (xMax - xMin), (kotak.y1 - kotak.y0) / uy)
-  const x0 = kotak.x0 + (lebar - skala * (xMax - xMin)) / 2 - skala * xMin
-  const A: Titik = [x0, kotak.y1]
-  const B: Titik = [x0 + skala, kotak.y1]
-  const P: Titik = [x0 + skala * ux, kotak.y1 - skala * uy]
-  return { A, B, P, gamma: 180 - alfa - beta }
+interface Tata {
+  sempit: boolean
+  w: number
+  h: number
+  maxH: number
+  /** x puncak — dipaku di tengah, karena puncak adalah engsel segitiga. */
+  px: number
+  /** y puncak; pada bongkar sekaligus tinggi garis sejajar. */
+  py: number
+  /** jarak tegak puncak ke garis alas. */
+  tinggi: number
+  /** jari-jari juring sudut. */
+  jari: number
+  /**
+   * Tinggi PALING RENDAH label sudut alas di atas garis alas. Pada panggung
+   * sempit huruf dan pegangan sama-sama diperbesar oleh mesin, jadi tinggi
+   * yang benar-benar dipakai dihitung `naikAman()` dari skala layar; angka di
+   * sini hanya batas bawahnya untuk panggung lebar.
+   */
+  naik: number
+  hurufSudut: number
+  /** x tanda sejajar, selalu di kiri pojok alas terkiri. */
+  tandaX: number
 }
+
+interface TataBongkar extends Tata {
+  /** baris keterangan di atas gambar. */
+  ketY: number
+  hurufKet: number
+  /**
+   * Baris catatan bila angka yang diketik tidak bisa digambar. Berbagi
+   * tempat dengan ajakan "Seret aku" di bawah pegangan — keduanya tidak
+   * pernah tampil bersamaan, jadi tidak ada ruang kosong yang disimpan
+   * hanya untuk catatan yang jarang muncul.
+   */
+  catatY: number
+}
+
+interface TataEks extends Tata {
+  /** pusat dan jari-jari kipas tiga sudut. */
+  kipasY: number
+  kipasR: number
+  hurufKipas: number
+}
+
+/*
+ * Lebar: puncak di x = 345, jadi pojok terkiri berada di
+ * 345 − 195 × cot 35° = 66 satuan dari tepi — cukup untuk label nilai dan
+ * ajakan "Seret aku" yang muncul di atas dan di bawah pegangannya. Alas
+ * paling lebar 557 satuan, paling sempit 142 satuan (α = β = 70°), jadi
+ * kedua pegangan tidak pernah berdempet. Baris catatan di bawah ajakan.
+ */
+const BONGKAR_LEBAR: TataBongkar = {
+  sempit: false, w: 690, h: 336, maxH: 430, px: 345, py: 66, tinggi: 195,
+  jari: 42, naik: 26, hurufSudut: 16, tandaX: 26, ketY: 34, hurufKet: 17, catatY: 303,
+}
+
+/*
+ * HP: lebar 440 hanya memuat tinggi 108 satuan (alas paling lebar 309 satuan
+ * pada 35°, paling sempit 79 satuan). Pojok terkiri berada 66 satuan dari
+ * tepi — cukup untuk ajakan "Seret aku" di bawah pegangannya, yang pada
+ * panggung tersempit selebar ±127 satuan gambar. `naik` 28 adalah batas
+ * bawahnya; pada panggung yang lebih sempit `naikAman()` menaikkannya lagi
+ * karena huruf label dan pegangan ikut membesar.
+ */
+const BONGKAR_HP: TataBongkar = {
+  sempit: true, w: 440, h: 240, maxH: 430, px: 220, py: 56, tinggi: 108,
+  jari: 32, naik: 28, hurufSudut: 15, tandaX: 20, ketY: 28, hurufKet: 15, catatY: 206,
+}
+
+/* Eksperimen memakai segitiga yang sama, lalu kipas tiga sudut di bawahnya.
+   Kipas diletakkan di bawah ajakan pegangan pojok supaya tidak tertimpa. */
+const EKS_LEBAR: TataEks = {
+  sempit: false, w: 690, h: 446, maxH: 470, px: 345, py: 48, tinggi: 195,
+  jari: 42, naik: 26, hurufSudut: 16, tandaX: 26, kipasY: 404, kipasR: 88, hurufKipas: 15,
+}
+
+const EKS_HP: TataEks = {
+  sempit: true, w: 440, h: 364, maxH: 470, px: 220, py: 44, tinggi: 108,
+  jari: 32, naik: 28, hurufSudut: 15, tandaX: 20, kipasY: 318, kipasR: 82, hurufKipas: 13,
+}
+
+/* ---------------- Sudut yang dipakai bersama gambar dan teks ---------------- */
+
+/**
+ * Ketiga sudut. Sudut kanan dijepit supaya sudut puncak tidak habis: saat
+ * diseret penjepitan itu sudah dilakukan lebih dulu oleh keNilai, jadi
+ * gambar dan angka tidak pernah berbeda. Hanya angka yang DIKETIK pada
+ * kontrol angka yang bisa membentur batas ini.
+ */
+function sudut(p: Record<string, number>) {
+  const alfa = clamp(Math.round(p.alfa ?? 62), MIN_SUDUT, MAKS_SUDUT)
+  const diminta = clamp(Math.round(p.beta ?? 48), MIN_SUDUT, MAKS_SUDUT)
+  const beta = Math.min(diminta, MAKS_JUMLAH - alfa)
+  return { alfa, beta, diminta, gamma: 180 - alfa - beta, dibatasi: beta !== diminta }
+}
+
+/* ---------------- Geometri segitiga ---------------- */
+
+/** Jarak mendatar pojok alas dari puncak: tinggi × cot(sudut). */
+const geserPojok = (L: Tata, sudutDerajat: number) => L.tinggi / Math.tan(rad(sudutDerajat))
+
+function bentuk(L: Tata, alfa: number, beta: number) {
+  const y = L.py + L.tinggi
+  const A: Titik = [L.px - geserPojok(L, alfa), y]
+  const B: Titik = [L.px + geserPojok(L, beta), y]
+  const P: Titik = [L.px, L.py]
+  return { A, B, P, y }
+}
+
+/**
+ * Kebalikan posisi pojok kiri (x = px − tinggi × cot α). Penjepitan ke
+ * MAKS_JUMLAH dilakukan di sini, jadi menyeret tidak pernah menghasilkan
+ * segitiga yang tidak bisa digambar.
+ */
+const nilaiAlfa = (L: Tata, beta: number) => (pt: { x: number; y: number }) =>
+  clamp(deg(Math.atan2(L.tinggi, L.px - pt.x)), MIN_SUDUT, Math.min(MAKS_SUDUT, MAKS_JUMLAH - beta))
+
+/** Kebalikan posisi pojok kanan (x = px + tinggi × cot β). */
+const nilaiBeta = (L: Tata, alfa: number) => (pt: { x: number; y: number }) =>
+  clamp(deg(Math.atan2(L.tinggi, pt.x - L.px)), MIN_SUDUT, Math.min(MAKS_SUDUT, MAKS_JUMLAH - alfa))
 
 /** Pusat lingkaran dalam: titik temu ketiga garis bagi sudut. */
 function pusatDalam(A: Titik, B: Titik, P: Titik): Titik {
@@ -78,52 +212,128 @@ function pusatDalam(A: Titik, B: Titik, P: Titik): Titik {
   return [(a * A[0] + b * B[0] + c * P[0]) / k, (a * A[1] + b * B[1] + c * P[1]) / k]
 }
 
-/**
- * Jarak label sudut dari titik sudutnya, di sepanjang garis bagi sudut.
- * Paling jauh separuh jalan ke pusat lingkaran dalam, supaya label tetap
- * di dalam segitiga dan tidak menabrak label sudut lain.
- */
-const jarakLabel = (v: Titik, I: Titik, maks: number) =>
-  Math.min(maks, 0.5 * Math.hypot(I[0] - v[0], I[1] - v[1]))
+/* ---------------- Label sudut ---------------- */
 
-/** Titik label sudut di v: pada garis bagi (arah ke pusat lingkaran dalam). */
-function letakLabel(v: Titik, I: Titik, maks: number): Titik {
-  const d = Math.hypot(I[0] - v[0], I[1] - v[1]) || 1
-  const t = jarakLabel(v, I, maks)
-  return [v[0] + ((I[0] - v[0]) / d) * t, v[1] + ((I[1] - v[1]) / d) * t]
+/**
+ * Skala layar yang dipakai menghitung jarak aman. Sebelum panggung terukur
+ * (bingkai pertama dan saat uji otomatis) nilainya 0; kita memakai panggung
+ * paling sempit yang dilayani, karena di sanalah huruf dan pegangan paling
+ * besar dibandingkan gambarnya — jadi tata letaknya yang paling berdesakan.
+ */
+const skalaAman = (skala: number) => skala || 0.6
+
+/** Tinggi huruf Tag yang benar-benar digambar — rumusnya sama dengan Stage.tsx. */
+const ukuranTag = (size: number, skala: number) =>
+  Math.max(size, Math.min(size * 1.6, 11 / skalaAman(skala)))
+
+/** Setengah lebar latar Tag — rumusnya sama dengan Tag di Stage.tsx. */
+function setengahTag(teks: string, size: number, skala: number) {
+  const uk = ukuranTag(size, skala)
+  return (teks.length * uk * 0.58 + 14 * (uk / size)) / 2
+}
+
+/**
+ * Tinggi label sudut alas di atas garis alas. Pegangan pojok duduk tepat di
+ * garis alas dan jari-jarinya 9 px layar, sedangkan huruf label diperbesar
+ * sampai 11 px layar — keduanya menjadi makin BESAR dalam satuan gambar pada
+ * panggung yang makin sempit. Karena itu jaraknya dihitung dari skala layar,
+ * bukan dipatok satu angka: di panggung lebar hasilnya tetap `L.naik`.
+ */
+function naikAman(L: Tata, skala: number) {
+  const s = skalaAman(skala)
+  const rTitik = Math.max(8, 9 / s)
+  return Math.max(L.naik, rTitik + 1.75 / s + ukuranTag(L.hurufSudut, s) * 0.68 + 2)
+}
+
+/**
+ * Label kedua sudut alas: di dalam segitiga pada garis bagi sudutnya,
+ * `naikAman()` satuan di atas alas — jadi tidak pernah menimpa pegangan pojok
+ * yang duduk tepat di garis alas. Bila segitiganya tinggi-ramping sehingga
+ * kedua label berdempet, keduanya pindah ke luar segitiga: di kiri pojok kiri
+ * dan di kanan pojok kanan, dijepit supaya tetap utuh di dalam bingkai.
+ */
+function labelAlas(
+  L: Tata,
+  A: Titik,
+  B: Titik,
+  alfa: number,
+  beta: number,
+  teksA: string,
+  teksB: string,
+  skala: number,
+) {
+  const naik = naikAman(L, skala)
+  const y = A[1] - naik
+  const sA = setengahTag(teksA, L.hurufSudut, skala)
+  const sB = setengahTag(teksB, L.hurufSudut, skala)
+  const xa = A[0] + naik / Math.tan(rad(alfa / 2))
+  const xb = B[0] - naik / Math.tan(rad(beta / 2))
+  if (xb - sB - (xa + sA) >= 8) return { a: [xa, y] as Titik, b: [xb, y] as Titik }
+  return {
+    a: [clamp(A[0] - sA - 14, sA + 4, L.w - sA - 4), y] as Titik,
+    b: [clamp(B[0] + sB + 14, sB + 4, L.w - sB - 4), y] as Titik,
+  }
+}
+
+/** Arah garis bagi sudut puncak, menunjuk ke dalam segitiga. */
+const arahPuncak = (P: Titik, A: Titik, B: Titik) => {
+  const a = arah(P, A)
+  return a + selisih(a, arah(P, B)) / 2
+}
+
+/** Titik pada jarak r dari puncak, ke arah tertentu. */
+const diPuncak = (P: Titik, sudutArah: number, r: number): Titik => [
+  P[0] + Math.cos(sudutArah) * r,
+  P[1] + Math.sin(sudutArah) * r,
+]
+
+/**
+ * Jarak ketiga label dari puncak saat sudutnya sudah berkumpul di sana.
+ * Cukup jauh supaya dua label bertetangga tidak bertumpuk walau juringnya
+ * sempit, tetapi tidak sampai melewati garis alas.
+ * `bukaan` = jarak sudut antar label bertetangga, dalam derajat.
+ */
+function jarakKumpul(L: Tata, lebar: [number, number, number], bukaan: [number, number]) {
+  let r = L.jari + 26
+  const pasangan: [number, number][] = [
+    [0, 1],
+    [1, 2],
+  ]
+  pasangan.forEach(([i, j], k) => {
+    const buka = Math.max(rad(bukaan[k]) / 2, 0.05)
+    r = Math.max(r, (lebar[i] + lebar[j] + 8) / (2 * Math.sin(buka)))
+  })
+  return Math.min(r, L.tinggi * 0.62)
 }
 
 const WARNA = ['var(--m-a)', 'var(--m-b)', 'var(--m-ab)']
 
-/* ---------------- Sudut yang dipakai bersama gambar dan teks ---------------- */
-
-/**
- * Ketiga sudut pada mode bongkar. Penggeser sudut kanan sengaja dibatasi
- * supaya sudut puncak tidak menyusut habis dan segitiganya masih bisa
- * digambar. Gambar DAN teks langkah memakai fungsi ini, jadi angka di
- * narasi tidak pernah berbeda dengan angka di gambar.
- */
-function sudutBongkar(p: Record<string, number>) {
-  const alfa = clamp(Math.round(p.alfa ?? 62), 20, 120)
-  const betaGeser = Math.round(p.beta ?? 48)
-  const beta = clamp(betaGeser, 20, 155 - alfa)
-  return { alfa, beta, betaGeser, gamma: 180 - alfa - beta, dibatasi: beta !== betaGeser }
-}
-
-/** Sama untuk mode eksperimen, yang rentang penggesernya lebih lebar. */
-function sudutEksperimen(p: Record<string, number>) {
-  const alfa = clamp(Math.round(p.alfa ?? 62), 15, 140)
-  const betaGeser = Math.round(p.beta ?? 48)
-  const beta = clamp(betaGeser, 15, 160 - alfa)
-  return { alfa, beta, betaGeser, gamma: 180 - alfa - beta, dibatasi: beta !== betaGeser }
-}
-
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
-function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const { alfa, beta, gamma, dibatasi } = sudutBongkar(p)
-  const { A, B, P } = segitiga(alfa, beta, { x0: 150, x1: 530, y0: 72, y1: 320 })
-  const I = pusatDalam(A, B, P)
+function VisualBongkar(keadaan: DeriveState) {
+  const L: TataBongkar = useSempit() ? BONGKAR_HP : BONGKAR_LEBAR
+  return (
+    <Svg w={L.w} h={L.h} maxH={L.maxH} label="Segitiga dengan garis sejajar melalui puncaknya">
+      <IsiBongkar {...keadaan} L={L} />
+    </Svg>
+  )
+}
+
+/**
+ * Dipisah dari VisualBongkar supaya useSkalaSvg() membaca skala layar yang
+ * sebenarnya: SkalaCtx baru dipasang oleh <Svg>, jadi hook yang dipanggil di
+ * luar <Svg> selalu mengembalikan 0. Semua jarak aman di sini bergantung pada
+ * skala itu, karena huruf Tag dan pegangan diukur dalam piksel layar.
+ */
+function IsiBongkar({ step, t, p, sorot, L }: DeriveState & { L: TataBongkar }) {
+  const { alfa, beta, gamma, diminta, dibatasi } = sudut(p)
+  const skala = useSkalaSvg()
+  const ctx = useInteraksi()
+  const aktif = ctx?.kendali.aktif ?? null
+  // Ajakan "Seret aku" memakai baris yang sama dengan catatan di bawah alas.
+  const adaAjakan = ctx?.ajakan ?? false
+  const { A, B, P, y: yAlas } = bentuk(L, alfa, beta)
+  const R = L.jari
 
   const garisSejajar = fase(step, t, 1)
   const pindahA = step >= 2 ? (step === 2 ? seg(t, 0.1, 0.92) : 1) : 0
@@ -131,9 +341,13 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const lurus = fase(step, t, 4)
   const selesai = step >= 5
 
-  const R = 40
-  const kiri: Titik = [Math.min(A[0], P[0]) - 130, P[1]]
-  const kanan: Titik = [Math.max(B[0], P[0]) + 130, P[1]]
+  const nyalaA = sorot === 'a'
+  const nyalaB = sorot === 'b'
+  const nyalaC = sorot === 'c'
+  const nyalaLurus = sorot === 'lurus'
+  const teksA = `${fmt(alfa)}°`
+  const teksB = `${fmt(beta)}°`
+  const teksC = `${fmt(gamma)}°`
 
   // Sudut di A: dari arah A→B sampai arah A→P.
   const aA1 = arah(A, B)
@@ -151,53 +365,64 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const putarA = Math.PI * pindahA // searah jarum jam di layar
   const putarB = -Math.PI * pindahB // cermin dari putaran A
 
-  const lerpT = (a: Titik, b: Titik, s: number): Titik => [
-    a[0] + (b[0] - a[0]) * s,
-    a[1] + (b[1] - a[1]) * s,
-  ]
-
-  const nyalaA = sorot === 'a'
-  const nyalaB = sorot === 'b'
-  const nyalaC = sorot === 'c'
-  const nyalaLurus = sorot === 'lurus'
-
   const pusatA = lerpT(A, P, pindahA)
   const pusatB = lerpT(B, P, pindahB)
 
-  // Label ikut berpindah bersama juringnya, di tengah bukaan juring.
-  const tengahA = aA1 + selisih(aA1, aA2) / 2 + putarA
-  const tengahB = aB1 + selisih(aB1, aB2) / 2 + putarB
-  const jauhA = jarakLabel(A, I, R + 24) + (R + 24 - jarakLabel(A, I, R + 24)) * pindahA
-  const jauhB = jarakLabel(B, I, R + 24) + (R + 24 - jarakLabel(B, I, R + 24)) * pindahB
-  const labelC = letakLabel(P, I, R + 28)
+  // Label ikut berjalan bersama juringnya: dari tempatnya di alas menuju
+  // tempatnya di puncak, tempat ketiga sudut nanti berjajar.
+  const statis = labelAlas(L, A, B, alfa, beta, teksA, teksB, skala)
+  const arahA = aA1 + selisih(aA1, aA2) / 2 + Math.PI
+  const arahB = aB1 + selisih(aB1, aB2) / 2 - Math.PI
+  const arahC = arahPuncak(P, A, B)
+  const lebarLabel: [number, number, number] = [
+    setengahTag(teksA, L.hurufSudut, skala),
+    setengahTag(teksC, L.hurufSudut, skala),
+    setengahTag(teksB, L.hurufSudut, skala),
+  ]
+  const rKumpul = jarakKumpul(L, lebarLabel, [(alfa + gamma) / 2, (gamma + beta) / 2])
+  const I = pusatDalam(A, B, P)
+  const jauhC = Math.min(R + 26, 0.55 * Math.hypot(I[0] - P[0], I[1] - P[1]))
+  // Label puncak baru menepi ke jarak berkumpul setelah KEDUA label alas tiba.
+  // Kalau ia menepi lebih awal (pakai yang paling cepat), ia menyeberangi
+  // label alas yang masih tinggal di pojoknya — di tata letak HP jaraknya
+  // hanya 108 satuan, jadi keduanya bertumpuk.
+  const kumpul = Math.min(pindahA, pindahB)
+  const labelA = lerpT(statis.a, diPuncak(P, arahA, rKumpul), pindahA)
+  const labelB = lerpT(statis.b, diPuncak(P, arahB, rKumpul), pindahB)
+  const labelC = diPuncak(P, arahC, jauhC + (rKumpul - jauhC) * kumpul)
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Segitiga dengan garis sejajar melalui puncaknya">
-      {/* garis sejajar alas lewat puncak */}
+    <>
+      {/* garis sejajar alas, lewat puncak; alas ikut diperpanjang */}
       {garisSejajar > 0 && (
         <g opacity={garisSejajar}>
           <line
-            x1={kiri[0]}
+            x1={12}
             y1={P[1]}
-            x2={kanan[0]}
+            x2={L.w - 12}
             y2={P[1]}
             stroke={nyalaLurus || lurus > 0.3 ? 'var(--m-hi)' : 'var(--ink-3)'}
             strokeWidth={nyalaLurus || lurus > 0.3 ? 4 : 2.4}
             strokeDasharray={lurus > 0.3 ? undefined : '8 6'}
           />
-          {/* tanda sejajar */}
-          {[
-            [kiri[0] + 40, P[1]],
-            [(A[0] + B[0]) / 2 - 60, A[1]],
-          ].map(([mx, my], i) => (
-            <g key={i}>
-              <path
-                d={`M ${mx - 6} ${my - 7} l 7 7 l -7 7`}
-                fill="none"
-                stroke="var(--ink-3)"
-                strokeWidth={2}
-              />
-            </g>
+          <line
+            x1={12}
+            y1={yAlas}
+            x2={L.w - 12}
+            y2={yAlas}
+            stroke="var(--ink-3)"
+            strokeWidth={1.6}
+            opacity={0.7}
+          />
+          {/* tanda sejajar pada kedua garis, di kiri pojok alas terkiri */}
+          {[P[1], yAlas].map((my) => (
+            <path
+              key={my}
+              d={`M ${L.tandaX - 6} ${my - 7} l 7 7 l -7 7`}
+              fill="none"
+              stroke="var(--ink-3)"
+              strokeWidth={2}
+            />
           ))}
         </g>
       )}
@@ -211,17 +436,6 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         strokeLinejoin="round"
       />
 
-      {/* alas diperpanjang sedikit agar kesejajaran terlihat */}
-      <line
-        x1={A[0] - 100}
-        y1={A[1]}
-        x2={B[0] + 100}
-        y2={A[1]}
-        stroke="var(--ink-3)"
-        strokeWidth={1.6}
-        opacity={garisSejajar * 0.7}
-      />
-
       {/* sudut puncak (gamma) — selalu di tempatnya */}
       <path
         d={juringSudut(P, R, arah(P, A), arah(P, B))}
@@ -231,101 +445,155 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         strokeWidth={2}
       />
 
-      {/* sudut A, berpindah ke puncak */}
+      {/* sudut kiri, berpindah ke puncak */}
       <path
         d={juringSudut(pusatA, R, aA1 + putarA, aA2 + putarA)}
         fill={WARNA[0]}
-        fillOpacity={nyalaA ? 0.6 : 0.34}
+        fillOpacity={nyalaA || aktif === 'alfa' ? 0.6 : 0.34}
         stroke={WARNA[0]}
         strokeWidth={2}
       />
 
-      {/* sudut B, berpindah ke puncak */}
+      {/* sudut kanan, berpindah ke puncak */}
       <path
         d={juringSudut(pusatB, R, aB1 + putarB, aB2 + putarB)}
         fill={WARNA[1]}
-        fillOpacity={nyalaB ? 0.6 : 0.34}
+        fillOpacity={nyalaB || aktif === 'beta' ? 0.6 : 0.34}
         stroke={WARNA[1]}
         strokeWidth={2}
       />
 
-      {/* label sudut */}
-      <Tag
-        x={pusatA[0] + Math.cos(tengahA) * jauhA}
-        y={pusatA[1] + Math.sin(tengahA) * jauhA}
-        warna={WARNA[0]}
-        size={16}
-      >
-        {`${fmt(alfa)}°`}
+      {/* Label sudut tetap tampil selagi pojoknya diseret: angkanya menempel
+          pada sudutnya sendiri dan sudah berubah seketika, jadi pegangan tidak
+          perlu membawa salinan angka yang sama (lihat catatan di Pegangan). */}
+      <Tag x={labelA[0]} y={labelA[1]} warna={WARNA[0]} size={L.hurufSudut}>
+        {teksA}
       </Tag>
-      <Tag
-        x={pusatB[0] + Math.cos(tengahB) * jauhB}
-        y={pusatB[1] + Math.sin(tengahB) * jauhB}
-        warna={WARNA[1]}
-        size={16}
-      >
-        {`${fmt(beta)}°`}
+      <Tag x={labelB[0]} y={labelB[1]} warna={WARNA[1]} size={L.hurufSudut}>
+        {teksB}
       </Tag>
-      {/* label sudut puncak di garis bagi sudutnya, jadi tetap di dalam segitiga */}
-      <Tag x={labelC[0]} y={labelC[1]} warna={WARNA[2]} size={16}>
-        {`${fmt(gamma)}°`}
+      <Tag x={labelC[0]} y={labelC[1]} warna={WARNA[2]} size={L.hurufSudut}>
+        {teksC}
       </Tag>
 
-      {/* penggeser sudut kanan bisa menunjuk nilai yang tidak mungkin digambar */}
-      {dibatasi && (
-        <Tag x={W / 2} y={354} warna="var(--ink-2)" size={13}>
-          {`sudut kanan dibatasi menjadi ${fmt(beta)}° agar sudut puncak tetap terlihat`}
+      {/* angka yang diketik bisa menuntut segitiga yang tidak ada */}
+      {dibatasi && !adaAjakan && (
+        <Tag x={L.px} y={L.catatY} warna="var(--ink-2)" size={13}>
+          {L.sempit
+            ? `digambar ${fmt(beta)}°, bukan ${fmt(diminta)}°`
+            : `sudut kanan digambar ${fmt(beta)}° agar sudut puncak tidak habis`}
         </Tag>
       )}
 
       {/* keterangan tiap tahap */}
       {step === 1 && (
-        <Tag x={W / 2} y={44} warna="var(--ink-2)" size={16}>
-          garis baru ini sejajar dengan alas
+        <Tag x={L.px} y={L.ketY} warna="var(--ink-2)" size={L.hurufKet}>
+          {L.sempit ? 'garis ini sejajar dengan alas' : 'garis baru ini sejajar dengan alas'}
         </Tag>
       )}
       {step === 2 && (
-        <Tag x={W / 2} y={44} warna={WARNA[0]} size={16}>
-          sudut dalam berseberangan — besarnya sama persis
+        <Tag x={L.px} y={L.ketY} warna={WARNA[0]} size={L.hurufKet}>
+          {L.sempit
+            ? 'sudut berseberangan, sama persis'
+            : 'sudut dalam berseberangan — besarnya sama persis'}
         </Tag>
       )}
       {step === 3 && (
-        <Tag x={W / 2} y={44} warna={WARNA[1]} size={16}>
-          sudut satunya berpindah dengan alasan yang sama
+        <Tag x={L.px} y={L.ketY} warna={WARNA[1]} size={L.hurufKet}>
+          {L.sempit ? 'sudut satunya pun berpindah' : 'sudut satunya berpindah dengan alasan yang sama'}
         </Tag>
       )}
-      {lurus > 0.3 && (
-        <Tag x={W / 2} y={44} warna="var(--m-hi)" size={17}>
-          ketiganya memenuhi satu garis lurus
+      {lurus > 0.3 && !selesai && (
+        <Tag x={L.px} y={L.ketY} warna="var(--m-hi)" size={L.hurufKet}>
+          {L.sempit ? 'ketiganya memenuhi garis lurus' : 'ketiganya memenuhi satu garis lurus'}
         </Tag>
       )}
       {selesai && (
-        <Tag x={W / 2} y={H - 20} warna="var(--m-hi)" size={19}>
-          {`${fmt(alfa)}° + ${fmt(beta)}° + ${fmt(gamma)}° = 180°`}
+        <Tag x={L.px} y={L.ketY} warna="var(--m-hi)" size={L.hurufKet + 2}>
+          {`${teksA} + ${teksB} + ${teksC} = 180°`}
         </Tag>
       )}
-    </Svg>
+
+      {/* Kedua pojok alas diseret di sepanjang garis alas. Sengaja TANPA
+          `label`: label pegangan melayang 22 px di atas jari, dan di tata
+          letak HP segitiganya hanya 108 satuan tinggi — di sana label itu
+          jatuh persis pada angka sudut puncak, angka yang justru sedang
+          diamati anak. Angka sudut yang diseret tetap terbaca di tempatnya
+          sendiri di dalam segitiga dan di bilah angka di bawah gambar. */}
+      <Pegangan
+        x={A[0]}
+        y={yAlas}
+        param="alfa"
+        arah="x"
+        utama
+        ajakan="Seret aku"
+        keNilai={nilaiAlfa(L, beta)}
+      />
+      <Pegangan x={B[0]} y={yAlas} param="beta" arah="x" keNilai={nilaiBeta(L, alfa)} />
+    </>
   )
 }
 
 /* ---------------- Visual untuk eksperimen ---------------- */
 
-function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const { alfa, beta, gamma } = sudutEksperimen(p)
-  const { A, B, P } = segitiga(alfa, beta, { x0: 150, x1: 530, y0: 14, y1: 250 })
-  const I = pusatDalam(A, B, P)
-  const R = 36
-  const labelA = letakLabel(A, I, R + 22)
-  const labelB = letakLabel(B, I, R + 22)
-  const labelC = letakLabel(P, I, R + 22)
+function VisualEksperimen(keadaan: { p: Record<string, number>; sorot: string | null }) {
+  const L: TataEks = useSempit() ? EKS_HP : EKS_LEBAR
+  return (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Segitiga yang bisa diubah sudutnya, dengan ketiga sudut disusun berjajar"
+    >
+      <IsiEksperimen {...keadaan} L={L} />
+    </Svg>
+  )
+}
 
-  // Setengah lingkaran yang menampung ketiga sudut berjajar.
-  const bx = W / 2
-  const by = 400
-  const rr = 92
-  const potong = [alfa, beta, gamma]
+/** Dipisah dari VisualEksperimen dengan alasan yang sama seperti IsiBongkar. */
+function IsiEksperimen({
+  p,
+  sorot,
+  L,
+}: {
+  p: Record<string, number>
+  sorot: string | null
+  L: TataEks
+}) {
+  const { alfa, beta, gamma } = sudut(p)
+  const skala = useSkalaSvg()
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const { A, B, P, y: yAlas } = bentuk(L, alfa, beta)
+  const R = L.jari
+
+  const teksA = `${fmt(alfa)}°`
+  const teksB = `${fmt(beta)}°`
+  const teksC = `${fmt(gamma)}°`
+  const statis = labelAlas(L, A, B, alfa, beta, teksA, teksB, skala)
+  const I = pusatDalam(A, B, P)
+  const labelC = diPuncak(
+    P,
+    arahPuncak(P, A, B),
+    Math.min(R + 26, 0.55 * Math.hypot(I[0] - P[0], I[1] - P[1])),
+  )
+
+  const terang = (kunci: string, param: string) =>
+    sorot === kunci || aktif === param ? 0.62 : 0.34
+
+  // Kipas: ketiga sudut yang sama disusun berjajar pada satu garis lurus,
+  // dengan urutan yang sama seperti saat berkumpul di puncak pada bongkar:
+  // sudut kiri, sudut puncak, sudut kanan.
+  const bx = L.px
+  const by = L.kipasY
+  const rr = L.kipasR
   let mulai = Math.PI // mulai dari arah kiri
-  const juring = potong.map((s, i) => {
+  const juring = (
+    [
+      [alfa, WARNA[0], terang('a', 'alfa')],
+      [gamma, WARNA[2], sorot === 'c' ? 0.62 : 0.34],
+      [beta, WARNA[1], terang('b', 'beta')],
+    ] as [number, string, number][]
+  ).map(([s, warna, tebal], i) => {
     const a1 = mulai
     const a2 = mulai + rad(s)
     mulai = a2
@@ -333,20 +601,16 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
       <path
         key={i}
         d={juringSudut([bx, by], rr, a1, a2)}
-        fill={WARNA[i]}
-        fillOpacity={
-          (i === 0 && sorot === 'a') || (i === 1 && sorot === 'b') || (i === 2 && sorot === 'c')
-            ? 0.65
-            : 0.36
-        }
-        stroke={WARNA[i]}
+        fill={warna}
+        fillOpacity={tebal + 0.03}
+        stroke={warna}
         strokeWidth={1.8}
       />
     )
   })
 
   return (
-    <Svg w={W} h={H} maxH={440} label="Segitiga yang bisa diubah sudutnya, dengan ketiga sudut disusun berjajar">
+    <>
       <polygon
         points={`${A[0]},${A[1]} ${B[0]},${B[1]} ${P[0]},${P[1]}`}
         fill="var(--m-ghost)"
@@ -357,14 +621,14 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
       <path
         d={juringSudut(A, R, arah(A, B), arah(A, P))}
         fill={WARNA[0]}
-        fillOpacity={sorot === 'a' ? 0.62 : 0.34}
+        fillOpacity={terang('a', 'alfa')}
         stroke={WARNA[0]}
         strokeWidth={2}
       />
       <path
         d={juringSudut(B, R, arah(B, P), arah(B, A))}
         fill={WARNA[1]}
-        fillOpacity={sorot === 'b' ? 0.62 : 0.34}
+        fillOpacity={terang('b', 'beta')}
         stroke={WARNA[1]}
         strokeWidth={2}
       />
@@ -375,28 +639,78 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         stroke={WARNA[2]}
         strokeWidth={2}
       />
-      {/* label di garis bagi tiap sudut, jadi tetap di dalam segitiga */}
-      <Tag x={labelA[0]} y={labelA[1]} warna={WARNA[0]} size={15}>
-        {`${fmt(alfa)}°`}
+
+      {/* Label sudut tetap tampil selagi pojoknya diseret — lihat IsiBongkar. */}
+      <Tag x={statis.a[0]} y={statis.a[1]} warna={WARNA[0]} size={L.hurufSudut}>
+        {teksA}
       </Tag>
-      <Tag x={labelB[0]} y={labelB[1]} warna={WARNA[1]} size={15}>
-        {`${fmt(beta)}°`}
+      <Tag x={statis.b[0]} y={statis.b[1]} warna={WARNA[1]} size={L.hurufSudut}>
+        {teksB}
       </Tag>
-      <Tag x={labelC[0]} y={labelC[1]} warna={WARNA[2]} size={15}>
-        {`${fmt(gamma)}°`}
+      <Tag x={labelC[0]} y={labelC[1]} warna={WARNA[2]} size={L.hurufSudut}>
+        {teksC}
       </Tag>
 
-      {/* ketiga sudut disusun berjajar */}
+      {/* ketiga sudut yang sama, disusun berjajar */}
       {juring}
-      <line x1={bx - rr - 24} y1={by} x2={bx + rr + 24} y2={by} stroke="var(--m-hi)" strokeWidth={3} />
-      <Tag x={bx} y={by + 22} warna="var(--m-hi)" size={15}>
-        selalu pas membentuk sudut lurus = 180°
+      <line
+        x1={bx - rr - 24}
+        y1={by}
+        x2={bx + rr + 24}
+        y2={by}
+        stroke="var(--m-hi)"
+        strokeWidth={sorot === 'lurus' ? 5 : 3}
+      />
+      <Tag x={bx} y={by + 24} warna="var(--m-hi)" size={L.hurufKipas}>
+        {L.sempit ? 'selalu pas satu garis lurus' : 'selalu pas membentuk sudut lurus = 180°'}
       </Tag>
-    </Svg>
+
+      {/* kedua pojok alas diseret di sepanjang garis alas — tanpa `label`,
+          lihat alasannya di IsiBongkar */}
+      <Pegangan
+        x={A[0]}
+        y={yAlas}
+        param="alfa"
+        arah="x"
+        utama
+        ajakan="Seret aku"
+        keNilai={nilaiAlfa(L, beta)}
+      />
+      <Pegangan x={B[0]} y={yAlas} param="beta" arah="x" keNilai={nilaiBeta(L, alfa)} />
+    </>
   )
 }
 
 /* ---------------- Modul konsep ---------------- */
+
+const PARAM_SUDUT = [
+  {
+    key: 'alfa',
+    label: 'Sudut kiri',
+    min: MIN_SUDUT,
+    max: MAKS_SUDUT,
+    step: 1,
+    awal: 62,
+    satuan: '°',
+    bulat: true,
+    simbol: 'α',
+    peran: 'a' as const,
+    bagian: 'a',
+  },
+  {
+    key: 'beta',
+    label: 'Sudut kanan',
+    min: MIN_SUDUT,
+    max: MAKS_SUDUT,
+    step: 1,
+    awal: 48,
+    satuan: '°',
+    bulat: true,
+    simbol: 'β',
+    peran: 'b' as const,
+    bagian: 'b',
+  },
+]
 
 const konsep: Konsep = {
   id: 'sudut-segitiga',
@@ -438,10 +752,7 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [
-      { key: 'alfa', label: 'Sudut kiri', min: 20, max: 110, step: 1, awal: 62, satuan: '°' },
-      { key: 'beta', label: 'Sudut kanan', min: 20, max: 110, step: 1, awal: 48, satuan: '°' },
-    ],
+    params: PARAM_SUDUT,
     roles: { a: 'a', b: 'b', c: 'ab', lurus: 'hi' },
     arti: {
       a: 'Sudut di pojok kiri alas.',
@@ -454,14 +765,14 @@ const konsep: Konsep = {
         id: 's0',
         judul: 'Segitiga apa saja',
         narasi: (p) => {
-          const { alfa, beta, gamma, betaGeser, dibatasi } = sudutBongkar(p)
+          const { alfa, beta, gamma, diminta, dibatasi } = sudut(p)
           const ekor = dibatasi
-            ? `Penggeser sudut kanan menunjuk ${fmt(betaGeser)}°, tetapi gambar memakai ${fmt(beta)}° supaya sudut puncaknya tidak terlalu sempit untuk digambar.`
-            : 'Geser kedua sudut alasnya sesukamu — yang ingin kita ketahui: apakah jumlah ketiganya selalu sama, dan kenapa?'
+            ? `Sudut kanan diminta ${fmt(diminta)}°, tetapi gambar memakai ${fmt(beta)}° supaya masih tersisa ruang untuk sudut puncak.`
+            : 'Seret kedua pojok alasnya sesukamu — yang ingin kita ketahui: apakah jumlah ketiganya selalu sama, dan kenapa?'
           return `Tiga sudutnya, ${fmt(alfa)}°, ${fmt(beta)}°, dan ${fmt(gamma)}°, diberi warna berbeda. ${ekor}`
         },
         rumus: (p) => {
-          const { alfa, beta, gamma } = sudutBongkar(p)
+          const { alfa, beta, gamma } = sudut(p)
           return `[a:${fmt(alfa)}°] + [b:${fmt(beta)}°] + [c:${fmt(gamma)}°] = ?`
         },
         durasi: 1800,
@@ -477,11 +788,11 @@ const konsep: Konsep = {
         id: 's2',
         judul: 'Sudut kiri berpindah ke puncak',
         narasi: (p) => {
-          const { alfa } = sudutBongkar(p)
+          const { alfa } = sudut(p)
           return `Karena kedua garis sejajar, sudut kiri ${fmt(alfa)}° dan sudut di puncak ini adalah sudut dalam berseberangan. Besarnya pasti sama, jadi yang naik ke puncak juga tepat ${fmt(alfa)}°.`
         },
         rumus: (p) => {
-          const { alfa } = sudutBongkar(p)
+          const { alfa } = sudut(p)
           return `[a:${fmt(alfa)}°] di alas = [a:${fmt(alfa)}°] di puncak`
         },
         durasi: 2400,
@@ -490,11 +801,11 @@ const konsep: Konsep = {
         id: 's3',
         judul: 'Sudut kanan juga',
         narasi: (p) => {
-          const { alfa, beta, gamma } = sudutBongkar(p)
+          const { alfa, beta, gamma } = sudut(p)
           return `Alasan yang sama berlaku untuk sisi satunya, jadi ${fmt(beta)}° ikut naik ke puncak. Sekarang ketiga sudut segitiga — ${fmt(alfa)}°, ${fmt(beta)}°, dan ${fmt(gamma)}° — berkumpul di satu titik.`
         },
         rumus: (p) => {
-          const { beta } = sudutBongkar(p)
+          const { beta } = sudut(p)
           return `[b:${fmt(beta)}°] di alas = [b:${fmt(beta)}°] di puncak`
         },
         durasi: 2400,
@@ -503,7 +814,7 @@ const konsep: Konsep = {
         id: 's4',
         judul: 'Ketiganya memenuhi garis lurus',
         narasi: (p) => {
-          const { alfa, beta, gamma } = sudutBongkar(p)
+          const { alfa, beta, gamma } = sudut(p)
           return `Di puncak, ${fmt(alfa)}°, ${fmt(beta)}°, dan ${fmt(gamma)}° berjajar tanpa celah dan tanpa tumpang tindih. Bersama-sama ketiganya membentuk sudut lurus di sepanjang garis sejajar tadi.`
         },
         durasi: 2200,
@@ -512,11 +823,11 @@ const konsep: Konsep = {
         id: 's5',
         judul: 'Dan sudut lurus besarnya 180°',
         narasi: (p) => {
-          const { alfa, beta, gamma } = sudutBongkar(p)
-          return `Jadi ${fmt(alfa)}° + ${fmt(beta)}° + ${fmt(gamma)}° = 180°, dan itu bukan kebetulan. Geser sudutnya ke mana pun: ketiganya tetap harus memenuhi satu garis lurus.`
+          const { alfa, beta, gamma } = sudut(p)
+          return `Jadi ${fmt(alfa)}° + ${fmt(beta)}° + ${fmt(gamma)}° = 180°, dan itu bukan kebetulan. Seret pojok alasnya ke mana pun: ketiganya tetap harus memenuhi satu garis lurus.`
         },
         rumus: (p) => {
-          const { alfa, beta, gamma } = sudutBongkar(p)
+          const { alfa, beta, gamma } = sudut(p)
           return `[a:${fmt(alfa)}°] + [b:${fmt(beta)}°] + [c:${fmt(gamma)}°] = [lurus:180°]`
         },
         durasi: 2200,
@@ -527,14 +838,15 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ubah bentuk segitiganya',
     ajakan:
-      'Setengah lingkaran di bawah menyusun ketiga sudut itu berjajar. Perhatikan: ia selalu terisi penuh, tidak pernah kurang dan tidak pernah lebih.',
-    params: [
-      { key: 'alfa', label: 'Sudut kiri', min: 15, max: 130, step: 1, awal: 62, satuan: '°' },
-      { key: 'beta', label: 'Sudut kanan', min: 15, max: 130, step: 1, awal: 48, satuan: '°' },
-    ],
+      'Seret pojok kiri dan pojok kanan alasnya — masing-masing membuka sudutnya sendiri. Kipas di bawah menyusun ketiganya berjajar: tidak pernah kurang, tidak pernah lebih.',
+    params: PARAM_SUDUT,
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const { alfa, beta, gamma } = sudut(p)
+      return `[a:${fmt(alfa)}°] + [b:${fmt(beta)}°] + [c:${fmt(gamma)}°] = [lurus:180°]`
+    },
     temuan: (p) => {
-      const { alfa, beta, gamma, betaGeser, dibatasi } = sudutEksperimen(p)
+      const { alfa, beta, gamma, diminta, dibatasi } = sudut(p)
       const jenis =
         Math.max(alfa, beta, gamma) > 90
           ? 'tumpul'
@@ -548,18 +860,12 @@ const konsep: Konsep = {
           </strong>
           . Segitiga ini {jenis}.{' '}
           {dibatasi &&
-            `Penggeser sudut kanan menunjuk ${fmt(betaGeser)}°, tetapi gambar memakai ${fmt(beta)}°. ${
-              alfa + betaGeser >= 180
-                ? `Dua sudut yang jumlahnya sudah ${fmt(alfa + betaGeser)}° tidak menyisakan tempat untuk sudut ketiga — segitiga seperti itu tidak ada.`
-                : 'Sisa untuk sudut ketiga akan terlalu sempit untuk digambar.'
-            } `}
+            `Sudut kanan diminta ${fmt(diminta)}°, tetapi gambar memakai ${fmt(beta)}°: dua sudut alas yang jumlahnya lebih dari ${fmt(MAKS_JUMLAH)}° tidak menyisakan sudut puncak yang masih terbaca. `}
           {jenis === 'tumpul'
             ? 'Karena satu sudutnya melebihi 90°, dua sudut lainnya hanya kebagian sisa kurang dari 90° — tidak mungkin ada dua sudut tumpul dalam satu segitiga.'
-            : dibatasi
-              ? ''
-              : 'Coba perbesar salah satu sudut sampai melewati 90°: sudut ketiga langsung menyusut sebanyak yang sama untuk menjaga jumlahnya tetap 180°.'}{' '}
-          Perhatikan juga bahwa sudut ketiga tidak pernah bisa kamu atur sendiri — ia selalu
-          ditentukan oleh dua sudut lainnya.
+            : 'Coba buka salah satu sudut sampai melewati 90°: sudut ketiga langsung menyusut sebanyak yang sama untuk menjaga jumlahnya tetap 180°.'}{' '}
+          Perhatikan juga bahwa sudut puncak tidak pernah bisa kamu pegang sendiri — ia selalu
+          ditentukan oleh dua sudut alasnya.
         </p>
       )
     },

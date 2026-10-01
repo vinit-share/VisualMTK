@@ -135,7 +135,7 @@ function IsiKonsep({ konsep: k }: { konsep: Konsep }) {
           <p className="blok-sub">
             Tekan putar. Perhatikan bentuknya berubah — rumusnya muncul dari situ.
           </p>
-          <div className="card card-pad-lg">
+          <div className="card card-pad-lg card-visual">
             <Bongkar scene={k.bongkar} onSelesai={() => aksi.selesaiBongkar(k.id)} />
           </div>
         </section>
@@ -149,13 +149,16 @@ function IsiKonsep({ konsep: k }: { konsep: Konsep }) {
             <p className="blok-sub">
               Ubah angkanya sesukamu. Perhatikan apa yang ikut berubah, dan apa yang tetap.
             </p>
-            <div className="card card-pad-lg">
+            <div className="card card-pad-lg card-visual">
               <Eksperimen
                 judul={k.eksperimen.judul}
                 ajakan={k.eksperimen.ajakan}
                 params={k.eksperimen.params}
                 Visual={k.eksperimen.Visual}
                 temuan={k.eksperimen.temuan}
+                rumus={k.eksperimen.rumus}
+                roles={k.rumus.roles}
+                arti={k.rumus.arti}
               />
             </div>
           </section>

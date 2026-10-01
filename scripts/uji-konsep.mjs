@@ -9,6 +9,9 @@
  *  4. Render SVG pada BANYAK keadaan (step, t, dan nilai penggeser ekstrem),
  *     lalu memindai keluarannya dari NaN / Infinity / undefined.
  *  5. Jumlah elemen SVG tetap wajar.
+ *  7. Setiap penggeser bisa diubah langsung dari gambar (Pegangan, RelGeser,
+ *     atau elemen useSeret yang memberi atribut data-param), di tata letak
+ *     lebar maupun sempit (HP).
  *  6. Tidak ada warna heksadesimal mentah pada berkasnya.
  *
  * Jalankan: node scripts/uji-konsep.mjs
@@ -167,16 +170,28 @@ function periksaSoal(id, soal, asal) {
 
 const ANGKA_RUSAK = /(NaN|Infinity|undefined|null)/
 
-function periksaRender(id, nama, komponen, keadaan) {
+/** Lebar panggung yang diuji: 0 = tata letak lebar, 360 = HP tegak. */
+const LEBAR_UJI = [0, 360]
+
+function periksaRender(id, nama, komponen, keadaan, specs = []) {
   let maksElemen = 0
-  for (const props of keadaan) {
+  const dipegang = { 0: new Set(), 360: new Set() }
+  for (const props of keadaan) for (const lebar of LEBAR_UJI) {
     let html
+    const tata = lebar ? ' [HP]' : ''
     try {
-      html = renderToStaticMarkup(createElement(komponen, props))
+      html = renderToStaticMarkup(
+        createElement(
+          LebarPanggungUji,
+          { lebar },
+          createElement(InteraksiUji, { specs }, createElement(komponen, props)),
+        ),
+      )
     } catch (e) {
-      catat(id, 'fatal', `${nama}: gagal dirender pada ${JSON.stringify(props).slice(0, 120)} — ${e.message}`)
+      catat(id, 'fatal', `${nama}${tata}: gagal dirender pada ${JSON.stringify(props).slice(0, 120)} — ${e.message}`)
       continue
     }
+    for (const m of html.matchAll(/data-param="([^"]+)"/g)) for (const k of m[1].split(' ')) dipegang[lebar].add(k)
     // Pindai atribut yang berisi nilai rusak.
     const atributRusak = html.match(/(?:x|y|cx|cy|r|rx|ry|x1|y1|x2|y2|width|height|d|points|transform|opacity|stroke-width)="[^"]*(?:NaN|Infinity)[^"]*"/g)
     if (atributRusak) {
@@ -195,6 +210,17 @@ function periksaRender(id, nama, komponen, keadaan) {
   }
   if (maksElemen > 400) {
     catat(id, 'serius', `${nama}: sampai ${maksElemen} elemen SVG sekaligus (batas wajar 400)`)
+  }
+  // Interaksi langsung: setiap penggeser harus bisa dipegang dari gambar.
+  for (const lebar of LEBAR_UJI) {
+    const belum = specs.map((s) => s.key).filter((k) => !dipegang[lebar].has(k))
+    if (belum.length) {
+      catat(
+        id,
+        'serius',
+        `${nama}${lebar ? ' [HP]' : ''}: penggeser ${belum.join(', ')} belum bisa diubah langsung dari gambar (tidak ada Pegangan/RelGeser/useSeret dengan data-param)`,
+      )
+    }
   }
   return maksElemen
 }
@@ -267,6 +293,9 @@ const server = await createServer({
   appType: 'custom',
   logLevel: 'error',
 })
+
+const { InteraksiUji } = await server.ssrLoadModule('/src/components/Interaksi.tsx')
+const { LebarPanggungUji } = await server.ssrLoadModule('/src/components/Stage.tsx')
 
 // Katalog dibaca lewat Vite juga agar impor TypeScript-nya ikut terselesaikan.
 const KATALOG = new Map()
@@ -395,6 +424,46 @@ for (const f of berkas) {
     }
   }
 
+  /* --- rumus hidup & kaitan penggeser ke bagian rumus --- */
+  const idRumus = new Set([
+    ...Object.keys(k.rumus?.roles ?? {}),
+    ...Object.keys(k.bongkar?.roles ?? {}),
+    ...[...(k.rumus?.src ?? '').matchAll(/\[([a-zA-Z0-9_-]+):/g)].map((m) => m[1]),
+  ])
+  if (typeof k.eksperimen?.rumus === 'function') {
+    let rusak = null
+    for (const p of semuaNilai(k.eksperimen.params ?? [], 2000)) {
+      let teks
+      try {
+        teks = k.eksperimen.rumus(p)
+      } catch (e) {
+        rusak = `melempar galat (${e.message})`
+        break
+      }
+      if (typeof teks !== 'string' || !teks.trim()) rusak = 'kosong'
+      else if (/NaN|Infinity|undefined|\+ -|- -/.test(teks)) rusak = `memuat "${teks.match(/NaN|Infinity|undefined|\+ -|- -/)[0]}"`
+      if (rusak) {
+        rusak += ` pada ${JSON.stringify(p)}`
+        break
+      }
+      for (const m of teks.matchAll(/\[([a-zA-Z0-9_-]+):/g)) {
+        if (!idRumus.has(m[1])) {
+          rusak = `memakai bagian "${m[1]}" yang tidak ada di rumus.roles`
+          break
+        }
+      }
+      if (rusak) break
+    }
+    if (rusak) catat(id, 'serius', `eksperimen.rumus ${rusak}`)
+  }
+  for (const [nama, ps] of [['bongkar', k.bongkar?.params ?? []], ['eksperimen', k.eksperimen?.params ?? []]]) {
+    for (const sp of ps) {
+      if (sp.bagian && !idRumus.has(sp.bagian)) {
+        catat(id, 'ringan', `${nama}.params "${sp.key}": bagian "${sp.bagian}" tidak ada di rumus`)
+      }
+    }
+  }
+
   /* --- rumus --- */
   const bagianRumus = [...(k.rumus?.src ?? '').matchAll(/\[([a-zA-Z0-9_-]+):/g)].map((m) => m[1])
   if (bagianRumus.length < 2) catat(id, 'serius', 'rumus akhir punya kurang dari 2 bagian yang bisa disorot')
@@ -460,13 +529,13 @@ for (const f of berkas) {
     keadaanBongkar.push({ step: Math.max(0, langkah.length - 1), t: 1, p: {}, sorot: b })
   }
   if (k.bongkar?.Visual) {
-    maksElemen = Math.max(maksElemen, periksaRender(id, 'VisualBongkar', k.bongkar.Visual, keadaanBongkar))
+    maksElemen = Math.max(maksElemen, periksaRender(id, 'VisualBongkar', k.bongkar.Visual, keadaanBongkar, k.bongkar.params ?? []))
   }
 
   if (k.eksperimen?.Visual) {
     const keadaanEks = nilaiUji(k.eksperimen.params ?? []).map((p) => ({ p, sorot: null }))
     for (const b of new Set(bagianRumus)) keadaanEks.push({ p: {}, sorot: b })
-    maksElemen = Math.max(maksElemen, periksaRender(id, 'VisualEksperimen', k.eksperimen.Visual, keadaanEks))
+    maksElemen = Math.max(maksElemen, periksaRender(id, 'VisualEksperimen', k.eksperimen.Visual, keadaanEks, k.eksperimen.params ?? []))
   }
 
   ringkasan.push({

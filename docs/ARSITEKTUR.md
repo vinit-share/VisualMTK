@@ -130,6 +130,30 @@ mana pun. Dua pembantu di `src/lib/anim.ts` menjaga hal itu:
 - `fase(step, t, target)` — 1 bila langkah target sudah lewat, 0 bila belum, `t` bila sedang berjalan;
 - `seg(t, a, b)` — potongan `t` di antara `a`..`b`, untuk mengurutkan beberapa gerakan dalam satu langkah.
 
+### Interaksi langsung
+
+Angka di dalam visual tidak diubah lewat formulir di bawah gambar, melainkan
+dengan memegang objeknya: menyeret puncak segitiga, memutar titik pada lingkaran
+satuan, merentangkan sisi persegi, menggeser garis pembagi pecahan, mengambil
+bola dari timbangan. Mesinnya ada di `src/components/Interaksi.tsx`:
+
+| Bagian | Tugas |
+|---|---|
+| `Pegangan` | titik seret di dalam SVG; area sentuh selalu ±52 px, mendukung papan ketik, dan memberi label nilai di dekat jari |
+| `RelGeser`, `TombolGambar` | kontrol yang tetap digambar di dalam gambar, dekat objek yang diubahnya |
+| `useSeret` | interaksi khusus (mengambil benda, menggeser pembatas) |
+| `useKendali` | satu sumber nilai; perubahan lewat tombol atau ketikan dianimasikan, seretan mengikuti jari tanpa jeda |
+| `BilahAngka` | kontrol cadangan `− r = 5 +` yang bisa diketik; di HP hanya angka yang sedang dipegang yang tampil |
+| `useModeFokus` | panggung layar penuh, keluar dengan Esc |
+
+Setiap visual punya dua sistem koordinat: lebar untuk layar besar, dan tegak
+untuk HP (`useSempit()`), sehingga di layar sempit bentuknya digambar lebih
+besar, bukan tata letak lebar yang dikecilkan. Gerbang kualitasnya ada di
+`npm run periksa`: setiap visual dirender pada kedua tata letak, dan uji gagal
+bila ada penggeser yang tidak punya pegangan di gambar.
+
+Kontraknya: `docs/PANDUAN-INTERAKSI.md`.
+
 ### Rumus interaktif
 
 Markup `"[luas:L] = [setengah:½] × [alas:a] × [tinggi:t]"` diurai menjadi token

@@ -82,6 +82,12 @@ export interface ParamSpec {
   satuan?: string
   /** tampilkan nilai sebagai bilangan bulat. */
   bulat?: boolean
+  /** lambang singkat di kontrol angka dan label gambar, mis. "r", "a", "n". */
+  simbol?: string
+  /** peran warna yang sama dengan bagian rumus dan objeknya di gambar. */
+  peran?: FormulaRole
+  /** id bagian rumus yang ikut menyala saat penggeser ini dipegang. */
+  bagian?: string
 }
 
 export interface DeriveState {
@@ -242,6 +248,12 @@ export interface Konsep {
     Visual: ComponentType<{ p: Record<string, number>; sorot: string | null }>
     /** catatan yang berubah mengikuti parameter — inti "temukan sendiri". */
     temuan?: (p: Record<string, number>) => ReactNode
+    /**
+     * Rumus hidup: markup rumus berisi angka saat ini, mis.
+     * (p) => `[luas:L] = [pi:π] × [r2:${fmt(p.r)}^2] = ${fmt(Math.PI * p.r ** 2, 2)}`.
+     * Tampil di bawah gambar dan berubah seketika saat objeknya diseret.
+     */
+    rumus?: (p: Record<string, number>) => string
     rasio?: number
   }
   /** langkah 3: bongkar rumus, animasi bertahap. */

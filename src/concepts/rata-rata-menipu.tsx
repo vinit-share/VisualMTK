@@ -9,25 +9,40 @@
 
    Pernyataan "rata-rata adalah titik seimbang" bukan analogi
    longgar: jumlah simpangan terhadap rata-rata memang selalu nol.
+
+   Interaksi langsung (docs/PANDUAN-INTERAKSI.md):
+   - Nilai data ke-10 diubah dengan MENYERET titik datanya sendiri
+     di sepanjang garis bilangan. Tumpu, lengan simpangan, dan
+     penanda pada sumbu ikut bergerak seketika.
+   - Angkanya dibaca pada GARIS BILANGAN, tepat di bawah titiknya,
+     bukan pada keping yang melayang di dekat jari. Karena itu
+     pegangannya memakai labelSelalu tanpa label: keping ajakan
+     bawaan mesin ("Coba geser aku") ditaruh di BAWAH pegangan, dan
+     di sana ia tidak pernah muat — di HP titiknya sanggup menyentuh
+     tepi bingkai, dan saat titik itu diparkir di rak keping tersebut
+     menimpa label median, yaitu justru angka yang jadi inti konsep.
+     Ajakan menyeretnya tetap ada lewat denyut, panah dua arah,
+     kalimat ajakan di atas gambar, dan narasi langkah 3.
+   - "Ikutkan data ke-10" adalah nilai biner, jadi wajarnya diketuk:
+     TombolGambar di dalam gambar mengangkat titik itu ke rak
+     "di luar hitungan" — sama seperti mengangkat beban dari papan
+     jungkat-jungkit, sehingga tumpu kembali ke tempatnya semula.
+     Di rak, titiknya masih bisa diseret, jadi anak tidak pernah
+     kehilangan pegangan pada nilainya.
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, TombolGambar } from '../components/Interaksi'
+import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 690
-const H = 440
-
 const DASAR = [3, 4, 4, 5, 5, 5, 6, 6, 7]
 
-const GX0 = 70
-const GX1 = 650
+/** Rentang garis bilangan. Harus memuat nilai penggeser terbesar (40). */
 const XMIN = 0
 const XMAX = 42
-const BEAM_Y = 300
-
-const kx = (x: number) => GX0 + ((x - XMIN) / (XMAX - XMIN)) * (GX1 - GX0)
+const ANGKA_SUMBU = [0, 6, 12, 18, 24, 30, 36, 42]
 
 const rerata = (d: number[]) => d.reduce((a, b) => a + b, 0) / d.length
 
@@ -47,6 +62,112 @@ function modus(d: number[]) {
     .map(([v]) => v)
     .sort((a, b) => a - b)
 }
+
+/* ---------------- Dua tata letak: lebar dan HP tegak ---------------- */
+
+interface Tata {
+  w: number
+  h: number
+  maxH: number
+  /** ujung kiri dan kanan garis bilangan. */
+  gx0: number
+  gx1: number
+  /** garis papan jungkat-jungkit. */
+  papanY: number
+  /** titik data terbawah sejauh ini di atas papan, lalu jarak antar tumpukan. */
+  dotAtas: number
+  tumpukan: number
+  rDot: number
+  rPencil: number
+  /** tinggi garis median di atas papan. */
+  medTinggi: number
+  tumpuTinggi: number
+  tumpuLebar: number
+  /** kemiringan papan paling besar, derajat. Dijaga agar ujung papan tidak
+      pernah menyentuh garis bilangan di bawahnya. */
+  miringMaks: number
+  /** jarak garis bilangan, angka sumbu, dan label rata-rata dari papan. */
+  dSumbu: number
+  dAngka: number
+  dMean: number
+  angkaSize: number
+  meanSize: number
+  judulY: number
+  judulSize: number
+  sempit: boolean
+}
+
+interface TataEks extends Tata {
+  /** rak "di luar hitungan" tempat data ke-10 diparkir. */
+  rakY: number
+  judulX: number
+  judulAnchor: 'start' | 'middle'
+  tombolX: number
+  tombolY: number
+}
+
+const tataBongkar = (sempit: boolean): Tata =>
+  sempit
+    ? {
+        w: 420, h: 470, maxH: 430, gx0: 38, gx1: 396, papanY: 320,
+        dotAtas: 20, tumpukan: 26, rDot: 8, rPencil: 10, medTinggi: 130,
+        tumpuTinggi: 46, tumpuLebar: 18, miringMaks: 5,
+        dSumbu: 58, dAngka: 82, dMean: 110, angkaSize: 13, meanSize: 15,
+        judulY: 38, judulSize: 14, sempit: true,
+      }
+    : {
+        w: 690, h: 440, maxH: 440, gx0: 70, gx1: 650, papanY: 300,
+        dotAtas: 16, tumpukan: 22, rDot: 8, rPencil: 10, medTinggi: 120,
+        tumpuTinggi: 40, tumpuLebar: 16, miringMaks: 4.5,
+        dSumbu: 52, dAngka: 76, dMean: 106, angkaSize: 12, meanSize: 16,
+        judulY: 42, judulSize: 16, sempit: false,
+      }
+
+const tataEks = (sempit: boolean): TataEks =>
+  sempit
+    ? {
+        w: 420, h: 530, maxH: 440, gx0: 38, gx1: 396, papanY: 350,
+        dotAtas: 20, tumpukan: 24, rDot: 7, rPencil: 9, medTinggi: 160,
+        tumpuTinggi: 46, tumpuLebar: 18, miringMaks: 5,
+        dSumbu: 58, dAngka: 80, dMean: 112, angkaSize: 13, meanSize: 15,
+        judulY: 26, judulSize: 14, sempit: true,
+        rakY: 112, judulX: 210, judulAnchor: 'middle', tombolX: 326, tombolY: 484,
+      }
+    : {
+        w: 690, h: 470, maxH: 460, gx0: 70, gx1: 650, papanY: 300,
+        dotAtas: 16, tumpukan: 22, rDot: 8, rPencil: 10, medTinggi: 136,
+        tumpuTinggi: 40, tumpuLebar: 16, miringMaks: 4.5,
+        dSumbu: 52, dAngka: 76, dMean: 106, angkaSize: 12, meanSize: 15,
+        judulY: 44, judulSize: 15, sempit: false,
+        rakY: 112, judulX: 345, judulAnchor: 'middle', tombolX: 581, tombolY: 418,
+      }
+
+/** Nilai data → x pada garis bilangan. Semua gambar memakai ini. */
+const posX = (L: Tata, v: number) => L.gx0 + ((v - XMIN) / (XMAX - XMIN)) * (L.gx1 - L.gx0)
+
+/** Kebalikan tepat dari posX: x jari → nilai data. */
+const keNilai = (L: Tata, x: number) => XMIN + ((x - L.gx0) / (L.gx1 - L.gx0)) * (XMAX - XMIN)
+
+type Ukuran = (px: number, cadangan?: number) => number
+
+/**
+ * Perkiraan lebar kotak Tag pada skala layar sekarang — rumusnya sama dengan
+ * `Tag` di Stage.tsx, termasuk pembesaran huruf di layar kecil. Dipakai supaya
+ * label rata-rata dan median tidak pernah terpotong tepi bingkai.
+ */
+function lebarTag(teks: string, size: number, uu: Ukuran) {
+  const ukuran = Math.max(size, Math.min(size * 1.6, uu(11, 11)))
+  return teks.length * ukuran * 0.58 + (14 * ukuran) / size
+}
+
+/** Geser label secukupnya supaya kotaknya tetap di dalam bingkai. */
+const xAman = (L: Tata, x: number, lebar: number) =>
+  clamp(x, Math.min(L.w / 2, lebar / 2 + 4), Math.max(L.w / 2, L.w - lebar / 2 - 4))
+
+/** Tinggi tumpukan titik data ke-10 bila nilainya sama dengan data yang sudah ada. */
+const tingkatPencilan = (v: number) => DASAR.filter((d) => d === v).length
+
+const dotY = (L: Tata, k: number) => L.papanY - L.dotAtas - k * L.tumpukan
 
 /* ---------------- Turunan yang dipakai bersama gambar dan teks ---------------- */
 
@@ -79,13 +200,32 @@ function angkaBongkar(p: Record<string, number>) {
   }
 }
 
+/** Nilai eksperimen — sumber tunggal untuk gambar, rumus hidup, dan temuan. */
+function bacaEksperimen(p: Record<string, number>) {
+  const pencilan = clamp(Math.round(p.pencilan ?? 20), 0, 40)
+  const pakai = (p.pakai ?? 1) > 0.5
+  const data = pakai ? [...DASAR, pencilan] : DASAR
+  return {
+    pencilan,
+    pakai,
+    data,
+    jumlah: data.reduce((a, b) => a + b, 0),
+    mean: rerata(data),
+    med: median(data),
+    mod: modus(data),
+  }
+}
+
+/* ---------------- Bagian gambar ---------------- */
+
 function TitikData({
+  L,
   data,
-  nyalaPencilan,
   pencilan,
 }: {
+  L: Tata
   data: number[]
-  nyalaPencilan: boolean
+  /** nilai data ke-10 bila ia ikut digambar di atas papan. */
   pencilan: number | null
 }) {
   const tumpuk = new Map<number, number>()
@@ -98,11 +238,11 @@ function TitikData({
         return (
           <circle
             key={i}
-            cx={kx(v)}
-            cy={BEAM_Y - 16 - k * 22}
-            r={ini ? 11 : 9}
+            cx={posX(L, v)}
+            cy={dotY(L, k)}
+            r={ini ? L.rPencil : L.rDot}
             fill={ini ? 'var(--m-hi)' : 'var(--m-a)'}
-            fillOpacity={ini && nyalaPencilan ? 0.9 : 0.65}
+            fillOpacity={ini ? 0.9 : 0.62}
             stroke={ini ? 'var(--m-hi)' : 'var(--m-a)'}
             strokeWidth={ini ? 2.5 : 1.6}
           />
@@ -113,12 +253,14 @@ function TitikData({
 }
 
 function Jungkat({
+  L,
   data,
   mean,
   miring,
   tampilLengan,
   nyalaLengan = false,
 }: {
+  L: Tata
   data: number[]
   mean: number
   /** kemiringan papan, 0 = seimbang. */
@@ -127,30 +269,33 @@ function Jungkat({
   /** nyalakan lengan simpangan saat bagian rumus "jarak" disorot. */
   nyalaLengan?: boolean
 }) {
-  const fx = kx(mean)
+  const fx = posX(L, mean)
+  const y = L.papanY
   return (
     <g>
-      {/* lengan simpangan */}
+      {/* lengan simpangan: jarak tiap data ke titik tumpu */}
       {tampilLengan > 0.02 &&
         data.map((v, i) => (
           <line
             key={i}
-            x1={kx(v)}
-            y1={BEAM_Y + 6}
+            x1={posX(L, v)}
+            y1={y + 6}
             x2={fx}
-            y2={BEAM_Y + 6}
+            y2={y + 6}
             stroke={nyalaLengan ? 'var(--m-hi)' : v > mean ? 'var(--m-b)' : 'var(--m-c)'}
             strokeWidth={nyalaLengan ? 3 : 1.4}
             opacity={(nyalaLengan ? 0.9 : 0.35) * tampilLengan}
           />
         ))}
 
-      <g transform={`rotate(${miring.toFixed(2)} ${fx.toFixed(1)} ${BEAM_Y})`}>
-        <rect x={GX0 - 10} y={BEAM_Y - 4} width={GX1 - GX0 + 20} height={8} rx={4} fill="var(--ink-2)" />
+      <g transform={`rotate(${miring.toFixed(2)} ${fx.toFixed(1)} ${y})`}>
+        <rect x={L.gx0 - 10} y={y - 4} width={L.gx1 - L.gx0 + 20} height={8} rx={4} fill="var(--ink-2)" />
       </g>
       {/* titik tumpu */}
       <path
-        d={`M ${fx} ${BEAM_Y + 6} L ${fx - 16} ${BEAM_Y + 40} L ${fx + 16} ${BEAM_Y + 40} Z`}
+        d={`M ${fx} ${y + 6} L ${fx - L.tumpuLebar} ${y + L.tumpuTinggi} L ${fx + L.tumpuLebar} ${
+          y + L.tumpuTinggi
+        } Z`}
         fill="var(--m-ab)"
         stroke="var(--m-ab)"
         strokeWidth={2}
@@ -159,32 +304,102 @@ function Jungkat({
   )
 }
 
-function GarisAngka() {
+/**
+ * Garis bilangan. Nilai data ke-10 dibacakan langsung di sumbu, tepat di bawah
+ * titiknya — juga selama titiknya diseret, supaya angkanya tidak pernah lepas
+ * dari objeknya. Angka sumbu yang tertutup penanda itu disembunyikan supaya
+ * tidak bertabrakan.
+ */
+function GarisAngka({ L, tanda, redup = false }: { L: Tata; tanda: number | null; redup?: boolean }) {
+  const uu = useUkuranLayar()
+  const y = L.papanY + L.dSumbu
+  const yAngka = L.papanY + L.dAngka
+  const tx = tanda === null ? null : posX(L, tanda)
+  // Jarak aman antara angka sumbu dan penanda data ke-10, dihitung dari ukuran
+  // huruf di layar — di layar kecil huruf Tag diperbesar, jadi jaraknya ikut.
+  const jarakAman = Math.max(36, uu(32, 32))
   return (
     <g>
-      <line x1={GX0} y1={BEAM_Y + 52} x2={GX1} y2={BEAM_Y + 52} stroke="var(--m-axis)" strokeWidth={1.5} />
-      {Array.from({ length: 8 }, (_, i) => i * 6).map((v) => (
-        <g key={v}>
-          <line x1={kx(v)} y1={BEAM_Y + 46} x2={kx(v)} y2={BEAM_Y + 58} stroke="var(--m-axis)" strokeWidth={1.3} />
-          <text
-            x={kx(v)}
-            y={BEAM_Y + 74}
-            textAnchor="middle"
-            fontSize={12}
-            fontWeight={700}
-            fill="var(--ink-soft)"
-          >
-            {fmt(v)}
-          </text>
+      <line x1={L.gx0} y1={y} x2={L.gx1} y2={y} stroke="var(--m-axis)" strokeWidth={1.5} />
+      {ANGKA_SUMBU.map((v) => {
+        const x = posX(L, v)
+        const tertutup = tx !== null && Math.abs(x - tx) < jarakAman
+        return (
+          <g key={v}>
+            <line x1={x} y1={y - 6} x2={x} y2={y + 6} stroke="var(--m-axis)" strokeWidth={1.3} />
+            {!tertutup && (
+              <Tag x={x} y={yAngka} size={L.angkaSize} warna="var(--ink-soft)" latar={null} tebal={700}>
+                {fmt(v)}
+              </Tag>
+            )}
+          </g>
+        )
+      })}
+      {tx !== null && (
+        <g opacity={redup ? 0.45 : 1}>
+          <line x1={tx} y1={y - 8} x2={tx} y2={y + 8} stroke="var(--m-hi)" strokeWidth={3} />
+          <Tag x={tx} y={yAngka} size={L.angkaSize + 1} warna="var(--m-hi)" latar={null}>
+            {fmt(tanda as number)}
+          </Tag>
         </g>
-      ))}
+      )}
     </g>
+  )
+}
+
+function PenandaMedian({ L, med, nyala, opacity = 1 }: { L: Tata; med: number; nyala: boolean; opacity?: number }) {
+  const uu = useUkuranLayar()
+  const x = posX(L, med)
+  const warna = nyala ? 'var(--m-hi)' : 'var(--m-b)'
+  const teks = `median ${fmt(med, 2)}`
+  return (
+    <g opacity={opacity}>
+      <line
+        x1={x}
+        y1={L.papanY - L.medTinggi}
+        x2={x}
+        y2={L.papanY + 6}
+        stroke={warna}
+        strokeWidth={nyala ? 3.4 : 2.2}
+        strokeDasharray="6 5"
+      />
+      <Tag x={xAman(L, x, lebarTag(teks, 15, uu))} y={L.papanY - L.medTinggi - 18} warna={warna} size={15}>
+        {teks}
+      </Tag>
+    </g>
+  )
+}
+
+/** Label rata-rata, menempel pada titik tumpu tetapi tidak pernah terpotong tepi. */
+function PenandaMean({
+  L,
+  mean,
+  teks,
+  nyala,
+}: {
+  L: Tata
+  mean: number
+  teks: string
+  nyala: boolean
+}) {
+  const uu = useUkuranLayar()
+  return (
+    <Tag
+      x={xAman(L, posX(L, mean), lebarTag(teks, L.meanSize, uu))}
+      y={L.papanY + L.dMean}
+      warna={nyala ? 'var(--m-hi)' : 'var(--m-ab)'}
+      size={L.meanSize}
+    >
+      {teks}
+    </Tag>
   )
 }
 
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const sempit = useSempit()
+  const L = tataBongkar(sempit)
   const { x: pencilan, meanDasar, meanPenuh, ekstrem } = angkaBongkar(p)
 
   const adaPencilan = step >= 3
@@ -196,98 +411,92 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const geser = step === 4 ? seg(t, 0.35, 1) : step >= 5 ? 1 : 0
   const mean = meanDasar + (meanPenuh - meanDasar) * geser
   // Selama tumpu belum sampai, posisinya belum rata-rata data yang sekarang.
-  const labelTumpu = adaPencilan && geser < 1 ? 'titik tumpu' : 'rata-rata'
+  const labelTumpu = adaPencilan && geser < 1 ? (sempit ? 'tumpu' : 'titik tumpu') : 'rata-rata'
   const med = median(data)
 
   const tampilTumpu = fase(step, t, 1)
   const tampilMedian = fase(step, t, 2)
   const tampilLengan = fase(step, t, 1)
-  const miring = step === 4 ? 7 * (t < 0.35 ? seg(t, 0, 0.3) : 1 - seg(t, 0.35, 1)) : 0
+  const miring = step === 4 ? L.miringMaks * (t < 0.35 ? seg(t, 0, 0.3) : 1 - seg(t, 0.35, 1)) : 0
 
   const nyalaMean = sorot === 'mean'
   const nyalaMedian = sorot === 'median'
 
+  const judul = (() => {
+    if (step === 0) return sempit ? 'sembilan data berdekatan' : 'sembilan data, semuanya berdekatan'
+    if (step === 1)
+      return sempit ? 'rata-rata = titik tumpu' : 'rata-rata adalah titik tumpu yang membuat papan seimbang'
+    if (step === 2) return sempit ? 'median = tengah urutan' : 'median adalah nilai yang berada tepat di tengah urutan'
+    if (step === 3) {
+      const inti = ekstrem ? 'masuk satu data ekstrem' : 'masuk satu data baru'
+      return `${inti}: ${fmt(pencilan)}`
+    }
+    if (step === 4)
+      return sempit ? 'papan miring, tumpu bergeser' : 'papan langsung miring — titik tumpu harus digeser ke kanan'
+    return sempit
+      ? `rata-rata ${fmt(meanPenuh, 2)} · median ${fmt(med, 2)}`
+      : `rata-rata pindah ke ${fmt(meanPenuh, 2)}, median tetap ${fmt(med, 2)}`
+  })()
+
+  const warnaJudul =
+    step === 0 ? 'var(--ink-2)' : step === 1 ? 'var(--m-ab)' : step === 2 ? 'var(--m-b)' : step <= 4 ? 'var(--m-hi)' : 'var(--m-b)'
+
   return (
-    <Svg w={W} h={H} maxH={450} label="Titik data pada jungkat-jungkit dengan penanda rata-rata dan median">
-      <TitikData
-        data={data}
-        nyalaPencilan={step >= 3}
-        pencilan={adaPencilan ? pencilan : null}
-      />
-      {tampilTumpu > 0.05 && (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Titik data pada jungkat-jungkit dengan penanda rata-rata dan median"
+    >
+      <TitikData L={L} data={data} pencilan={adaPencilan ? pencilan : null} />
+      {tampilTumpu > 0.05 ? (
         <Jungkat
+          L={L}
           data={data}
           mean={mean}
           miring={miring}
           tampilLengan={tampilLengan}
           nyalaLengan={sorot === 'jarak'}
         />
+      ) : (
+        <rect
+          x={L.gx0 - 10}
+          y={L.papanY - 4}
+          width={L.gx1 - L.gx0 + 20}
+          height={8}
+          rx={4}
+          fill="var(--ink-3)"
+        />
       )}
-      {tampilTumpu <= 0.05 && (
-        <rect x={GX0 - 10} y={BEAM_Y - 4} width={GX1 - GX0 + 20} height={8} rx={4} fill="var(--ink-3)" />
-      )}
-      <GarisAngka />
+      <GarisAngka L={L} tanda={adaPencilan ? pencilan : null} />
 
-      {/* penanda rata-rata */}
+      {/* penanda rata-rata, menempel pada titik tumpu */}
       {tampilTumpu > 0.3 && (
-        <Tag
-          x={kx(mean)}
-          y={BEAM_Y + 100}
-          warna={nyalaMean ? 'var(--m-hi)' : 'var(--m-ab)'}
-          size={16}
-        >
-          {`${labelTumpu} ${fmt(mean, 2)}`}
-        </Tag>
+        <PenandaMean L={L} mean={mean} teks={`${labelTumpu} ${fmt(mean, 2)}`} nyala={nyalaMean} />
       )}
 
-      {/* penanda median */}
-      {tampilMedian > 0.3 && (
-        <g opacity={tampilMedian}>
-          <line
-            x1={kx(med)}
-            y1={BEAM_Y - 120}
-            x2={kx(med)}
-            y2={BEAM_Y + 6}
-            stroke={nyalaMedian ? 'var(--m-hi)' : 'var(--m-b)'}
-            strokeWidth={nyalaMedian ? 3.4 : 2.2}
-            strokeDasharray="6 5"
-          />
-          <Tag x={kx(med)} y={BEAM_Y - 134} warna={nyalaMedian ? 'var(--m-hi)' : 'var(--m-b)'} size={15}>
-            {`median ${fmt(med, 2)}`}
-          </Tag>
-        </g>
-      )}
+      {tampilMedian > 0.3 && <PenandaMedian L={L} med={med} nyala={nyalaMedian} opacity={tampilMedian} />}
 
-      {step === 0 && (
-        <Tag x={W / 2} y={44} warna="var(--ink-2)" size={16}>
-          sembilan data, semuanya berdekatan
-        </Tag>
-      )}
-      {step === 1 && (
-        <Tag x={W / 2} y={44} warna="var(--m-ab)" size={16}>
-          rata-rata adalah titik tumpu yang membuat papan seimbang
-        </Tag>
-      )}
-      {step === 2 && (
-        <Tag x={W / 2} y={44} warna="var(--m-b)" size={16}>
-          median adalah nilai yang berada tepat di tengah urutan
-        </Tag>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={44} warna="var(--m-hi)" size={16}>
-          {`${ekstrem ? 'masuk satu data ekstrem' : 'masuk satu data baru'}: ${fmt(pencilan)}`}
-        </Tag>
-      )}
-      {step === 4 && (
-        <Tag x={W / 2} y={44} warna="var(--m-hi)" size={16}>
-          papan langsung miring — titik tumpu harus digeser ke kanan
-        </Tag>
-      )}
-      {step >= 5 && (
-        <Tag x={W / 2} y={44} warna="var(--m-b)" size={16}>
-          {`rata-rata pindah ke ${fmt(meanPenuh, 2)}, median tetap ${fmt(med, 2)}`}
-        </Tag>
-      )}
+      <Tag x={L.w / 2} y={L.judulY} warna={warnaJudul} size={L.judulSize}>
+        {judul}
+      </Tag>
+
+      {/* Data ke-10 dipegang langsung di titiknya dan diseret sepanjang garis
+          bilangan. Sebelum langkah 3 titiknya belum ada, jadi pegangan
+          disembunyikan. labelSelalu tanpa label: angkanya sudah terbaca di
+          garis bilangan tepat di bawah titik ini, sedangkan keping ajakan
+          bawaan mesin tidak muat di bawah pegangan (lihat catatan kepala
+          berkas). Denyut dan panah dua arah tetap mengajak menyeret. */}
+      <Pegangan
+        x={posX(L, pencilan)}
+        y={dotY(L, tingkatPencilan(pencilan))}
+        param="pencilan"
+        arah="x"
+        utama
+        labelSelalu
+        sembunyi={!adaPencilan}
+        keNilai={(pt) => keNilai(L, pt.x)}
+      />
     </Svg>
   )
 }
@@ -295,37 +504,88 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const pencilan = clamp(Math.round(p.pencilan ?? 20), 0, 40)
-  const pakai = (p.pakai ?? 1) > 0.5
-  const data = pakai ? [...DASAR, pencilan] : DASAR
-  const mean = rerata(data)
-  const med = median(data)
-  const mod = modus(data)
+  const sempit = useSempit()
+  const L = tataEks(sempit)
+  const { pencilan, pakai, data, mean, med, mod } = bacaEksperimen(p)
+
+  const px = posX(L, pencilan)
+  const yTitik = pakai ? dotY(L, tingkatPencilan(pencilan)) : L.rakY
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Titik data yang bisa digeser beserta rata-rata, median, dan modusnya">
-      <TitikData data={data} nyalaPencilan pencilan={pakai ? pencilan : null} />
-      <Jungkat data={data} mean={mean} miring={0} tampilLengan={1} />
-      <GarisAngka />
-
-      <Tag x={kx(mean)} y={BEAM_Y + 100} warna={sorot === 'mean' ? 'var(--m-hi)' : 'var(--m-ab)'} size={15}>
-        {`rata-rata ${fmt(mean, 2)}`}
-      </Tag>
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maxH}
+      label="Titik data yang bisa diseret beserta rata-rata, median, dan modusnya"
+    >
+      {/* rak "di luar hitungan": tempat data ke-10 diparkir */}
       <line
-        x1={kx(med)}
-        y1={BEAM_Y - 120}
-        x2={kx(med)}
-        y2={BEAM_Y + 6}
-        stroke={sorot === 'median' ? 'var(--m-hi)' : 'var(--m-b)'}
-        strokeWidth={2.2}
-        strokeDasharray="6 5"
+        x1={L.gx0}
+        y1={L.rakY}
+        x2={L.gx1}
+        y2={L.rakY}
+        stroke="var(--m-axis)"
+        strokeWidth={1.4}
+        strokeDasharray="5 6"
+        opacity={pakai ? 0.22 : 0.6}
       />
-      <Tag x={kx(med)} y={BEAM_Y - 134} warna={sorot === 'median' ? 'var(--m-hi)' : 'var(--m-b)'} size={14}>
-        {`median ${fmt(med, 2)}`}
+      {!pakai && (
+        <circle
+          cx={px}
+          cy={L.rakY}
+          r={L.rPencil}
+          fill="none"
+          stroke="var(--m-hi)"
+          strokeWidth={2.5}
+          strokeDasharray="4 3"
+        />
+      )}
+
+      <TitikData L={L} data={data} pencilan={pakai ? pencilan : null} />
+      <Jungkat L={L} data={data} mean={mean} miring={0} tampilLengan={1} nyalaLengan={sorot === 'jarak'} />
+      <GarisAngka L={L} tanda={pencilan} redup={!pakai} />
+
+      <PenandaMean L={L} mean={mean} teks={`rata-rata ${fmt(mean, 2)}`} nyala={sorot === 'mean'} />
+      <PenandaMedian L={L} med={med} nyala={sorot === 'median'} />
+
+      {/* Satu baris keterangan di atas: modus sekaligus keadaan data ke-10,
+          supaya rak tidak perlu label sendiri yang bisa ditabrak titiknya. */}
+      <Tag
+        x={L.judulX}
+        y={L.judulY}
+        anchor={L.judulAnchor}
+        warna={pakai ? 'var(--ink-2)' : 'var(--m-hi)'}
+        size={L.judulSize}
+      >
+        {pakai
+          ? `modus ${mod.map((v) => fmt(v)).join(' dan ')} — tumpukan tertinggi`
+          : `data ke-10 di luar hitungan · modus ${mod.map((v) => fmt(v)).join(' dan ')}`}
       </Tag>
-      <Tag x={W / 2} y={44} warna="var(--ink-2)" size={15}>
-        {`modus ${mod.map((v) => fmt(v)).join(' dan ')} · median ${fmt(med, 2)} · rata-rata ${fmt(mean, 2)}`}
-      </Tag>
+
+      {/* Nilai biner lebih wajar diketuk daripada diseret: satu ketukan
+          mengangkat data ke-10 ke rak, satu ketukan lagi menurunkannya. */}
+      <TombolGambar
+        x={L.tombolX}
+        y={L.tombolY}
+        param="pakai"
+        ubah={(v) => (v > 0.5 ? 0 : 1)}
+        label={pakai ? (sempit ? 'Angkat' : 'Angkat ke rak') : sempit ? 'Turunkan' : 'Turunkan lagi'}
+      />
+
+      {/* Titik data ke-10 sendiri: diseret sepanjang garis bilangan, baik saat
+          ikut dihitung maupun saat sedang diparkir di rak. labelSelalu tanpa
+          label karena angkanya sudah terbaca di garis bilangan, dan karena
+          keping ajakan bawaan mesin — yang ditaruh di BAWAH pegangan — akan
+          menimpa label median setiap kali titik ini diparkir di rak. */}
+      <Pegangan
+        x={px}
+        y={yTitik}
+        param="pencilan"
+        arah="x"
+        utama
+        labelSelalu
+        keNilai={(pt) => keNilai(L, pt.x)}
+      />
     </Svg>
   )
 }
@@ -372,7 +632,20 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'pencilan', label: 'Nilai data ke-10', min: 8, max: 40, step: 1, awal: 35, bulat: true }],
+    params: [
+      {
+        key: 'pencilan',
+        label: 'Nilai data ke-10',
+        min: 8,
+        max: 40,
+        step: 1,
+        awal: 35,
+        bulat: true,
+        simbol: 'x₁₀',
+        peran: 'hi',
+        bagian: 'jarak',
+      },
+    ],
     roles: { mean: 'ab', median: 'b', jarak: 'hi' },
     arti: {
       mean: 'Rata-rata — titik tumpu yang membuat data seimbang.',
@@ -412,10 +685,10 @@ const konsep: Konsep = {
           const { x, ekstrem } = angkaBongkar(p)
           // Jarak ke data terbesar (x − 7) BUKAN jarak yang dihitung rata-rata; itu jarak ke
           // titik tumpu (x − 5), yang baru dibahas di langkah berikutnya. Jangan disamakan.
-          const masuk = `Sekarang masuk data ke-10 bernilai ${fmt(x)}, ${fmt(x - 7)} satuan di atas data terbesar tadi.`
+          const masuk = `Titik merah muda itu data ke-10, bernilai ${fmt(x)} — ${fmt(x - 7)} satuan di atas data terbesar tadi.`
           return ekstrem
-            ? `${masuk} Cuma satu data, tetapi letaknya jauh dari kelompoknya — dan rata-rata memperhitungkan jarak, bukan sekadar urutan.`
-            : `${masuk} Letaknya masih dekat dengan kelompoknya, tetapi rata-rata tetap memperhitungkan seberapa jauh ia berada.`
+            ? `${masuk} Seret titik itu sepanjang garis bilangan: cuma satu data, tetapi letaknya jauh dari kelompoknya, dan rata-rata memperhitungkan jarak.`
+            : `${masuk} Seret titik itu menjauh ke kanan: letaknya masih dekat kelompoknya, tetapi rata-rata tetap memperhitungkan seberapa jauh ia berada.`
         },
         durasi: 2400,
       },
@@ -460,20 +733,42 @@ const konsep: Konsep = {
   },
 
   eksperimen: {
-    judul: 'Geser data ekstremnya',
+    judul: 'Seret sendiri data ke-10',
     ajakan:
-      'Perhatikan titik tumpu bergerak mengikuti nilai ekstrem, sedangkan garis median sama sekali tidak bergeming.',
+      'Seret titik data ke-10 ke kanan dan ke kiri: titik tumpu ikut pindah, garis median tidak bergeming. Ketuk tombol "Angkat" untuk mengeluarkannya dari hitungan, seperti mengangkat beban dari papan.',
     params: [
-      { key: 'pencilan', label: 'Nilai data ke-10', min: 0, max: 40, step: 1, awal: 20, bulat: true },
-      { key: 'pakai', label: 'Ikutkan data ke-10', min: 0, max: 1, step: 1, awal: 1, bulat: true },
+      {
+        key: 'pencilan',
+        label: 'Nilai data ke-10',
+        min: 0,
+        max: 40,
+        step: 1,
+        awal: 20,
+        bulat: true,
+        simbol: 'x₁₀',
+        peran: 'hi',
+        bagian: 'mean',
+      },
+      {
+        key: 'pakai',
+        label: 'Ikutkan data ke-10',
+        min: 0,
+        max: 1,
+        step: 1,
+        awal: 1,
+        bulat: true,
+        simbol: 'ikut',
+        peran: 'hi',
+        bagian: 'mean',
+      },
     ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const { data, jumlah, mean, med } = bacaEksperimen(p)
+      return `[mean:x̄] = ${fmt(jumlah)} ÷ ${fmt(data.length)} = ${fmt(mean, 2)} · [median:median] = ${fmt(med, 2)}`
+    },
     temuan: (p) => {
-      const pencilan = clamp(Math.round(p.pencilan ?? 20), 0, 40)
-      const pakai = (p.pakai ?? 1) > 0.5
-      const data = pakai ? [...DASAR, pencilan] : DASAR
-      const mean = rerata(data)
-      const med = median(data)
+      const { pakai, mean, med } = bacaEksperimen(p)
       return (
         <p>
           {pakai ? (
@@ -481,18 +776,18 @@ const konsep: Konsep = {
               <strong>
                 Rata-rata {fmt(mean, 2)}, median {fmt(med, 2)}.
               </strong>{' '}
-              Menggeser satu data itu saja menggerakkan rata-rata sebesar sepersepuluh dari
+              Menyeret satu titik itu saja menggerakkan rata-rata sebesar sepersepuluh dari
               pergeserannya, tetapi median sama sekali tidak berubah — tetap {fmt(med, 2)}, karena
-              dua data di tengah urutan tetap bernilai sama ke mana pun data ke-10 digeser.{' '}
+              dua data di tengah urutan tetap bernilai sama ke mana pun data ke-10 diseret.{' '}
               {mean > 7
                 ? 'Perhatikan: rata-rata sekarang lebih besar daripada hampir semua datanya sendiri — itulah bentuk "menipu" yang dimaksud.'
-                : 'Coba geser sampai 40 dan lihat rata-rata meninggalkan kelompok datanya.'}
+                : 'Coba seret titik itu sampai ke ujung kanan dan lihat rata-rata meninggalkan kelompok datanya.'}
             </>
           ) : (
             <>
               Tanpa data ke-10, rata-rata {fmt(mean, 2)} dan median {fmt(med, 2)} berimpit tepat.
               Itu wajar: datanya menyebar rapi dan simetris, sehingga titik seimbang dan nilai tengahnya
-              sama. Aktifkan lagi data ke-10 untuk melihat bedanya.
+              sama. Ketuk "Turunkan" untuk mengembalikan data ke-10 dari rak ke papan.
             </>
           )}
         </p>

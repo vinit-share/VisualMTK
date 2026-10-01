@@ -60,13 +60,16 @@ export default function EksperimenPage() {
           <div className="rangka rangka-stage" aria-busy="true" />
         ) : konsep.eksperimen ? (
           <>
-            <div className="card card-pad-lg">
+            <div className="card card-pad-lg card-visual">
               <Eksperimen
                 judul={konsep.eksperimen.judul}
                 ajakan={konsep.eksperimen.ajakan}
                 params={konsep.eksperimen.params}
                 Visual={konsep.eksperimen.Visual}
                 temuan={konsep.eksperimen.temuan}
+                rumus={konsep.eksperimen.rumus}
+                roles={konsep.rumus.roles}
+                arti={konsep.rumus.arti}
               />
             </div>
             <div className="card card-pad-lg row row-between">

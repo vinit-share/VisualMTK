@@ -10,35 +10,49 @@
    Sekaligus membongkar kekeliruan penjudi: koin tidak punya
    ingatan. Yang mengecil adalah selisih RELATIF, bukan selisih
    mutlak — dan itu ditunjukkan angkanya.
+
+   ---- Interaksi langsung (docs/PANDUAN-INTERAKSI.md) ----
+   1. "Lempar lagi" adalah TombolGambar di dalam gambar. Percobaan
+      baru memang lebih wajar diketuk daripada diseret, dan tombolnya
+      duduk tepat di bawah koin yang diacaknya.
+   2. Banyaknya lemparan dipegang di UJUNG KURVA. Menariknya ke kanan
+      benar-benar MELANJUTKAN percobaan yang sama: benih acaknya tidak
+      bergantung pada n, jadi bagian kiri kurva tidak pernah berubah —
+      hanya ekornya memanjang dan menyempit sendiri ke 0,5.
+   3. Karena itu sumbu mendatar (skala logaritmik) dibuat berbatas
+      TETAP, tidak ikut n. Kalau batasnya ikut n, ujung kurva selalu
+      menempel di tepi kanan dan tidak ada yang bisa dipegang.
+      Sisa sumbu di kanan ujung kurva sengaja tetap terlihat sebagai
+      rel pucat: itulah "masih ada lemparan yang bisa ditambah".
    ============================================================ */
 
 import { useMemo } from 'react'
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, TombolGambar, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, seededRandom } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
 
-const W = 690
-const H = 440
-
-/* Wilayah grafik */
-const GX0 = 92
-const GX1 = 640
-const GY0 = 216
-const GY1 = 386
+/* Batas sumbu mendatar tiap panggung — tetap, tidak ikut nilai n. */
+const N_BONGKAR_MAKS = 10000
+const N_EKS_MAKS = 20000
+const BENIH_BONGKAR_MAKS = 20
+const BENIH_EKS_MAKS = 40
 
 /** Hitung frekuensi relatif kumulatif pada titik-titik contoh berjarak logaritmik. */
 function simulasi(n: number, benih: number) {
   const rnd = seededRandom(benih * 7919 + 13)
   const titik: { i: number; f: number }[] = []
   // Titik contoh: rapat di awal, renggang di akhir (skala logaritmik).
-  const contoh = new Set<number>()
+  const contoh = new Set<number>([1, n])
   const maks = Math.max(1, Math.log10(n))
   for (let k = 0; k <= 160; k++) {
     contoh.add(Math.max(1, Math.round(10 ** ((k / 160) * maks))))
   }
   let gambar = 0
-  const urut = Array.from(contoh).sort((a, b) => a - b)
+  const urut = Array.from(contoh)
+    .filter((v) => v <= n)
+    .sort((a, b) => a - b)
   let idx = 0
   for (let i = 1; i <= n; i++) {
     if (rnd() < 0.5) gambar++
@@ -50,7 +64,11 @@ function simulasi(n: number, benih: number) {
   return { titik, gambar, total: n, frekuensi: n > 0 ? gambar / n : 0 }
 }
 
-/** Hasil sepuluh lemparan pertama, untuk digambar sebagai koin. */
+/**
+ * Hasil lemparan pertama, untuk digambar sebagai koin. Memakai benih yang
+ * sama dengan `simulasi`, jadi koin yang terlihat memang lemparan pertama
+ * dari kurva yang sedang digambar.
+ */
 function koinAwal(n: number, benih: number) {
   const rnd = seededRandom(benih * 7919 + 13)
   const out: boolean[] = []
@@ -58,59 +76,267 @@ function koinAwal(n: number, benih: number) {
   return out
 }
 
+/* ---------------- Tata letak ---------------- */
+
+/** Wilayah grafik dalam koordinat SVG. */
+interface Kotak {
+  sempit: boolean
+  gx0: number
+  gx1: number
+  gy0: number
+  gy1: number
+}
+
+/** Barisan koin: berapa per baris, sebesar apa, mulai dari mana. */
+interface BarisKoin {
+  r: number
+  dx: number
+  dy: number
+  x0: number
+  y: number
+  perBaris: number
+}
+
+const kx = (L: Kotak, nMaks: number, i: number) =>
+  L.gx0 + (Math.log10(Math.max(1, i)) / Math.log10(nMaks)) * (L.gx1 - L.gx0)
+
+const ky = (L: Kotak, f: number) => L.gy1 - clamp(f, 0, 1) * (L.gy1 - L.gy0)
+
+/** Kebalikan `kx`: posisi jari di sumbu mendatar menjadi banyaknya lemparan. */
+const keBanyak = (L: Kotak, nMaks: number, x: number) =>
+  10 ** (clamp((x - L.gx0) / (L.gx1 - L.gx0), 0, 1) * Math.log10(nMaks))
+
+interface TataBongkar extends Kotak {
+  w: number
+  h: number
+  maksH: number
+  koin: BarisKoin
+  /** langkah koin (0–1) */
+  judulKoinY: number
+  freqY: number
+  komenY: number
+  tombolKoin: { x: number; y: number }
+  /** langkah grafik (2 ke atas) */
+  teksY: number
+  teksDY: number
+  tombolGrafik: { x: number; y: number }
+}
+
+const B_LEBAR: TataBongkar = {
+  sempit: false,
+  w: 690,
+  h: 450,
+  maksH: 450,
+  gx0: 92,
+  // Sisa di bawah sumbu harus memuat angka sumbu DAN keterangan sumbu:
+  // pada panggung lebar tersempit (560 px) keduanya diperbesar mesin
+  // sampai 11 px layar, jadi keterangan sumbu butuh sampai ±64 satuan.
+  gx1: 592,
+  gy0: 232,
+  gy1: 380,
+  koin: { r: 18, dx: 46, dy: 0, x0: 138, y: 150, perBaris: 10 },
+  judulKoinY: 58,
+  freqY: 236,
+  komenY: 288,
+  tombolKoin: { x: 345, y: 350 },
+  teksY: 56,
+  teksDY: 36,
+  tombolGrafik: { x: 520, y: 182 },
+}
+
+/* Tinggi HP dihitung dari tumpukan paling padat: 5 baris angka, tombol,
+   grafik, angka sumbu, lalu keterangan sumbu. Di HP yang sangat sempit
+   (±300 px) huruf diperbesar mesin sampai 11 px layar, jadi keterangan
+   sumbu paling bawah butuh sisa ±8 satuan. 536/420 = 1,28 (batas 1,3). */
+const B_HP: TataBongkar = {
+  sempit: true,
+  w: 420,
+  h: 536,
+  maksH: 540,
+  gx0: 58,
+  // Angka sumbu terakhir ("10.000") berdiri di gx1; di HP sempit hurufnya
+  // diperbesar mesin, jadi gx1 harus menyisakan separuh lebarnya.
+  gx1: 378,
+  gy0: 248,
+  gy1: 452,
+  koin: { r: 22, dx: 72, dy: 76, x0: 66, y: 110, perBaris: 5 },
+  judulKoinY: 42,
+  freqY: 258,
+  komenY: 302,
+  tombolKoin: { x: 210, y: 372 },
+  teksY: 40,
+  teksDY: 30,
+  // Di bawah baris angka terakhir (paling banyak 5 baris) dan di atas grafik.
+  tombolGrafik: { x: 300, y: 210 },
+}
+
+interface TataEks extends Kotak {
+  w: number
+  h: number
+  maksH: number
+  koin: BarisKoin & { maks: number }
+  koinLabelY: number
+  teksY: number
+  teksDY: number
+  tombol: { x: number; y: number }
+}
+
+const E_LEBAR: TataEks = {
+  sempit: false,
+  w: 690,
+  h: 450,
+  maksH: 450,
+  gx0: 92,
+  gx1: 592,
+  gy0: 232,
+  gy1: 380,
+  koin: { r: 16, dx: 38, dy: 0, x0: 136, y: 136, perBaris: 12, maks: 12 },
+  koinLabelY: 106,
+  teksY: 42,
+  teksDY: 32,
+  tombol: { x: 520, y: 186 },
+}
+
+/* 528/420 = 1,26 (batas 1,3). Sisa di bawah sumbu disiapkan untuk HP
+   sempit, tempat keterangan sumbu diperbesar mesin sampai 11 px layar. */
+const E_HP: TataEks = {
+  sempit: true,
+  w: 420,
+  h: 528,
+  maksH: 540,
+  gx0: 58,
+  // Ujung kanan rel = tempat pegangan berhenti pada n maksimum, dan label
+  // "20.000×" digambar terpusat di atasnya. gx1 harus menyisakan separuh
+  // lebar label itu (±53 satuan pada HP tersempit).
+  gx1: 356,
+  gy0: 246,
+  gy1: 444,
+  koin: { r: 16, dx: 38, dy: 0, x0: 77, y: 152, perBaris: 8, maks: 8 },
+  koinLabelY: 122,
+  teksY: 34,
+  teksDY: 30,
+  tombol: { x: 300, y: 202 },
+}
+
+/* ---------------- Bagian gambar yang dipakai bersama ---------------- */
+
+const TANDA_X = [1, 10, 100, 1000, 10000]
+
+/** Satu baris angka/keterangan di atas gambar. */
+interface BarisTeks {
+  teks: string
+  size: number
+  warna: string
+}
+
+/** Tumpukan baris teks, dari atas ke bawah dengan jarak tetap. */
+function Baris({ x, y, dy, isi }: { x: number; y: number; dy: number; isi: BarisTeks[] }) {
+  return (
+    <g>
+      {isi.map((b, i) => (
+        <Tag key={i} x={x} y={y + i * dy} size={b.size} warna={b.warna}>
+          {b.teks}
+        </Tag>
+      ))}
+    </g>
+  )
+}
+
 function Grafik({
+  L,
   titik,
   n,
+  nMaks,
   tampil,
+  nyala,
 }: {
+  L: Kotak
   titik: { i: number; f: number }[]
   n: number
+  nMaks: number
   tampil: number
+  /** kurva dan rel menebal saat banyaknya lemparan sedang dipegang. */
+  nyala: boolean
 }) {
-  const maks = Math.max(1, Math.log10(n))
-  const ke = (i: number) => GX0 + (Math.log10(Math.max(1, i)) / maks) * (GX1 - GX0)
-  const kf = (f: number) => GY1 - f * (GY1 - GY0)
-
-  const terlihat = titik.filter((p) => p.i <= Math.max(1, n * tampil))
-  const d = terlihat.map((p, k) => `${k === 0 ? 'M' : 'L'} ${ke(p.i).toFixed(1)} ${kf(p.f).toFixed(1)}`).join(' ')
-
-  const tanda = [1, 10, 100, 1000, 10000].filter((v) => v <= n)
+  const u = useUkuranLayar()
+  const huruf = Math.max(13, u(13, 13))
+  const sampai = Math.max(1, n * tampil)
+  const terlihat = titik.filter((p) => p.i <= sampai)
+  const d = terlihat
+    .map((p, k) => `${k === 0 ? 'M' : 'L'} ${kx(L, nMaks, p.i).toFixed(1)} ${ky(L, p.f).toFixed(1)}`)
+    .join(' ')
+  const xn = kx(L, nMaks, sampai)
+  const tebalRel = u(6, 6)
 
   return (
     <g>
-      {/* sumbu dan kisi */}
+      {/* kisi; garis 0,5 adalah sasaran yang didekati */}
+      {[0.25, 0.5, 0.75, 1].map((f) => (
+        <line
+          key={f}
+          x1={L.gx0}
+          y1={ky(L, f)}
+          x2={L.gx1}
+          y2={ky(L, f)}
+          stroke={f === 0.5 ? 'var(--m-hi)' : 'var(--m-grid)'}
+          strokeWidth={f === 0.5 ? 2 : 1}
+          strokeDasharray={f === 0.5 ? '7 5' : undefined}
+        />
+      ))}
       {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-        <g key={f}>
+        <text
+          key={f}
+          x={L.gx0 - u(9, 9)}
+          y={ky(L, f)}
+          textAnchor="end"
+          dominantBaseline="middle"
+          fontSize={huruf}
+          fontWeight={700}
+          fill={f === 0.5 ? 'var(--m-hi)' : 'var(--ink-soft)'}
+        >
+          {f === 0.5 ? '0,5' : fmt(f, 2)}
+        </text>
+      ))}
+
+      {/* sumbu mendatar sekaligus rel: bagian pucat di kanan adalah lemparan
+          yang masih bisa ditambah dengan menarik ujung kurva */}
+      <line
+        x1={L.gx0}
+        y1={L.gy1}
+        x2={L.gx1}
+        y2={L.gy1}
+        stroke="var(--surface-3)"
+        strokeWidth={tebalRel}
+        strokeLinecap="round"
+      />
+      <line
+        x1={L.gx0}
+        y1={L.gy1}
+        x2={xn}
+        y2={L.gy1}
+        stroke="var(--m-a)"
+        strokeWidth={tebalRel}
+        strokeLinecap="round"
+        opacity={nyala ? 0.85 : 0.45}
+      />
+
+      {/* Angka skala tetap: tidak pernah disembunyikan, karena angka lemparan
+          yang sedang berjalan hidup di label pegangan, bukan di sumbu. */}
+      {TANDA_X.filter((v) => v <= nMaks).map((v) => (
+        <g key={v}>
           <line
-            x1={GX0}
-            y1={kf(f)}
-            x2={GX1}
-            y2={kf(f)}
-            stroke={f === 0.5 ? 'var(--m-hi)' : 'var(--m-grid)'}
-            strokeWidth={f === 0.5 ? 2 : 1}
-            strokeDasharray={f === 0.5 ? '7 5' : undefined}
+            x1={kx(L, nMaks, v)}
+            y1={L.gy1}
+            x2={kx(L, nMaks, v)}
+            y2={L.gy1 + u(8, 8)}
+            stroke="var(--m-axis)"
+            strokeWidth={1.4}
           />
           <text
-            x={GX0 - 10}
-            y={kf(f)}
-            textAnchor="end"
-            dominantBaseline="middle"
-            fontSize={12}
-            fontWeight={700}
-            fill={f === 0.5 ? 'var(--m-hi)' : 'var(--ink-soft)'}
-          >
-            {f === 0.5 ? '0,5' : fmt(f, 2)}
-          </text>
-        </g>
-      ))}
-      {tanda.map((v) => (
-        <g key={v}>
-          <line x1={ke(v)} y1={GY1} x2={ke(v)} y2={GY1 + 6} stroke="var(--m-axis)" strokeWidth={1.4} />
-          <text
-            x={ke(v)}
-            y={GY1 + 20}
+            x={kx(L, nMaks, v)}
+            y={L.gy1 + u(22, 23)}
             textAnchor="middle"
-            fontSize={12}
+            fontSize={huruf}
             fontWeight={700}
             fill="var(--ink-soft)"
           >
@@ -119,30 +345,40 @@ function Grafik({
         </g>
       ))}
 
-      {d && <path d={d} fill="none" stroke="var(--m-a)" strokeWidth={2.4} strokeLinejoin="round" />}
+      {d && (
+        <path
+          d={d}
+          fill="none"
+          stroke="var(--m-a)"
+          strokeWidth={nyala ? 3.4 : 2.4}
+          strokeLinejoin="round"
+        />
+      )}
       {terlihat.length > 0 && (
         <circle
-          cx={ke(terlihat[terlihat.length - 1].i)}
-          cy={kf(terlihat[terlihat.length - 1].f)}
+          cx={kx(L, nMaks, terlihat[terlihat.length - 1].i)}
+          cy={ky(L, terlihat[terlihat.length - 1].f)}
           r={5}
           fill="var(--m-a)"
         />
       )}
+
       <text
-        x={(GX0 + GX1) / 2}
-        y={GY1 + 38}
+        x={(L.gx0 + L.gx1) / 2}
+        y={L.gy1 + u(46, 48)}
         textAnchor="middle"
-        fontSize={12.5}
+        fontSize={huruf}
         fontWeight={700}
         fill="var(--ink-soft)"
       >
-        banyaknya lemparan (skala logaritmik)
+        {L.sempit ? 'banyaknya lemparan (skala log)' : 'banyaknya lemparan (skala logaritmik)'}
       </text>
     </g>
   )
 }
 
-function Koin({ x, y, gambar, r = 13 }: { x: number; y: number; gambar: boolean; r?: number }) {
+function Koin({ x, y, gambar, r }: { x: number; y: number; gambar: boolean; r: number }) {
+  const u = useUkuranLayar()
   return (
     <g>
       <circle
@@ -159,7 +395,7 @@ function Koin({ x, y, gambar, r = 13 }: { x: number; y: number; gambar: boolean;
         y={y + 1}
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={r * 0.9}
+        fontSize={Math.max(r * 0.9, u(11, 11))}
         fontWeight={800}
         fill={gambar ? 'var(--m-a)' : 'var(--ink-soft)'}
       >
@@ -169,17 +405,56 @@ function Koin({ x, y, gambar, r = 13 }: { x: number; y: number; gambar: boolean;
   )
 }
 
+/** Barisan koin hasil lemparan pertama. */
+function BarisanKoin({ L, hasil }: { L: BarisKoin; hasil: boolean[] }) {
+  return (
+    <g>
+      {hasil.map((g, i) => (
+        <Koin
+          key={i}
+          x={L.x0 + (i % L.perBaris) * L.dx}
+          y={L.y + Math.floor(i / L.perBaris) * L.dy}
+          gambar={g}
+          r={L.r}
+        />
+      ))}
+    </g>
+  )
+}
+
+/** Percobaan berikutnya, berputar kembali ke 1 setelah yang terakhir. */
+const benihBerikut = (v: number, maks: number) => (Math.round(v) >= maks ? 1 : Math.round(v) + 1)
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 const N_LANGKAH = [10, 10, 100, 1000, 10000, 10000, 10000]
 
 /** Nomor percobaan pada bongkar — dipakai gambar DAN narasi. */
-const benihBongkar = (p: Record<string, number>) => clamp(Math.round(p.benih ?? 1), 1, 20)
+const benihBongkar = (p: Record<string, number>) =>
+  clamp(Math.round(p.benih ?? 1), 1, BENIH_BONGKAR_MAKS)
 
 /** Banyaknya gambar pada sepuluh lemparan pertama percobaan ini. */
 const gambarSepuluh = (benih: number) => koinAwal(10, benih).filter(Boolean).length
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
+  const L = useSempit() ? B_HP : B_LEBAR
+  return (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maksH}
+      label="Simulasi pelemparan koin dan grafik frekuensi relatifnya"
+    >
+      <IsiBongkar L={L} step={step} t={t} p={p} sorot={sorot} />
+    </Svg>
+  )
+}
+
+/**
+ * Isi panggung bongkar sengaja komponen tersendiri: `useUkuranLayar()` baru
+ * memberi ukuran layar yang benar bila dipanggil DI DALAM <Svg>.
+ */
+function IsiBongkar({ L, step, t, p, sorot }: DeriveState & { L: TataBongkar }) {
   const benih = benihBongkar(p)
   const n = N_LANGKAH[Math.min(step, N_LANGKAH.length - 1)]
 
@@ -190,41 +465,96 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const tampilGrafik = step >= 2 ? (step === 2 ? seg(t, 0.05, 0.9) : 1) : 0
   const tekan = fase(step, t, 1)
   const selesai = step >= 5
+  const faseKoin = step <= 1
 
-  const gambarAwal = koin.slice(0, Math.round(10 * lempar)).filter(Boolean).length
   const terlempar = Math.round(10 * lempar)
+  const gambarAwal = koin.slice(0, terlempar).filter(Boolean).length
 
   const nyalaP = sorot === 'p'
   const nyalaN = sorot === 'na' || sorot === 'ns'
 
+  const teksGrafik = L.sempit
+    ? [
+        {
+          teks: `${fmt(n)} lemparan · ${fmt(sim.gambar)} gambar`,
+          size: 15,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-a)',
+        },
+        {
+          teks: `frekuensi relatif ${fmt(sim.frekuensi, 4)}`,
+          size: 15,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-ab)',
+        },
+        {
+          teks: `selisih dari 0,5: ${fmt(Math.abs(sim.frekuensi - 0.5), 4)}`,
+          size: 13,
+          warna: nyalaN ? 'var(--m-hi)' : 'var(--ink-2)',
+        },
+        {
+          teks: `mutlak ${fmt(Math.abs(sim.gambar - n / 2))} lemparan`,
+          size: 13,
+          warna: nyalaN ? 'var(--m-hi)' : 'var(--ink-2)',
+        },
+      ]
+    : [
+        {
+          teks: `${fmt(n)} lemparan · ${fmt(sim.gambar)} gambar · frekuensi relatif ${fmt(
+            sim.frekuensi,
+            4,
+          )}`,
+          size: 18,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-a)',
+        },
+        {
+          teks: `selisih dari 0,5: ${fmt(Math.abs(sim.frekuensi - 0.5), 4)} (mutlak ${fmt(
+            Math.abs(sim.gambar - n / 2),
+          )} lemparan)`,
+          size: 15,
+          warna: nyalaN ? 'var(--m-hi)' : 'var(--ink-2)',
+        },
+      ]
+  if (selesai) {
+    teksGrafik.push({
+      teks: L.sempit
+        ? 'menyempit ke 0,5, tidak mengunci'
+        : 'kurvanya menyempit ke 0,5 — tetapi tidak pernah "mengunci" di sana',
+      size: L.sempit ? 14 : 16,
+      warna: 'var(--m-ab)',
+    })
+  }
+
+  const tombol = faseKoin ? L.tombolKoin : L.tombolGrafik
+
   return (
-    <Svg w={W} h={H} maxH={450} label="Simulasi pelemparan koin dan grafik frekuensi relatifnya">
+    <g>
       {/* sepuluh koin pertama */}
-      {step <= 1 && (
+      {faseKoin && (
         <g>
-          {koin.slice(0, terlempar).map((g, i) => (
-            <Koin key={i} x={120 + i * 46} y={150} gambar={g} r={18} />
-          ))}
-          <Tag x={W / 2} y={70} warna="var(--ink-2)" size={17}>
+          <BarisanKoin L={L.koin} hasil={koin.slice(0, terlempar)} />
+          <Tag x={L.w / 2} y={L.judulKoinY} warna="var(--ink-2)" size={L.sempit ? 15 : 17}>
             {terlempar === 0
               ? 'sepuluh lemparan pertama'
               : `${fmt(gambarAwal)} gambar dari ${fmt(terlempar)} lemparan`}
           </Tag>
           {terlempar === 10 && (
             <Tag
-              x={W / 2}
-              y={230}
+              x={L.w / 2}
+              y={L.freqY}
               warna={gambarAwal === 5 ? 'var(--m-ab)' : 'var(--m-hi)'}
-              size={18}
+              size={L.sempit ? 16 : 18}
             >
               {`frekuensi relatif = ${fmt(gambarAwal)}/10 = ${fmt(gambarAwal / 10, 2)}`}
             </Tag>
           )}
           {tekan > 0.4 && (
-            <Tag x={W / 2} y={286} warna="var(--ink-2)" size={16}>
+            <Tag x={L.w / 2} y={L.komenY} warna="var(--ink-2)" size={L.sempit ? 14 : 16}>
               {gambarAwal === 5
-                ? 'kali ini kebetulan pas — coba ganti percobaannya'
-                : `meleset ${fmt(Math.abs(gambarAwal - 5))} dari harapan 5`}
+                ? L.sempit
+                  ? 'kebetulan pas — coba lempar lagi'
+                  : 'kali ini kebetulan pas — ketuk "Lempar lagi" untuk percobaan lain'
+                : L.sempit
+                  ? `meleset ${fmt(Math.abs(gambarAwal - 5))} dari 5`
+                  : `meleset ${fmt(Math.abs(gambarAwal - 5))} dari harapan 5`}
             </Tag>
           )}
         </g>
@@ -233,64 +563,147 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       {/* grafik frekuensi relatif */}
       {tampilGrafik > 0.02 && (
         <g opacity={tampilGrafik}>
-          <Grafik titik={sim.titik} n={n} tampil={step === 2 ? seg(t, 0.1, 1) : 1} />
-          <Tag
-            x={W / 2}
-            y={70}
-            warna={nyalaP ? 'var(--m-hi)' : 'var(--m-a)'}
-            size={18}
-          >
-            {`${fmt(n)} lemparan · ${fmt(sim.gambar)} gambar · frekuensi relatif ${fmt(sim.frekuensi, 4)}`}
-          </Tag>
-          <Tag
-            x={W / 2}
-            y={110}
-            warna={nyalaN ? 'var(--m-hi)' : 'var(--ink-2)'}
-            size={15}
-          >
-            {`selisih dari 0,5: ${fmt(Math.abs(sim.frekuensi - 0.5), 4)} (mutlak ${fmt(
-              Math.abs(sim.gambar - n / 2),
-            )} lemparan)`}
-          </Tag>
-          {selesai && (
-            <Tag x={W / 2} y={150} warna="var(--m-ab)" size={16}>
-              kurvanya menyempit ke 0,5 — tetapi tidak pernah "mengunci" di sana
-            </Tag>
-          )}
+          <Grafik
+            L={L}
+            titik={sim.titik}
+            n={n}
+            nMaks={N_BONGKAR_MAKS}
+            tampil={step === 2 ? seg(t, 0.1, 1) : 1}
+            nyala={nyalaP}
+          />
+          <Baris x={L.w / 2} y={L.teksY} dy={L.teksDY} isi={teksGrafik} />
         </g>
       )}
-    </Svg>
+
+      {/* Percobaan baru diketuk, bukan digeser: koinnya diacak ulang dari
+          benih berikutnya, dan seluruh kurva ikut berganti. */}
+      <TombolGambar
+        x={tombol.x}
+        y={tombol.y}
+        param="benih"
+        ubah={(v) => benihBerikut(v, BENIH_BONGKAR_MAKS)}
+        label="Lempar lagi"
+        utama
+      />
+    </g>
   )
 }
 
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
-  const n = clamp(Math.round(p.n ?? 200), 10, 20000)
-  const benih = clamp(Math.round(p.benih ?? 1), 1, 40)
+  const L = useSempit() ? E_HP : E_LEBAR
+  return (
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.maksH}
+      label="Simulasi pelemparan koin yang banyaknya bisa ditarik dari ujung kurva"
+    >
+      <IsiEksperimen L={L} p={p} sorot={sorot} />
+    </Svg>
+  )
+}
+
+function IsiEksperimen({
+  L,
+  p,
+  sorot,
+}: {
+  L: TataEks
+  p: Record<string, number>
+  sorot: string | null
+}) {
+  const aktif = useInteraksi()?.kendali.aktif ?? null
+  const n = clamp(Math.round(p.n ?? 200), 10, N_EKS_MAKS)
+  const benih = clamp(Math.round(p.benih ?? 1), 1, BENIH_EKS_MAKS)
   const sim = useMemo(() => simulasi(n, benih), [n, benih])
-  const koin = useMemo(() => koinAwal(Math.min(n, 60), benih), [n, benih])
+  const koin = useMemo(() => koinAwal(Math.min(n, L.koin.maks), benih), [n, benih, L.koin.maks])
+
+  const mutlak = Math.abs(sim.gambar - n / 2)
+  const relatif = Math.abs(sim.frekuensi - 0.5)
+  const pegangN = aktif === 'n' || sorot === 'banyak'
+  const nyalaP = sorot === 'p'
+
+  const teks = L.sempit
+    ? [
+        {
+          teks: `${fmt(sim.gambar)} gambar dari ${fmt(n)}`,
+          size: 16,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-a)',
+        },
+        {
+          teks: `frekuensi relatif ${fmt(sim.frekuensi, 4)}`,
+          size: 16,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-ab)',
+        },
+        {
+          teks: `mutlak ${fmt(mutlak)} lemparan · relatif ${fmt(relatif, 4)}`,
+          size: 13,
+          warna: 'var(--ink-2)',
+        },
+      ]
+    : [
+        {
+          teks: `${fmt(sim.gambar)} gambar dari ${fmt(n)} → ${fmt(sim.frekuensi, 4)}`,
+          size: 19,
+          warna: nyalaP ? 'var(--m-hi)' : 'var(--m-a)',
+        },
+        {
+          teks: `selisih mutlak ${fmt(mutlak)} lemparan · selisih relatif ${fmt(relatif, 4)}`,
+          size: 14,
+          warna: 'var(--ink-2)',
+        },
+      ]
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Simulasi pelemparan koin yang jumlahnya bisa diubah">
-      {n <= 60 && (
-        <g>
-          {koin.map((g, i) => (
-            <Koin key={i} x={110 + (i % 20) * 24} y={116 + Math.floor(i / 20) * 26} gambar={g} r={10} />
-          ))}
-        </g>
-      )}
-      <Grafik titik={sim.titik} n={n} tampil={1} />
-      <Tag x={W / 2} y={54} warna={sorot === 'p' ? 'var(--m-hi)' : 'var(--m-a)'} size={19}>
-        {`${fmt(sim.gambar)} gambar dari ${fmt(n)} → ${fmt(sim.frekuensi, 4)}`}
+    <g>
+      <Baris x={L.w / 2} y={L.teksY} dy={L.teksDY} isi={teks} />
+
+      <Tag x={L.w / 2} y={L.koinLabelY} warna="var(--m-hi)" size={13}>
+        {`${fmt(koin.length)} lemparan pertama`}
       </Tag>
-      <Tag x={W / 2} y={88} warna="var(--ink-2)" size={14}>
-        {`selisih mutlak ${fmt(Math.abs(sim.gambar - n / 2))} lemparan · selisih relatif ${fmt(
-          Math.abs(sim.frekuensi - 0.5),
-          4,
-        )}`}
-      </Tag>
-    </Svg>
+      <BarisanKoin L={L.koin} hasil={koin} />
+
+      <Grafik
+        L={L}
+        titik={sim.titik}
+        n={n}
+        nMaks={N_EKS_MAKS}
+        tampil={1}
+        nyala={pegangN}
+      />
+
+      {/* Percobaan baru: diketuk. */}
+      <TombolGambar
+        x={L.tombol.x}
+        y={L.tombol.y}
+        param="benih"
+        ubah={(v) => benihBerikut(v, BENIH_EKS_MAKS)}
+        label="Lempar lagi"
+      />
+
+      {/* Banyaknya lemparan: ujung kurva ditarik ke kanan. Posisi pegangan
+          dihitung dari n dan frekuensi yang sama dengan yang dipakai
+          menggambar kurvanya, jadi titiknya benar-benar menempel di ujung. */}
+      <Pegangan
+        x={kx(L, N_EKS_MAKS, n)}
+        y={ky(L, sim.frekuensi)}
+        param="n"
+        arah="x"
+        utama
+        /* Angkanya menempel terus pada titiknya (labelSelalu), seperti
+           RelGeser. Keping ajakan bawaan tidak dipakai karena mesin
+           menaruhnya di BAWAH pegangan, dan di bawah pegangan sudah ada
+           sumbu beserta angka skalanya: pada frekuensi rendah keping itu
+           menimpa angka sumbu, dan pada n maksimum ia keluar bingkai HP.
+           Ajakan menyeret tetap ada lewat denyut, panah, rel pucat di kanan
+           titik, dan kalimat ajakan di atas gambar. */
+        labelSelalu
+        label={`${fmt(n)}×`}
+        keNilai={(pt) => keBanyak(L, N_EKS_MAKS, pt.x)}
+      />
+    </g>
   )
 }
 
@@ -336,7 +749,19 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'benih', label: 'Percobaan ke-', min: 1, max: 20, step: 1, awal: 1, bulat: true }],
+    params: [
+      {
+        key: 'benih',
+        label: 'Percobaan ke-',
+        min: 1,
+        max: BENIH_BONGKAR_MAKS,
+        step: 1,
+        awal: 1,
+        bulat: true,
+        simbol: '#',
+        peran: 'hi',
+      },
+    ],
     roles: { p: 'a', na: 'b', ns: 'ab', banyak: 'hi' },
     arti: {
       p: 'Peluang teoretis — angka yang didekati frekuensi relatif.',
@@ -361,9 +786,9 @@ const konsep: Konsep = {
         narasi: (p) => {
           const g = gambarSepuluh(benihBongkar(p))
           if (g === 5)
-            return 'Di percobaan ini kebetulan muncul tepat 5 gambar — hasil yang memang paling mungkin, tetapi secara teori peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya bukan 5. Ganti percobaannya lewat penggeser: hasilnya berubah-ubah, kadang 3, kadang 7.'
+            return 'Di percobaan ini kebetulan muncul tepat 5 gambar — hasil yang paling mungkin, tetapi peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya bukan 5. Ketuk tombol "Lempar lagi" di dalam gambar: koinnya diacak ulang dan hasilnya berubah-ubah, kadang 3, kadang 7.'
           const muncul = g === 0 ? 'tidak muncul gambar sama sekali' : `muncul ${fmt(g)} gambar`
-          return `Di percobaan ini ${muncul}, ${g < 5 ? 'kurang' : 'lebih'} ${fmt(Math.abs(g - 5))} dari 5 — ganti percobaannya lewat penggeser dan hasilnya terus berubah-ubah. Secara teori, tepat 5 gambar memang hasil yang paling mungkin, tetapi peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya justru bukan 5.`
+          return `Di percobaan ini ${muncul}, ${g < 5 ? 'kurang' : 'lebih'} ${fmt(Math.abs(g - 5))} dari 5 — ketuk tombol "Lempar lagi" di dalam gambar dan hasilnya terus berubah-ubah. Tepat 5 gambar memang hasil yang paling mungkin, tetapi peluangnya hanya sekitar seperempat, jadi kira-kira tiga dari empat kali hasilnya justru bukan 5.`
         },
         durasi: 2400,
       },
@@ -409,15 +834,36 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Perbanyak lemparannya sendiri',
     ajakan:
-      'Geser banyaknya lemparan dan ganti percobaannya. Bandingkan dua angka di bawah judul: selisih mutlaknya cenderung membesar, sedangkan selisih relatifnya cenderung mengecil.',
+      'Tarik titik di ujung kurva ke kanan: kurvanya memanjang sendiri. Ketuk "Lempar lagi" untuk percobaan yang baru.',
     params: [
-      { key: 'n', label: 'Banyak lemparan', min: 10, max: 20000, step: 10, awal: 200, bulat: true },
-      { key: 'benih', label: 'Percobaan ke-', min: 1, max: 40, step: 1, awal: 1, bulat: true },
+      {
+        key: 'n',
+        label: 'Banyak lemparan',
+        min: 10,
+        max: N_EKS_MAKS,
+        step: 10,
+        awal: 200,
+        bulat: true,
+        simbol: 'N',
+        peran: 'a',
+        bagian: 'banyak',
+      },
+      {
+        key: 'benih',
+        label: 'Percobaan ke-',
+        min: 1,
+        max: BENIH_EKS_MAKS,
+        step: 1,
+        awal: 1,
+        bulat: true,
+        simbol: '#',
+        peran: 'hi',
+      },
     ],
     Visual: VisualEksperimen,
     temuan: (p) => {
-      const n = clamp(Math.round(p.n ?? 200), 10, 20000)
-      const benih = clamp(Math.round(p.benih ?? 1), 1, 40)
+      const n = clamp(Math.round(p.n ?? 200), 10, N_EKS_MAKS)
+      const benih = clamp(Math.round(p.benih ?? 1), 1, BENIH_EKS_MAKS)
       const sim = simulasi(n, benih)
       const mutlak = Math.abs(sim.gambar - n / 2)
       const relatif = Math.abs(sim.frekuensi - 0.5)
@@ -426,18 +872,18 @@ const konsep: Konsep = {
           Dari {fmt(n)} lemparan, muncul {fmt(sim.gambar)} gambar —{' '}
           <strong>frekuensi relatifnya {fmt(sim.frekuensi, 4)}</strong>.{' '}
           {mutlak === 0 ? (
-            <>Kali ini kebetulan pas separuh, jadi kedua selisihnya 0 — coba ganti percobaannya.</>
+            <>Kali ini kebetulan pas separuh, jadi kedua selisihnya 0 — ketuk "Lempar lagi".</>
           ) : (
             <>
               Selisihnya dari 0,5 {relatif < 0.05 ? 'hanya ' : ''}
               {fmt(relatif, 4)}, sedangkan selisih <em>mutlaknya</em> {fmt(mutlak)} lemparan.
             </>
           )}{' '}
-          Coba perbesar
-          banyaknya lemparan: selisih dari 0,5 itu cenderung mengecil, sedangkan selisih mutlaknya
-          cenderung membesar. Keduanya hanya kecenderungan — pada satu percobaan tertentu angkanya
-          masih bisa naik-turun. Itulah sebabnya "hukum bilangan besar" berbicara tentang
-          perbandingan, bukan tentang selisih jumlah.
+          Tarik ujung kurva lebih ke kanan: selisih dari 0,5 itu cenderung mengecil, sedangkan
+          selisih mutlaknya cenderung membesar. Bagian kurva yang sudah terlukis tidak berubah —
+          kamu benar-benar melanjutkan percobaan yang sama, bukan memulai yang baru. Keduanya hanya
+          kecenderungan: pada satu percobaan tertentu angkanya masih bisa naik-turun. Itulah sebabnya
+          "hukum bilangan besar" berbicara tentang perbandingan, bukan tentang selisih jumlah.
         </p>
       )
     },
@@ -472,6 +918,11 @@ const konsep: Konsep = {
           <em>pengenceran</em> — lemparan yang jumlahnya makin banyak membuat pengaruh lima lemparan
           awal itu menjadi tidak berarti.
         </p>
+        <p>
+          Itu bisa kamu lihat sendiri pada eksperimen: saat ujung kurva ditarik ke kanan, bagian
+          kurva yang sudah terlukis tidak pernah berubah. Hasil yang sudah terjadi tidak dikoreksi;
+          ia hanya kalah banyak.
+        </p>
         <h4>Yang mengecil dan yang membesar</h4>
         <p>
           Ini bagian yang paling sering mengejutkan: selisih <strong>relatif</strong> terhadap 0,5
@@ -504,6 +955,11 @@ const konsep: Konsep = {
           pertanyaan pada judul konsep ini punya jawaban yang tepat: bahkan hasil yang paling
           mungkin pun peluangnya hanya sekitar seperempat, sehingga sekitar tiga dari empat percobaan
           hasilnya bukan 5.
+        </p>
+        <p>
+          Sumbu mendatar pada gambar berskala logaritmik, dan itu bukan hiasan: karena simpangan
+          relatif sebanding dengan 1/√n, lebar pita goyangan menyusut kira-kira linear terhadap
+          jarak sepanjang sumbu logaritmik. Bentuk "corong" yang kamu lihat itulah 1/√n.
         </p>
       </>
     ),

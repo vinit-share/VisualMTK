@@ -120,7 +120,11 @@ export function Formula({
   size = 'lg',
   statis = false,
   className = '',
-}: FormulaViewProps) {
+  ringkas = false,
+}: FormulaViewProps & {
+  /** sembunyikan kalimat ajakan; arti tetap muncul saat sebuah bagian disorot. */
+  ringkas?: boolean
+}) {
   const ctx = useContext(Ctx)
   const [lokal, setLokal] = useState<string | null>(null)
   const uid = useId()
@@ -168,7 +172,7 @@ export function Formula({
           ),
         )}
       </div>
-      {adaArti && !statis && (
+      {adaArti && !statis && (!ringkas || pesan) && (
         <p className="fx-arti" aria-live="polite">
           {pesan ?? 'Sentuh bagian rumus untuk melihat artinya pada gambar.'}
         </p>

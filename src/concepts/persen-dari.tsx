@@ -10,18 +10,100 @@
 
    Miskonsepsi yang dibongkar: mengira "20%" selalu berarti
    "20 sesuatu", tanpa memedulikan keseluruhannya.
+
+   Interaksi langsung (lihat docs/PANDUAN-INTERAKSI.md):
+   - persen → pegangan pada BATAS ARSIRAN kisi seratus. Kisi terisi
+     baris demi baris, jadi batasnya berjalan berundak; pegangannya
+     duduk di ujung kanan kotak terakhir yang tersorot. Inilah pegangan
+     utama: menghitung kotak sendiri adalah inti konsep ini.
+   - total  → pegangan pada TEPI BAWAH kumpulan benda. Benda selalu
+     sepuluh per baris, jadi menarik tepi itu ke bawah menambah satu
+     baris = sepuluh benda (langkah penggesernya memang 10).
    ============================================================ */
 
-import { Svg, Tag } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, useSempit } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
-import { clamp, fmt, simplify } from '../lib/num'
+import { clamp, fmt, lerp, simplify } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
-
-const W = 680
-const H = 440
 
 /** Garis/bingkai kelompok hanya digambar bila banyak kelompoknya paling banyak ini. */
 const MAKS_KELOMPOK_DIGAMBAR = 10
+
+/** Benda selalu sepuluh per baris, sama seperti kisi seratus. */
+const PER_BARIS = 10
+
+/** Bingkai kumpulan benda digambar sedikit di luar kotak-kotaknya. */
+const OFS = 3
+
+/* Selama kumpulan benda belum ada (langkah 0–2), kisi berdiri sendiri di
+   tengah panggung dan kotaknya digambar sebesar ini — di situlah anak
+   menghitung kotaknya. Tepi atasnya tidak ikut berubah (`kisiY` sama pada
+   kedua tata letak), jadi kisi hanya mengecil dan bergeser, tidak melompat.
+   Batas angkanya: pegangan batas pada baris terakhir duduk di
+   kisiY + 9,5 · SEL_BESAR dan ajakannya menjulur ±70 satuan ke bawah — pada
+   28 satuan itu berhenti di 448, masih di dalam bingkai 460. */
+const SEL_BESAR = 28
+
+/* ---------------- Tata letak ----------------
+   Dua sistem koordinat: lebar untuk layar besar, tegak untuk HP. Pada
+   keduanya kisi seratus berdiri di kiri dan kumpulan benda di kanan,
+   supaya keduanya bisa dibandingkan sekaligus.
+
+   Angka-angka di bawah dijaga agar di nilai penggeser MANA PUN:
+   - kumpulan benda paling tinggi 20 baris (total 200), jadi tepi
+     bawahnya di `bendaY - OFS + 20 · selB`; label "terambil …" duduk
+     `jedaTerambil` di bawahnya — cukup jauh untuk melewati lingkaran
+     sorot pegangan tepi bawah dan tetap di dalam viewBox;
+   - pegangan tepi bawah duduk di tengah tepi supaya labelnya tidak
+     keluar bingkai; jaraknya ke pegangan batas arsiran (paling jauh di
+     tepi kanan kisi) selalu jauh lebih dari u(48);
+   - ajakan "Seret …" digambar mesin DI BAWAH pegangan batas dan selebar
+     teksnya, jadi `kisiX` paling sedikit selebar setengah ajakan itu dan
+     kisi + setengah ajakan masih berhenti sebelum kumpulan benda. Di HP
+     ruangnya sempit, jadi ajakannya dipendekkan.
+   - tidak ada label di bawah kisi: pecahan sederhana tampil di label
+     atas kisi, supaya tidak pernah bertabrakan dengan ajakan itu. */
+function letak(sempit: boolean) {
+  return sempit
+    ? {
+        w: 420,
+        h: 460,
+        judulY: 28,
+        ukJudul: 17,
+        sel: 17,
+        kisiX: 42,
+        kisiY: 112,
+        labelKisiY: 90,
+        selB: 14,
+        bendaX: 262,
+        bendaY: 112,
+        labelBendaY: 90,
+        /** kolom tempat pegangan tepi bawah duduk (0..PER_BARIS). */
+        pegangKol: 5,
+        jedaTerambil: 46,
+        labelPanjang: false,
+        ajakanBatas: 'Seret',
+      }
+    : {
+        w: 680,
+        h: 460,
+        judulY: 30,
+        ukJudul: 19,
+        sel: 20,
+        kisiX: 125,
+        kisiY: 112,
+        labelKisiY: 90,
+        selB: 14,
+        bendaX: 418,
+        bendaY: 112,
+        labelBendaY: 90,
+        pegangKol: 5,
+        jedaTerambil: 46,
+        labelPanjang: true,
+        ajakanBatas: 'Seret batas',
+      }
+}
 
 /** Nilai turunan penggeser bongkar — dipakai bersama oleh gambar dan teks langkah. */
 function nilaiBongkar(p: Record<string, number>) {
@@ -29,13 +111,43 @@ function nilaiBongkar(p: Record<string, number>) {
   const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
   const [pp, qq] = simplify(persen, 100)
   const hasil = (persen / 100) * total
-  const perBaris = total > 100 ? 20 : 10
-  return { persen, total, pp, qq, hasil, perBaris, isi: total / qq }
+  return { persen, total, pp, qq, hasil, isi: total / qq }
 }
 
 /** Bingkai kelompok benda tergambar bila tiap kelompok pas mengisi baris penuh. */
-function bingkaiKelompokTergambar(total: number, kelompok: number, perBaris: number) {
-  return kelompok <= MAKS_KELOMPOK_DIGAMBAR && (total / kelompok) % perBaris === 0
+function bingkaiKelompokTergambar(total: number, kelompok: number) {
+  return kelompok <= MAKS_KELOMPOK_DIGAMBAR && (total / kelompok) % PER_BARIS === 0
+}
+
+/**
+ * Garis batas sesudah `batas` kotak pertama pada kisi yang terisi baris demi
+ * baris. Bila batasnya jatuh di tengah baris, garisnya berundak, supaya tiap
+ * bagian benar-benar berisi kotak yang sama dengan yang tersorot.
+ */
+function jalurBatas(x: number, y: number, sel: number, batas: number) {
+  const r = Math.floor(batas / PER_BARIS)
+  const c = batas - r * PER_BARIS
+  const yA = y + r * sel - 0.75
+  const kanan = x + PER_BARIS * sel
+  return c === 0
+    ? `M ${x} ${yA} H ${kanan}`
+    : `M ${x} ${yA + sel} H ${x + c * sel - 0.75} V ${yA} H ${kanan}`
+}
+
+/** Letak pegangan batas arsiran: ujung kanan kotak terakhir yang tersorot. */
+function titikBatas(x: number, y: number, sel: number, batas: number) {
+  const k = clamp(Math.round(batas), 0, 100)
+  if (k <= 0) return { x, y: y + sel / 2 }
+  const r = Math.floor((k - 1) / PER_BARIS)
+  const c = ((k - 1) % PER_BARIS) + 1
+  return { x: x + c * sel, y: y + r * sel + sel / 2 }
+}
+
+/** Kebalikan `titikBatas`: posisi jari pada kisi menjadi banyaknya kotak. */
+function batasDariTitik(pt: { x: number; y: number }, x: number, y: number, sel: number) {
+  const r = clamp(Math.floor((pt.y - y) / sel), 0, 9)
+  const c = clamp(Math.round((pt.x - x) / sel), 0, PER_BARIS)
+  return r * PER_BARIS + c
 }
 
 const KATA = ['nol', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas']
@@ -58,6 +170,8 @@ function KisiSeratus({
   kelompok,
   opacityKelompok = 0,
   nyala = false,
+  batasTampak = false,
+  bingkaiNyala = false,
 }: {
   x: number
   y: number
@@ -67,11 +181,15 @@ function KisiSeratus({
   kelompok?: number
   opacityKelompok?: number
   nyala?: boolean
+  /** gambar garis batas arsiran — garis yang dipegang anak. */
+  batasTampak?: boolean
+  /** tebalkan bingkai seratus kotak saat bagian rumus "100" disentuh. */
+  bingkaiNyala?: boolean
 }) {
   const kotak = []
   for (let i = 0; i < 100; i++) {
-    const r = Math.floor(i / 10)
-    const c = i % 10
+    const r = Math.floor(i / PER_BARIS)
+    const c = i % PER_BARIS
     const aktif = i < tersorot
     kotak.push(
       <rect
@@ -88,45 +206,43 @@ function KisiSeratus({
       />,
     )
   }
+  // Batas selalu jatuh di tepi kotak: kotak terisi bila i < tersorot.
+  const batas = clamp(Math.ceil(tersorot - 1e-9), 0, 100)
   return (
     <g>
       {kotak}
-      {kelompok && opacityKelompok > 0.01 && kelompok <= 10
-        ? Array.from({ length: kelompok - 1 }, (_, k) => {
-            // Batas antara kotak ke-(batas−1) dan ke-batas menurut urutan
-            // pengisian baris demi baris. Bila batasnya jatuh di tengah
-            // baris (mis. 25 kotak), garisnya berundak agar tiap kelompok
-            // benar-benar berisi kotak yang sama dengan yang tersorot.
-            const batas = Math.round(((k + 1) * 100) / kelompok)
-            const r = Math.floor(batas / 10)
-            const c = batas % 10
-            const yA = y + r * sel - 0.75
-            const d =
-              c === 0
-                ? `M ${x} ${yA} H ${x + 10 * sel}`
-                : `M ${x} ${yA + sel} H ${x + c * sel - 0.75} V ${yA} H ${x + 10 * sel}`
-            return (
-              <path
-                key={`g${k}`}
-                d={d}
-                fill="none"
-                stroke="var(--m-hi)"
-                strokeWidth={2.5}
-                strokeLinejoin="round"
-                opacity={opacityKelompok}
-              />
-            )
-          })
+      {kelompok && opacityKelompok > 0.01 && kelompok <= MAKS_KELOMPOK_DIGAMBAR
+        ? Array.from({ length: kelompok - 1 }, (_, k) => (
+            <path
+              key={`g${k}`}
+              d={jalurBatas(x, y, sel, Math.round(((k + 1) * 100) / kelompok))}
+              fill="none"
+              stroke="var(--m-hi)"
+              strokeWidth={2.5}
+              strokeLinejoin="round"
+              opacity={opacityKelompok}
+            />
+          ))
         : null}
       <rect
         x={x - 1}
         y={y - 1}
-        width={10 * sel}
+        width={PER_BARIS * sel}
         height={10 * sel}
         fill="none"
-        stroke="var(--ink-2)"
-        strokeWidth={2}
+        stroke={bingkaiNyala ? 'var(--m-hi)' : 'var(--ink-2)'}
+        strokeWidth={bingkaiNyala ? 3.5 : 2}
       />
+      {batasTampak && (
+        <path
+          d={jalurBatas(x, y, sel, batas)}
+          fill="none"
+          stroke="var(--m-a)"
+          strokeWidth={nyala ? 4.5 : 3.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      )}
     </g>
   )
 }
@@ -138,29 +254,31 @@ function Benda({
   y,
   total,
   tersorot,
-  perBaris,
   sel,
   kelompok,
   opacityKelompok = 0,
   nyala = false,
+  tepiNyala = false,
 }: {
   x: number
   y: number
   total: number
   tersorot: number
-  perBaris: number
   sel: number
   kelompok?: number
   opacityKelompok?: number
   nyala?: boolean
+  /** tebalkan bingkai dan tepi bawah saat keseluruhannya sedang dipegang. */
+  tepiNyala?: boolean
 }) {
   const n = Math.min(total, 200)
+  const baris = Math.ceil(n / PER_BARIS)
   // Bulatkan sisa galat pembulatan (mis. 0,29 × 100 = 28,999…).
   const ts = Math.round(tersorot * 1e6) / 1e6
   const kotak = []
   for (let i = 0; i < n; i++) {
-    const r = Math.floor(i / perBaris)
-    const c = i % perBaris
+    const r = Math.floor(i / PER_BARIS)
+    const c = i % PER_BARIS
     const aktif = i + 1 <= ts
     // Hasil pecahan (mis. 25% dari 10 = 2,5) diwarnai sebagian kotak,
     // bukan dibulatkan ke atas menjadi satu kotak utuh.
@@ -193,25 +311,26 @@ function Benda({
       )
     }
   }
+  const bx = x - OFS
+  const by = y - OFS
+  const lebar = PER_BARIS * sel
+  const tinggi = baris * sel
   return (
     <g>
       {kotak}
-      {kelompok && opacityKelompok > 0.01 && kelompok <= 10
+      {kelompok && opacityKelompok > 0.01 && kelompok <= MAKS_KELOMPOK_DIGAMBAR
         ? Array.from({ length: kelompok }, (_, k) => {
-            const mulai = (k * total) / kelompok
-            const r0 = Math.floor(mulai / perBaris)
-            const c0 = mulai % perBaris
-            const lebarKel = total / kelompok
+            const mulai = (k * n) / kelompok
+            const isiKel = n / kelompok
             // Hanya gambar bingkai bila kelompoknya rapi sebaris penuh.
-            if (lebarKel % perBaris !== 0 || c0 !== 0) return null
-            const tinggiKel = lebarKel / perBaris
+            if (isiKel % PER_BARIS !== 0 || mulai % PER_BARIS !== 0) return null
             return (
               <rect
                 key={`k${k}`}
-                x={x - 3}
-                y={y + r0 * sel - 3}
-                width={perBaris * sel}
-                height={tinggiKel * sel}
+                x={bx}
+                y={by + (mulai / PER_BARIS) * sel}
+                width={lebar}
+                height={(isiKel / PER_BARIS) * sel}
                 rx={5}
                 fill="none"
                 stroke="var(--m-hi)"
@@ -221,6 +340,27 @@ function Benda({
             )
           })
         : null}
+      <rect
+        x={bx}
+        y={by}
+        width={lebar}
+        height={tinggi}
+        rx={5}
+        fill="none"
+        stroke="var(--m-b)"
+        strokeWidth={tepiNyala ? 2.6 : 1.8}
+        opacity={tepiNyala ? 1 : 0.7}
+      />
+      {/* tepi bawah: garis yang ditarik anak untuk menambah baris benda */}
+      <line
+        x1={bx}
+        y1={by + tinggi}
+        x2={bx + lebar}
+        y2={by + tinggi}
+        stroke="var(--m-b)"
+        strokeWidth={tepiNyala ? 5 : 3.5}
+        strokeLinecap="round"
+      />
     </g>
   )
 }
@@ -228,74 +368,95 @@ function Benda({
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
-  const { persen, total, pp, qq, hasil, perBaris } = nilaiBongkar(p)
+  const { persen, total, pp, qq, hasil } = nilaiBongkar(p)
+  const sempit = useSempit()
+  const L = letak(sempit)
+  const aktif = useInteraksi()?.kendali.aktif
 
   const sorotKisi = step === 1 ? seg(t, 0.1, 0.9) : step >= 1 ? 1 : 0
   const kelompokKisi = fase(step, t, 2)
   const munculBenda = fase(step, t, 3)
+  // Kisi mengecil dan bergeser ke kolom kiri LEBIH DULU, bendanya baru
+  // muncul sesudah itu — supaya keduanya tidak pernah bertindihan.
+  const pindah = seg(munculBenda, 0, 0.55)
+  const bendaOp = seg(munculBenda, 0.55, 1)
   const kelompokBenda = fase(step, t, 4)
   const ambil = step >= 5 ? (step === 5 ? seg(t, 0.15, 0.9) : 1) : 0
   const selesai = step >= 6
 
-  const nyalaPersen = sorot === 'persen'
-  const nyalaTotal = sorot === 'total'
+  const nyalaPersen = sorot === 'persen' || aktif === 'persen'
+  const nyalaTotal = sorot === 'total' || aktif === 'total'
   const nyalaHasil = sorot === 'hasil'
 
-  const sel = 22
-  const kisiX = munculBenda > 0.5 ? 56 : W / 2 - (10 * sel) / 2
-  const kisiY = 110
+  // Selama benda belum muncul, kisi berdiri besar di tengah panggung; setelah
+  // itu mengecil mulus ke kolom kiri. Pegangan memakai ukuran yang sama.
+  const sel = lerp(SEL_BESAR, L.sel, pindah)
+  const kisiX = lerp((L.w - PER_BARIS * sel) / 2, L.kisiX, pindah)
+  const tersorotKisi = sorotKisi * persen
+  const peg = titikBatas(kisiX, L.kisiY, sel, Math.ceil(tersorotKisi - 1e-9))
 
-  const selB = total > 100 ? 17 : 22
-  // 20 kolom × 17 = 340 satuan: mulai di 320 agar kolom terakhir tidak
-  // terpotong di tepi kanan (W = 680).
-  const bendaX = total > 100 ? 320 : 400
-  const bendaY = 110
+  const baris = total / PER_BARIS
+  const tepiY = L.bendaY - OFS + baris * L.selB
+  const tengahBenda = L.bendaX + (PER_BARIS * L.selB) / 2 - OFS
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Kisi seratus kotak dan kumpulan benda yang sebagian tersorot">
-      <g opacity={munculBenda > 0.5 ? 0.95 : 1}>
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={460}
+      label="Kisi seratus kotak yang batas arsirannya bisa diseret, dan kumpulan benda yang tepi bawahnya bisa ditarik"
+    >
+      <g opacity={bendaOp > 0.5 ? 0.95 : 1}>
         <KisiSeratus
           x={kisiX}
-          y={kisiY}
+          y={L.kisiY}
           sel={sel}
-          tersorot={sorotKisi * persen}
+          tersorot={tersorotKisi}
           kelompok={qq}
           opacityKelompok={kelompokKisi}
           nyala={nyalaPersen}
+          batasTampak={sorotKisi > 0.02}
+          bingkaiNyala={sorot === 'seratus'}
         />
-        <Tag x={kisiX + 5 * sel} y={kisiY - 24} warna="var(--m-a)" size={16}>
-          {sorotKisi > 0.5 ? `${fmt(persen)} dari 100` : '100 kotak'}
-        </Tag>
-        {kelompokKisi > 0.4 && qq <= 10 && (
-          <Tag x={kisiX + 5 * sel} y={kisiY + 10 * sel + 26} warna="var(--m-hi)" size={15}>
-            {`${fmt(persen)}/100 = ${fmt(pp)}/${fmt(qq)}`}
+        {/* Satu label saja di atas kisi: "100 kotak" → "20 dari 100" →
+            "20/100 = 1/5". Ruang di bawah kisi dibiarkan kosong untuk
+            ajakan pegangan batas. */}
+        {aktif !== 'persen' && (
+          <Tag
+            x={kisiX + (PER_BARIS * sel) / 2}
+            y={L.labelKisiY}
+            warna={kelompokKisi > 0.4 ? 'var(--m-hi)' : 'var(--m-a)'}
+            size={16}
+          >
+            {kelompokKisi > 0.4
+              ? `${fmt(persen)}/100 = ${fmt(pp)}/${fmt(qq)}`
+              : sorotKisi > 0.5
+                ? `${fmt(persen)} dari 100`
+                : '100 kotak'}
           </Tag>
         )}
       </g>
 
-      {munculBenda > 0.05 && (
-        <g opacity={munculBenda}>
+      {bendaOp > 0.02 && (
+        <g opacity={bendaOp}>
           <Benda
-            x={bendaX}
-            y={bendaY}
+            x={L.bendaX}
+            y={L.bendaY}
             total={total}
             tersorot={ambil * hasil}
-            perBaris={perBaris}
-            sel={selB}
+            sel={L.selB}
             kelompok={qq}
             opacityKelompok={kelompokBenda}
-            nyala={nyalaHasil || nyalaTotal}
+            nyala={nyalaHasil}
+            tepiNyala={nyalaTotal}
           />
-          <Tag x={bendaX + (perBaris * selB) / 2} y={bendaY - 24} warna="var(--m-ab)" size={16}>
-            {`keseluruhan = ${fmt(total)}`}
-          </Tag>
+          {aktif !== 'total' && (
+            <Tag x={tengahBenda} y={L.labelBendaY} warna="var(--m-b)" size={16}>
+              {L.labelPanjang ? `keseluruhan = ${fmt(total)}` : `${fmt(total)} benda`}
+            </Tag>
+          )}
           {ambil > 0.7 && (
-            <Tag
-              x={bendaX + (perBaris * selB) / 2}
-              y={bendaY + Math.ceil(Math.min(total, 200) / perBaris) * selB + 26}
-              warna="var(--m-ab)"
-              size={17}
-            >
+            <Tag x={tengahBenda} y={tepiY + L.jedaTerambil} warna="var(--m-ab)" size={17}>
               {`terambil ${fmt(hasil)}`}
             </Tag>
           )}
@@ -303,20 +464,38 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
       )}
 
       {step === 0 && (
-        <Tag x={W / 2} y={62} warna="var(--ink-2)" size={17}>
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--ink-2)" size={L.ukJudul}>
           "persen" artinya "per seratus"
         </Tag>
       )}
       {selesai && (
-        <Tag x={W / 2} y={62} warna="var(--m-ab)" size={19}>
+        <Tag x={L.w / 2} y={L.judulY} warna="var(--m-ab)" size={L.ukJudul + 2}>
           {`${fmt(persen)}% dari ${fmt(total)} = ${fmt(hasil)}`}
         </Tag>
       )}
-      {total > 200 && (
-        <Tag x={W / 2} y={H - 16} warna="var(--ink-soft)" size={13}>
-          (hanya 200 benda pertama yang digambar)
-        </Tag>
-      )}
+
+      {/* Persen dipegang di batas arsiran; keseluruhan di tepi bawah kumpulan.
+          Keduanya disembunyikan selama objeknya belum ada di panggung. */}
+      <Pegangan
+        x={peg.x}
+        y={peg.y}
+        param="persen"
+        arah="bebas"
+        utama
+        sembunyi={sorotKisi < 0.15}
+        label={`${fmt(persen)}%`}
+        ajakan={L.ajakanBatas}
+        keNilai={(pt) => batasDariTitik(pt, kisiX, L.kisiY, sel)}
+      />
+      <Pegangan
+        x={L.bendaX + L.pegangKol * L.selB - OFS}
+        y={tepiY}
+        param="total"
+        arah="y"
+        sembunyi={bendaOp < 0.5}
+        label={`${fmt(total)} benda`}
+        keNilai={(pt) => ((pt.y + OFS - L.bendaY) / L.selB) * PER_BARIS}
+      />
     </Svg>
   )
 }
@@ -324,43 +503,81 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 /* ---------------- Visual untuk eksperimen ---------------- */
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
+  const sempit = useSempit()
+  const L = letak(sempit)
+  const aktif = useInteraksi()?.kendali.aktif
+
   const persen = clamp(Math.round(p.persen ?? 20), 0, 100)
   const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
   const hasil = (persen / 100) * total
 
-  const sel = 20
-  const kisiX = 60
-  const kisiY = 120
-  const perBaris = total > 100 ? 20 : 10
-  const selB = total > 100 ? 17 : 22
-  // 20 kolom × 17 = 340 satuan: mulai di 320 agar kolom terakhir tidak
-  // terpotong di tepi kanan (W = 680).
-  const bendaX = total > 100 ? 320 : 400
-  const bendaY = 120
+  const peg = titikBatas(L.kisiX, L.kisiY, L.sel, persen)
+  const baris = total / PER_BARIS
+  const tepiY = L.bendaY - OFS + baris * L.selB
+  const tengahBenda = L.bendaX + (PER_BARIS * L.selB) / 2 - OFS
 
   return (
-    <Svg w={W} h={H} maxH={450} label="Kisi persen dan kumpulan benda yang sebagian tersorot">
-      <KisiSeratus x={kisiX} y={kisiY} sel={sel} tersorot={persen} nyala={sorot === 'persen'} />
-      <Tag x={kisiX + 5 * sel} y={kisiY - 26} warna="var(--m-a)" size={16}>
-        {`${fmt(persen)}%`}
-      </Tag>
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={460}
+      label="Kisi persen yang batas arsirannya bisa diseret, dan kumpulan benda yang tepi bawahnya bisa ditarik"
+    >
+      <KisiSeratus
+        x={L.kisiX}
+        y={L.kisiY}
+        sel={L.sel}
+        tersorot={persen}
+        nyala={sorot === 'persen' || aktif === 'persen'}
+        batasTampak
+        bingkaiNyala={sorot === 'seratus'}
+      />
+      {aktif !== 'persen' && (
+        <Tag x={L.kisiX + (PER_BARIS * L.sel) / 2} y={L.labelKisiY} warna="var(--m-a)" size={16}>
+          {`${fmt(persen)} dari 100`}
+        </Tag>
+      )}
 
       <Benda
-        x={bendaX}
-        y={bendaY}
+        x={L.bendaX}
+        y={L.bendaY}
         total={total}
         tersorot={hasil}
-        perBaris={perBaris}
-        sel={selB}
-        nyala={sorot === 'hasil' || sorot === 'total'}
+        sel={L.selB}
+        nyala={sorot === 'hasil'}
+        tepiNyala={sorot === 'total' || aktif === 'total'}
       />
-      <Tag x={bendaX + (perBaris * selB) / 2} y={bendaY - 26} warna="var(--m-ab)" size={16}>
-        {`dari ${fmt(total)}`}
+      {aktif !== 'total' && (
+        <Tag x={tengahBenda} y={L.labelBendaY} warna="var(--m-b)" size={16}>
+          {L.labelPanjang ? `keseluruhan = ${fmt(total)}` : `${fmt(total)} benda`}
+        </Tag>
+      )}
+      <Tag x={tengahBenda} y={tepiY + L.jedaTerambil} warna="var(--m-ab)" size={16}>
+        {`terambil ${fmt(hasil)}`}
       </Tag>
 
-      <Tag x={W / 2} y={62} warna="var(--ink)" size={20}>
+      <Tag x={L.w / 2} y={L.judulY} warna="var(--ink)" size={L.ukJudul + 2}>
         {`${fmt(persen)}% dari ${fmt(total)} = ${fmt(hasil)}`}
       </Tag>
+
+      <Pegangan
+        x={peg.x}
+        y={peg.y}
+        param="persen"
+        arah="bebas"
+        utama
+        label={`${fmt(persen)}%`}
+        ajakan={L.ajakanBatas}
+        keNilai={(pt) => batasDariTitik(pt, L.kisiX, L.kisiY, L.sel)}
+      />
+      <Pegangan
+        x={L.bendaX + L.pegangKol * L.selB - OFS}
+        y={tepiY}
+        param="total"
+        arah="y"
+        label={`${fmt(total)} benda`}
+        keNilai={(pt) => ((pt.y + OFS - L.bendaY) / L.selB) * PER_BARIS}
+      />
     </Svg>
   )
 }
@@ -407,8 +624,30 @@ const konsep: Konsep = {
   bongkar: {
     Visual: VisualBongkar,
     params: [
-      { key: 'persen', label: 'Persen', min: 5, max: 95, step: 5, awal: 20, satuan: '%' },
-      { key: 'total', label: 'Keseluruhan', min: 10, max: 200, step: 10, awal: 50, bulat: true },
+      {
+        key: 'persen',
+        label: 'Persen',
+        min: 5,
+        max: 95,
+        step: 5,
+        awal: 20,
+        satuan: '%',
+        simbol: 'p',
+        peran: 'a',
+        bagian: 'persen',
+      },
+      {
+        key: 'total',
+        label: 'Keseluruhan',
+        min: 10,
+        max: 200,
+        step: 10,
+        awal: 50,
+        bulat: true,
+        simbol: 'n',
+        peran: 'b',
+        bagian: 'total',
+      },
     ],
     roles: { persen: 'a', total: 'b', hasil: 'ab', seratus: 'hi' },
     arti: {
@@ -431,7 +670,7 @@ const konsep: Konsep = {
         judul: 'Sorot sebanyak persennya',
         narasi: (p) => {
           const { persen } = nilaiBongkar(p)
-          return `Persen dibaca begini: ${fmt(persen)}% berarti ${fmt(persen)} kotak dari seratus kotak itu. Belum ada perhitungan apa pun di sini — kamu hanya menghitung kotak.`
+          return `Persen dibaca begini: ${fmt(persen)}% berarti ${fmt(persen)} kotak dari seratus kotak itu. Seret garis batas arsiran pada kisi untuk menghitung kotaknya sendiri — belum ada perhitungan apa pun di sini.`
         },
         rumus: (p) => {
           const { persen } = nilaiBongkar(p)
@@ -463,7 +702,7 @@ const konsep: Konsep = {
         narasi: (p) => {
           const { persen, total } = nilaiBongkar(p)
           if (total === 100)
-            return `Sekarang acuannya bukan lagi seratus kotak, melainkan 100 benda — kebetulan sama banyak. Persennya tetap ${fmt(persen)}%; geser keseluruhannya ke angka selain 100 agar acuannya benar-benar berbeda.`
+            return `Sekarang acuannya bukan lagi seratus kotak, melainkan 100 benda — kebetulan sama banyak. Persennya tetap ${fmt(persen)}%; tarik tepi bawah kumpulan benda agar acuannya benar-benar berbeda.`
           return `Sekarang acuannya bukan lagi seratus kotak, melainkan ${fmt(total)} benda. Persennya tetap ${fmt(persen)}%, tetapi keseluruhannya berbeda.`
         },
         rumus: (p) => `keseluruhan = [total:${fmt(nilaiBongkar(p).total)}]`,
@@ -473,8 +712,8 @@ const konsep: Konsep = {
         id: 's4',
         judul: 'Bagi menjadi kelompok sama besar',
         narasi: (p) => {
-          const { persen, total, pp, qq, perBaris, isi } = nilaiBongkar(p)
-          const ekor = bingkaiKelompokTergambar(total, qq, perBaris)
+          const { persen, total, pp, qq, isi } = nilaiBongkar(p)
+          const ekor = bingkaiKelompokTergambar(total, qq)
             ? `berisi ${fmt(isi)} benda.`
             : Number.isInteger(isi)
               ? `berisi ${fmt(isi)} benda, walau bingkai kelompoknya tidak digambar.`
@@ -507,12 +746,39 @@ const konsep: Konsep = {
   eksperimen: {
     judul: 'Ubah persennya, ubah juga keseluruhannya',
     ajakan:
-      'Kisi kiri menunjukkan persennya, kumpulan kanan menunjukkan keseluruhan berikut bagian yang terambil.',
+      'Seret batas arsiran pada kisi seratus untuk mengubah persennya. Tarik tepi bawah kumpulan benda untuk mengubah keseluruhannya.',
     params: [
-      { key: 'persen', label: 'Persen', min: 0, max: 100, step: 1, awal: 20, satuan: '%' },
-      { key: 'total', label: 'Keseluruhan', min: 10, max: 200, step: 10, awal: 50, bulat: true },
+      {
+        key: 'persen',
+        label: 'Persen',
+        min: 0,
+        max: 100,
+        step: 1,
+        awal: 20,
+        satuan: '%',
+        simbol: 'p',
+        peran: 'a',
+        bagian: 'persen',
+      },
+      {
+        key: 'total',
+        label: 'Keseluruhan',
+        min: 10,
+        max: 200,
+        step: 10,
+        awal: 50,
+        bulat: true,
+        simbol: 'n',
+        peran: 'b',
+        bagian: 'total',
+      },
     ],
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const persen = clamp(Math.round(p.persen ?? 20), 0, 100)
+      const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
+      return `[hasil:${fmt((persen / 100) * total)}] = [persen:${fmt(persen)}]/[seratus:100] × [total:${fmt(total)}]`
+    },
     temuan: (p) => {
       const persen = clamp(Math.round(p.persen ?? 20), 0, 100)
       const total = clamp(Math.round((p.total ?? 50) / 10) * 10, 10, 200)
@@ -528,8 +794,9 @@ const konsep: Konsep = {
             : persen === 100
               ? 'Seratus persen berarti mengambil seluruhnya — itulah kenapa 100% selalu sama dengan keseluruhan itu sendiri.'
               : `Sebagai pecahan, ${fmt(persen)}% sama dengan ${fmt(pp)}/${fmt(qq)}.`}{' '}
-          Coba tahan persennya lalu gandakan keseluruhannya: hasilnya ikut berlipat dua. Persen
-          bukan jumlah tetap, melainkan <em>perbandingan</em>.
+          Biarkan batas arsirannya di tempat, lalu tarik tepi bawah kumpulan benda sampai bendanya
+          dua kali lipat: hasilnya ikut berlipat dua. Persen bukan jumlah tetap, melainkan{' '}
+          <em>perbandingan</em>.
         </p>
       )
     },

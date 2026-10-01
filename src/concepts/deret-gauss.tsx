@@ -7,24 +7,133 @@
    satukan. Keduanya PASTI membentuk persegi panjang n × (n+1)
    tanpa celah. Jadi dua kali jumlahnya sama dengan n(n+1),
    dan jumlahnya sendiri n(n+1)/2.
+
+   Interaksi langsung: anak memegang PUNCAK TANGGA sendiri.
+   - Balok satuan berukuran tetap, jadi menarik puncaknya benar-benar
+     memanjangkan tangganya (bukan mengecilkan baloknya). Tangga berdiri
+     di garis lantai dan selalu terpusat mendatar.
+   - Puncak kolom tertinggi berada di (w/2 + n·u/2, lantai − n·u):
+     naik satu balok penuh sekaligus melebar setengah balok untuk tiap n.
+     `keNilai` adalah proyeksi jari ke garis gerak itu — kebalikan persis
+     dari rumus posisinya (lihat catatan di atas keNilai).
+   - Di bongkar pegangannya disembunyikan saat tangganya belum selesai
+     dibangun dan saat salinannya sedang berputar.
    ============================================================ */
 
-import { Svg, Tag, Dimensi } from '../components/Stage'
+import { Pegangan, useInteraksi } from '../components/Interaksi'
+import { Svg, Tag, Dimensi, useSempit } from '../components/Stage'
 import { fase, seg, easing } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
-import type { DeriveState, Konsep } from '../lib/types'
+import type { DeriveState, Konsep, ParamSpec } from '../lib/types'
 
-const W = 690
-const H = 440
+/* ---------------- Penggeser ---------------- */
 
-function tata(n: number) {
-  const u = Math.min(30, 300 / (n + 1), 420 / n)
-  const lebar = n * u
-  const tinggi = (n + 1) * u
-  const X0 = W / 2 - lebar / 2
-  const Y0 = 92
-  return { u, lebar, tinggi, X0, Y0, cx: X0 + lebar / 2, cy: Y0 + tinggi / 2 }
+const PARAM_BONGKAR: ParamSpec[] = [
+  {
+    key: 'n',
+    label: 'Sampai bilangan',
+    min: 2,
+    max: 12,
+    step: 1,
+    awal: 6,
+    bulat: true,
+    simbol: 'n',
+    peran: 'a',
+    bagian: 'n',
+  },
+]
+
+const PARAM_EKSPERIMEN: ParamSpec[] = [
+  {
+    key: 'n',
+    label: 'Sampai bilangan',
+    min: 2,
+    max: 14,
+    step: 1,
+    awal: 8,
+    bulat: true,
+    simbol: 'n',
+    peran: 'a',
+    bagian: 'n',
+  },
+]
+
+/* ---------------- Tata letak ---------------- */
+
+interface Tata {
+  w: number
+  h: number
+  /** sisi satu balok; TETAP berapa pun n, supaya tangganya benar-benar tumbuh. */
+  u: number
+  /** garis lantai — dasar persegi panjang. */
+  lantai: number
+  judulY: number
+  judulSize: number
+  /** jarak garis ukur mendatar di bawah lantai. */
+  dimBawah: number
+  /** jarak garis ukur tegak dari sisi kiri persegi panjang. */
+  dimKiri: number
+  /** label tinggi ditaruh di atas garis ukurnya (tepi kiri HP terlalu sempit). */
+  kiriDiAtas: boolean
+  /** pakai keterangan versi pendek (layar HP). */
+  ringkas: boolean
 }
+
+/* Ukuran balok dipilih dari nilai n TERBESAR: pada nilai itu persegi panjangnya
+   masih muat utuh, label pegangan masih di dalam bingkai, dan keterangan di atas
+   tidak bertabrakan dengan label pegangan. Di HP baloknya justru lebih besar
+   (27 dan 23) daripada di tata letak lebar (25 dan 21). */
+const BONGKAR_LEBAR: Tata = {
+  w: 620, h: 470, u: 25, lantai: 416,
+  judulY: 34, judulSize: 17, dimBawah: 28, dimKiri: 22, kiriDiAtas: false, ringkas: false,
+}
+/* Di HP garis ukur mendatar diberi jarak lebih jauh (38, bukan 28): pada layar
+   360 px ke bawah huruf label diperbesar mesin sampai 11 px, dan pada n kecil
+   ajakan "Tarik" di bawah pegangan turun sampai ke daerah itu — dengan 28 label
+   n tertutup sebagian. Ticks-nya tetap sejajar tepi persegi panjang, jadi
+   kaitannya tidak hilang. */
+const BONGKAR_HP: Tata = {
+  w: 420, h: 520, u: 27, lantai: 452,
+  judulY: 28, judulSize: 16, dimBawah: 38, dimKiri: 22, kiriDiAtas: true, ringkas: true,
+}
+const EKS_LEBAR: Tata = {
+  w: 620, h: 470, u: 21, lantai: 416,
+  judulY: 28, judulSize: 19, dimBawah: 28, dimKiri: 22, kiriDiAtas: false, ringkas: false,
+}
+const EKS_HP: Tata = {
+  w: 420, h: 520, u: 23, lantai: 456,
+  judulY: 28, judulSize: 16, dimBawah: 38, dimKiri: 22, kiriDiAtas: true, ringkas: true,
+}
+
+/** Letak persegi panjang n × (n+1) dan puncak tangganya. */
+function geo(n: number, L: Tata) {
+  const lebar = n * L.u
+  const tinggi = (n + 1) * L.u
+  const X0 = L.w / 2 - lebar / 2
+  const Y0 = L.lantai - tinggi
+  return {
+    lebar,
+    tinggi,
+    X0,
+    Y0,
+    /** pusat putaran = pusat persegi panjang. */
+    cx: L.w / 2,
+    cy: Y0 + tinggi / 2,
+    /** puncak tangga: sudut kanan atas kolom tertinggi (n balok). */
+    px: X0 + lebar,
+    py: L.lantai - lebar,
+  }
+}
+
+/**
+ * Kebalikan dari letak puncak tangga.
+ * Puncaknya bergerak menurut P(n) = (w/2 + n·u/2, lantai − n·u), jadi
+ * arah geraknya v = (u/2, −u) dan |v|² = 1,25·u². Proyeksi jari ke garis itu:
+ *   n = ((x − w/2)·(u/2) + (lantai − y)·u) / (1,25·u²)
+ * Disederhanakan menjadi bentuk di bawah. Pada pt = P(n) hasilnya tepat n.
+ */
+const nDariPuncak = (pt: { x: number; y: number }, L: Tata) =>
+  (0.5 * (pt.x - L.w / 2) + (L.lantai - pt.y)) / (1.25 * L.u)
 
 /** Teks deret 1 + 2 + … + k. Semua suku ditulis bila k ≤ penuh + 1 (supaya "…" selalu mewakili
  *  paling sedikit dua suku); selain itu suku terakhir tetap tampak. */
@@ -71,20 +180,27 @@ function nBongkar(p: Record<string, number>): number {
   return clamp(Math.round(Number.isFinite(p.n) ? p.n : 6), 2, 12)
 }
 
-/** Tangga 1, 2, 3, …, n yang berdiri di dasar persegi panjang. */
+/** Tangga 1, 2, 3, …, n yang berdiri di garis lantai. */
 function Tangga({
   n,
-  g,
+  X0,
+  lantai,
+  u,
   warna,
   opacity = 1,
   sampai = n,
+  terang = false,
 }: {
   n: number
-  g: ReturnType<typeof tata>
+  X0: number
+  lantai: number
+  u: number
   warna: string
   opacity?: number
   /** hanya gambar kolom sampai indeks ini (untuk animasi bertahap). */
   sampai?: number
+  /** nyalakan seluruh balok (mis. saat bagian S pada rumus disorot). */
+  terang?: boolean
 }) {
   const kotak = []
   for (let j = 0; j < n; j++) {
@@ -94,13 +210,13 @@ function Tangga({
       kotak.push(
         <rect
           key={`${j}-${i}`}
-          x={g.X0 + j * g.u}
-          y={g.Y0 + g.tinggi - (i + 1) * g.u}
-          width={g.u - 1.2}
-          height={g.u - 1.2}
+          x={X0 + j * u}
+          y={lantai - (i + 1) * u}
+          width={u - 1.4}
+          height={u - 1.4}
           rx={2}
           fill={warna}
-          fillOpacity={0.42 * o}
+          fillOpacity={(terang ? 0.68 : 0.42) * o}
           stroke={warna}
           strokeWidth={1}
           strokeOpacity={o}
@@ -111,28 +227,123 @@ function Tangga({
   return <g opacity={opacity}>{kotak}</g>
 }
 
+/**
+ * Garis lantai tempat kedua tangga berdiri. Selama salinannya berputar,
+ * kedua tangga dikecilkan bersama-sama; garis lantainya ikut naik sebanyak
+ * itu (`y`), supaya tangga ungu tidak pernah tampak melayang di atas lantai
+ * yang seharusnya menjadi pijakannya.
+ */
+function Lantai({ L, y = L.lantai }: { L: Tata; y?: number }) {
+  return (
+    <line
+      x1={16}
+      y1={y}
+      x2={L.w - 16}
+      y2={y}
+      stroke="var(--m-axis)"
+      strokeWidth={1.4}
+      opacity={0.35}
+    />
+  )
+}
+
+/**
+ * Selama berputar, kotak pembatas tangga (persegi n·u) menyapu daerah yang
+ * lebih lebar daripada bingkainya. Seluruh gambar dikecilkan seperlunya di
+ * sekitar pusat putaran — kedua tangga tetap sebangun, dan skalanya kembali
+ * tepat 1 pada 0° maupun 180°.
+ */
+function skalaPutaran(putar: number, n: number, L: Tata, cy: number) {
+  const rad = (putar * Math.PI) / 180
+  const c = Math.abs(Math.cos(rad))
+  const s = Math.abs(Math.sin(rad))
+  const s0 = (n * L.u) / 2 // setengah sisi kotak pembatas tangga
+  const d = L.u / 2 // simpangan pusat kotak itu dari pusat putaran
+  const bentangX = s0 * (c + s) + d * s
+  const bentangY = s0 * (c + s) + d * c
+  // Pusat putaran selalu di w/2 mendatar, jadi ruang kiri = ruang kanan = w/2.
+  const ruangX = Math.max(1, L.w / 2 - 8)
+  const ruangY = Math.max(1, Math.min(cy, L.h - cy) - 8)
+  return Math.min(1, ruangX / Math.max(bentangX, 1), ruangY / Math.max(bentangY, 1))
+}
+
 /* ---------------- Visual untuk animasi bongkar ---------------- */
 
 function VisualBongkar({ step, t, p, sorot }: DeriveState) {
   const n = nBongkar(p)
-  const g = tata(n)
+  const sempit = useSempit()
+  const L = sempit ? BONGKAR_HP : BONGKAR_LEBAR
+  const g = geo(n, L)
+  const aktif = useInteraksi()?.kendali.aktif ?? null
   const jumlah = jumlahSampai(n)
 
   const bangun = step === 0 ? n * seg(t, 0.05, 0.95) : n
   const salinan = fase(step, t, 2)
   const putar = step >= 3 ? (step === 3 ? 180 * easing.inOutCubic(seg(t, 0.08, 0.95)) : 180) : 0
   const kotakPenuh = fase(step, t, 4)
-  const selesai = step >= 5
 
-  const nyalaN = sorot === 'n'
+  const nyalaN = sorot === 'n' || aktif === 'n'
   const nyalaN1 = sorot === 'n1'
   const nyalaJumlah = sorot === 'S'
 
   const terhitung = Math.min(n, Math.floor(bangun))
   const totalSampai = jumlahSampai(terhitung)
 
+  const skala = skalaPutaran(putar, n, L, g.cy)
+  const berputar = putar > 2 && putar < 178
+  const belumUtuh = step === 0 && bangun < n - 0.02
+
+  const ket =
+    step === 0
+      ? {
+          teks:
+            terhitung > 0
+              ? `${deretTeks(terhitung, L.ringkas ? 4 : 6)} = ${fmt(totalSampai)}`
+              : 'jumlahkan satu per satu',
+          warna: 'var(--m-a)',
+          size: L.judulSize + 1,
+        }
+      : step === 1
+        ? {
+            teks: L.ringkas
+              ? 'n = 100 butuh 99 penjumlahan'
+              : 'untuk n = 100, cara ini butuh 99 kali penjumlahan',
+            warna: 'var(--ink-2)',
+            size: L.judulSize,
+          }
+        : step === 2
+          ? { teks: 'gandakan tangganya', warna: 'var(--m-b)', size: L.judulSize }
+          : step === 3
+            ? { teks: 'putar salinannya setengah putaran', warna: 'var(--m-hi)', size: L.judulSize }
+            : step === 4
+              ? {
+                  teks: L.ringkas
+                    ? `${fmt(n)} × ${fmt(n + 1)} = ${fmt(luasKotak(n))} balok`
+                    : `pas menjadi persegi panjang ${fmt(n)} × ${fmt(n + 1)} = ${fmt(luasKotak(n))} balok`,
+                  warna: 'var(--m-hi)',
+                  size: L.judulSize,
+                }
+              : {
+                  teks: `satu tangga = ${fmt(luasKotak(n))} ÷ 2 = ${fmt(jumlah)}`,
+                  warna: nyalaJumlah ? 'var(--m-hi)' : 'var(--m-ab)',
+                  size: L.judulSize + 2,
+                }
+
+  const warnaN = nyalaN ? 'var(--m-hi)' : 'var(--m-a)'
+  const warnaN1 = nyalaN1 ? 'var(--m-hi)' : 'var(--m-b)'
+  const xKiri = g.X0 - L.dimKiri
+
   return (
-    <Svg w={W} h={H} maxH={450} label="Tangga balok yang digandakan dan diputar menjadi persegi panjang">
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.h}
+      label="Tangga balok yang digandakan dan diputar menjadi persegi panjang"
+    >
+      {/* Lantai ikut dikecilkan bersama kedua tangga, jadi tangga ungu tetap
+          berpijak padanya selama salinannya berputar. */}
+      <Lantai L={L} y={g.cy + (L.lantai - g.cy) * skala} />
+
       {/* bingkai persegi panjang tujuan */}
       {kotakPenuh > 0 && (
         <rect
@@ -148,77 +359,78 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
         />
       )}
 
-      <Tangga n={n} g={g} warna="var(--m-a)" sampai={bangun} />
+      {/* Kedua tangga dikecilkan bersama-sama selama berputar, jadi keduanya
+          tetap sebangun dan tidak ada yang keluar bingkai. */}
+      <g
+        transform={`translate(${g.cx.toFixed(2)} ${g.cy.toFixed(2)}) scale(${skala.toFixed(4)}) translate(${(-g.cx).toFixed(2)} ${(-g.cy).toFixed(2)})`}
+      >
+        <Tangga
+          n={n}
+          X0={g.X0}
+          lantai={L.lantai}
+          u={L.u}
+          warna="var(--m-a)"
+          sampai={bangun}
+          terang={nyalaJumlah}
+        />
+        {salinan > 0.02 && (
+          <g
+            opacity={salinan}
+            transform={`rotate(${putar.toFixed(2)} ${g.cx.toFixed(2)} ${g.cy.toFixed(2)})`}
+          >
+            <Tangga n={n} X0={g.X0} lantai={L.lantai} u={L.u} warna="var(--m-b)" />
+          </g>
+        )}
+      </g>
 
-      {salinan > 0.02 && (
-        <g
-          opacity={salinan}
-          transform={`rotate(${putar.toFixed(2)} ${g.cx.toFixed(1)} ${g.cy.toFixed(1)})`}
-        >
-          <Tangga n={n} g={g} warna="var(--m-b)" />
-        </g>
-      )}
-
-      {/* ukuran persegi panjang */}
+      {/* ukuran persegi panjang — angka n disembunyikan selama puncaknya
+          dipegang, karena pegangan sudah menampilkannya di dekat jari */}
       {kotakPenuh > 0.4 && (
         <>
           <Dimensi
             x1={g.X0}
-            y1={g.Y0 + g.tinggi + 22}
+            y1={L.lantai + L.dimBawah}
             x2={g.X0 + g.lebar}
-            y2={g.Y0 + g.tinggi + 22}
-            label={`${fmt(n)}`}
-            warna={nyalaN ? 'var(--m-hi)' : 'var(--m-a)'}
+            y2={L.lantai + L.dimBawah}
+            label={aktif === 'n' ? undefined : fmt(n)}
+            warna={warnaN}
           />
-          <Dimensi
-            x1={g.X0 - 22}
-            y1={g.Y0}
-            x2={g.X0 - 22}
-            y2={g.Y0 + g.tinggi}
-            label={`${fmt(n + 1)}`}
-            warna={nyalaN1 ? 'var(--m-hi)' : 'var(--m-b)'}
-          />
+          {L.kiriDiAtas ? (
+            <>
+              <Dimensi x1={xKiri} y1={g.Y0} x2={xKiri} y2={L.lantai} warna={warnaN1} />
+              <Tag x={xKiri} y={g.Y0 - 18} anchor="start" size={14} warna={warnaN1}>
+                {fmt(n + 1)}
+              </Tag>
+            </>
+          ) : (
+            <Dimensi
+              x1={xKiri}
+              y1={g.Y0}
+              x2={xKiri}
+              y2={L.lantai}
+              label={fmt(n + 1)}
+              warna={warnaN1}
+            />
+          )}
         </>
       )}
 
-      {/* keterangan */}
-      {step === 0 && (
-        <Tag x={W / 2} y={52} warna="var(--m-a)" size={17}>
-          {terhitung > 0
-            ? `${deretTeks(terhitung, 6)} = ${fmt(totalSampai)}`
-            : 'jumlahkan satu per satu'}
-        </Tag>
-      )}
-      {step === 1 && (
-        <Tag x={W / 2} y={52} warna="var(--ink-2)" size={16}>
-          untuk n = 100, cara ini butuh 99 kali penjumlahan
-        </Tag>
-      )}
-      {step === 2 && (
-        <Tag x={W / 2} y={52} warna="var(--m-b)" size={16}>
-          gandakan tangganya
-        </Tag>
-      )}
-      {step === 3 && (
-        <Tag x={W / 2} y={52} warna="var(--m-hi)" size={16}>
-          putar salinannya setengah putaran
-        </Tag>
-      )}
-      {step === 4 && (
-        <Tag x={W / 2} y={52} warna="var(--m-hi)" size={16}>
-          {`pas menjadi persegi panjang ${fmt(n)} × ${fmt(n + 1)} = ${fmt(luasKotak(n))} balok`}
-        </Tag>
-      )}
-      {selesai && (
-        <Tag
-          x={W / 2}
-          y={52}
-          warna={nyalaJumlah ? 'var(--m-hi)' : 'var(--m-ab)'}
-          size={18}
-        >
-          {`satu tangga = ${fmt(luasKotak(n))} ÷ 2 = ${fmt(jumlah)}`}
-        </Tag>
-      )}
+      <Tag x={L.w / 2} y={L.judulY} warna={ket.warna} size={ket.size}>
+        {ket.teks}
+      </Tag>
+
+      {/* Puncak tangga: naik satu balok dan melebar setengah balok untuk tiap n. */}
+      <Pegangan
+        x={g.px}
+        y={g.py}
+        param="n"
+        arah="bebas"
+        utama
+        sembunyi={berputar || belumUtuh}
+        label={`n = ${fmt(n)}`}
+        ajakan="Tarik"
+        keNilai={(pt) => nDariPuncak(pt, L)}
+      />
     </Svg>
   )
 }
@@ -227,11 +439,24 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
 
 function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: string | null }) {
   const n = clamp(Math.round(p.n ?? 8), 2, 14)
-  const g = tata(n)
+  const sempit = useSempit()
+  const L = sempit ? EKS_HP : EKS_LEBAR
+  const g = geo(n, L)
+  const aktif = useInteraksi()?.kendali.aktif ?? null
   const jumlah = jumlahSampai(n)
 
+  const warnaN = sorot === 'n' || aktif === 'n' ? 'var(--m-hi)' : 'var(--m-a)'
+  const warnaN1 = sorot === 'n1' ? 'var(--m-hi)' : 'var(--m-b)'
+  const xKiri = g.X0 - L.dimKiri
+
   return (
-    <Svg w={W} h={H} maxH={450} label="Dua tangga balok yang bersama-sama membentuk persegi panjang">
+    <Svg
+      w={L.w}
+      h={L.h}
+      maxH={L.h}
+      label="Dua tangga balok yang bersama-sama membentuk persegi panjang"
+    >
+      <Lantai L={L} />
       <rect
         x={g.X0}
         y={g.Y0}
@@ -242,29 +467,59 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         stroke="var(--m-hi)"
         strokeWidth={2.5}
       />
-      <Tangga n={n} g={g} warna="var(--m-a)" />
-      <g transform={`rotate(180 ${g.cx.toFixed(1)} ${g.cy.toFixed(1)})`}>
-        <Tangga n={n} g={g} warna="var(--m-b)" />
+      <Tangga
+        n={n}
+        X0={g.X0}
+        lantai={L.lantai}
+        u={L.u}
+        warna="var(--m-a)"
+        terang={sorot === 'S'}
+      />
+      <g transform={`rotate(180 ${g.cx.toFixed(2)} ${g.cy.toFixed(2)})`}>
+        <Tangga n={n} X0={g.X0} lantai={L.lantai} u={L.u} warna="var(--m-b)" />
       </g>
+
       <Dimensi
         x1={g.X0}
-        y1={g.Y0 + g.tinggi + 22}
+        y1={L.lantai + L.dimBawah}
         x2={g.X0 + g.lebar}
-        y2={g.Y0 + g.tinggi + 22}
-        label={fmt(n)}
-        warna={sorot === 'n' ? 'var(--m-hi)' : 'var(--m-a)'}
+        y2={L.lantai + L.dimBawah}
+        label={aktif === 'n' ? undefined : fmt(n)}
+        warna={warnaN}
       />
-      <Dimensi
-        x1={g.X0 - 22}
-        y1={g.Y0}
-        x2={g.X0 - 22}
-        y2={g.Y0 + g.tinggi}
-        label={fmt(n + 1)}
-        warna={sorot === 'n1' ? 'var(--m-hi)' : 'var(--m-b)'}
-      />
-      <Tag x={W / 2} y={52} warna="var(--m-ab)" size={19}>
+      {L.kiriDiAtas ? (
+        <>
+          <Dimensi x1={xKiri} y1={g.Y0} x2={xKiri} y2={L.lantai} warna={warnaN1} />
+          <Tag x={xKiri} y={g.Y0 - 18} anchor="start" size={14} warna={warnaN1}>
+            {fmt(n + 1)}
+          </Tag>
+        </>
+      ) : (
+        <Dimensi
+          x1={xKiri}
+          y1={g.Y0}
+          x2={xKiri}
+          y2={L.lantai}
+          label={fmt(n + 1)}
+          warna={warnaN1}
+        />
+      )}
+
+      <Tag x={L.w / 2} y={L.judulY} warna="var(--m-ab)" size={L.judulSize}>
         {`${deretTeks(n, 4)} = ${fmt(n)} × ${fmt(n + 1)} ÷ 2 = ${fmt(jumlah)}`}
       </Tag>
+
+      {/* Puncak tangga ungu, tepat di batas dengan balok salinan yang menggantung. */}
+      <Pegangan
+        x={g.px}
+        y={g.py}
+        param="n"
+        arah="bebas"
+        utama
+        label={`n = ${fmt(n)}`}
+        ajakan="Tarik"
+        keNilai={(pt) => nDariPuncak(pt, L)}
+      />
     </Svg>
   )
 }
@@ -310,7 +565,7 @@ const konsep: Konsep = {
 
   bongkar: {
     Visual: VisualBongkar,
-    params: [{ key: 'n', label: 'Sampai bilangan', min: 2, max: 12, step: 1, awal: 6, bulat: true }],
+    params: PARAM_BONGKAR,
     roles: { n: 'a', n1: 'b', S: 'ab' },
     arti: {
       n: 'Bilangan terakhir yang dijumlahkan — sekaligus lebar persegi panjangnya.',
@@ -379,11 +634,15 @@ const konsep: Konsep = {
   },
 
   eksperimen: {
-    judul: 'Ubah sampai bilangan berapa',
+    judul: 'Tarik puncak tangganya',
     ajakan:
-      'Warna ungu adalah tangga aslinya, warna jingga adalah salinan yang sudah diputar. Keduanya selalu pas mengisi persegi panjang.',
-    params: [{ key: 'n', label: 'Sampai bilangan', min: 2, max: 14, step: 1, awal: 8, bulat: true }],
+      'Tarik titik di puncak tangga ungu untuk memanjangkan tangganya. Tangga jingga adalah salinan yang sudah diputar, dan keduanya selalu pas mengisi persegi panjangnya.',
+    params: PARAM_EKSPERIMEN,
     Visual: VisualEksperimen,
+    rumus: (p) => {
+      const n = clamp(Math.round(p.n ?? 8), 2, 14)
+      return `[S:S] = [n:${fmt(n)}] × [n1:${fmt(n + 1)}] ÷ 2 = ${fmt(jumlahSampai(n))}`
+    },
     temuan: (p) => {
       const n = clamp(Math.round(p.n ?? 8), 2, 14)
       const S = jumlahSampai(n)
