@@ -87,12 +87,21 @@ Selalu pakai token, jangan hex. Peran warna konsisten di seluruh aplikasi:
 | `var(--m-b)` / `var(--m-b-soft)` | besaran kedua (mis. `b`, tinggi) |
 | `var(--m-ab)` / `var(--m-ab-soft)` | hasil interaksi keduanya (mis. `ab`, luas) |
 | `var(--m-c)` / `var(--m-c-soft)` | hasil/resultan (mis. `c`) |
-| `var(--m-hi)` | sorotan "aha" |
+| `var(--m-hi)` / `var(--m-hi-soft)` | sorotan "aha" |
+| `var(--m-a-ink)` … `var(--m-hi-ink)` | **tulisan** berwarna peran itu |
 | `var(--m-grid)`, `var(--m-axis)`, `var(--m-ghost)` | kisi, sumbu, bayangan |
 | `var(--ink)`, `var(--ink-2)`, `var(--surface)` | teks dan latar |
 
 Token ini otomatis benar di tema terang maupun gelap. Warna hex mentah akan
 rusak di tema gelap dan dianggap cacat.
+
+**Tulisan memakai varian tinta.** Warna utama peran (`--m-b`, `--m-c`, …) hanya
+cukup kontras untuk isian bentuk, garis, dan titik. Label lewat `Tag` sudah
+dipetakan otomatis: `<Tag warna="var(--m-b)">` tampil dengan `--m-b-ink`. Untuk
+`<text>` atau `<tspan>` mentah, tulis `fill="var(--m-b-ink)"` atau, bila
+warnanya berasal dari variabel, `fill={tinta(warna)}` (`tinta` dari
+`src/components/Stage.tsx`). Tulisan terang di atas isian berwarna: isiannya
+yang memakai varian tinta, tulisannya `var(--surface)`.
 
 ## Rumus interaktif
 
@@ -168,6 +177,8 @@ Uji itu otomatis memeriksa modulmu:
   dari penggeser — dijalankan di seluruh kombinasi nilai penggeser: tidak boleh
   kosong, memuat `NaN`/`undefined`/`+ -`, atau narasinya lebih dari 2 kalimat;
 - `temuan()` benar-benar berubah saat penggeser digeser dari minimum ke maksimum;
+- **tulisan berwarna memakai varian tinta** — `<text>`/`<tspan>` dengan warna
+  utama peran, atau warna dari variabel yang belum lewat `tinta()`, ditolak;
 - **render seluruh visual** pada ratusan kombinasi `(step, t, parameter, sorot)`,
   lalu memindai keluarannya dari `NaN` dan `Infinity` yang bocor ke atribut SVG;
 - jumlah elemen SVG tetap di bawah 400;

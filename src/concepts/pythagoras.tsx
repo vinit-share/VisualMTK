@@ -24,7 +24,7 @@
    ============================================================ */
 
 import { Pegangan, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, SikuSiku, useSempit, useSkalaSvg } from '../components/Stage'
+import { SikuSiku, Svg, Tag, tinta, useSempit, useSkalaSvg } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -323,7 +323,7 @@ function IsiPersegi({
         dominantBaseline="middle"
         fontSize={huruf}
         fontWeight={800}
-        fill={warna}
+        fill={tinta(warna)}
       >
         {label}
       </text>
@@ -335,7 +335,7 @@ function IsiPersegi({
           dominantBaseline="middle"
           fontSize={hurufNilai}
           fontWeight={700}
-          fill="var(--ink-2)"
+          fill="var(--ink)"
         >
           {nilai}
         </text>
@@ -370,7 +370,7 @@ function Kotak4({
         width={w}
         height={h}
         fill={warna}
-        fillOpacity={nyala ? 0.5 : 0.28}
+        fillOpacity={nyala ? 0.4 : 0.28}
         stroke={warna}
         strokeWidth={nyala ? 3 : 2}
       />
@@ -819,7 +819,7 @@ function IsiBongkar({ step, t, p, sorot, L }: DeriveState & { L: TataBongkar }) 
         <polygon
           points={poly(g2.kotakC)}
           fill="var(--m-hi)"
-          fillOpacity={nyalaC || selesai ? 0.5 : 0.28}
+          fillOpacity={nyalaC || selesai ? 0.4 : 0.28}
           stroke="var(--m-hi)"
           strokeWidth={nyalaC || selesai ? 3 : 2}
           strokeLinejoin="round"
@@ -856,7 +856,7 @@ function IsiBongkar({ step, t, p, sorot, L }: DeriveState & { L: TataBongkar }) 
         </Tag>
       )}
       {tampakSama && (
-        <Tag x={sama[0]} y={sama[1]} warna="var(--ink-3)" size={22} latar={null}>
+        <Tag x={sama[0]} y={sama[1]} warna="var(--ink-soft)" size={22} latar={null}>
           =
         </Tag>
       )}
@@ -1047,21 +1047,21 @@ function IsiEksperimen({ p, sorot, L }: { p: Record<string, number>; sorot: stri
       <polygon
         points={poly(kotakC)}
         fill="var(--m-hi)"
-        fillOpacity={nyalaC ? 0.5 : 0.25}
+        fillOpacity={nyalaC ? 0.4 : 0.25}
         stroke="var(--m-hi)"
         strokeWidth={nyalaC ? 3 : 2}
       />
       <polygon
         points={poly(kotakA)}
         fill="var(--m-a)"
-        fillOpacity={nyalaA ? 0.5 : 0.25}
+        fillOpacity={nyalaA ? 0.4 : 0.25}
         stroke="var(--m-a)"
         strokeWidth={nyalaA ? 3 : 2}
       />
       <polygon
         points={poly(kotakB)}
         fill="var(--m-b)"
-        fillOpacity={nyalaB ? 0.5 : 0.25}
+        fillOpacity={nyalaB ? 0.4 : 0.25}
         stroke="var(--m-b)"
         strokeWidth={nyalaB ? 3 : 2}
       />

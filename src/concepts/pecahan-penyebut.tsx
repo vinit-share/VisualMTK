@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Pegangan, useInteraksi, useSeret } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, lcm, pecahanTeks, simplify } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -193,7 +193,7 @@ function Batang({
           dominantBaseline="middle"
           fontSize={Math.max(20, u(15))}
           fontWeight={800}
-          fill={warna}
+          fill={tinta(warna)}
           fontFamily="var(--font-math)"
         >
           {label}

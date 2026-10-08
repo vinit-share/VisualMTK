@@ -285,6 +285,46 @@ function nilaiUji(params = []) {
   return hasil
 }
 
+/* ---------------- Aturan tinta untuk tulisan ---------------- */
+
+// Tag pembuka <text>/<tspan> boleh memuat tanda ">" di dalam kurung kurawal
+// (mis. fill={hasil > 0 ? … : …}), jadi kurung kurawalnya ikut diurai.
+const POLA_TAG_TULISAN = /<(text|tspan)\b(?:[^>{]|\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})*>/g
+const POLA_FILL = /\bfill=(\{(?:[^{}]|\{[^{}]*\})*\}|"[^"]*")/
+const POLA_UTAMA = /var\(--(m-a|m-b|m-ab|m-c|m-hi|brand|amber|teal|blue|pink|green|rose|ok|belum)\)/
+
+/**
+ * Laporkan tulisan yang memakai warna utama peran/aksen.
+ * `wajibTinta`: warna yang berasal dari variabel harus dibungkus tinta()
+ * (dipakai untuk modul konsep); tanpa itu hanya warna utama yang jelas-jelas
+ * tertulis — langsung atau lewat konstanta berkas seperti `const A = 'var(--m-a)'`
+ * — yang ditolak.
+ */
+function periksaTinta(sumber, lapor, wajibTinta) {
+  const konstUtama = new Set()
+  for (const k of sumber.matchAll(/^const (\w+)\b[^=\n]*=\s*(\{[^}]*\}|[^\n]*)/gm)) {
+    if (POLA_UTAMA.test(k[2])) konstUtama.add(k[1])
+  }
+  for (const m of sumber.matchAll(POLA_TAG_TULISAN)) {
+    const fill = POLA_FILL.exec(m[0])
+    if (!fill) continue
+    const nilai = fill[1]
+    const baris = sumber.slice(0, m.index).split('\n').length
+    const lewatTinta = nilai.includes('tinta(')
+    const pakaiKonstUtama = [...nilai.matchAll(/\b[A-Za-z_]\w*\b/g)].some((n) => konstUtama.has(n[0]))
+    if (!lewatTinta && (POLA_UTAMA.test(nilai) || pakaiKonstUtama)) {
+      lapor(`baris ${baris}: tulisan memakai warna utama ${nilai} — pakai varian -ink`)
+    } else if (
+      wajibTinta &&
+      nilai.startsWith('{') &&
+      !lewatTinta &&
+      !/^\{['"]var\(--[a-z0-9-]+\)['"]\}$/.test(nilai)
+    ) {
+      lapor(`baris ${baris}: warna tulisan ${nilai} belum lewat tinta()`)
+    }
+  }
+}
+
 /* ---------------- Jalankan ---------------- */
 
 const server = await createServer({
@@ -323,6 +363,9 @@ for (const f of berkas) {
   // Pemeriksaan pada teks sumber.
   const hex = sumber.match(/['"]#[0-9a-fA-F]{3,8}['"]/g)
   if (hex) catat(id, 'serius', `warna heksadesimal mentah: ${[...new Set(hex)].slice(0, 4).join(', ')}`)
+  // Tulisan berwarna harus memakai varian tinta: warna utama peran hanya cukup
+  // kontras untuk bentuk. <Tag> memetakannya sendiri; <text>/<tspan> mentah tidak.
+  periksaTinta(sumber, (p) => catat(id, 'serius', p), true)
   if (/\bconsole\.(log|debug)\s*\(/.test(sumber)) catat(id, 'ringan', 'ada console.log yang tertinggal')
   if (/setInterval\s*\(/.test(sumber)) catat(id, 'serius', 'memakai setInterval (seharusnya useRaf)')
 
@@ -547,6 +590,21 @@ for (const f of berkas) {
     keadaanDiuji: keadaanBongkar.length,
     maksElemen,
   })
+}
+
+// Aturan yang sama (versi longgar) untuk gambar soal dan ilustrasi: hanya
+// menolak warna utama yang jelas tertulis; warna dari variabel tidak diwajibkan
+// lewat tinta() karena di sana banyak isian bentuk yang memang memakai warna utama.
+const berkasLain = [
+  path.join(AKAR, 'src', 'components', 'GambarSoal.tsx'),
+  ...fs
+    .readdirSync(path.join(AKAR, 'src', 'visuals'))
+    .filter((f) => f.endsWith('.tsx'))
+    .map((f) => path.join(AKAR, 'src', 'visuals', f)),
+]
+for (const jalur of berkasLain) {
+  const rel = path.relative(AKAR, jalur).replace(/\\/g, '/')
+  periksaTinta(fs.readFileSync(jalur, 'utf8'), (p) => catat(rel, 'serius', p), false)
 }
 
 await server.close()

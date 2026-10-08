@@ -17,6 +17,20 @@ const MENU: { ke: string; label: string; ikon: NamaIkon }[] = [
   { ke: '/progres', label: 'Progres', ikon: 'progres' },
 ]
 
+/** Pasang tema ke elemen root dan samakan warna bilah peramban dengannya. */
+function pasangTema(tema: 'light' | 'dark') {
+  const root = document.documentElement
+  root.dataset.theme = tema
+  // Terang: warna brand (ubin ikon). Gelap: latar halaman. Dibaca dari token.
+  const warna = getComputedStyle(root)
+    .getPropertyValue(tema === 'dark' ? '--paper' : '--brand')
+    .trim()
+  if (!warna) return
+  document
+    .querySelectorAll('meta[name="theme-color"]')
+    .forEach((m) => m.setAttribute('content', warna))
+}
+
 export function Layout() {
   const { pathname } = useLocation()
   const s = useSimpanan()
@@ -24,7 +38,6 @@ export function Layout() {
 
   // Terapkan tema ke elemen root.
   useEffect(() => {
-    const root = document.documentElement
     const pakai =
       s.pengaturan.tema === 'auto'
         ? matchMedia('(prefers-color-scheme: dark)').matches
@@ -33,7 +46,7 @@ export function Layout() {
         : s.pengaturan.tema === 'gelap'
           ? 'dark'
           : 'light'
-    root.dataset.theme = pakai
+    pasangTema(pakai)
   }, [s.pengaturan.tema])
 
   // Ikuti perubahan tema sistem saat mode otomatis.
@@ -41,7 +54,7 @@ export function Layout() {
     if (s.pengaturan.tema !== 'auto') return
     const mq = matchMedia('(prefers-color-scheme: dark)')
     const on = () => {
-      document.documentElement.dataset.theme = mq.matches ? 'dark' : 'light'
+      pasangTema(mq.matches ? 'dark' : 'light')
     }
     mq.addEventListener('change', on)
     return () => mq.removeEventListener('change', on)
@@ -123,7 +136,9 @@ export function Layout() {
           <div className="row row-between">
             <span className="row row-tight">
               <LogoMerek kecil />
-              <strong>Visual MTK</strong>
+              <strong style={{ fontWeight: 'var(--fw-black)', letterSpacing: '-0.025em' }}>
+                Visual<span className="merek-aksen">MTK</span>
+              </strong>
             </span>
             <span className="tiny dim">Jangan cuma hafal. Lihat kenapa.</span>
           </div>
@@ -145,8 +160,14 @@ export function Layout() {
   )
 }
 
+/**
+ * Ikon "Puzzle Operator": empat operator + − % × tersusun 2×2 seperti keping
+ * puzzle — anak ikut menyusun perhitungan, bukan cuma menerima jawaban.
+ * Geometrinya sama dengan public/favicon.svg (kisi 32×32) dan warnanya tetap
+ * di tema terang maupun gelap.
+ */
 export function LogoMerek({ kecil = false }: { kecil?: boolean }) {
-  const s = kecil ? 22 : 30
+  const s = kecil ? 22 : 28
   return (
     <svg
       width={s}
@@ -156,11 +177,24 @@ export function LogoMerek({ kecil = false }: { kecil?: boolean }) {
       aria-hidden="true"
       focusable="false"
     >
-      <rect x="1.5" y="1.5" width="29" height="29" rx="9" fill="var(--brand)" />
-      {/* Setengah lingkaran + setengah persegi: inti gagasan "lihat kenapa". */}
-      <path d="M16 7.5a8.5 8.5 0 0 0 0 17z" fill="var(--amber)" />
-      <path d="M16 7.5h8.5v17H16z" fill="var(--on-brand)" opacity="0.92" />
-      <circle cx="16" cy="16" r="2.1" fill="var(--brand)" />
+      <rect width="32" height="32" rx="7.5" fill="var(--ikon-ubin)" />
+      {/* + */}
+      <rect x="5.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="var(--ikon-krim)" />
+      <rect x="8.75" y="5.75" width="2.5" height="8.5" rx="1.25" fill="var(--ikon-krim)" />
+      {/* − */}
+      <rect x="17.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="var(--ikon-lemon)" />
+      {/* % */}
+      <circle cx="7.3" cy="19.3" r="1.7" fill="var(--ikon-langit)" />
+      <circle cx="12.7" cy="24.7" r="1.7" fill="var(--ikon-langit)" />
+      <path d="M13 19 7 25" stroke="var(--ikon-langit)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+      {/* × */}
+      <path
+        d="M19 19l6 6M25 19l-6 6"
+        stroke="var(--ikon-krim)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
     </svg>
   )
 }

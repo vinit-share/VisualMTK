@@ -163,6 +163,21 @@ export function Svg({ w, h, maxH, label, children, style, ...rest }: SvgProps) {
 }
 
 /** Label teks pada gambar dengan latar agar tetap terbaca di atas warna apa pun. */
+const POLA_WARNA_UTAMA = /var\(--(m-a|m-b|m-ab|m-c|m-hi|brand|amber|teal|blue|pink|green|rose|ok|belum)\)/g
+
+/**
+ * Varian "tinta" sebuah warna token, untuk TULISAN.
+ * Warna utama peran dan aksen (mis. `var(--m-b)`) hanya cukup kontras untuk
+ * bentuk, titik, dan garis. Tulisan memakai pasangannya yang berakhiran -ink.
+ * Warna lain (tinta biasa, warna tetap) dikembalikan apa adanya.
+ */
+export function tinta(warna: string): string {
+  return warna.replace(POLA_WARNA_UTAMA, 'var(--$1-ink)')
+}
+
+/** Tulisan terang yang biasa diletakkan di atas isian berwarna. */
+const TULISAN_TERANG = ['var(--surface)', 'var(--on-brand)', 'var(--paper)']
+
 export function Tag({
   x,
   y,
@@ -196,6 +211,12 @@ export function Tag({
     !layar && skala > 0 ? Math.max(size, Math.min(size * 1.6, HURUF_MIN_PX / skala)) : size
   const lebar = children.length * ukuran * 0.58 + padX * (ukuran / size) * 2
   const rx = anchor === 'middle' ? x - lebar / 2 : anchor === 'end' ? x - lebar : x
+  // Label berisi (tulisan terang di atas warna utama): latarnya dipindah ke
+  // varian tinta supaya kontrasnya cukup di kedua tema. Label biasa: tulisannya
+  // yang memakai varian tinta.
+  const berisi = !!latar && TULISAN_TERANG.includes(warna) && tinta(latar) !== latar
+  const warnaLatar = berisi && latar ? tinta(latar) : latar
+  const warnaTulisan = berisi ? 'var(--surface)' : tinta(warna)
   return (
     <g opacity={opacity} style={{ pointerEvents: 'none' }}>
       {latar && (
@@ -205,8 +226,8 @@ export function Tag({
           width={lebar}
           height={ukuran * 1.5}
           rx={ukuran * 0.6}
-          fill={latar}
-          opacity={0.92}
+          fill={warnaLatar ?? undefined}
+          opacity={berisi ? 1 : 0.92}
         />
       )}
       <text
@@ -216,7 +237,7 @@ export function Tag({
         dominantBaseline="middle"
         fontSize={ukuran}
         fontWeight={tebal}
-        fill={warna}
+        fill={warnaTulisan}
       >
         {children}
       </text>
@@ -272,7 +293,7 @@ export function Dimensi({
           x={mx + (tegak ? -size * 1.2 : 0)}
           y={my + (tegak ? 0 : -size * 0.9)}
           size={size}
-          warna={warna}
+          warna={warna === 'var(--m-axis)' ? 'var(--ink-2)' : warna}
         >
           {label}
         </Tag>

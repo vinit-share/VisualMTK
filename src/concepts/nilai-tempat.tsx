@@ -25,7 +25,7 @@
    ============================================================ */
 
 import { Pegangan, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -493,8 +493,8 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
             fontFamily="var(--font-math)"
             fill="var(--ink)"
           >
-            <tspan fill={nyalaPuluhan ? 'var(--m-hi)' : 'var(--m-a)'}>{fmt(puluhan)}</tspan>
-            <tspan fill={nyalaSatuan ? 'var(--m-hi)' : 'var(--m-b)'}>{fmt(satuan)}</tspan>
+            <tspan fill={tinta(nyalaPuluhan ? 'var(--m-hi)' : 'var(--m-a)')}>{fmt(puluhan)}</tspan>
+            <tspan fill={tinta(nyalaSatuan ? 'var(--m-hi)' : 'var(--m-b)')}>{fmt(satuan)}</tspan>
           </text>
           {/* dua baris: "puluhan" dan "satuan" tidak muat berdampingan di
               bawah dua angka yang cuma selebar ±42 satuan */}

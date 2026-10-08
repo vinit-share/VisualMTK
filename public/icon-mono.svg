@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Versi satu warna (currentColor): tab tersemat Safari, cetak, cap air. -->
+  <rect x="5.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="currentColor"/>
+  <rect x="8.75" y="5.75" width="2.5" height="8.5" rx="1.25" fill="currentColor"/>
+  <rect x="17.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="currentColor"/>
+  <circle cx="7.3" cy="19.3" r="1.7" fill="currentColor"/>
+  <circle cx="12.7" cy="24.7" r="1.7" fill="currentColor"/>
+  <path d="M13 19 L7 25" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <path d="M19 19 L25 25 M25 19 L19 25" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>

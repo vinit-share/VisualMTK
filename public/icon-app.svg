@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 32 32">
+  <!-- Ikon aplikasi (apple-touch, PWA "any"): glif diperkecil 0,8. -->
+  <rect width="32" height="32" rx="7.2" fill="#6445df"/>
+  <g transform="translate(16 16) scale(0.8) translate(-16 -16)">
+    <rect x="5.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="#fffaf2"/>
+    <rect x="8.75" y="5.75" width="2.5" height="8.5" rx="1.25" fill="#fffaf2"/>
+    <rect x="17.75" y="8.75" width="8.5" height="2.5" rx="1.25" fill="#e0c931"/>
+    <circle cx="7.3" cy="19.3" r="1.7" fill="#65e0e7"/>
+    <circle cx="12.7" cy="24.7" r="1.7" fill="#65e0e7"/>
+    <path d="M13 19 L7 25" stroke="#65e0e7" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M19 19 L25 25 M25 19 L19 25" stroke="#fffaf2" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

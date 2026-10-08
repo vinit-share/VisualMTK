@@ -27,7 +27,7 @@ const tulis = (teks: string, ukuran = 26, y = 42, miring = false) => (
     fontSize={ukuran}
     fontWeight={700}
     fontStyle={miring ? 'italic' : undefined}
-    fill={G}
+    fill={K}
     fontFamily="var(--font-math)"
   >
     {teks}
@@ -141,7 +141,7 @@ const GLIF = {
   ),
   pangkat: (
     <>
-      <text x={26} y={48} textAnchor="middle" fontSize={34} fontWeight={700} fill={G} fontFamily="var(--font-math)">
+      <text x={26} y={48} textAnchor="middle" fontSize={34} fontWeight={700} fill={K} fontFamily="var(--font-math)">
         2
       </text>
       <text x={46} y={26} textAnchor="middle" fontSize={20} fontWeight={700} fill={K} fontFamily="var(--font-math)">

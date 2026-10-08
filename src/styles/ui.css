@@ -107,12 +107,13 @@
 }
 .btn-primary:hover { background: var(--brand-hover); }
 
+/* Tombol sekunder: latar brand-soft-2, tulisan brand-ink (paket desain). */
 .btn-soft {
-  background: var(--brand-soft);
+  background: var(--brand-soft-2);
   color: var(--brand-ink);
   box-shadow: none;
 }
-.btn-soft:hover { background: var(--brand-soft-2); }
+.btn-soft:hover { background: color-mix(in oklab, var(--brand) 16%, var(--brand-soft-2)); }
 
 .btn-ghost {
   background: transparent;
@@ -295,7 +296,10 @@
 .note-brand { background: var(--brand-soft); border-color: transparent; color: var(--brand-ink); }
 .note-amber { background: var(--amber-soft); border-color: transparent; color: var(--amber-ink); }
 .note-teal { background: var(--teal-soft); border-color: transparent; color: var(--teal-ink); }
-.note-rose { background: var(--rose-soft); border-color: transparent; }
+.note-rose { background: var(--rose-soft); border-color: transparent; color: var(--rose-ink); }
+/* Umpan balik jawaban: benar (tenang) dan belum tepat (hangat, bukan merah). */
+.note-ok { background: var(--ok-soft); border-color: transparent; color: var(--ok-ink); }
+.note-belum { background: var(--belum-soft); border-color: transparent; color: var(--belum-ink); }
 .note strong { font-weight: var(--fw-black); }
 
 /* ---------------- Kolom isian ---------------- */

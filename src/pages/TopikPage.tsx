@@ -198,7 +198,9 @@ function IsiTopik({ topik }: { topik: TopikRingkas }) {
           <Link to={`/belajar/${topik.kelas}`} className="chip chip-outline">
             <Ikon nama="prev" /> Kelas {topik.kelas}
           </Link>
-          <span className="chip chip-domain">{LABEL_DOMAIN[topik.domain]}</span>
+          <span className="chip chip-domain">
+            <span className="dot" /> {LABEL_DOMAIN[topik.domain]}
+          </span>
           {topik.lanjut && (
             <span className="chip chip-pink" title="Hanya ada pada mata pelajaran Matematika Tingkat Lanjut">
               Tingkat Lanjut

@@ -45,7 +45,7 @@
    ============================================================ */
 
 import { Pegangan, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayarUntuk } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayarUntuk } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -343,8 +343,8 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
               fontWeight={700}
               fontFamily="var(--font-math)"
             >
-              <tspan fill={warna}>{`${tanda(m)} × `}</tspan>
-              <tspan fill={warnaFaktor}>{tanda(nb)}</tspan>
+              <tspan fill={tinta(warna)}>{`${tanda(m)} × `}</tspan>
+              <tspan fill={tinta(warnaFaktor)}>{tanda(nb)}</tspan>
             </text>
             <text
               x={L.xSama}
@@ -353,7 +353,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
               dominantBaseline="middle"
               fontSize={L.fBaris}
               fontWeight={700}
-              fill="var(--ink-3)"
+              fill="var(--ink-2)"
             >
               =
             </text>
@@ -364,7 +364,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
               dominantBaseline="middle"
               fontSize={L.fHasil}
               fontWeight={800}
-              fill={hasil > 0 ? 'var(--m-ab)' : hasil < 0 ? 'var(--m-b)' : 'var(--ink-2)'}
+              fill={tinta(hasil > 0 ? 'var(--m-ab)' : hasil < 0 ? 'var(--m-b)' : 'var(--ink-2)')}
               fontFamily="var(--font-math)"
             >
               {bil(hasil)}
@@ -423,7 +423,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
               dominantBaseline="middle"
               fontSize={fPanel}
               fontWeight={i === 4 ? 800 : 600}
-              fill={i === 4 ? 'var(--m-ab)' : 'var(--ink-2)'}
+              fill={tinta(i === 4 ? 'var(--m-ab)' : 'var(--ink-2)')}
               fontFamily="var(--font-math)"
             >
               {s}
@@ -464,7 +464,7 @@ function VisualBongkar({ step, t, p, sorot }: DeriveState) {
                   dominantBaseline="middle"
                   fontSize={L.fSel}
                   fontWeight={800}
-                  fill={positif ? 'var(--m-ab)' : 'var(--m-b)'}
+                  fill={tinta(positif ? 'var(--m-ab)' : 'var(--m-b)')}
                 >
                   {`${kiri} = ${hasil}`}
                 </text>
@@ -772,11 +772,11 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
         fontWeight={800}
         fontFamily="var(--font-math)"
       >
-        <tspan fill={warnaA}>{tanda(a)}</tspan>
-        <tspan fill="var(--ink-3)">{' × '}</tspan>
-        <tspan fill={warnaB}>{tanda(b)}</tspan>
-        <tspan fill="var(--ink-3)">{' = '}</tspan>
-        <tspan fill={warnaHasil}>{bil(hasil)}</tspan>
+        <tspan fill={tinta(warnaA)}>{tanda(a)}</tspan>
+        <tspan fill="var(--ink-soft)">{' × '}</tspan>
+        <tspan fill={tinta(warnaB)}>{tanda(b)}</tspan>
+        <tspan fill="var(--ink-soft)">{' = '}</tspan>
+        <tspan fill={tinta(warnaHasil)}>{bil(hasil)}</tspan>
       </text>
       <Tag
         x={L.w / 2}

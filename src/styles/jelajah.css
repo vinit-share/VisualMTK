@@ -7,16 +7,18 @@
 /* ---------------- Warna per domain matematika ----------------
    Elemen ber-atribut data-domain mewariskan tiga warna:
    --g (utama), --g2 (latar lembut), --g3 (tinta). */
+/* Bilangan jingga, Aljabar ungu, Pengukuran toska, Geometri biru langit,
+   Data & Peluang merah muda, Kalkulus hijau — mengikuti paket desain identitas. */
 [data-domain] {
-  --g: var(--brand);
-  --g2: var(--brand-soft);
-  --g3: var(--brand-ink);
+  --g: var(--amber);
+  --g2: var(--amber-soft);
+  --g3: var(--amber-ink);
 }
-[data-domain='aljabar'] { --g: var(--teal); --g2: var(--teal-soft); --g3: var(--teal-ink); }
-[data-domain='pengukuran'] { --g: var(--amber); --g2: var(--amber-soft); --g3: var(--amber-ink); }
+[data-domain='aljabar'] { --g: var(--m-a); --g2: var(--m-a-soft); --g3: var(--m-a-ink); }
+[data-domain='pengukuran'] { --g: var(--teal); --g2: var(--teal-soft); --g3: var(--teal-ink); }
 [data-domain='geometri'] { --g: var(--blue); --g2: var(--blue-soft); --g3: var(--blue-ink); }
 [data-domain='data'] { --g: var(--pink); --g2: var(--pink-soft); --g3: var(--pink-ink); }
-[data-domain='kalkulus'] { --g: var(--rose); --g2: var(--rose-soft); --g3: var(--rose); }
+[data-domain='kalkulus'] { --g: var(--green); --g2: var(--green-soft); --g3: var(--green-ink); }
 
 .chip-domain { background: var(--g2); color: var(--g3); }
 
@@ -61,7 +63,7 @@
   stroke-width: 1;
   stroke-linejoin: round;
 }
-.bintang svg[data-nyala='true'] { fill: var(--amber); stroke: var(--amber-ink); }
+.bintang svg[data-nyala='true'] { fill: var(--bintang); stroke: var(--bintang-tepi); }
 .bintang.is-besar svg { width: 2.2rem; height: 2.2rem; }
 .bintang.is-besar svg:nth-child(2) { transform: translateY(-0.3rem) scale(1.15); }
 .bintang.is-hidup svg[data-nyala='true'] { animation: bintang-muncul 520ms var(--ease-spring) backwards; }
@@ -137,7 +139,8 @@
 .kelas-kartu .gambar-topik { width: 100%; aspect-ratio: 16 / 10; }
 .kelas-kartu .gambar-topik svg { inset: 12%; width: 76%; height: 76%; }
 .kelas-baris { display: flex; align-items: baseline; gap: var(--s-2); }
-.kelas-no { font-size: 2rem; color: var(--g, var(--brand)); }
+/* Angka adalah tulisan: pakai varian tinta domainnya. */
+.kelas-no { font-size: 2rem; color: var(--g3, var(--brand-ink)); }
 .kelas-julukan { font-size: var(--t-sm); font-weight: var(--fw-bold); line-height: var(--lh-snug); }
 .kelas-kaki {
   display: flex;
@@ -148,7 +151,7 @@
   font-weight: var(--fw-bold);
   color: var(--ink-2);
 }
-.kelas-kaki .ikon { color: var(--amber); }
+.kelas-kaki .ikon { color: var(--bintang-tepi); }
 .kelas-kartu .bar { width: 100%; margin-top: 0; }
 
 /* ---------------- Halaman kelas: kepala ---------------- */
@@ -185,7 +188,7 @@
   font-weight: 700;
   line-height: 1;
 }
-.kelas-ringkas-bintang .ikon { color: var(--amber); }
+.kelas-ringkas-bintang .ikon { color: var(--bintang-tepi); }
 .kelas-ringkas .bar { flex: 1 1 8rem; }
 
 .lompat-domain { display: flex; flex-wrap: wrap; gap: var(--s-2); }
@@ -201,7 +204,10 @@
   font-size: var(--t-sm);
   font-weight: var(--fw-bold);
 }
-.lompat-domain button b { font-weight: var(--fw-black); opacity: 0.7; }
+.lompat-domain button b { font-weight: var(--fw-black); opacity: 0.9; }
+/* Titik chip domain memakai warna utama domainnya, tulisannya varian tinta. */
+.lompat-domain button .dot,
+.chip-domain .dot { color: var(--g); }
 
 .domain-blok { scroll-margin-top: 5rem; }
 .domain-judul {
@@ -237,7 +243,7 @@
     border-color var(--d-2) var(--ease-out);
 }
 .ubin-topik:hover { transform: translateY(-3px); box-shadow: var(--shadow-3); border-color: var(--g); }
-.ubin-topik[data-bintang='3'] { border-color: color-mix(in oklab, var(--amber) 55%, var(--line)); }
+.ubin-topik[data-bintang='3'] { border-color: color-mix(in oklab, var(--bintang) 70%, var(--line)); }
 .ubin-utama {
   display: flex;
   flex-direction: column;
@@ -275,7 +281,7 @@
   font-weight: var(--fw-black);
   transition: background-color var(--d-2) var(--ease-out), color var(--d-2) var(--ease-out);
 }
-.ubin-tes:hover { background: var(--g); color: var(--surface); }
+.ubin-tes:hover { background: var(--g3); color: var(--g2); }
 .ubin-kenapa {
   display: grid;
   place-items: center;
@@ -359,7 +365,7 @@
   transition: rotate var(--d-2) var(--ease-out);
 }
 .lipat[open] summary::after { rotate: -135deg; translate: 0 0.15rem; }
-.lipat summary .ikon { color: var(--g, var(--brand)); }
+.lipat summary .ikon { color: var(--g3, var(--brand-ink)); }
 .lipat-hitung {
   font-size: var(--t-xs);
   font-weight: var(--fw-black);
@@ -421,8 +427,8 @@
   transition: all var(--d-2) var(--ease-out);
 }
 .sesi-titik li[data-keadaan='aktif'] { background: var(--brand); color: var(--on-brand); scale: 1.12; }
-.sesi-titik li[data-keadaan='benar'] { background: var(--teal); color: #fff; }
-.sesi-titik li[data-keadaan='salah'] { background: var(--amber); color: #fff; }
+.sesi-titik li[data-keadaan='benar'] { background: var(--ok-ink); color: var(--ok-soft); }
+.sesi-titik li[data-keadaan='salah'] { background: var(--belum-ink); color: var(--belum-soft); }
 
 .topik-hasil {
   display: flex;
@@ -520,9 +526,9 @@
   color: var(--on-brand);
 }
 .saring-chip button[data-domain] .dot { color: var(--g); }
-.saring-chip button[data-domain][aria-pressed='true'] { background: var(--g); border-color: var(--g); color: var(--surface); }
-.saring-chip button[data-domain][aria-pressed='true'] .dot { color: var(--surface); }
-.saring-chip b { font-weight: var(--fw-black); opacity: 0.65; }
+.saring-chip button[data-domain][aria-pressed='true'] { background: var(--g3); border-color: var(--g3); color: var(--g2); }
+.saring-chip button[data-domain][aria-pressed='true'] .dot { color: var(--g2); }
+.saring-chip b { font-weight: var(--fw-black); opacity: 0.9; }
 
 /* ---------------- Kenapa?: sorotan ---------------- */
 .sorotan {
@@ -649,7 +655,11 @@
 .jalur-pita .jalur-simpul { scroll-snap-align: start; }
 
 /* ---------------- Progres: bintang per kelas ---------------- */
-.warna-bintang { color: var(--amber); }
+.warna-bintang { color: var(--bintang-tepi); }
+/* Ikon bintang penghitung: isian warna bintang, tepi yang lebih gelap. */
+.kelas-kaki .ikon path,
+.kelas-ringkas-bintang .ikon path,
+.warna-bintang path { fill: var(--bintang); }
 .bintang-kelas {
   display: grid;
   gap: var(--s-2);

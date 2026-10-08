@@ -31,7 +31,7 @@ import { clamp, fmt, parseAngka } from '../lib/num'
 import type { FormulaRole, ParamSpec } from '../lib/types'
 import { Ikon } from './Ikon'
 import { useSorotAksi } from './Formula'
-import { Tag, useSkalaSvg, useUkuranLayar } from './Stage'
+import { Tag, tinta, useSkalaSvg, useUkuranLayar } from './Stage'
 
 export type Nilai = Record<string, number>
 export interface Titik {
@@ -737,7 +737,8 @@ export function TombolGambar({
         height={Math.max(tinggi, u(48, 48))}
         fill="transparent"
       />
-      <rect x={x - lebar / 2} y={y - tinggi / 2} width={lebar} height={tinggi} rx={tinggi / 2} fill={w} />
+      {/* Isian memakai varian tinta supaya tulisan di atasnya cukup kontras. */}
+      <rect x={x - lebar / 2} y={y - tinggi / 2} width={lebar} height={tinggi} rx={tinggi / 2} fill={tinta(w)} />
       <text
         x={x}
         y={y}
@@ -745,7 +746,7 @@ export function TombolGambar({
         dominantBaseline="central"
         fontSize={huruf}
         fontWeight={800}
-        fill="var(--on-brand)"
+        fill="var(--surface)"
         style={{ pointerEvents: 'none' }}
       >
         {label}
@@ -824,7 +825,7 @@ function ChipAngka({ spec, kendali }: { spec: ParamSpec; kendali: Kendali }) {
     <div
       className="chip-angka"
       data-aktif={kendali.aktif === spec.key || undefined}
-      style={{ ['--cw' as string]: warnaPeran(spec.peran) }}
+      style={{ ['--cw' as string]: tinta(warnaPeran(spec.peran)) }}
     >
       <button
         type="button"

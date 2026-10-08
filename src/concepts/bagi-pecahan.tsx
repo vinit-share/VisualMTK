@@ -24,7 +24,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Pegangan, useInteraksi, useSeret } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, pecahanTeks, simplify } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -178,7 +178,7 @@ function bacaParam(p: Record<string, number>) {
 /** Catatan kecil bila pembilang melebihi penyebut dan gambar memangkasnya. */
 function CatatanPangkas({ x, y, sempit }: { x: number; y: number; sempit: boolean }) {
   return (
-    <Tag x={x} y={y} warna="var(--ink-3)" size={13} tebal={600}>
+    <Tag x={x} y={y} warna="var(--ink-soft)" size={13} tebal={600}>
       {sempit
         ? 'pembilang tidak melebihi penyebut'
         : 'catatan: pembilang dibatasi agar tidak melebihi penyebut'}
@@ -305,7 +305,7 @@ function Batang({
           dominantBaseline="middle"
           fontSize={Math.max(20, u(15))}
           fontWeight={800}
-          fill={warna}
+          fill={tinta(warna)}
           fontFamily="var(--font-math)"
         >
           {label}

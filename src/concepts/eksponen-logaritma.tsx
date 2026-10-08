@@ -21,7 +21,7 @@
    ============================================================ */
 
 import { Pegangan, TombolGambar, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, sup } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -193,7 +193,7 @@ function GarisLinear({ L, basis, tampil }: { L: Tata; basis: number; tampil: num
               textAnchor="middle"
               fontSize={huruf}
               fontWeight={800}
-              fill="var(--m-a)"
+              fill="var(--m-a-ink)"
               fontFamily="var(--font-math)"
             >
               {d.teks}
@@ -256,7 +256,7 @@ function GarisLangkah({
               textAnchor="middle"
               fontSize={hurufNilai}
               fontWeight={800}
-              fill={nyala === k ? 'var(--m-hi)' : 'var(--m-b)'}
+              fill={tinta(nyala === k ? 'var(--m-hi)' : 'var(--m-b)')}
               fontFamily="var(--font-math)"
             >
               {fmt(basis ** k)}

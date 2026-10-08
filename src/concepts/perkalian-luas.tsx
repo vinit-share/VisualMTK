@@ -467,7 +467,7 @@ function VisualEksperimen({ p, sorot }: { p: Record<string, number>; sorot: stri
           {/* tanda sama dengan menepi selama pojok dipegang, supaya tidak
               bertabrakan dengan angka yang muncul di dekat jari */}
           {!dipegang && (
-            <Tag x={(L.c1 + L.c2) / 2} y={L.poros} warna="var(--ink-3)" size={24} latar={null}>
+            <Tag x={(L.c1 + L.c2) / 2} y={L.poros} warna="var(--ink-soft)" size={24} latar={null}>
               =
             </Tag>
           )}

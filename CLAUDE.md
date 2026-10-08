@@ -30,12 +30,36 @@ Jangan menambah dependensi npm tanpa alasan kuat.
 | `src/components/Bongkar.tsx` | Mesin "Rumus → Bongkar" (fitur khas) |
 | `src/components/Formula.tsx` | Rumus interaktif + `SorotProvider` |
 | `src/components/Interaksi.tsx` | Interaksi langsung: `Pegangan`, `RelGeser`, `useSeret`, kontrol angka, layar penuh |
-| `src/components/Stage.tsx` | `Svg`, `Tag`, `Dimensi`, `SikuSiku` |
+| `src/components/Stage.tsx` | `Svg`, `Tag`, `Dimensi`, `SikuSiku`, `tinta()` |
 | `src/components/SoalView.tsx` | Penyaji soal + petunjuk bertahap |
+| `src/components/SesiSoal.tsx` | Menjalankan sederet soal, rekap, dan `Bintang` |
+| `src/components/GambarSoal.tsx` | Gambar pada soal dari spesifikasi ringkas (`src/lib/gambar.ts`) |
+| `src/components/PitaGulir.tsx` | Daftar mendatar dengan tepi memudar dan tombol panah |
+| `src/visuals/GambarKonsep.tsx` | Gambar sampul tiap konsep (galeri Kenapa?, rak Eksperimen) |
+| `src/visuals/GambarTopik.tsx` | Glif topik, dipilih dari kata kunci judul, berwarna per domain |
 | `src/concepts/*.tsx` | Satu berkas per konsep, ditemukan otomatis |
 | `src/data/katalog.ts` | Katalog konsep; judul/pertanyaan/tagline dibuat dari modulnya |
-| `src/data/kurikulum.ts` | Pembagian kelas, jalur konsep, `muatKelas()` |
+| `src/data/kurikulum.ts` | Pembagian kelas, jalur konsep, `muatKelas()`, urutan topik |
 | `src/data/kurikulum/*.generated.ts` | Data topik hasil riset (jangan disunting tangan) |
+| `src/data/soal/kelas-*.ts` | Bank soal tes topik; alat tulisnya di `src/data/soal/alat.ts` |
+| `src/data/soalTopik.ts` | Pemuat bank soal dan penyusun tes topik |
+| `src/styles/tokens.css` | Token warna, ruang, tipografi (satu-satunya tempat nilai hex) |
+| `public/*.svg`, `scripts/render-icons.ps1` | Ikon "Puzzle Operator" dan perender PNG/ICO-nya |
+
+## Warna dan identitas
+
+Palet "Indigo cerah & kuning lemon" diturunkan dari ikon "Puzzle Operator"
+(+ − % × di ubin indigo). Semua warna lewat token di `src/styles/tokens.css`;
+nilai aslinya dari perancang tersimpan di `docs/identitas/`.
+
+- **Tulisan berwarna memakai varian `-ink`** (`--m-b-ink`, `--teal-ink`, …) di
+  atas `-soft` atau permukaan. Varian utama (`--m-b`, `--teal`) hanya untuk
+  isian bentuk, titik, garis, dan tombol — kontrasnya tidak cukup untuk teks.
+  `Tag` sudah memetakannya sendiri; untuk `<text>` mentah pakai `tinta(warna)`.
+- Benar = `--ok`, belum tepat = `--belum` (sengaja hangat, bukan merah),
+  galat sistem = `--rose`, bintang = `--bintang`.
+- Warna domain materi diatur lewat atribut `data-domain` (`jelajah.css`).
+- Warna ikon (`--ikon-*`) tetap sama di tema terang dan gelap.
 
 ## Menambah konsep
 

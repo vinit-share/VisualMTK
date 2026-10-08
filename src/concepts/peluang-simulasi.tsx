@@ -28,7 +28,7 @@
 
 import { useMemo } from 'react'
 import { Pegangan, TombolGambar, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt, seededRandom } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -292,7 +292,7 @@ function Grafik({
           dominantBaseline="middle"
           fontSize={huruf}
           fontWeight={700}
-          fill={f === 0.5 ? 'var(--m-hi)' : 'var(--ink-soft)'}
+          fill={tinta(f === 0.5 ? 'var(--m-hi)' : 'var(--ink-soft)')}
         >
           {f === 0.5 ? '0,5' : fmt(f, 2)}
         </text>
@@ -386,7 +386,7 @@ function Koin({ x, y, gambar, r }: { x: number; y: number; gambar: boolean; r: n
         cy={y}
         r={r}
         fill={gambar ? 'var(--m-a)' : 'var(--surface-3)'}
-        fillOpacity={gambar ? 0.7 : 1}
+        fillOpacity={gambar ? 0.3 : 1}
         stroke={gambar ? 'var(--m-a)' : 'var(--ink-3)'}
         strokeWidth={1.6}
       />
@@ -397,7 +397,7 @@ function Koin({ x, y, gambar, r }: { x: number; y: number; gambar: boolean; r: n
         dominantBaseline="middle"
         fontSize={Math.max(r * 0.9, u(11, 11))}
         fontWeight={800}
-        fill={gambar ? 'var(--m-a)' : 'var(--ink-soft)'}
+        fill={tinta(gambar ? 'var(--m-a)' : 'var(--ink-2)')}
       >
         {gambar ? 'G' : 'A'}
       </text>

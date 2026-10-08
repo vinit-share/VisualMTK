@@ -23,7 +23,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Pegangan, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, Dimensi, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
+import { Dimensi, Svg, Tag, tinta, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
 import { fase, seg, useTween } from '../lib/anim'
 import { fmt } from '../lib/num'
 import type { DeriveState, Konsep, ParamSpec } from '../lib/types'
@@ -266,7 +266,7 @@ function Daerah({
         width={w}
         height={h}
         fill={warna}
-        fillOpacity={nyala ? 0.55 : 0.3}
+        fillOpacity={nyala ? 0.4 : 0.3}
         stroke={warna}
         strokeWidth={nyala ? 3.5 : 2}
       />
@@ -278,7 +278,7 @@ function Daerah({
           dominantBaseline="middle"
           fontSize={hurufLabel}
           fontWeight={800}
-          fill={warna}
+          fill={tinta(warna)}
           style={{ pointerEvents: 'none' }}
         >
           {label}
@@ -292,7 +292,7 @@ function Daerah({
           dominantBaseline="middle"
           fontSize={hurufNilai}
           fontWeight={700}
-          fill="var(--ink-2)"
+          fill="var(--ink)"
           style={{ pointerEvents: 'none' }}
         >
           {nilai}

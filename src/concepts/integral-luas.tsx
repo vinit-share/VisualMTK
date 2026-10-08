@@ -45,7 +45,7 @@
    ============================================================ */
 
 import { Pegangan, RelGeser, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useSkalaSvg, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -297,7 +297,7 @@ function Panel({ L, baris, tampil = 1 }: { L: Tata; baris: BarisPanel[]; tampil?
           dominantBaseline="middle"
           fontSize={b.besar ? szBesar : szKecil}
           fontWeight={b.besar ? 800 : 600}
-          fill={b.warna ?? 'var(--ink-2)'}
+          fill={tinta(b.warna ?? 'var(--ink-2)')}
           fontFamily="var(--font-math)"
         >
           {b.teks}

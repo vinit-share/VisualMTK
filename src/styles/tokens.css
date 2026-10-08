@@ -3,6 +3,17 @@
    Satu sumber kebenaran untuk warna, ruang, tipografi, gerak.
    Semua visualisasi WAJIB memakai token ini agar konsisten
    di tema terang maupun gelap.
+
+   Palet: "Indigo cerah & kuning lemon", diturunkan dari ikon
+   "Puzzle Operator" (+ − % ×). Nilai hex mengikuti paket desain
+   identitas (docs/identitas/); yang bertanda "turunan" tidak ada di paket itu dan
+   dihitung dari warna terdekatnya dengan kontras yang setara.
+
+   Aturan pakai (penting):
+   - Teks berwarna selalu memakai varian *-ink di atas *-soft
+     (atau di atas latar/permukaan).
+   - Varian utama (tanpa akhiran) hanya untuk isian bentuk,
+     titik, garis, dan tombol — kontrasnya tidak cukup untuk teks.
    ============================================================ */
 
 :root {
@@ -70,133 +81,182 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ---------- Elevasi ---------- */
-  --shadow-1: 0 1px 2px rgba(19, 21, 30, 0.05), 0 1px 3px rgba(19, 21, 30, 0.04);
-  --shadow-2: 0 2px 4px rgba(19, 21, 30, 0.04), 0 6px 16px rgba(19, 21, 30, 0.07);
-  --shadow-3: 0 8px 20px rgba(19, 21, 30, 0.08), 0 20px 44px rgba(19, 21, 30, 0.1);
-  --shadow-brand: 0 6px 18px rgba(98, 68, 245, 0.28);
+  --shadow-1: 0 1px 2px rgba(30, 30, 41, 0.05), 0 1px 3px rgba(30, 30, 41, 0.04);
+  --shadow-2: 0 2px 4px rgba(30, 30, 41, 0.04), 0 6px 16px rgba(30, 30, 41, 0.07);
+  --shadow-3: 0 8px 20px rgba(30, 30, 41, 0.08), 0 20px 44px rgba(30, 30, 41, 0.1);
+  --shadow-brand: 0 6px 18px rgba(100, 69, 223, 0.28);
   --ring: 0 0 0 3px var(--brand-ring);
 
   /* ---------- Warna: tema terang ---------- */
+
+  /* Netral */
   --paper: #faf8f4;
-  --paper-2: #f1ede6;
-  --surface: #ffffff;
-  --surface-2: #f6f4f0;
-  --surface-3: #eceae4;
-  --surface-inset: #faf9f7;
+  --surface: #fefdfb;
+  --surface-2: #f7f5f1;
+  --surface-3: #eeebe5;
+  --surface-inset: #faf8f4;
 
-  --ink: #14161d;
-  --ink-2: #4a5162;
-  --ink-3: #79809380;
-  --ink-soft: #798093;
-  --line: rgba(20, 22, 29, 0.1);
-  --line-strong: rgba(20, 22, 29, 0.18);
+  --ink: #1e1e29;
+  --ink-2: #4c4c58;
+  --ink-soft: #6a6b75;
+  --ink-3: #6a6b7580;                 /* ink-soft setengah tembus — hanya garis/bentuk, bukan tulisan */
+  --line: #dedad3;
+  --line-strong: #c9c4bb;             /* turunan: satu tingkat di atas --line */
 
-  --brand: #6244f5;
-  --brand-hover: #5334ea;
-  --brand-ink: #3a22b5;
-  --brand-soft: #eeeafe;
-  --brand-soft-2: #ded6fd;
-  --brand-ring: rgba(98, 68, 245, 0.32);
-  --on-brand: #ffffff;
+  /* Brand */
+  --brand: #6445df;
+  --brand-hover: #552fca;
+  --brand-ink: #4527a5;
+  --brand-soft: #f2f2fe;
+  --brand-soft-2: #e3e3ff;
+  --brand-ring: rgba(100, 69, 223, 0.32);
+  --on-brand: #fefcf7;
 
-  --amber: #e8801f;
-  --amber-ink: #a3540a;
-  --amber-soft: #fdeeda;
-  --teal: #0f9e8e;
-  --teal-ink: #0a6f64;
-  --teal-soft: #d9f3ef;
-  --blue: #2c7cf0;
-  --blue-ink: #1a56b0;
-  --blue-soft: #dfeafd;
-  --pink: #dd3f83;
-  --pink-ink: #a92561;
-  --pink-soft: #fce0ed;
-  --rose: #dc4b4b;
-  --rose-soft: #fbe3e3;
+  /* Warna ikon "Puzzle Operator". Tetap sama di tema terang maupun gelap. */
+  --ikon-ubin: #6445df;
+  --ikon-krim: #fffaf2;
+  --ikon-lemon: #e0c931;
+  --ikon-langit: #65e0e7;
+
+  /* Lima keluarga aksen. Namanya warna, isinya mengikuti peran di bawah. */
+  --amber: #ea8a18;
+  --amber-ink: #713f03;
+  --amber-soft: #feeddf;
+  --teal: #1ea28f;
+  --teal-ink: #015a4f;
+  --teal-soft: #e1f5f1;
+  --blue: #4cb0e5;
+  --blue-ink: #055475;
+  --blue-soft: #e1f3fe;
+  --pink: #d8559b;
+  --pink-ink: #822058;
+  --pink-soft: #feeaf2;
+  --green: #5e9f50;
+  --green-ink: #2a5a20;               /* turunan */
+  --green-soft: #e7f4e3;              /* turunan */
+
+  /* Makna: benar (tenang), belum tepat (hangat — sengaja bukan merah), galat. */
+  --ok: #388567;
+  --ok-ink: #17543e;
+  --ok-soft: #e5f5ed;
+  --belum: #c77618;
+  --belum-ink: #6a3a02;
+  --belum-soft: #ffedde;
+  --rose: #c53637;
+  --rose-ink: #84171b;
+  --rose-soft: #ffebe9;
+
+  /* Bintang penghargaan */
+  --bintang: #c2ac00;
+  --bintang-tepi: #8a7a00;            /* turunan: garis tepi agar terbaca di latar terang */
 
   /* ---------- Peran warna matematika ----------
-     Dipakai konsisten di SELURUH visualisasi:
+     Dipakai konsisten di SELURUH visualisasi, sering kelimanya sekaligus:
      a = besaran pertama, b = besaran kedua, ab = interaksi keduanya,
-     c = hasil/resultan, hi = sorotan "aha". */
-  --m-a: var(--brand);
-  --m-a-soft: var(--brand-soft);
+     c = hasil/resultan, hi = sorotan "aha".
+     Untuk TULISAN berwarna pakai --m-*-ink, bukan warna utamanya. */
+  --m-a: #634cd4;
+  --m-a-ink: #49379f;
+  --m-a-soft: #eeeeff;
   --m-b: var(--amber);
+  --m-b-ink: var(--amber-ink);
   --m-b-soft: var(--amber-soft);
   --m-ab: var(--teal);
+  --m-ab-ink: var(--teal-ink);
   --m-ab-soft: var(--teal-soft);
   --m-c: var(--blue);
+  --m-c-ink: var(--blue-ink);
   --m-c-soft: var(--blue-soft);
   --m-hi: var(--pink);
+  --m-hi-ink: var(--pink-ink);
   --m-hi-soft: var(--pink-soft);
-  --m-grid: rgba(20, 22, 29, 0.09);
-  --m-axis: rgba(20, 22, 29, 0.45);
-  --m-ghost: rgba(20, 22, 29, 0.055);
-  --m-stage: #fbfaf7;
+  --m-grid: rgba(30, 30, 41, 0.09);
+  --m-axis: rgba(30, 30, 41, 0.45);
+  --m-ghost: rgba(30, 30, 41, 0.055);
+  --m-stage: #faf8f4;
 
   /* ---------- Status penguasaan ---------- */
-  --st-none: #a8adba;
-  --st-none-soft: #eceef2;
-  --st-learning: var(--amber);
-  --st-learning-soft: var(--amber-soft);
-  --st-understood: var(--teal);
-  --st-understood-soft: var(--teal-soft);
+  --st-none: #6a6b75;
+  --st-none-soft: #eeebe5;
+  --st-learning: var(--belum);
+  --st-learning-soft: var(--belum-soft);
+  --st-understood: var(--ok);
+  --st-understood-soft: var(--ok-soft);
   --st-mastered: var(--brand);
   --st-mastered-soft: var(--brand-soft);
 
   color-scheme: light;
 }
 
-/* ---------- Warna: tema gelap ---------- */
+/* ---------- Warna: tema gelap ----------
+   Bukan sekadar dibalik: brand lebih terang dan sedikit pudar, latar lembut
+   gelap bernuansa brand, dan teks di atas brand menjadi gelap. */
 :root[data-theme='dark'] {
   --paper: #0d0f16;
-  --paper-2: #12151f;
-  --surface: #171b26;
-  --surface-2: #1e2331;
-  --surface-3: #272d3d;
-  --surface-inset: #131722;
+  --surface: #131319;
+  --surface-2: #1c1c24;
+  --surface-3: #282832;
+  --surface-inset: #0d0f16;
 
-  --ink: #edeff6;
-  --ink-2: #a8b0c4;
-  --ink-3: #6f778c80;
-  --ink-soft: #8e97ad;
-  --line: rgba(237, 239, 246, 0.12);
-  --line-strong: rgba(237, 239, 246, 0.22);
+  --ink: #f1eee9;
+  --ink-2: #bdbdc5;
+  --ink-soft: #9797a1;
+  --ink-3: #9797a180;
+  --line: #34343d;
+  --line-strong: #4a4a55;             /* turunan */
 
-  --brand: #957fff;
-  --brand-hover: #a693ff;
-  --brand-ink: #c3b6ff;
-  --brand-soft: #241f45;
-  --brand-soft-2: #322a5e;
-  --brand-ring: rgba(149, 127, 255, 0.4);
-  --on-brand: #16112e;
+  --brand: #968cff;
+  --brand-hover: #a9a5fd;
+  --brand-ink: #cbcbff;
+  --brand-soft: #1b1933;
+  --brand-soft-2: #28254c;
+  --brand-ring: rgba(150, 140, 255, 0.4);
+  --on-brand: #0e0d1c;
 
-  --amber: #f2a44e;
-  --amber-ink: #f8c489;
-  --amber-soft: #3a2a15;
-  --teal: #2fc7b3;
-  --teal-ink: #7fe0d3;
-  --teal-soft: #10352f;
-  --blue: #5c9dfa;
-  --blue-ink: #9dc4fd;
-  --blue-soft: #14243d;
-  --pink: #f36ba4;
-  --pink-ink: #f9a6c6;
-  --pink-soft: #3b1a2b;
-  --rose: #f26a6a;
-  --rose-soft: #3a1c1c;
+  --amber: #feb16a;
+  --amber-ink: #f8c69b;
+  --amber-soft: #341e09;
+  --teal: #5abfad;
+  --teal-ink: #aaddd2;
+  --teal-soft: #102925;
+  --blue: #7ccffe;
+  --blue-ink: #abd8f3;
+  --blue-soft: #112733;
+  --pink: #f47cb9;
+  --pink-ink: #febad9;
+  --pink-soft: #371828;
+  --green: #87c47a;
+  --green-ink: #c3e3bb;               /* turunan */
+  --green-soft: #172a13;              /* turunan */
 
-  --m-grid: rgba(237, 239, 246, 0.1);
-  --m-axis: rgba(237, 239, 246, 0.5);
-  --m-ghost: rgba(237, 239, 246, 0.07);
-  --m-stage: #121620;
+  --ok: #72b598;
+  --ok-ink: #b1ddc8;
+  --ok-soft: #142920;
+  --belum: #f8aa64;
+  --belum-ink: #fac598;
+  --belum-soft: #351e08;
+  --rose: #f6736c;
+  --rose-ink: #ffbfb8;
+  --rose-soft: #3d1614;
 
-  --st-none: #6b7285;
-  --st-none-soft: #232836;
+  --bintang: #e2cc47;
+  --bintang-tepi: #e2cc47;
+
+  --m-a: #7e70ec;
+  --m-a-ink: #cbcbfe;
+  --m-a-soft: #211f40;
+  --m-grid: rgba(241, 238, 233, 0.1);
+  --m-axis: rgba(241, 238, 233, 0.5);
+  --m-ghost: rgba(241, 238, 233, 0.07);
+  --m-stage: #0d0f16;
+
+  --st-none: #9797a1;
+  --st-none-soft: #282832;
 
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.34), 0 8px 22px rgba(0, 0, 0, 0.3);
   --shadow-3: 0 10px 26px rgba(0, 0, 0, 0.42), 0 24px 50px rgba(0, 0, 0, 0.36);
-  --shadow-brand: 0 6px 20px rgba(149, 127, 255, 0.3);
+  --shadow-brand: 0 6px 20px rgba(150, 140, 255, 0.3);
 
   color-scheme: dark;
 }

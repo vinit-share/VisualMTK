@@ -20,7 +20,7 @@
   letter-spacing: -0.035em;
 }
 .hero-tekan {
-  background: linear-gradient(100deg, var(--brand), var(--amber));
+  background: linear-gradient(100deg, var(--brand), var(--amber-ink));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -123,9 +123,10 @@
   font-weight: var(--fw-black);
   margin-bottom: var(--s-3);
 }
-.tahap:nth-child(2) .tahap-no { background: var(--amber); }
-.tahap:nth-child(3) .tahap-no { background: var(--teal); }
-.tahap:nth-child(4) .tahap-no { background: var(--blue); }
+/* Varian tinta sebagai isian: angka di atasnya tetap terbaca di kedua tema. */
+.tahap:nth-child(2) .tahap-no { background: var(--amber-ink); color: var(--amber-soft); }
+.tahap:nth-child(3) .tahap-no { background: var(--teal-ink); color: var(--teal-soft); }
+.tahap:nth-child(4) .tahap-no { background: var(--blue-ink); color: var(--blue-soft); }
 .tahap h4 { margin-bottom: var(--s-2); }
 
 /* ---------------- Beranda: cakupan ---------------- */
@@ -285,8 +286,8 @@
   font-size: var(--t-sm);
 }
 .rekap-tanda { display: grid; place-items: center; flex: none; }
-.rekap-tanda[data-benar='true'] { color: var(--teal); }
-.rekap-tanda[data-benar='false'] { color: var(--rose); }
+.rekap-tanda[data-benar='true'] { color: var(--ok); }
+.rekap-tanda[data-benar='false'] { color: var(--belum); }
 
 /* ---------------- Halaman progres ---------------- */
 .progres-atas {
@@ -395,8 +396,8 @@
   display: block;
 }
 .harian-titik i[data-state='aktif'] { background: var(--brand); transform: scale(1.25); }
-.harian-titik i[data-state='benar'] { background: var(--teal); }
-.harian-titik i[data-state='salah'] { background: var(--rose); }
+.harian-titik i[data-state='benar'] { background: var(--ok); }
+.harian-titik i[data-state='salah'] { background: var(--belum); }
 
 /* Pertanyaan "kenapa" dan miskonsepsi pada kartu topik */
 .topik-kenapa {

@@ -350,7 +350,7 @@ function Lingkaran({
       >
         {`θ = ${fmt(Math.round(theta))}°`}
       </Tag>
-      <Tag x={label1.x} y={label1.y} warna="var(--ink-3)" size={12}>
+      <Tag x={label1.x} y={label1.y} warna="var(--ink-soft)" size={12}>
         1
       </Tag>
     </g>

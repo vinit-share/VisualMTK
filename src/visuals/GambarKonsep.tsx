@@ -21,6 +21,11 @@ const C = 'var(--m-c)'
 const CS = 'var(--m-c-soft)'
 const HI = 'var(--m-hi)'
 const HIS = 'var(--m-hi-soft)'
+// Varian tinta: dipakai untuk TULISAN berwarna (warna utama hanya untuk bentuk).
+const AT = 'var(--m-a-ink)'
+const BT = 'var(--m-b-ink)'
+const ABT = 'var(--m-ab-ink)'
+const HIT = 'var(--m-hi-ink)'
 const TINTA = 'var(--ink)'
 const HALUS = 'var(--ink-soft)'
 const KISI = 'var(--m-grid)'
@@ -129,7 +134,7 @@ const GAMBAR: Record<string, ReactNode> = {
           fill={i % 10 < 3 ? HI : KISI}
         />
       ))}
-      <text x={98} y={48} textAnchor="middle" fontSize={22} fontWeight={800} fill={HI} fontFamily="var(--font-math)">
+      <text x={98} y={48} textAnchor="middle" fontSize={22} fontWeight={800} fill={HIT} fontFamily="var(--font-math)">
         %
       </text>
     </>
@@ -177,10 +182,10 @@ const GAMBAR: Record<string, ReactNode> = {
       <path d="M36 33l-4 7l8 0" stroke={HI} {...garis} />
       <path d="M60 30Q74 12 88 30" stroke={AB} {...garis} />
       <path d="M84 23l4 7l-8 0" stroke={AB} {...garis} />
-      <text x={28} y={70} textAnchor="middle" fontSize={12} fontWeight={800} fill={HI}>
+      <text x={28} y={70} textAnchor="middle" fontSize={12} fontWeight={800} fill={HIT}>
         −
       </text>
-      <text x={92} y={70} textAnchor="middle" fontSize={12} fontWeight={800} fill={AB}>
+      <text x={92} y={70} textAnchor="middle" fontSize={12} fontWeight={800} fill={ABT}>
         +
       </text>
     </>
@@ -226,10 +231,10 @@ const GAMBAR: Record<string, ReactNode> = {
       <rect x={68} y={10} width={22} height={38} fill={ABS} stroke={AB} strokeWidth={2} />
       <rect x={30} y={48} width={38} height={22} fill={ABS} stroke={AB} strokeWidth={2} />
       <rect x={68} y={48} width={22} height={22} fill={BS} stroke={B} strokeWidth={2} />
-      <text x={49} y={34} textAnchor="middle" fontSize={13} fontWeight={700} fill={A} fontFamily="var(--font-math)">
+      <text x={49} y={34} textAnchor="middle" fontSize={13} fontWeight={700} fill={AT} fontFamily="var(--font-math)">
         a²
       </text>
-      <text x={79} y={64} textAnchor="middle" fontSize={12} fontWeight={700} fill={B} fontFamily="var(--font-math)">
+      <text x={79} y={64} textAnchor="middle" fontSize={12} fontWeight={700} fill={BT} fontFamily="var(--font-math)">
         b²
       </text>
     </>

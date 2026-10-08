@@ -24,7 +24,7 @@
    ============================================================ */
 
 import { Pegangan, useInteraksi } from '../components/Interaksi'
-import { Svg, Tag, useSempit, useUkuranLayar } from '../components/Stage'
+import { Svg, Tag, tinta, useSempit, useUkuranLayar } from '../components/Stage'
 import { fase, seg } from '../lib/anim'
 import { clamp, fmt } from '../lib/num'
 import type { DeriveState, Konsep } from '../lib/types'
@@ -281,7 +281,7 @@ function Tabel({
         y={y0 - dy * 0.76}
         fontSize={uk(fJudul)}
         fontWeight={800}
-        fill={warnaNilai}
+        fill={tinta(warnaNilai)}
       >
         {linear ? 'y = 2x' : labelKuadrat}
       </text>
@@ -290,7 +290,7 @@ function Tabel({
         y={y0 - dy * 0.76}
         fontSize={uk(fJudul)}
         fontWeight={800}
-        fill="var(--m-b)"
+        fill="var(--m-b-ink)"
       >
         selisih
       </text>
@@ -311,7 +311,7 @@ function Tabel({
               y={y}
               fontSize={uk(fNilai)}
               fontWeight={800}
-              fill={warnaNilai}
+              fill={tinta(warnaNilai)}
               fontFamily="var(--font-math)"
             >
               {fmt(f(x) + 0) /* + 0 membuang −0 (a negatif, x = 0) agar tidak tertulis "-0" */}
@@ -329,7 +329,7 @@ function Tabel({
                   y={y - dy / 2}
                   fontSize={uk(fSelisih)}
                   fontWeight={800}
-                  fill={nyala ? 'var(--m-hi)' : 'var(--m-b)'}
+                  fill={tinta(nyala ? 'var(--m-hi)' : 'var(--m-b)')}
                   fontFamily="var(--font-math)"
                 >
                   {`${sel < 0 ? '−' : '+'}${fmt(Math.abs(sel))}`}
@@ -353,7 +353,7 @@ function Tabel({
                 y={y0 + (i + 1.5) * dy}
                 fontSize={uk(fSelisih2)}
                 fontWeight={800}
-                fill={nyalaSelisih2 ? 'var(--m-hi)' : 'var(--m-ab)'}
+                fill={tinta(nyalaSelisih2 ? 'var(--m-hi)' : 'var(--m-ab)')}
                 fontFamily="var(--font-math)"
               >
                 {`${s1 - s0 < 0 ? '−' : '+'}${fmt(Math.abs(s1 - s0))}`}
@@ -365,7 +365,7 @@ function Tabel({
             y={y0 - dy * 0.76}
             fontSize={uk(fJudul)}
             fontWeight={800}
-            fill="var(--m-ab)"
+            fill="var(--m-ab-ink)"
           >
             selisih ke-2
           </text>

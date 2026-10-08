@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom'
 
 import '@fontsource-variable/plus-jakarta-sans'
 import '@fontsource-variable/newsreader'
+import '@fontsource-variable/newsreader/wght-italic.css'
 import './styles/tokens.css'
 import './styles/base.css'
 import './styles/ui.css'

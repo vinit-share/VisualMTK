@@ -238,7 +238,7 @@ function KotakX({
         height={KOTAK}
         rx={6}
         fill="var(--m-a)"
-        fillOpacity={nyala ? 0.55 : 0.32}
+        fillOpacity={nyala ? 0.4 : 0.32}
         stroke="var(--m-a)"
         strokeWidth={nyala ? 3 : 2}
       />
@@ -249,7 +249,7 @@ function KotakX({
         dominantBaseline="middle"
         fontSize={huruf}
         fontWeight={800}
-        fill="var(--m-a)"
+        fill="var(--m-a-ink)"
       >
         {teks}
       </text>
@@ -608,7 +608,7 @@ function TombolKeduaSisi({ cx, y, tanda, label }: { cx: number; y: number; tanda
         dominantBaseline="central"
         fontSize={huruf}
         fontWeight={800}
-        fill="var(--m-ab)"
+        fill="var(--m-ab-ink)"
         style={{ pointerEvents: 'none' }}
       >
         {label}

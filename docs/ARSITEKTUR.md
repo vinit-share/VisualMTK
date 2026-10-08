@@ -24,9 +24,9 @@ Navigasi sengaja hanya lima tujuan, semuanya kata kerja:
 
 ```
 Beranda
-├── Belajar      → peta kelas 1–12 → daftar topik per kelas
-├── Kenapa?      → galeri pertanyaan → halaman konsep
-├── Eksperimen   → panggung parameter bebas
+├── Belajar      → ubin kelas 1–12 → ubin topik per kelas → halaman topik + tes
+├── Kenapa?      → galeri pertanyaan bergambar → halaman konsep
+├── Eksperimen   → rak eksperimen bergambar → pemutar satu eksperimen
 ├── Tes          → sesi latihan soal
 └── Progres      → status penguasaan, lencana, pengaturan
 ```
@@ -183,6 +183,22 @@ saringan kelas dan tingkat kesulitan, sehingga latihan selalu sejalan dengan
 penjelasan visualnya. Tantangan harian memakai benih tetap dari tanggal, jadi
 soalnya sama untuk semua orang sepanjang hari itu.
 
+### Tes per topik
+
+Setiap topik kurikulum punya halaman sendiri (`/topik/:id`) dengan satu ajakan:
+"Mulai tes". Tes berisi lima soal dari mudah ke sulit, disusun
+`susunTesTopik()` (`src/data/soalTopik.ts`) dari **bank soal topik** di
+`src/data/soal/kelas-*.ts`, ditambah paling banyak dua soal dari modul konsep
+yang tertaut. Bank dimuat malas per kelas.
+
+Soal bank ditulis sebagai data lewat alat di `src/data/soal/alat.ts` (`pg`,
+`angka`, `bs`, `isian`, `urut`, `cocok`) dan boleh bergambar: gambar dinyatakan
+sebagai spesifikasi ringkas (`src/lib/gambar.ts`) yang digambar
+`GambarSoal`. Kontrak penulisannya ada di `docs/PANDUAN-SOAL-TOPIK.md`, dan
+`scripts/uji-soal.mjs` menguji bentuk, kunci jawaban, dan gambar tiap butir.
+
+Hasil tes berupa bintang (0–3), bukan angka rapor, dan selalu boleh diulang.
+
 ---
 
 ## 6. Sistem kemajuan
@@ -233,6 +249,40 @@ konsisten di seluruh visualisasi:
 Karena konsisten, anak yang berpindah dari satu konsep ke konsep lain langsung
 mengenali peran tiap warna. Dan karena semuanya token, seluruh visualisasi
 otomatis benar di tema gelap.
+
+Paletnya — "Indigo cerah & kuning lemon" — diturunkan dari ikon aplikasi dan
+tersusun dalam keluarga bertiga: warna utama, `-ink`, dan `-soft`. Spesifikasi
+asli dari perancang (ikon, lockup, tabel token, aturan pakai) disimpan di
+`docs/identitas/`.
+
+| Keluarga | Dipakai untuk |
+|---|---|
+| `--brand` | tombol utama, tautan aktif, peran "plain" |
+| `--m-a`, `--amber`, `--teal`, `--blue`, `--pink` | lima peran matematika (a, b, ab, c, hi) |
+| `--green` | domain Kalkulus |
+| `--ok` | jawaban benar, status "sudah paham" — hijau tenang |
+| `--belum` | jawaban belum tepat, status "sedang belajar" — hangat, sengaja bukan merah |
+| `--rose` | galat sistem saja |
+| `--bintang` | bintang tes topik (`--bintang-tepi` untuk garis tepinya) |
+
+Aturan pakainya satu: **tulisan berwarna selalu memakai `-ink` di atas `-soft`
+atau permukaan**; warna utama hanya untuk isian bentuk, titik, garis, dan
+tombol. `Tag` dan `tinta()` (`src/components/Stage.tsx`) menjaga aturan ini di
+dalam visualisasi. Warna enam domain materi diwariskan lewat atribut
+`data-domain` (`src/styles/jelajah.css`) sebagai `--g`, `--g2`, `--g3`.
+
+Tema gelap bukan sekadar warna dibalik: brand lebih terang dan sedikit pudar,
+latar lembutnya gelap bernuansa warna masing-masing, dan teks di atas brand
+menjadi gelap.
+
+### Ikon
+
+Ikon "Puzzle Operator": empat operator + − % × tersusun 2×2 di ubin indigo —
+anak ikut menyusun perhitungan, bukan cuma menerima jawaban. Sumbernya
+`public/favicon.svg` (kisi 32×32); `icon-app.svg`, `icon-maskable.svg`, dan
+`icon-mono.svg` adalah turunannya, dan komponen `LogoMerek` menggambar bentuk
+yang sama. PNG serta `favicon.ico` dibuat oleh `scripts/render-icons.ps1` dan
+ikut disimpan di `public/`. Warna ikon (`--ikon-*`) tidak berubah antar tema.
 
 ### Ruang, radius, elevasi
 

@@ -325,7 +325,7 @@ function GambarPola({ isi, ujung }: { isi: string[]; ujung?: [string, string] })
                 textAnchor="middle"
                 fontSize={r2(Math.min(16, ((kotak - 6) / Math.max(1, t.length)) * 1.75))}
                 fontWeight={800}
-                fill={tanya ? ISI.hi : TINTA}
+                fill={tanya ? 'var(--m-hi-ink)' : TINTA}
               >
                 {t}
               </text>
@@ -528,7 +528,7 @@ function GambarGaris(p: Extract<SpesGambar, { jenis: 'garis' }>) {
             strokeWidth={1.6}
             strokeDasharray="4 3"
           />
-          <text x={r2(X(v))} y={yg + 25} textAnchor="middle" fontSize={13} fontWeight={800} fill={ISI.hi}>
+          <text x={r2(X(v))} y={yg + 25} textAnchor="middle" fontSize={13} fontWeight={800} fill="var(--m-hi-ink)">
             ?
           </text>
         </g>

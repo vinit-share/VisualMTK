@@ -57,7 +57,7 @@ export function Tebak({
 
       {terpilih && (
         <div
-          className={`note ${terpilih.benar ? 'note-teal' : 'note-amber'} tebak-balas`}
+          className={`note ${terpilih.benar ? 'note-ok' : 'note-belum'} tebak-balas`}
           aria-live="polite"
         >
           <p>
