@@ -17,6 +17,7 @@ import type { DeriveScene, TeksLangkah } from '../lib/types'
 import { Formula, SorotProvider, useSorot } from './Formula'
 import { Stage } from './Stage'
 import { Ikon } from './Ikon'
+import { PitaGulir } from './PitaGulir'
 import {
   BilahAngka,
   InteraksiProvider,
@@ -167,22 +168,22 @@ export function Bongkar({
             </div>
           </div>
 
-          <ol className="bongkar-rel">
+          <PitaGulir label="langkah-langkah" aktif={tl.step} className="bongkar-pita">
             {scene.steps.map((s, i) => (
-              <li key={s.id}>
-                <button
-                  className="rel-item"
-                  data-state={i < tl.step ? 'lewat' : i === tl.step ? 'aktif' : 'nanti'}
-                  onClick={() => tl.mainDari(i)}
-                  aria-current={i === tl.step ? 'step' : undefined}
-                  title={`Putar langkah ${i + 1}: ${teks(s.judul, p)}`}
-                >
-                  <span className="rel-no">{i + 1}</span>
-                  <span className="rel-judul">{teks(s.judul, p)}</span>
-                </button>
-              </li>
+              <button
+                key={s.id}
+                className="rel-item"
+                data-state={i < tl.step ? 'lewat' : i === tl.step ? 'aktif' : 'nanti'}
+                data-aktif={i === tl.step}
+                onClick={() => tl.mainDari(i)}
+                aria-current={i === tl.step ? 'step' : undefined}
+                title={`Putar langkah ${i + 1}: ${teks(s.judul, p)}`}
+              >
+                <span className="rel-no">{i + 1}</span>
+                <span className="rel-judul">{teks(s.judul, p)}</span>
+              </button>
             ))}
-          </ol>
+          </PitaGulir>
         </div>
       </InteraksiProvider>
     </SorotProvider>

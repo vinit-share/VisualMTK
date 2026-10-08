@@ -9,6 +9,7 @@ import './styles/base.css'
 import './styles/ui.css'
 import './styles/parts.css'
 import './styles/halaman.css'
+import './styles/jelajah.css'
 
 import { App } from './App'
 

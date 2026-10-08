@@ -761,3 +761,25 @@
   font-variant-numeric: tabular-nums;
 }
 .ruang[data-fokus='true'] .rumus-hidup { flex: none; }
+
+/* ---------------- Gambar pada soal ---------------- */
+.gambar-soal {
+  width: 100%;
+  max-width: 26rem;
+  height: auto;
+}
+.gambar-soal text { font-family: var(--font-ui); }
+.tabel-soal-bungkus { max-width: 100%; overflow-x: auto; }
+.tabel-soal {
+  border-collapse: collapse;
+  font-size: var(--t-base);
+  font-variant-numeric: tabular-nums;
+}
+.tabel-soal th,
+.tabel-soal td {
+  border: 1.5px solid var(--line-strong);
+  padding: var(--s-2) var(--s-4);
+  text-align: center;
+}
+.tabel-soal th { background: var(--brand-soft); color: var(--brand-ink); font-weight: var(--fw-black); }
+.tabel-soal td:first-child { text-align: left; font-weight: var(--fw-bold); }

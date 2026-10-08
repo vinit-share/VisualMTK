@@ -7,7 +7,7 @@
    menemukannya sendiri.
    ============================================================ */
 
-import type { ComponentType, ReactNode } from 'react'
+import { useState, type ComponentType, type ReactNode } from 'react'
 import type { FormulaRole, ParamSpec } from '../lib/types'
 import { Stage } from './Stage'
 import { Formula, SorotProvider, useSorot } from './Formula'
@@ -49,6 +49,9 @@ export function Eksperimen({
 }: EksperimenProps) {
   const kendali = useKendali(params)
   const mode = useModeFokus()
+  // Ajakan yang panjang diringkas dulu: gambarnya yang harus cepat terlihat.
+  const panjang = ajakan.length > 150
+  const [ajakanTerbuka, setAjakanTerbuka] = useState(false)
 
   const tombolUlang = kendali.berubah && (
     <button className="btn btn-sm btn-ghost" onClick={kendali.reset}>
@@ -69,7 +72,19 @@ export function Eksperimen({
           </div>
 
           <h3 className="eksperimen-judul">{judul}</h3>
-          <p className="muted eksperimen-ajakan">{ajakan}</p>
+          <p className="muted eksperimen-ajakan" data-ringkas={panjang && !ajakanTerbuka}>
+            {ajakan}
+          </p>
+          {panjang && (
+            <button
+              type="button"
+              className="ajakan-buka"
+              onClick={() => setAjakanTerbuka((b) => !b)}
+              aria-expanded={ajakanTerbuka}
+            >
+              {ajakanTerbuka ? 'Ringkas' : 'Baca selengkapnya'}
+            </button>
+          )}
 
           <div
             className="ruang"

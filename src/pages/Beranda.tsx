@@ -12,6 +12,7 @@ import { Cincin, StatusLencana } from '../components/StatusLencana'
 import { konsepSiap, LABEL_DOMAIN } from '../data/katalog'
 import { hariIni, NILAI_STATUS, statusKonsep, useSimpanan } from '../lib/store'
 import { seededRandom } from '../lib/num'
+import { GambarKonsep } from '../visuals/GambarKonsep'
 
 const PINTU: { ke: string; label: string; sub: string; ikon: NamaIkon; warna: string }[] = [
   {
@@ -76,7 +77,7 @@ export default function Beranda() {
     .map((m) => ({ m, k: rnd() }))
     .sort((a, b) => a.k - b.k)
     .map((x) => x.m)
-  const sorotan = urutHariIni.slice(0, 3)
+  const sorotan = urutHariIni.slice(0, 4)
   const harianSelesai = !!simpanan.harian[hariIni()]?.selesai
 
   return (
@@ -206,18 +207,15 @@ export default function Beranda() {
             Semua konsep <Ikon nama="panah" />
           </Link>
         </div>
-        <div className="grid grid-auto">
+        <div className="galeri">
           {sorotan.map((m) => (
-            <Link key={m.id} to={`/konsep/${m.id}`} className="card card-link kartu-konsep">
-              <div className="row row-tight">
-                <span className="chip chip-brand">Kelas {m.kelas}</span>
-                <span className="chip">{LABEL_DOMAIN[m.domain]}</span>
-              </div>
-              <h3 className="kartu-tanya">{m.pertanyaan}</h3>
-              <p className="small muted">{m.tagline}</p>
-              <span className="kartu-kaki small">
-                <StatusLencana status={statusKonsep(simpanan.konsep[m.id])} kecil />
-                <span className="dim">{m.visual}</span>
+            <Link key={m.id} to={`/konsep/${m.id}`} className="card card-link kartu-gambar" title={m.tagline}>
+              <GambarKonsep id={m.id} />
+              <span className="kartu-gambar-judul">{m.pertanyaan}</span>
+              <span className="kartu-gambar-kaki">
+                <span>
+                  Kelas {m.kelas} · {LABEL_DOMAIN[m.domain]}
+                </span>
               </span>
             </Link>
           ))}

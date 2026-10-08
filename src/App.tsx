@@ -8,6 +8,8 @@ const KenapaPage = lazy(() => import('./pages/KenapaPage'))
 const KonsepPage = lazy(() => import('./pages/KonsepPage'))
 const BelajarPage = lazy(() => import('./pages/BelajarPage'))
 const KelasPage = lazy(() => import('./pages/KelasPage'))
+const GaleriGambarPage = lazy(() => import('./pages/GaleriGambarPage'))
+const TopikPage = lazy(() => import('./pages/TopikPage'))
 const EksperimenPage = lazy(() => import('./pages/EksperimenPage'))
 const TesPage = lazy(() => import('./pages/TesPage'))
 const ProgresPage = lazy(() => import('./pages/ProgresPage'))
@@ -41,6 +43,14 @@ export function App() {
           element={
             <Suspense fallback={<Memuat />}>
               <KelasPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="topik/:id"
+          element={
+            <Suspense fallback={<Memuat />}>
+              <TopikPage />
             </Suspense>
           }
         />
@@ -97,6 +107,15 @@ export function App() {
           element={
             <Suspense fallback={<Memuat />}>
               <ProgresPage />
+            </Suspense>
+          }
+        />
+        {/* Halaman penulis soal — tidak ada di menu. */}
+        <Route
+          path="gambar-soal"
+          element={
+            <Suspense fallback={<Memuat />}>
+              <GaleriGambarPage />
             </Suspense>
           }
         />

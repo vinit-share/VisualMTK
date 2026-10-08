@@ -1,17 +1,23 @@
 /* ============================================================
    Visual MTK — Isi satu kelas
-   Menampilkan topik kurikulum kelas tersebut dan menandai
-   topik mana yang sudah punya penjelasan visual interaktif.
+   Topik tampil sebagai ubin bergambar, bukan daftar teks:
+   gambar, judul pendek, bintang, dan tombol "Tes". Rincian
+   kurikulumnya pindah ke halaman topik masing-masing.
+   Topik dikelompokkan per domain dan diurutkan dari yang
+   menjadi prasyarat.
    ============================================================ */
 
-import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Ikon } from '../components/Ikon'
-import { StatusLencana } from '../components/StatusLencana'
-import { KELAS, cariTopik, muatKelas, topikKelas, type TopikKurikulum } from '../data/kurikulum'
-import { cariKonsepMeta, LABEL_DOMAIN } from '../data/katalog'
+import { Bintang } from '../components/SesiSoal'
 import { adaKonsep } from '../concepts/registry'
-import { statusKonsep, useSimpanan } from '../lib/store'
+import { cariKonsepMeta, LABEL_DOMAIN } from '../data/katalog'
+import { KELAS, topikPerDomain, type TopikRingkas } from '../data/kurikulum'
+import { jumlahBintang, MAKS_BINTANG, useSimpanan } from '../lib/store'
+import { GambarTopik } from '../visuals/GambarTopik'
+
+/** Judul untuk ubin: keterangan dalam kurung dibuang supaya muat dan cepat dibaca. */
+const judulRingkas = (judul: string) => judul.replace(/\s*\([^)]*\)/g, '').trim()
 
 export default function KelasPage() {
   const { kelas = '1' } = useParams()
@@ -19,33 +25,27 @@ export default function KelasPage() {
   const info = KELAS.find((k) => k.no === no)
   const simpanan = useSimpanan()
 
-  // Rincian kelas dimuat terpisah agar membuka satu kelas tidak menarik
-  // data sebelas kelas lainnya.
-  const [topik, setTopik] = useState<TopikKurikulum[] | null>(null)
-  useEffect(() => {
-    let batal = false
-    setTopik(null)
-    muatKelas(no).then((t) => {
-      if (!batal) setTopik(t)
-    })
-    return () => {
-      batal = true
-    }
-  }, [no])
-
-  // Sebelum rinciannya tiba, jumlah topiknya sudah diketahui dari ringkasan.
-  const jumlahTopik = topikKelas(no).length
-
   if (!info) {
     return (
       <div className="page section stack stack-4">
         <h1>Kelas tidak ditemukan</h1>
-        <Link className="btn btn-primary" to="/belajar">
-          Kembali ke peta belajar
-        </Link>
+        <div>
+          <Link className="btn btn-primary" to="/belajar">
+            Kembali ke peta belajar
+          </Link>
+        </div>
       </div>
     )
   }
+
+  const kelompok = topikPerDomain(no)
+  const semua = kelompok.flatMap((g) => g.topik)
+  const bintang = jumlahBintang(
+    simpanan.topik,
+    semua.map((t) => t.id),
+  )
+  const maks = semua.length * MAKS_BINTANG
+  const sudahDites = semua.filter((t) => (simpanan.topik[t.id]?.tes ?? 0) > 0).length
 
   const sebelum = KELAS.find((k) => k.no === no - 1)
   const sesudah = KELAS.find((k) => k.no === no + 1)
@@ -60,124 +60,79 @@ export default function KelasPage() {
           <span className="chip chip-brand">{info.jenjang}</span>
           <span className="chip">Fase {info.fase}</span>
         </div>
-        <h1>
-          Kelas {info.no} — {info.julukan}
-        </h1>
-        <p className="lead">
-          {jumlahTopik} topik pada kelas ini. Topik bertanda ungu sudah punya penjelasan visual
-          yang bisa dimainkan.
-        </p>
-      </header>
 
-      <div className="page stack stack-3">
-        {topik === null && (
-          <div className="stack stack-3" aria-busy="true">
-            {Array.from({ length: Math.min(4, Math.max(1, jumlahTopik)) }, (_, i) => (
-              <div key={i} className="rangka rangka-topik" />
+        <div className="kelas-judul-baris">
+          <span className="kelas-angka" aria-hidden="true">
+            {info.no}
+          </span>
+          <div className="stack stack-1">
+            <h1>Kelas {info.no}</h1>
+            <p className="lead">{info.julukan}</p>
+          </div>
+        </div>
+
+        <div className="card kelas-ringkas">
+          <span className="kelas-ringkas-bintang" aria-label={`${bintang} dari ${maks} bintang`}>
+            <Ikon nama="bintang" ukuran="1.1em" /> {bintang}
+            <small className="dim">/ {maks}</small>
+          </span>
+          <div className="bar" aria-hidden="true">
+            <i style={{ width: `${maks ? Math.round((bintang / maks) * 100) : 0}%` }} />
+          </div>
+          <span className="small muted">
+            {sudahDites === 0
+              ? `${semua.length} topik. Pilih satu, lalu coba tesnya.`
+              : `${sudahDites} dari ${semua.length} topik sudah kamu tes.`}
+          </span>
+        </div>
+
+        {kelompok.length > 1 && (
+          <div className="lompat-domain" role="group" aria-label="Lompat ke bagian">
+            {kelompok.map((g) => (
+              // Tombol, bukan tautan-jangkar: jangkar akan menimpa alamat HashRouter.
+              <button
+                key={g.domain}
+                type="button"
+                data-domain={g.domain}
+                onClick={() =>
+                  document.getElementById(`bagian-${g.domain}`)?.scrollIntoView({ behavior: 'smooth' })
+                }
+              >
+                <span className="dot" /> {LABEL_DOMAIN[g.domain]} <b>{g.topik.length}</b>
+              </button>
             ))}
           </div>
         )}
+      </header>
 
-        {topik !== null && topik.length === 0 && (
+      <div className="page stack stack-8">
+        {kelompok.length === 0 && (
           <div className="kosong">
             <p>Peta topik untuk kelas ini sedang disusun.</p>
           </div>
         )}
 
-        {(topik ?? []).map((t) => {
-          const konsepIds = (t.konsep ?? []).filter(adaKonsep)
-          return (
-            <article key={t.id} className="topik-item" data-punya={konsepIds.length > 0}>
-              <span className="topik-tanda">
-                {konsepIds.length > 0 ? <Ikon nama="kenapa" /> : <Ikon nama="belajar" />}
-              </span>
-              <div className="grow stack stack-2">
-                <div className="row row-between">
-                  <h3 style={{ fontSize: 'var(--t-md)' }}>{t.judul}</h3>
-                  <span className="row row-tight">
-                    {t.lanjut && (
-                      <span
-                        className="chip chip-pink"
-                        title="Hanya ada pada mata pelajaran Matematika Tingkat Lanjut"
-                      >
-                        Tingkat Lanjut
-                      </span>
-                    )}
-                    <span className="chip">{LABEL_DOMAIN[t.domain]}</span>
-                  </span>
-                </div>
-                <p className="small muted">{t.ringkas}</p>
+        {kelompok.map((g) => (
+          <section
+            key={g.domain}
+            id={`bagian-${g.domain}`}
+            className="domain-blok"
+            data-domain={g.domain}
+            aria-labelledby={`judul-${g.domain}`}
+          >
+            <h2 id={`judul-${g.domain}`} className="domain-judul">
+              <span className="domain-titik" /> {LABEL_DOMAIN[g.domain]}
+              <small>{g.topik.length} topik</small>
+            </h2>
+            <div className="ubin-grid">
+              {g.topik.map((t) => (
+                <UbinTopik key={t.id} topik={t} bintang={simpanan.topik[t.id]?.bintang ?? 0} />
+              ))}
+            </div>
+          </section>
+        ))}
 
-                <div className="sub-list">
-                  {t.subKonsep.map((s) => (
-                    <span key={s} className="sub-item">
-                      {s}
-                    </span>
-                  ))}
-                </div>
-
-                {t.rumus && t.rumus.length > 0 && (
-                  <p className="tiny dim">Rumus kunci: {t.rumus.join(' · ')}</p>
-                )}
-
-                {t.kenapa && t.kenapa.length > 0 && (
-                  <p className="topik-kenapa">
-                    <Ikon nama="kenapa" /> {t.kenapa[0]}
-                  </p>
-                )}
-
-                {t.miskonsepsi && t.miskonsepsi.length > 0 && (
-                  <details className="topik-salah">
-                    <summary>Kekeliruan yang sering terjadi</summary>
-                    <ul>
-                      {t.miskonsepsi.map((m) => (
-                        <li key={m}>{m}</li>
-                      ))}
-                    </ul>
-                  </details>
-                )}
-
-                {t.prasyarat.length > 0 && (
-                  <p className="tiny dim">
-                    Sebaiknya sudah paham:{' '}
-                    {t.prasyarat.map((p, i) => {
-                      const pt = cariTopik(p)
-                      return (
-                        <span key={p}>
-                          {i > 0 && ', '}
-                          {pt ? (
-                            <Link to={`/belajar/${pt.kelas}`} className="mark">
-                              {pt.judul}
-                            </Link>
-                          ) : (
-                            p
-                          )}
-                        </span>
-                      )
-                    })}
-                  </p>
-                )}
-
-                {konsepIds.length > 0 && (
-                  <div className="row row-tight" style={{ marginTop: 'var(--s-2)' }}>
-                    {konsepIds.map((id) => {
-                      const m = cariKonsepMeta(id)
-                      if (!m) return null
-                      return (
-                        <Link key={id} to={`/konsep/${id}`} className="btn btn-sm btn-why">
-                          <Ikon nama="kenapa" /> {m.pertanyaan}
-                          <StatusLencana status={statusKonsep(simpanan.konsep[id])} kecil />
-                        </Link>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            </article>
-          )
-        })}
-
-        <nav className="row row-between" style={{ marginTop: 'var(--s-8)' }}>
+        <nav className="row row-between" style={{ marginTop: 'var(--s-4)' }} aria-label="Kelas lain">
           {sebelum ? (
             <Link className="btn btn-outline" to={`/belajar/${sebelum.no}`}>
               <Ikon nama="prev" /> Kelas {sebelum.no}
@@ -193,5 +148,34 @@ export default function KelasPage() {
         </nav>
       </div>
     </>
+  )
+}
+
+function UbinTopik({ topik: t, bintang }: { topik: TopikRingkas; bintang: number }) {
+  const idKonsep = (t.konsep ?? []).find(adaKonsep)
+  const konsep = idKonsep ? cariKonsepMeta(idKonsep) : undefined
+  return (
+    <article className="ubin-topik" data-domain={t.domain} data-bintang={bintang}>
+      <Link to={`/topik/${t.id}`} className="ubin-utama" title={t.judul}>
+        <GambarTopik judul={t.judul} domain={t.domain} className="is-lebar" />
+        <span className="ubin-judul">{judulRingkas(t.judul)}</span>
+        <Bintang n={bintang} />
+      </Link>
+      <div className="ubin-kaki">
+        <Link to={`/topik/${t.id}?mulai=1`} className="ubin-tes" aria-label={`Tes topik: ${t.judul}`}>
+          <Ikon nama="play" ukuran="0.95em" /> Tes
+        </Link>
+        {konsep && (
+          <Link
+            to={`/konsep/${konsep.id}`}
+            className="ubin-kenapa"
+            aria-label={`Lihat kenapa: ${konsep.pertanyaan}`}
+            title={konsep.pertanyaan}
+          >
+            <Ikon nama="kenapa" tebal={2.6} />
+          </Link>
+        )}
+      </div>
+    </article>
   )
 }

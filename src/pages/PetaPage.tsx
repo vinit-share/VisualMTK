@@ -7,6 +7,7 @@
 
 import { Link } from 'react-router-dom'
 import { Ikon } from '../components/Ikon'
+import { PitaGulir } from '../components/PitaGulir'
 import { StatusLencana } from '../components/StatusLencana'
 import { JALUR, cariTopik } from '../data/kurikulum'
 import { cariKonsepMeta } from '../data/katalog'
@@ -49,8 +50,7 @@ export default function PetaPage() {
               </div>
             </div>
 
-            <div className="peta-wrap">
-              <div className="jalur-baris">
+            <PitaGulir label={`jalur ${j.nama}`} className="jalur-pita">
                 {j.rantai.map((id, i) => {
                   const t = cariTopik(id)
                   if (!t) return null
@@ -88,15 +88,14 @@ export default function PetaPage() {
                           {isi}
                         </Link>
                       ) : (
-                        <Link to={`/belajar/${t.kelas}`} className="jalur-simpul">
+                        <Link to={`/topik/${t.id}`} className="jalur-simpul">
                           {isi}
                         </Link>
                       )}
                     </div>
                   )
                 })}
-              </div>
-            </div>
+            </PitaGulir>
           </section>
         ))}
       </div>

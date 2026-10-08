@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "uji:konsep": "node scripts/uji-konsep.mjs",
     "bangun:kurikulum": "node scripts/bangun-kurikulum.mjs",
-    "periksa": "tsc -b && node scripts/uji-konsep.mjs",
+    "periksa": "tsc -b && node scripts/uji-konsep.mjs && node scripts/uji-soal.mjs",
+    "uji:soal": "node scripts/uji-soal.mjs",
     "bangun:katalog": "node scripts/bangun-katalog.mjs",
     "bangun": "node scripts/bangun-kurikulum.mjs && node scripts/bangun-katalog.mjs"
   },

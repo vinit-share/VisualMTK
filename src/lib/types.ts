@@ -5,6 +5,7 @@
    ============================================================ */
 
 import type { ComponentType, ReactNode } from 'react'
+import type { SpesGambar } from './gambar'
 
 export type Jenjang = 'SD' | 'SMP' | 'SMA'
 export type Fase = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
@@ -165,6 +166,8 @@ export interface SoalDasar {
   pertanyaan: string
   /** gambar/visual opsional yang dirender di atas pertanyaan. */
   visual?: ReactNode
+  /** gambar dari spesifikasi ringkas (lihat src/lib/gambar.ts) — dipakai bank soal topik. */
+  gambar?: SpesGambar
   hint: string[]
   pembahasan: string
   /** id konsep untuk tautan "lihat kenapa". */

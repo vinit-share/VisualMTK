@@ -26,10 +26,23 @@ export interface KonsepProgress {
   tebak?: string
 }
 
+/** Kemajuan satu topik kurikulum, diisi oleh tes topik. */
+export interface TopikProgress {
+  dibuka?: number
+  /** berapa kali tes topik ini dituntaskan. */
+  tes?: number
+  /** nilai terbaik, 0..1. */
+  terbaik?: number
+  /** bintang terbanyak yang pernah diraih, 0..3. */
+  bintang?: number
+  /** tanggal (YYYY-MM-DD) tes terakhir. */
+  terakhir?: string
+}
+
 export interface Simpanan {
   versi: 1
   konsep: Record<string, KonsepProgress>
-  topik: Record<string, { dibuka?: number }>
+  topik: Record<string, TopikProgress>
   streak: { hitung: number; terakhir: string | null; terpanjang: number }
   lencana: string[]
   harian: Record<string, { selesai: boolean; benar: number; total: number }>
@@ -141,8 +154,40 @@ export const aksi = {
   bukaTopik(id: string) {
     set((s) => ({
       ...s,
-      topik: { ...s.topik, [id]: { dibuka: (s.topik[id]?.dibuka ?? 0) + 1 } },
+      topik: { ...s.topik, [id]: { ...s.topik[id], dibuka: (s.topik[id]?.dibuka ?? 0) + 1 } },
     }))
+  },
+
+  /** Catat satu jawaban soal yang tidak tertaut ke konsep (bank soal topik). */
+  jawabLepas(benar: boolean) {
+    set((s) => ({
+      ...s,
+      tes: { ...s.tes, benar: s.tes.benar + (benar ? 1 : 0), total: s.tes.total + 1 },
+    }))
+    aksi.catatKunjungan()
+  },
+
+  /** Tes sebuah topik dituntaskan: simpan nilai dan bintang terbaiknya. */
+  catatTesTopik(id: string, benar: number, total: number) {
+    const rasio = total > 0 ? benar / total : 0
+    set((s) => {
+      const lama = s.topik[id] ?? {}
+      return {
+        ...s,
+        topik: {
+          ...s.topik,
+          [id]: {
+            ...lama,
+            tes: (lama.tes ?? 0) + 1,
+            terbaik: Math.max(lama.terbaik ?? 0, rasio),
+            bintang: Math.max(lama.bintang ?? 0, bintangDari(rasio)),
+            terakhir: hariIni(),
+          },
+        },
+        tes: { ...s.tes, sesi: s.tes.sesi + 1 },
+      }
+    })
+    aksi.catatKunjungan()
   },
 
   selesaiBongkar(id: string) {
@@ -218,6 +263,21 @@ export const aksi = {
     set(() => ({ ...AWAL, konsep: {}, topik: {}, harian: {}, lencana: [] }))
   },
 }
+
+/* ---------------- Bintang tes topik ---------------- */
+
+/**
+ * Bintang dari nilai tes topik. Dengan 5 soal: 5 benar = 3 bintang,
+ * 4 benar = 2 bintang, 3 benar = 1 bintang.
+ */
+export const bintangDari = (rasio: number) =>
+  rasio >= 0.9 ? 3 : rasio >= 0.75 ? 2 : rasio >= 0.5 ? 1 : 0
+
+export const MAKS_BINTANG = 3
+
+/** Jumlah bintang yang sudah dikumpulkan dari sekumpulan topik. */
+export const jumlahBintang = (topik: Simpanan['topik'], ids: readonly string[]) =>
+  ids.reduce((a, id) => a + (topik[id]?.bintang ?? 0), 0)
 
 /* ---------------- Model penguasaan ---------------- */
 

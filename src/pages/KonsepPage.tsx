@@ -19,6 +19,7 @@ import { aksi, statusKonsep, useKonsepProgress, useSimpanan } from '../lib/store
 import type { Konsep, Level, Soal } from '../lib/types'
 import { muatKonsep } from '../concepts/registry'
 import { cariKonsepMeta, LABEL_DOMAIN } from '../data/katalog'
+import { GambarKonsep } from '../visuals/GambarKonsep'
 
 export default function KonsepPage() {
   const { id = '' } = useParams()
@@ -257,15 +258,15 @@ function IsiKonsep({ konsep: k }: { konsep: Konsep }) {
         {k.lanjut && k.lanjut.length > 0 && (
           <section className="blok">
             <h2 className="blok-judul">Kalau ini masuk akal, coba yang ini</h2>
-            <div className="grid grid-auto">
+            <div className="galeri">
               {k.lanjut.map((id) => {
                 const m = cariKonsepMeta(id)
                 if (!m) return null
                 return (
-                  <Link key={id} to={`/konsep/${id}`} className="card card-link card-pad-sm">
-                    <span className="eyebrow">Kelas {m.kelas}</span>
-                    <h4 style={{ marginBlock: 'var(--s-2)' }}>{m.pertanyaan}</h4>
-                    <p className="small muted">{m.tagline}</p>
+                  <Link key={id} to={`/konsep/${id}`} className="card card-link kartu-gambar" title={m.tagline}>
+                    <GambarKonsep id={id} />
+                    <span className="kartu-gambar-judul">{m.pertanyaan}</span>
+                    <span className="kartu-gambar-kaki">Kelas {m.kelas}</span>
                   </Link>
                 )
               })}

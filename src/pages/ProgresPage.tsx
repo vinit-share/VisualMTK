@@ -8,7 +8,16 @@ import { Link } from 'react-router-dom'
 import { Ikon, type NamaIkon } from '../components/Ikon'
 import { Cincin, StatusLencana } from '../components/StatusLencana'
 import { konsepSiap, LABEL_DOMAIN } from '../data/katalog'
-import { aksi, LABEL_STATUS, NILAI_STATUS, statusKonsep, useSimpanan } from '../lib/store'
+import { KELAS, topikKelas } from '../data/kurikulum'
+import {
+  aksi,
+  jumlahBintang,
+  LABEL_STATUS,
+  MAKS_BINTANG,
+  NILAI_STATUS,
+  statusKonsep,
+  useSimpanan,
+} from '../lib/store'
 import type { Status } from '../lib/types'
 
 interface Lencana {
@@ -26,6 +35,8 @@ const LENCANA: Lencana[] = [
   { id: 'streak3', nama: 'Tiga hari beruntun', syarat: 'Belajar 3 hari berturut-turut', ikon: 'api' },
   { id: 'streak7', nama: 'Seminggu penuh', syarat: 'Belajar 7 hari berturut-turut', ikon: 'api' },
   { id: 'soal50', nama: 'Lima puluh soal', syarat: 'Menjawab 50 soal', ikon: 'tes' },
+  { id: 'bintang3', nama: 'Tiga bintang', syarat: 'Meraih 3 bintang pada satu topik', ikon: 'bintang' },
+  { id: 'bintang30', nama: 'Kolektor bintang', syarat: 'Mengumpulkan 30 bintang', ikon: 'bintang' },
   { id: 'jenjang3', nama: 'Lintas jenjang', syarat: 'Menyentuh konsep SD, SMP, dan SMA', ikon: 'peta' },
 ]
 
@@ -59,6 +70,16 @@ export default function ProgresPage() {
 
   const ketepatan = s.tes.total ? Math.round((s.tes.benar / s.tes.total) * 100) : 0
 
+  // Bintang dari tes topik, per kelas.
+  const bintangKelas = KELAS.map((k) => {
+    const ids = topikKelas(k.no).map((t) => t.id)
+    return { no: k.no, bintang: jumlahBintang(s.topik, ids), maks: ids.length * MAKS_BINTANG }
+  })
+  const totalBintang = bintangKelas.reduce((a, k) => a + k.bintang, 0)
+  const topikDites = Object.values(s.topik).filter((t) => (t.tes ?? 0) > 0).length
+  dapat.bintang3 = Object.values(s.topik).some((t) => (t.bintang ?? 0) >= 3)
+  dapat.bintang30 = totalBintang >= 30
+
   return (
     <>
       <header className="page kepala stack stack-4">
@@ -88,6 +109,12 @@ export default function ProgresPage() {
             <span className="tiny dim">konsep dikuasai</span>
           </div>
           <div className="card angka-kartu">
+            <span className="angka-besar row row-tight row-nowrap">
+              <Ikon nama="bintang" ukuran="0.8em" className="warna-bintang" /> {totalBintang}
+            </span>
+            <span className="tiny dim">bintang dari {topikDites} topik yang sudah dites</span>
+          </div>
+          <div className="card angka-kartu">
             <span className="angka-besar">{s.streak.hitung}</span>
             <span className="tiny dim">
               hari beruntun {s.streak.terpanjang > 0 && `· rekor ${s.streak.terpanjang}`}
@@ -100,6 +127,24 @@ export default function ProgresPage() {
             </span>
           </div>
         </div>
+
+        {/* ---------- Bintang per kelas ---------- */}
+        <section className="stack stack-4">
+          <h2 style={{ fontSize: 'var(--t-xl)' }}>Bintang tiap kelas</h2>
+          <div className="bintang-kelas">
+            {bintangKelas.map((k) => (
+              <Link key={k.no} to={`/belajar/${k.no}`} className="bintang-kelas-item">
+                <strong>Kelas {k.no}</strong>
+                <span className="tiny dim">
+                  {k.bintang} / {k.maks}
+                </span>
+                <div className="bar" aria-hidden="true">
+                  <i style={{ width: `${k.maks ? Math.round((k.bintang / k.maks) * 100) : 0}%` }} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* ---------- Sebaran status ---------- */}
         <section className="stack stack-4">

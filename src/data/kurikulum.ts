@@ -242,3 +242,64 @@ export const JALUR: Jalur[] = [
     ),
   },
 ]
+
+/* ------------------------------------------------------------
+   Urutan tampil topik dalam satu kelas.
+   Dikelompokkan per domain, dan di dalam tiap domain topik yang
+   menjadi prasyarat tampil lebih dulu — supaya anak menemui
+   "membilang" sebelum "menjumlahkan".
+   ------------------------------------------------------------ */
+
+export const URUT_DOMAIN = [
+  'bilangan',
+  'aljabar',
+  'pengukuran',
+  'geometri',
+  'data',
+  'kalkulus',
+] as const
+
+const singgahanDalam = new Map<string, number>()
+
+/** Panjang rantai prasyarat terpanjang di dalam kelas yang sama. */
+function kedalaman(t: TopikRingkas, jejak: Set<string> = new Set()): number {
+  const sudah = singgahanDalam.get(t.id)
+  if (sudah !== undefined) return sudah
+  if (jejak.has(t.id)) return 0
+  jejak.add(t.id)
+  let d = 0
+  for (const p of t.prasyarat) {
+    const pt = petaTopik.get(p)
+    if (pt && pt.kelas === t.kelas) d = Math.max(d, 1 + kedalaman(pt, jejak))
+  }
+  jejak.delete(t.id)
+  singgahanDalam.set(t.id, d)
+  return d
+}
+
+export interface KelompokTopik {
+  domain: (typeof URUT_DOMAIN)[number]
+  topik: TopikRingkas[]
+}
+
+const singgahanKelompok = new Map<number, KelompokTopik[]>()
+
+/** Topik satu kelas, dikelompokkan per domain dan diurutkan menurut prasyarat. */
+export function topikPerDomain(n: number): KelompokTopik[] {
+  const sudah = singgahanKelompok.get(n)
+  if (sudah) return sudah
+  const semua = topikKelas(n)
+  const hasil = URUT_DOMAIN.map((domain) => ({
+    domain,
+    topik: semua
+      .filter((t) => t.domain === domain)
+      .map((t, i) => ({ t, i, d: kedalaman(t) }))
+      .sort((a, b) => a.d - b.d || a.i - b.i)
+      .map((x) => x.t),
+  })).filter((g) => g.topik.length > 0)
+  singgahanKelompok.set(n, hasil)
+  return hasil
+}
+
+/** Topik satu kelas sebagai satu deret, dalam urutan tampil. */
+export const urutanTopikKelas = (n: number) => topikPerDomain(n).flatMap((g) => g.topik)

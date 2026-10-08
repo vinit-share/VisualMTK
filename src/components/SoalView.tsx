@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { jawabanSama, normalTeks, parseAngka, shuffle, seededRandom } from '../lib/num'
 import type { Soal } from '../lib/types'
+import { GambarSoal } from './GambarSoal'
 import { Ikon } from './Ikon'
 
 type Hasil = 'belum' | 'benar' | 'salah'
@@ -85,6 +86,11 @@ export function SoalView({
 
       <p className="soal-tanya">{soal.pertanyaan}</p>
       {soal.visual && <div className="soal-visual">{soal.visual}</div>}
+      {soal.gambar && (
+        <div className="soal-visual">
+          <GambarSoal spec={soal.gambar} />
+        </div>
+      )}
 
       <Isian soal={soal} kunci={hasil === 'benar'} onKirim={periksa} nilaiAwal={jawab} />
 
